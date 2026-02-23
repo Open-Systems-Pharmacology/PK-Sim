@@ -5,6 +5,7 @@ using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
@@ -62,21 +63,52 @@ namespace PKSim.Presentation.Services
       private readonly IConfigureSimulationTask _configureSimulationTask;
       private readonly IBuildingBlockParametersToSimulationUpdater _blockParametersToSimulationUpdater;
       private readonly ISimulationParametersToBuildingBlockUpdater _simulationParametersToBlockUpdater;
+      private readonly IApplicationIdleScheduler _idleScheduler;
 
       public SimulationTask(
-         IExecutionContext executionContext, 
-         IBuildingBlockTask buildingBlockTask, 
+         IExecutionContext executionContext,
+         IBuildingBlockTask buildingBlockTask,
          IApplicationController applicationController,
-         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, 
+         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IConfigureSimulationTask configureSimulationTask,
-         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater, 
-         ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater)
+         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater,
+         ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater,
+         IApplicationIdleScheduler idleScheduler)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Simulation)
       {
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _configureSimulationTask = configureSimulationTask;
          _blockParametersToSimulationUpdater = blockParametersToSimulationUpdater;
          _simulationParametersToBlockUpdater = simulationParametersToBlockUpdater;
+         _idleScheduler = idleScheduler;
+      }
+
+      public override void Edit(Simulation simulation)
+      {
+         var projectWasChanged = _executionContext.CurrentProject.HasChanged;
+         base.Edit(simulation);
+         _executionContext.CurrentProject.HasChanged = projectWasChanged;
+
+         // Opening a simulation causes grids in non-visible tabs to fire column-width events
+         // late (when Windows finally paints them), falsely marking the project as changed.
+         // The restore above catches events that fire immediately; this catches the late ones.
+         // Only needed when the project was originally clean.
+         if (!projectWasChanged)
+            scheduleResetProjectChangedFlag();
+      }
+
+      private void scheduleResetProjectChangedFlag()
+      {
+         var project = _executionContext.CurrentProject;
+
+         // ScheduleOnIdle fires when Windows has nothing left to do — all pending events
+         // (including those late-firing grid events) have already been processed by then.
+         // Guard against a project switch that may have happened in the meantime.
+         _idleScheduler.ScheduleOnIdle(() =>
+         {
+            if (ReferenceEquals(_executionContext.CurrentProject, project))
+               project.HasChanged = false;
+         });
       }
 
       public override Simulation AddToProject()

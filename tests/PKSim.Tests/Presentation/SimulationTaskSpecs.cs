@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -11,6 +12,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
 
@@ -25,6 +27,7 @@ namespace PKSim.Presentation
       protected IConfigureSimulationTask _configureSimulationTask;
       protected ISimulationResultsImportTask _simulationResultsImportTask;
       protected IApplicationController _applicationController;
+      protected IApplicationIdleScheduler _idleScheduler;
       private ISimulationParametersToBuildingBlockUpdater _simulationParametersToBlockUpdater;
       protected IBuildingBlockParametersToSimulationUpdater _blockParametersToSimulationUpdater;
 
@@ -38,9 +41,10 @@ namespace PKSim.Presentation
          _applicationController = A.Fake<IApplicationController>();
          _simulationParametersToBlockUpdater = A.Fake<ISimulationParametersToBuildingBlockUpdater>();
          _blockParametersToSimulationUpdater = A.Fake<IBuildingBlockParametersToSimulationUpdater>();
+         _idleScheduler = A.Fake<IApplicationIdleScheduler>();
          A.CallTo(() => _applicationController.Start<ICreateSimulationPresenter>()).Returns(_createSimulationPresenter);
          sut = new SimulationTask(_executionContext, _buildingBlockTask, _applicationController, _simulationBuildingBlockUpdater,
-            _configureSimulationTask, _blockParametersToSimulationUpdater, _simulationParametersToBlockUpdater);
+            _configureSimulationTask, _blockParametersToSimulationUpdater, _simulationParametersToBlockUpdater, _idleScheduler);
       }
    }
 
@@ -310,6 +314,170 @@ namespace PKSim.Presentation
       public void should_throw_an_exception()
       {
          The.Action(() => sut.ShowDifferencesBetween(_templateBuildingBlock, _usedBuildingBlock, _simulation)).ShouldThrowAn<PKSimException>();
+      }
+   }
+
+   public class When_editing_an_unchanged_project_simulation_but_chart_initialization_marks_project_as_changed : concern_for_SimulationTask
+   {
+      private IndividualSimulation _simulation;
+      private PKSimProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IndividualSimulation>();
+         _project = new PKSimProject();
+         A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
+
+         // Simulate DevExpress column-settings events firing during base.Edit() and setting HasChanged
+         A.CallTo(() => _buildingBlockTask.Edit(_simulation)).Invokes(_ => _project.HasChanged = true);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void should_restore_project_changed_flag_to_false()
+      {
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   public class When_editing_a_simulation_for_a_project_that_was_already_changed : concern_for_SimulationTask
+   {
+      private IndividualSimulation _simulation;
+      private PKSimProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IndividualSimulation>();
+         _project = new PKSimProject();
+         _project.HasChanged = true;
+         A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void project_should_remain_changed()
+      {
+         _project.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   // The following tests use a captured idle action so they can fire it manually
+   // without needing a real Windows message loop.
+
+   internal abstract class concern_for_SimulationTask_with_controllable_idle : ContextSpecification<ISimulationTask>
+   {
+      protected IExecutionContext _executionContext;
+      protected IBuildingBlockTask _buildingBlockTask;
+      protected IApplicationIdleScheduler _idleScheduler;
+      protected PKSimProject _project;
+      protected Action _capturedIdleAction;
+
+      protected override void Context()
+      {
+         _executionContext = A.Fake<IExecutionContext>();
+         _buildingBlockTask = A.Fake<IBuildingBlockTask>();
+         _idleScheduler = A.Fake<IApplicationIdleScheduler>();
+         _project = new PKSimProject();
+
+         A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
+         A.CallTo(() => _idleScheduler.ScheduleOnIdle(A<Action>._))
+            .Invokes(call => _capturedIdleAction = call.GetArgument<Action>(0));
+
+         sut = new SimulationTask(
+            _executionContext,
+            _buildingBlockTask,
+            A.Fake<IApplicationController>(),
+            A.Fake<ISimulationBuildingBlockUpdater>(),
+            A.Fake<IConfigureSimulationTask>(),
+            A.Fake<IBuildingBlockParametersToSimulationUpdater>(),
+            A.Fake<ISimulationParametersToBuildingBlockUpdater>(),
+            _idleScheduler);
+      }
+
+      protected void FireIdleAction() => _capturedIdleAction?.Invoke();
+      protected bool HasPendingIdleAction => _capturedIdleAction != null;
+   }
+
+   internal class When_idle_fires_after_editing_an_unchanged_project : concern_for_SimulationTask_with_controllable_idle
+   {
+      protected override void Because()
+      {
+         sut.Edit(A.Fake<IndividualSimulation>());
+         // Simulate Windows becoming idle: fire the scheduled action.
+         FireIdleAction();
+      }
+
+      [Observation]
+      public void should_have_scheduled_an_idle_reset()
+      {
+         HasPendingIdleAction.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void project_should_not_have_changed_after_idle()
+      {
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   internal class When_idle_fires_but_the_project_has_been_switched_in_the_meantime : concern_for_SimulationTask_with_controllable_idle
+   {
+      private PKSimProject _newProject;
+
+      protected override void Context()
+      {
+         base.Context();
+         _newProject = new PKSimProject();
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(A.Fake<IndividualSimulation>());
+         // Simulate a project switch before idle fires.
+         A.CallTo(() => _executionContext.CurrentProject).Returns(_newProject);
+         FireIdleAction();
+      }
+
+      [Observation]
+      public void should_not_modify_the_new_project()
+      {
+         _newProject.HasChanged.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void original_project_should_not_be_touched()
+      {
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   internal class When_editing_an_already_changed_project_no_idle_reset_should_be_scheduled : concern_for_SimulationTask_with_controllable_idle
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _project.HasChanged = true;
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(A.Fake<IndividualSimulation>());
+      }
+
+      [Observation]
+      public void should_not_schedule_an_idle_reset()
+      {
+         HasPendingIdleAction.ShouldBeFalse();
       }
    }
 }

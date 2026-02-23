@@ -35,6 +35,8 @@ namespace PKSim.Presentation.Presenters.Charts
       ISimulationAnalysisPresenter<IndividualSimulation>
 
    {
+      private bool _isInitializing;
+
       public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext,
          IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask,
          IChartTemplatingTask chartTemplatingTask,
@@ -63,6 +65,9 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected override void NotifyProjectChanged()
       {
+         if (_isInitializing)
+            return;
+
          base.NotifyProjectChanged();
          if (Simulation != null)
             Simulation.HasChanged = true;
@@ -76,8 +81,16 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public void InitializeAnalysis(ISimulationAnalysis simulationAnalysis, IAnalysable analysable)
       {
-         base.InitializeAnalysis(simulationAnalysis.DowncastTo<SimulationTimeProfileChart>());
-         UpdateAnalysisBasedOn(analysable);
+         try
+         {
+            _isInitializing = true;
+            base.InitializeAnalysis(simulationAnalysis.DowncastTo<SimulationTimeProfileChart>());
+            UpdateAnalysisBasedOn(analysable);
+         }
+         finally
+         {
+            _isInitializing = false;
+         }
       }
 
       public void UpdateAnalysisBasedOn(IAnalysable analysable)

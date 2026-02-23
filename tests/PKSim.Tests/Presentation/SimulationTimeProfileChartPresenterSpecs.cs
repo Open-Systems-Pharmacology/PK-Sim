@@ -47,7 +47,7 @@ namespace PKSim.Presentation
       protected IList<ChartEditorLayoutTemplate> _allTemplates;
       protected IChartEditorLayoutTask _chartLayoutTask;
       protected IChartTemplatingTask _chartTemplatingTask;
-      private IProjectRetriever _projectRetriever;
+      protected IProjectRetriever _projectRetriever;
       protected ChartPresenterContext _chartPresenterContext;
       protected IUserSettings _userSettings;
       private ICurveNamer _curveNamer;
@@ -638,6 +638,65 @@ namespace PKSim.Presentation
       public void should_added_them_also_to_the_underlying_simulation()
       {
          _allDataRepositories.Contains(_observedData).ShouldBeTrue();
+      }
+   }
+
+   public class When_column_settings_change_fires_during_chart_initialization : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private PKSimProject _project;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = new PKSimProject();
+         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), Settings = new SimulationSettings()};
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+
+         // Simulate DevExpress raising ColumnSettingsChanged during ChartEditorPresenter.Edit()
+         // (which is called by BindChartToEditors inside InitializeAnalysis).
+         A.CallTo(() => _chartEditorPresenter.Edit(A<CurveChart>._))
+            .Invokes(_ => _chartEditorPresenter.ColumnSettingsChanged +=
+               Raise.FreeForm<Action<IReadOnlyCollection<GridColumnSettings>>>.With(new List<GridColumnSettings>()));
+      }
+
+      protected override void Because()
+      {
+         sut.InitializeAnalysis(new SimulationTimeProfileChart(), _simulation);
+      }
+
+      [Observation]
+      public void should_not_mark_the_project_as_changed()
+      {
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   public class When_column_settings_change_fires_after_chart_initialization : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private PKSimProject _project;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = new PKSimProject();
+         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), Settings = new SimulationSettings()};
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
+         sut.InitializeAnalysis(new SimulationTimeProfileChart(), _simulation);
+      }
+
+      protected override void Because()
+      {
+         // Simulate DevExpress raising ColumnSettingsChanged after initialization is complete.
+         _chartEditorPresenter.ColumnSettingsChanged +=
+            Raise.FreeForm<Action<IReadOnlyCollection<GridColumnSettings>>>.With(new List<GridColumnSettings>());
+      }
+
+      [Observation]
+      public void should_mark_the_project_as_changed()
+      {
+         _project.HasChanged.ShouldBeTrue();
       }
    }
 }
