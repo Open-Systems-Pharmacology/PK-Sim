@@ -1202,4 +1202,278 @@ namespace PKSim.IntegrationTests
          CheckMassBalance();
       }
    }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_without_hydrodynamic_model : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //enable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //disable hydrodynamic model (default: enabled)
+         UseHydrodynamicModel = false;
+
+         //set low solubility in duodenum to assure precipitation
+         Solubility(Constants.Compartment.DUODENUM).Value = 1e-12;
+
+         _simulation.OutputSchema.Intervals.Last().EndTime.Value = 900;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_with_effective_diffusion : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //enable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //enable effective diffusion (default: disabled)
+         Use_Effective_Diffusion = true;
+
+         //set low solubility in duodenum to assure precipitation
+         Solubility(Constants.Compartment.DUODENUM).Value = 1e-12;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_with_precipitation_without_hintz_johnson : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //enable precipitation
+         PrecipitatedDrugSoluble = false;
+
+         //disable Hintz-Johnson model (default: enabled)
+         UseHintzJohnson = false;
+
+         //set low solubility in duodenum to assure precipitation
+         Solubility(Constants.Compartment.DUODENUM).Value = 1e-12;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_occur()
+      {
+         CheckPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+
+      [Observation]
+      public void amount_of_precipitated_drug_must_be_increasing()
+      {
+         CheckInsolubleDrugIncreasing();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_with_all_model_options_toggled : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //disable hydrodynamic model (default: enabled)
+         UseHydrodynamicModel = false;
+
+         //enable effective diffusion (default: disabled)
+         Use_Effective_Diffusion = true;
+
+         //disable Hintz-Johnson model (default: enabled)
+         UseHintzJohnson = false;
+
+         _simulation.OutputSchema.Intervals.Last().EndTime.Value = 900;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_one_bin_without_precipitation_without_hydrodynamic_model : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 1;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //disable hydrodynamic model (default: enabled)
+         UseHydrodynamicModel = false;
+
+         _simulation.Solver.AbsTol = 1e-10;
+         _simulation.Solver.RelTol = 1e-6;
+
+         _simulation.OutputSchema.Intervals.Last().EndTime.Value = 900;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_one_bin_without_precipitation_with_effective_diffusion : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 1;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //enable effective diffusion (default: disabled)
+         Use_Effective_Diffusion = true;
+
+         _simulation.Solver.AbsTol = 1e-10;
+         _simulation.Solver.RelTol = 1e-6;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_with_effective_diffusion_without_hydrodynamic_model : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //enable effective diffusion (default: disabled)
+         Use_Effective_Diffusion = true;
+
+         //disable hydrodynamic model (default: enabled)
+         UseHydrodynamicModel = false;
+
+         _simulation.OutputSchema.Intervals.Last().EndTime.Value = 900;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
 }
