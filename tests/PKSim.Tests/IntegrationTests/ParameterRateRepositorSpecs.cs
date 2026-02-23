@@ -38,5 +38,52 @@ namespace PKSim.IntegrationTests
 
          lipophilicityParameter.IsInput.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_expose_bile_salt_micelle_partition_coefficients_for_compound_dissolution()
+      {
+         var expectedParameters = new[]
+         {
+            "Partition coefficient (bile salt micelle/water) neutral",
+            "Partition coefficient (bile salt micelle/water) ionized",
+            "Partition coefficient (bile salt micelle/water) constant 1",
+            "Partition coefficient (bile salt micelle/water) constant 2"
+         };
+
+         foreach (var parameterName in expectedParameters)
+         {
+            _result.Any(x => x.ContainerType == CoreConstants.ContainerType.COMPOUND && x.ParameterName == parameterName)
+               .ShouldBeTrue($"Parameter '{parameterName}' should be available as compound rate parameter.");
+         }
+      }
+
+      [Observation]
+      public void should_expose_micellar_diffusion_coefficients_for_all_lumen_segments()
+      {
+         var expectedSegments = new[]
+         {
+            "Stomach",
+            "Duodenum",
+            "UpperJejunum",
+            "LowerJejunum",
+            "UpperIleum",
+            "LowerIleum",
+            "Caecum",
+            "ColonAscendens",
+            "ColonTransversum",
+            "ColonDescendens",
+            "ColonSigmoid",
+            "Rectum"
+         };
+
+         var micellarDiffusionSegments = _result.Where(x =>
+               x.ContainerType == CoreConstants.ContainerType.COMPARTMENT &&
+               x.ParameterName == "Micellar diffusion coefficient in fasted state")
+            .Select(x => x.ContainerName)
+            .ToList();
+
+         foreach (var segment in expectedSegments)
+            micellarDiffusionSegments.ShouldContain(segment);
+      }
    }
 }
