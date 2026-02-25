@@ -868,6 +868,10 @@ namespace PKSim.Assets
 
          public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
             $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
+
+         public static string InvalidProteinCategory(string category) => $"The category '{category}' is not a valid expression category";
+
+         public static string CouldNotFindValidSpecies(string speciesName) => $"Could not find a valid species named '{speciesName}'";
       }
 
       public static class Information
