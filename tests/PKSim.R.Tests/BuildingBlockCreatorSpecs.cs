@@ -55,23 +55,11 @@ internal class CreateExchangeIndividual : ContextForStaticIntegration
 
 internal class CreateExchangeMetabolizingEnzyme : ContextForStaticIntegration
 {
-   private ExpressionProfileCharacteristics _expressionProfileCharacteristics;
    private string _result;
-
-   protected override void Context()
-   {
-      base.Context();
-      _expressionProfileCharacteristics = new ExpressionProfileCharacteristics
-      {
-         Species = CoreConstants.Species.HUMAN,
-         Category = MetabolizingEnzyme,
-         MoleculeName = "CYP3A4"
-      };
-   }
 
    protected override void Because()
    {
-      _result = BuildingBlockCreator.CreateExpressionProfile(_expressionProfileCharacteristics);
+      _result = BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", CoreConstants.Species.HUMAN);
    }
 
    [Observation]
@@ -83,20 +71,6 @@ internal class CreateExchangeMetabolizingEnzyme : ContextForStaticIntegration
 
 internal class CreateExchangeExpressionProfileWithInvalidSpecies : ContextForStaticIntegration
 {
-   private ExpressionProfileCharacteristics _expressionProfileCharacteristics;
-   private const string _invalidSpecies = "InvalidSpecies";
-
-   protected override void Context()
-   {
-      base.Context();
-      _expressionProfileCharacteristics = new ExpressionProfileCharacteristics
-      {
-         Species = _invalidSpecies,
-         Category = MetabolizingEnzyme,
-         MoleculeName = "CYP3A4"
-      };
-   }
-
    [Observation]
    public void should_throw_an_argument_exception_with_species_not_found_message()
    {
@@ -105,7 +79,7 @@ internal class CreateExchangeExpressionProfileWithInvalidSpecies : ContextForSta
       {
          try
          {
-            BuildingBlockCreator.CreateExpressionProfile(_expressionProfileCharacteristics);
+            BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", "InvalidSpecies");
          }
          catch (Exception e)
          {
@@ -113,29 +87,17 @@ internal class CreateExchangeExpressionProfileWithInvalidSpecies : ContextForSta
             throw;
          }
       }).ShouldThrowAn<ArgumentException>();
-      message.ShouldBeEqualTo(PKSimConstants.Error.CouldNotFindValidSpecies(_invalidSpecies));
+      message.ShouldBeEqualTo(PKSimConstants.Error.CouldNotFindValidSpecies("InvalidSpecies"));
    }
 }
 
 internal class CreateExchangeTransportProtein : ContextForStaticIntegration
 {
-   private ExpressionProfileCharacteristics _expressionProfileCharacteristics;
    private string _result;
-
-   protected override void Context()
-   {
-      base.Context();
-      _expressionProfileCharacteristics = new ExpressionProfileCharacteristics
-      {
-         Species = CoreConstants.Species.HUMAN,
-         Category = TransportProtein,
-         MoleculeName = "CYP3A4"
-      };
-   }
 
    protected override void Because()
    {
-      _result = BuildingBlockCreator.CreateExpressionProfile(_expressionProfileCharacteristics);
+      _result = BuildingBlockCreator.CreateExpressionProfile(TransportProtein, "CYP3A4", CoreConstants.Species.HUMAN);
    }
 
    [Observation]
@@ -146,23 +108,11 @@ internal class CreateExchangeTransportProtein : ContextForStaticIntegration
 
    internal class CreateExchangeProteinBindingPartner : ContextForStaticIntegration
    {
-      private ExpressionProfileCharacteristics _expressionProfileCharacteristics;
       private string _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         _expressionProfileCharacteristics = new ExpressionProfileCharacteristics
-         {
-            Species = CoreConstants.Species.HUMAN,
-            Category = ProteinBindingPartner,
-            MoleculeName = "CYP3A4"
-         };
-      }
 
       protected override void Because()
       {
-         _result = BuildingBlockCreator.CreateExpressionProfile(_expressionProfileCharacteristics);
+         _result = BuildingBlockCreator.CreateExpressionProfile(ProteinBindingPartner, "CYP3A4", CoreConstants.Species.HUMAN);
       }
 
       [Observation]

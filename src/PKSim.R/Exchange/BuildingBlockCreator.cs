@@ -33,44 +33,36 @@ public static class BuildingBlockCreator
       return serializer.Serialize(mapper.MapFrom(buildingBlock));
    }
 
-   public static string CreateExpressionProfile(ExpressionProfileCharacteristics expressionProfileCharacteristics)
+   public static string CreateExpressionProfile(string category, string moleculeName, string speciesName)
    {
       var (serializer, mapper) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper>();
       ExpressionProfile buildingBlock;
 
-      var category = expressionProfileCharacteristics.Category;
       if (string.Equals(category, TransportProtein))
-         buildingBlock = createExpressionProfile<IndividualTransporter>(expressionProfileCharacteristics);
+         buildingBlock = createExpressionProfile<IndividualTransporter>(category, moleculeName, speciesName);
       else if (string.Equals(category, ProteinBindingPartner))
-         buildingBlock = createExpressionProfile<IndividualOtherProtein>(expressionProfileCharacteristics);
+         buildingBlock = createExpressionProfile<IndividualOtherProtein>(category, moleculeName, speciesName);
       else if (string.Equals(category, MetabolizingEnzyme))
-         buildingBlock = createExpressionProfile<IndividualEnzyme>(expressionProfileCharacteristics);
+         buildingBlock = createExpressionProfile<IndividualEnzyme>(category, moleculeName, speciesName);
       else
          throw new ArgumentException(PKSimConstants.Error.InvalidProteinCategory(category));
 
       return serializer.Serialize(mapper.MapFrom(buildingBlock));
    }
 
-   private static ExpressionProfile createExpressionProfile<T>(ExpressionProfileCharacteristics expressionProfileCharacteristics) where T : IndividualMolecule
+   private static ExpressionProfile createExpressionProfile<T>(string category, string moleculeName, string speciesName) where T : IndividualMolecule
    {
       var (expressionProfileFactory, moleculeParameterTask, speciesRepository) = Api.ResolveTasks<IExpressionProfileFactory, IMoleculeParameterTask, ISpeciesRepository>();
 
-      var species = speciesRepository.FindByName(expressionProfileCharacteristics.Species);
+      var species = speciesRepository.FindByName(speciesName);
       if (species == null)
-         throw new ArgumentException(PKSimConstants.Error.CouldNotFindValidSpecies(expressionProfileCharacteristics.Species));
+         throw new ArgumentException(PKSimConstants.Error.CouldNotFindValidSpecies(speciesName));
 
-      var expressionProfile = expressionProfileFactory.Create<T>(species, expressionProfileCharacteristics.MoleculeName);
-      expressionProfile.Category = expressionProfileCharacteristics.Category;
+      var expressionProfile = expressionProfileFactory.Create<T>(species, moleculeName);
+      expressionProfile.Category = category;
 
       moleculeParameterTask.SetDefaultFor(expressionProfile);
 
       return expressionProfile;
    }
-}
-
-public class ExpressionProfileCharacteristics
-{
-   public string Category { get; set; }
-   public string Species { get; set; }
-   public string MoleculeName { get; set; }
 }
