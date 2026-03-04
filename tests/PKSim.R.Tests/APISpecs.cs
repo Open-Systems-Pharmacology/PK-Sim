@@ -35,7 +35,7 @@ namespace PKSim.R
       protected static void ActionShouldNotThrowAn<TException>(Action workToPerform) where TException : Exception
       {
          Exception exceptionFromPerforming = getExceptionFromPerforming(workToPerform);
-         exceptionFromPerforming.GetType().ShouldNotBeEqualTo(typeof(TException));
+         (exceptionFromPerforming is TException).ShouldBeFalse();
       }
    }
 
