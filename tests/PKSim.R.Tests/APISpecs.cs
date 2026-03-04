@@ -1,7 +1,7 @@
-﻿using OSPSuite.BDDHelper;
-using System;
+﻿using System;
 using Castle.MicroKernel.ComponentActivator;
 using NUnit.Framework;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.CLI.Core.RunOptions;
 
