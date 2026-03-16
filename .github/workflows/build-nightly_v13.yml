@@ -3,6 +3,8 @@ run-name: Version 13.0.${{ github.run_number }}
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
 
 env:
   TARGET_FRAMEWORK: net8
@@ -12,16 +14,6 @@ permissions:
   packages: read
 
 jobs:
-  check-branch:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Validate source branch
-      run: |
-        if [ "${{ github.ref_name }}" != "V13" ]; then
-          echo "::error::Please call the workflow from the V13 branch"
-          exit 1
-        fi
-
   get-latest-commit-timespan:
     runs-on: ubuntu-latest
     outputs:
