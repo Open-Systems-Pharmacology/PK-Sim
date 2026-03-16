@@ -20,7 +20,7 @@ jobs:
       LATEST_COMMIT_TIMESPAN: ${{ steps.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -118,25 +118,25 @@ jobs:
 
       - name: Push test log as artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows
           path: ./testLog*.html
 
       - name: Push nightly installer as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim Installer ${{env.APP_VERSION}}
           path: setup\deploy\*.msi
 
       - name: Push nightly portable as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
           path: setup\PK-Sim ${{env.APP_VERSION}}
 
       - name: Push R dependencies as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim R Dependencies
           path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip
