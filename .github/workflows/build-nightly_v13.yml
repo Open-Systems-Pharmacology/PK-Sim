@@ -61,7 +61,7 @@ jobs:
           dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test
-        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=${{ env.GITHUB_WORKSPACE }}/testLog_Windows.html"
+        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=${{ github.workspace }}/testLog_Windows.html"
 
       - name: Sign PKSim.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
