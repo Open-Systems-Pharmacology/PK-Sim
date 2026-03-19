@@ -57,11 +57,11 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.2" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.85" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.85" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.85" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.91" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.91" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.75" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.76" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.79" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
