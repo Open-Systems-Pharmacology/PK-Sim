@@ -24,6 +24,7 @@ public static class BuildingBlockCreator
 {
    public static string CreateIndividual(IndividualCharacteristics individualCharacteristics)
    {
+      Api.InitializeOnce();
       var (individualFactory, originDataMapper, serializer, mapper) = Api.ResolveTasks<IIndividualFactory, OriginDataMapper, IPKMLPersistor, IIndividualToIndividualBuildingBlockMapper>();
 
       var originData = originDataMapper.MapToModel(individualCharacteristics, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
@@ -35,6 +36,7 @@ public static class BuildingBlockCreator
 
    public static string CreateExpressionProfile(string category, string moleculeName, string speciesName)
    {
+      Api.InitializeOnce();
       var (serializer, mapper) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper>();
       ExpressionProfile buildingBlock;
 
