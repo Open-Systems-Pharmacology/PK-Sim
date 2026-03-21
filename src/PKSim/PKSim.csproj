@@ -41,6 +41,9 @@
     <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="$(PkgSQLitePCLRaw_lib_e_sqlite3)\runtimes\win-x64\native\e_sqlite3.dll" Link="e_sqlite3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="$(PkgOSPSuite_Presentation)\OSPSuite.Presentation\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -80,6 +83,7 @@
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.79" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.6" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.Presentation" Version="13.0.91" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" GeneratePathProperty="true" />
   </ItemGroup>
