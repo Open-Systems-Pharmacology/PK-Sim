@@ -76,6 +76,9 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	FileUtils.copy_entry File.join(src_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
 	FileUtils.copy_entry File.join(src_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
 
+	dst_dir = File.join(setup_temp_dir, 'runtimes', 'win-x64', 'native')
+    FileUtils.mkdir_p(dst_dir)
+    FileUtils.copy_entry File.join(src_dir, 'runtimes', 'win-x64', 'native'), dst_dir
 
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
