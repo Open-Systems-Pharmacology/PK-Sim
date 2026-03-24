@@ -39,7 +39,10 @@ jobs:
 
   build-nightly:
     needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+    # the build-nightly job should be run in 2 cases:
+    # - either the workflow was triggered manually (on 'workflow_dispatch')
+    # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -142,8 +145,9 @@ jobs:
           path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip
 
   cleanup-job:
-    needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN >= 86400
+    needs: build-nightly
+    # run only if the build-nightly job was skipped
+    if: always() && needs.build-nightly.result == 'skipped'
     runs-on: ubuntu-latest
     permissions:
       actions: write
