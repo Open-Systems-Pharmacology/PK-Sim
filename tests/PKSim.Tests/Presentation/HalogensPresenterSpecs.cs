@@ -1,8 +1,7 @@
+using System.Collections.Generic;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
-using PKSim.Assets;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
@@ -10,7 +9,6 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using System.Collections.Generic;
 
 namespace PKSim.Presentation
 {
@@ -25,7 +23,6 @@ namespace PKSim.Presentation
 
       protected IParameter _parameter;
       protected ParameterDTO _parameterDTO;
-      protected IParameter _effectiveMolWeight;
       protected IReadOnlyList<IParameter> _halogens;
 
       protected override void Context()
@@ -36,13 +33,11 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _contextMenuFactory = A.Fake<IParameterContextMenuFactory>();
-            
+
          A.CallTo(() => _scaleParametersPresenter.View).Returns(A.Fake<IScaleParametersView>());
 
          _parameter = new Parameter();
          _parameterDTO = new ParameterDTO(_parameter);
-
-         _effectiveMolWeight = A.Fake<IParameter>();
 
          A.CallTo(() => _parameterDTOMapper.MapFrom(A<IParameter>._))
             .ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
@@ -63,7 +58,7 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         sut.Edit(_halogens, _effectiveMolWeight);
+         sut.Edit(_halogens);
       }
 
       [Observation]
@@ -82,9 +77,7 @@ namespace PKSim.Presentation
          base.Context();
 
          _valueInDisplayUnit = 5;
-         A.CallTo(() => _effectiveMolWeight.Value).Returns(0.1);
-         
-         sut.Edit(_halogens, _effectiveMolWeight);
+         sut.Edit(_halogens);
       }
 
       protected override void Because()

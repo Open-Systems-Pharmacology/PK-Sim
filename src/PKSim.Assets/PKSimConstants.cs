@@ -866,7 +866,7 @@ namespace PKSim.Assets
 
          public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
 
-         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
+         public static string EffectiveMolWeightMustBeGreaterThan(string valueInDisplayUnit, string displayUnit) =>
             $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
 
          public static string InvalidProteinCategory(string category) => $"The category '{category}' is not a valid expression category";

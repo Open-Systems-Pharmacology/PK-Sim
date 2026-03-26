@@ -84,15 +84,11 @@ namespace PKSim.Presentation.Presenters.Compounds
          EditCompoundParameters(compound.AllParameters());
       }
 
-      public void EditHalogens()
-      {
-         _molWeightHalogensPresenter.EditHalogens(_halogenParameters, _molWeightParameters.FindByName(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT));
-      }
+      public void EditHalogens() =>
+         _molWeightHalogensPresenter.EditHalogens(_halogenParameters);
 
-      public void SaveHalogens()
-      {
+      public void SaveHalogens() =>
          _molWeightHalogensPresenter.SaveHalogens();
-      }
 
       public bool IsHasHalogens(IParameterDTO parameter) => Equals(parameter, _molWeightDTO.HasHalogensParameter);
 
@@ -127,19 +123,13 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_parameterTask.SetParameterDisplayValue(parameterDTO.Parameter, valueInGuiUnit));
       }
 
-      public void SetParameterUnit(IParameterDTO parameterDTO, Unit displayUnit)
-      {
+      public void SetParameterUnit(IParameterDTO parameterDTO, Unit displayUnit) =>
          AddCommand(_parameterTask.SetParameterUnit(parameterDTO.Parameter, displayUnit));
-      }
 
-      public void SetParameterPercentile(IParameterDTO parameterDTO, double percentileInPercent)
-      {
+      public void SetParameterPercentile(IParameterDTO parameterDTO, double percentileInPercent) =>
          AddCommand(_parameterTask.SetParameterPercentile(parameterDTO.Parameter, percentileInPercent));
-      }
 
-      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
-      {
+      public void SetParameterValueOrigin(IParameterDTO parameterDTO, ValueOrigin valueOrigin) =>
          AddCommand(_parameterTask.SetParameterValueOrigin(parameterDTO.Parameter, valueOrigin));
-      }
    }
 }
