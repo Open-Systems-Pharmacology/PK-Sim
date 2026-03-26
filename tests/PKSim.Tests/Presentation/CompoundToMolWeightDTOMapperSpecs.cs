@@ -52,13 +52,13 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_dto_with_the_mapped_mol_weight_parameter()
+      public void should_return_dto_with_the_mapped_effective_mol_weight_parameter()
       {
          _result.MolWeightEffParameter.ShouldBeAnInstanceOf<EffectiveMolWeightParameterDTO>();
       }
 
       [Observation]
-      public void should_return_dto_with_the_mapped_effective_mol_weight_parameter()
+      public void should_return_dto_with_the_mapped_mol_weight_parameter()
       {
          _result.MolWeightParameter.ShouldBeAnInstanceOf<ParameterDTO>();
       }
