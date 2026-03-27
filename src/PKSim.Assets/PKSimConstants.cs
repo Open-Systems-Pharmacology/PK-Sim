@@ -924,7 +924,7 @@ namespace PKSim.Assets
          public static string SnapshotDuplicateEntryByName(string name, string type) =>
             $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
 
-         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
+         public static string EffectiveMolWeightMustBeGreaterThan(string valueInDisplayUnit, string displayUnit) =>
             $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
       }
 

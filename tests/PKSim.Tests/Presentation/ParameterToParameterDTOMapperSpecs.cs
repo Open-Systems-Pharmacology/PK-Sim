@@ -38,10 +38,10 @@ namespace PKSim.Presentation
          _pathToPathElementsMapper = A.Fake<IPathToPathElementsMapper>();
          _parameterListOfValuesRetriever = A.Fake<IParameterListOfValuesRetriever>();
          sut = new ParameterToParameterDTOMapper(
-            _representationInfoRepository, 
-            _formulaTypeMapper, 
-            _pathToPathElementsMapper, 
-            _favoriteRepository, 
+            _representationInfoRepository,
+            _formulaTypeMapper,
+            _pathToPathElementsMapper,
+            _favoriteRepository,
             _entityPathResolver,
             _parameterListOfValuesRetriever);
       }
@@ -50,7 +50,6 @@ namespace PKSim.Presentation
    public class When_mapping_a_molweight_parameter_dto_from_a_parameter : concern_for_ParameterToParameterDTOMapper
    {
       private IParameterDTO _result;
-      private IParameter _molWeightParameter;
       private IParameter _effectiveMolWeightParameter;
       private RepresentationInfo _repInfoParameter;
       private FormulaType _formulaType;
@@ -61,43 +60,42 @@ namespace PKSim.Presentation
       {
          base.Context();
 
-         _molWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
          _effectiveMolWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(100);
 
          _formulaType = FormulaType.Rate;
-         A.CallTo(() => _formulaTypeMapper.MapFrom(_molWeightParameter.Formula)).Returns(_formulaType);
+         A.CallTo(() => _formulaTypeMapper.MapFrom(_effectiveMolWeightParameter.Formula)).Returns(_formulaType);
 
          _repInfoParameter = new RepresentationInfo { DisplayName = "display para", Description = "desc para" };
          _path0 = new RepresentationInfo { DisplayName = "Organism" };
          _path1 = new RepresentationInfo { DisplayName = "Organ" };
 
-         A.CallTo(() => _representationInfoRepository.InfoFor(_molWeightParameter)).Returns(_repInfoParameter);
+         A.CallTo(() => _representationInfoRepository.InfoFor(_effectiveMolWeightParameter)).Returns(_repInfoParameter);
 
          var cache = new PathElements();
          cache.Add(PathElementId.TopContainer, new PathElement { DisplayName = _path0.DisplayName });
          cache.Add(PathElementId.Container, new PathElement { DisplayName = _path1.DisplayName });
-         A.CallTo(() => _pathToPathElementsMapper.MapFrom(_molWeightParameter)).Returns(cache);
+         A.CallTo(() => _pathToPathElementsMapper.MapFrom(_effectiveMolWeightParameter)).Returns(cache);
 
          var parameterPath = new ObjectPath();
-         A.CallTo(() => _entityPathResolver.ObjectPathFor(_molWeightParameter, false)).Returns(parameterPath);
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_effectiveMolWeightParameter, false)).Returns(parameterPath);
          A.CallTo(() => _favoriteRepository.Contains(parameterPath)).Returns(true);
       }
 
       protected override void Because()
       {
-         _result = sut.MapMolWeightDTOFrom(_molWeightParameter, _effectiveMolWeightParameter);
+         _result = sut.MapEffectiveMolWeightDTOFrom(_effectiveMolWeightParameter);
       }
 
       [Observation]
       public void should_return_a_MolWeightParameterDTO()
       {
-         _result.ShouldBeAnInstanceOf<MolWeightParameterDTO>();
+         _result.ShouldBeAnInstanceOf<EffectiveMolWeightParameterDTO>();
       }
 
       [Observation]
       public void should_set_the_name_parameter_name()
       {
-         _result.Name.ShouldBeEqualTo(_molWeightParameter.Name);
+         _result.Name.ShouldBeEqualTo(_effectiveMolWeightParameter.Name);
       }
 
       [Observation]
@@ -128,25 +126,25 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_display_unit_to_the_display_unit_of_the_parameter()
       {
-         _result.DisplayUnit.ShouldBeEqualTo(_molWeightParameter.DisplayUnit);
+         _result.DisplayUnit.ShouldBeEqualTo(_effectiveMolWeightParameter.DisplayUnit);
       }
 
       [Observation]
       public void the_value_returned_by_the_dto_should_be_the_value_in_the_display_unit()
       {
-         _result.Value.ShouldBeEqualTo(_molWeightParameter.ValueInDisplayUnit);
+         _result.Value.ShouldBeEqualTo(_effectiveMolWeightParameter.ValueInDisplayUnit);
       }
 
       [Observation]
       public void the_returned_units_should_be_the_units_defined_for_the_parameter()
       {
-         _result.AllUnits.ShouldOnlyContain(_molWeightParameter.Dimension.Units);
+         _result.AllUnits.ShouldOnlyContain(_effectiveMolWeightParameter.Dimension.Units);
       }
 
       [Observation]
       public void should_set_the_parameter_to_the_mapped_parameter()
       {
-         _result.Parameter.ShouldBeEqualTo(_molWeightParameter);
+         _result.Parameter.ShouldBeEqualTo(_effectiveMolWeightParameter);
       }
 
       [Observation]
@@ -181,14 +179,14 @@ namespace PKSim.Presentation
          _parentContainer.Add(_parameter);
          _parameter.Name = "_parameter";
          A.CallTo(() => _formulaTypeMapper.MapFrom(_parameter.Formula)).Returns(_formulaType);
-         _repInfoParameter = new RepresentationInfo {DisplayName = "display para", Description = "desc para"};
-         _path0 = new RepresentationInfo {DisplayName = "Organism"};
-         _path1 = new RepresentationInfo {DisplayName = "Organ"};
+         _repInfoParameter = new RepresentationInfo { DisplayName = "display para", Description = "desc para" };
+         _path0 = new RepresentationInfo { DisplayName = "Organism" };
+         _path1 = new RepresentationInfo { DisplayName = "Organ" };
          _path2 = _repInfoParameter;
          A.CallTo(() => _representationInfoRepository.InfoFor(_parameter)).Returns(_repInfoParameter);
          var cache = new PathElements();
-         cache.Add(PathElementId.TopContainer, new PathElement {DisplayName = _path0.DisplayName});
-         cache.Add(PathElementId.Container, new PathElement {DisplayName = _path1.DisplayName});
+         cache.Add(PathElementId.TopContainer, new PathElement { DisplayName = _path0.DisplayName });
+         cache.Add(PathElementId.Container, new PathElement { DisplayName = _path1.DisplayName });
          A.CallTo(() => _pathToPathElementsMapper.MapFrom(_parameter)).Returns(cache);
          var parameterPath = new ObjectPath();
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(parameterPath);
