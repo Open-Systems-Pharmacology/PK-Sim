@@ -132,7 +132,7 @@ namespace PKSim.Core.Snapshots.Mappers
             await runParallelSimulations(allSimulationsWithSnapshots, snapshotContext);
          }
 
-         await addAnalysesToSimulations(snapshotContext, allSimulationsWithSnapshots);
+         await addAnalysesToSimulations(snapshotContext, allSimulationsWithSnapshots, projectContext.RunSimulations);
 
          //Map all classifications once project is loaded
          await updateProjectClassifications(projectSnapshot, snapshotContext);
@@ -140,9 +140,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return project;
       }
 
-      private async Task addAnalysesToSimulations(SnapshotContext snapshotContext, IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)> allSimulations)
+      private async Task addAnalysesToSimulations(SnapshotContext snapshotContext, IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)> allSimulations, bool runSimulations)
       {
-         var simulationContext = new SimulationContext(true, snapshotContext)
+         var simulationContext = new SimulationContext(runSimulations, snapshotContext)
          {
             NumberOfSimulationsToLoad = allSimulations.Count,
             NumberOfSimulationsLoaded = 1

@@ -313,7 +313,7 @@ namespace PKSim.Core
 
    public class When_converting_a_project_snapshot_to_project : concern_for_ProjectMapper
    {
-      private PKSimProject _newProject;
+      protected PKSimProject _newProject;
       private Simulation _corruptedSimulationSnapshot;
       private CreationMetaData _creationMetaData;
       private ISnapshotMapper _defaultMapper;
@@ -534,6 +534,30 @@ namespace PKSim.Core
       }
    }
 
+
+   public class When_loading_a_project_snapshot_without_running_simulations : When_converting_a_project_snapshot_to_project
+   {
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_not_run_any_simulations()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>._, A<PKSim.Core.Services.SimulationRunOptions>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_log_warnings_about_missing_quantities()
+      {
+         // Fixes #3467: when simulations are not run, CurveMapper must not warn about
+         // missing data columns since no results are expected
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._))
+            .MustNotHaveHappened();
+      }
+   }
 
    public class ExpressionProfileEqualityComparer : GenericEqualityComparer<ExpressionProfile>
    {
