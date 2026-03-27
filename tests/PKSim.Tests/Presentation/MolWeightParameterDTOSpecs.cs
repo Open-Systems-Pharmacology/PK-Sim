@@ -2,29 +2,29 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Compounds;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_MolWeightParameterDTO : ContextSpecification<MolWeightParameterDTO>
+   public abstract class concern_for_MolWeightParameterDTO : ContextSpecification<EffectiveMolWeightParameterDTO>
    {
-      private IParameter _molWeightParameter;
       protected IParameter _effectiveMolWeightParameter;
 
       protected override void Context()
       {
-         _molWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(50);
          _effectiveMolWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(50);
 
-         sut = new MolWeightParameterDTO(_molWeightParameter, _effectiveMolWeightParameter);
+         sut = new EffectiveMolWeightParameterDTO(_effectiveMolWeightParameter);
       }
    }
 
    public class When_effective_molecular_weight_is_less_than_min : concern_for_MolWeightParameterDTO
    {
       private ErrorInfo _errorInfo;
+      private NumericFormatter<double> _numericFormatter;
 
       protected override void Context()
       {
@@ -32,6 +32,7 @@ namespace PKSim.Presentation
          _errorInfo = new ErrorInfo();
          _effectiveMolWeightParameter.Value = 14;
          _effectiveMolWeightParameter.MinValue = 15;
+         _numericFormatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
       }
 
       protected override void Because()
@@ -42,7 +43,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_an_error_about_effective_molecular_weight()
       {
-         _errorInfo.ErrorText.ShouldBeEqualTo(PKSimConstants.Error.EffectiveMolWeightMustBeGreaterThan(_effectiveMolWeightParameter.ConvertToDisplayUnit(_effectiveMolWeightParameter.MinValue.Value), _effectiveMolWeightParameter.DisplayUnit.Name));
+         _errorInfo.ErrorText.Contains(PKSimConstants.Error.EffectiveMolWeightMustBeGreaterThan(_numericFormatter.Format(_effectiveMolWeightParameter.ConvertToDisplayUnit(_effectiveMolWeightParameter.MinValue.Value)), _effectiveMolWeightParameter.DisplayUnit.Name)).ShouldBeTrue();
       }
 
       [Observation]

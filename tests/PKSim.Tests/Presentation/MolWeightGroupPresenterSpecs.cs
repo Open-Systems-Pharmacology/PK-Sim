@@ -150,7 +150,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_halogens_to_be_displayed_according_to_the_value_defined_in_the_alternative()
       {
-         A.CallTo(() => _molWeightsHalogenPresenters.EditHalogens(A<IReadOnlyList<IParameter>>.Ignored, A<IParameter>._)).MustHaveHappened();
+         A.CallTo(() => _molWeightsHalogenPresenters.EditHalogens(A<IReadOnlyList<IParameter>>.Ignored)).MustHaveHappened();
       }
    }
 

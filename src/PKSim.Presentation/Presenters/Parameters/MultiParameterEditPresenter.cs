@@ -78,7 +78,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       /// <summary>
       ///    Configure the editor to display the most simple view possible
-      ///    Grouping, scaling, favorite will be hidden 
+      ///    Grouping, scaling, favorite will be hidden
       ///    Default is <c>false</c>
       /// </summary>
       bool IsSimpleEditor { set; }
@@ -143,7 +143,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       event Action OnSelectedParametersChanged;
 
       void DisableEdit();
-      
+
       string PathFor(ParameterDTO parameterDTO);
    }
 
@@ -189,9 +189,9 @@ namespace PKSim.Presentation.Presenters.Parameters
          PerformDefaultGrouping(_visibleParameters);
       }
 
-      protected virtual IParameterDTO DTOFrom(IParameter x)
+      protected virtual IParameterDTO DTOFrom(IParameter parameter)
       {
-         return _parameterDTOMapper.MapFrom(x);
+         return _parameterDTOMapper.MapFrom(parameter);
       }
 
       protected virtual void PerformDefaultGrouping(IReadOnlyList<IParameter> parameters)
@@ -232,7 +232,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool ParameterIsDistributed(IParameterDTO parameterDTO)
       {
-         if (!(ParameterFrom(parameterDTO) is IDistributedParameter distributedParameter)) 
+         if (!(ParameterFrom(parameterDTO) is IDistributedParameter distributedParameter))
             return false;
 
          return distributedParameter.Formula.DistributionType != DistributionType.Discrete;
