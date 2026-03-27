@@ -11,13 +11,12 @@ namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IHalogensPresenter : IMultiParameterEditPresenter
    {
-      void Edit(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight);
+      void Edit(IReadOnlyList<IParameter> halogens);
    }
 
    public class HalogensPresenter : MultiParameterEditPresenter, IHalogensPresenter
    {
       private IReadOnlyList<IParameter> _halogens;
-      private IParameter _effectiveMolWeight;
 
       public HalogensPresenter(
          IMultiParameterEditView view,
@@ -30,15 +29,11 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
       }
 
-      protected override IParameterDTO DTOFrom(IParameter x)
-      {
-         return _parameterDTOMapper.MapMolWeightDTOFrom(x, _effectiveMolWeight);
-      }
+      protected override IParameterDTO DTOFrom(IParameter parameter) => _parameterDTOMapper.MapFrom(parameter);
 
-      public void Edit(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight)
+      public void Edit(IReadOnlyList<IParameter> halogens)
       {
          _halogens = halogens;
-         _effectiveMolWeight = effectiveMolWeight;
          base.Edit(_halogens);
       }
    }

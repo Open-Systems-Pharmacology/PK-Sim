@@ -37,12 +37,12 @@ namespace PKSim.Presentation
          _molWeight = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.MOL_WEIGHT);
          _hasHalogens = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.HAS_HALOGENS);
 
-         var expectedMolWeightParamDto = new MolWeightParameterDTO(_molWeight, _effective);
-         var expectedEffectiveDto = new ParameterDTO(_effective);
+         var expectedMolWeightParamDto = new ParameterDTO(_effective);
+         var expectedEffectiveDto = new EffectiveMolWeightParameterDTO(_effective);
          var expectedHasHalogensDto = new ParameterDTO(_hasHalogens);
 
-         A.CallTo(() => _parameterDTOMapper.MapMolWeightDTOFrom(_molWeight, _effective)).Returns(expectedMolWeightParamDto);
-         A.CallTo(() => _parameterDTOMapper.MapFrom(_effective)).Returns(expectedEffectiveDto);
+         A.CallTo(() => _parameterDTOMapper.MapEffectiveMolWeightDTOFrom(_effective)).Returns(expectedEffectiveDto);
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_molWeight)).Returns(expectedMolWeightParamDto);
          A.CallTo(() => _parameterDTOMapper.MapFrom(_hasHalogens)).Returns(expectedHasHalogensDto);
       }
 
@@ -52,15 +52,15 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_dto_with_the_mapped_molweight_parameter()
+      public void should_return_dto_with_the_mapped_effective_mol_weight_parameter()
       {
-         _result.MolWeightParameter.ShouldBeAnInstanceOf<MolWeightParameterDTO>();
+         _result.MolWeightEffParameter.ShouldBeAnInstanceOf<EffectiveMolWeightParameterDTO>();
       }
 
       [Observation]
-      public void should_return_dto_with_the_mapped_effective_molweight_parameter()
+      public void should_return_dto_with_the_mapped_mol_weight_parameter()
       {
-         _result.MolWeightEffParameter.ShouldBeAnInstanceOf<ParameterDTO>();
+         _result.MolWeightParameter.ShouldBeAnInstanceOf<ParameterDTO>();
       }
 
       [Observation]
@@ -72,8 +72,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_call_the_expected_mappers_with_the_correct_parameters()
       {
-         A.CallTo(() => _parameterDTOMapper.MapMolWeightDTOFrom(_molWeight, _effective)).MustHaveHappened();
-         A.CallTo(() => _parameterDTOMapper.MapFrom(_effective)).MustHaveHappened();
+         A.CallTo(() => _parameterDTOMapper.MapEffectiveMolWeightDTOFrom(_effective)).MustHaveHappened();
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_molWeight)).MustHaveHappened();
          A.CallTo(() => _parameterDTOMapper.MapFrom(_hasHalogens)).MustHaveHappened();
       }
    }
