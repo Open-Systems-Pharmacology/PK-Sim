@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using PKSim.Assets;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
@@ -16,6 +14,12 @@ namespace PKSim.Core.Model
       SchemaItem Create(ApplicationType applicationType, IContainer container=null);
 
       /// <summary>
+      /// Returns a new event <see cref="ISchemaItem"/> with the given <paramref name="eventPlaceholder"/>. Its name will be unique in the
+      /// <paramref name="container"/> if defined
+      /// </summary>
+      SchemaItem CreateEvent(string eventPlaceholder, IContainer container = null);
+
+      /// <summary>
       /// Returns an exact duplicate of the <paramref name="schemaItemToClone"/> and adjust its name to be unique in the
       /// <paramref name="container"/>
       /// </summary>
@@ -26,39 +30,66 @@ namespace PKSim.Core.Model
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ISchemaItemParameterRetriever _schemaItemParameterRetriever;
+      private readonly IParameterFactory _parameterFactory;
       private readonly IContainerTask _containerTask;
       private readonly ICloner _cloner;
 
       public SchemaItemFactory(IObjectBaseFactory objectBaseFactory, ISchemaItemParameterRetriever schemaItemParameterRetriever,
-         IContainerTask containerTask, ICloner cloner)
+         IParameterFactory parameterFactory, IContainerTask containerTask, ICloner cloner)
       {
          _objectBaseFactory = objectBaseFactory;
          _schemaItemParameterRetriever = schemaItemParameterRetriever;
+         _parameterFactory = parameterFactory;
          _containerTask = containerTask;
          _cloner = cloner;
       }
 
       public SchemaItem Create(ApplicationType applicationType, IContainer container = null)
       {
-         var applicationSchemaItem = _objectBaseFactory.Create<SchemaItem>().WithName(PKSimConstants.UI.SchemaItem);
-        
-         if (container != null)
-             applicationSchemaItem.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem);
+         var schemaItem = createSchemaItem(container);
+         schemaItem.ApplicationType = applicationType;
+         schemaItem.FormulationKey = string.Empty;
 
-         applicationSchemaItem.ApplicationType = applicationType;
-         applicationSchemaItem.FormulationKey = string.Empty;
-
-         foreach (var parameter in _schemaItemParameterRetriever.AllParametersFor(applicationSchemaItem.ApplicationType))
+         foreach (var parameter in _schemaItemParameterRetriever.AllParametersFor(applicationType))
          {
-            applicationSchemaItem.Add(parameter);
+            schemaItem.Add(parameter);
          }
-         return applicationSchemaItem;
+
+         return schemaItem;
+      }
+
+      public SchemaItem CreateEvent(string eventPlaceholder, IContainer container = null)
+      {
+         var schemaItem = createSchemaItem(container);
+         schemaItem.ApplicationType = ApplicationTypes.Event;
+         schemaItem.EventPlaceholder = eventPlaceholder;
+
+         schemaItem.Add(_parameterFactory.CreateFor(new ParameterValueMetaData
+         {
+            ParameterName = Constants.Parameters.START_TIME,
+            DefaultValue = 0,
+            Dimension = Constants.Dimension.TIME,
+            BuildingBlockType = PKSimBuildingBlockType.Protocol,
+            IsDefault = false
+         }));
+
+         return schemaItem;
       }
 
       public SchemaItem CreateBasedOn(SchemaItem schemaItemToClone, IContainer container)
       {
          return _cloner.Clone(schemaItemToClone)
             .WithName(_containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem));
+      }
+
+      private SchemaItem createSchemaItem(IContainer container)
+      {
+         var schemaItem = _objectBaseFactory.Create<SchemaItem>().WithName(PKSimConstants.UI.SchemaItem);
+
+         if (container != null)
+            schemaItem.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.SchemaItem);
+
+         return schemaItem;
       }
    }
 }

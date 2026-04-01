@@ -13,6 +13,7 @@ namespace PKSim.Core
    {
       protected IObjectBaseFactory _objectBaseFactory;
       protected ISchemaItemParameterRetriever _schemaItemParameterRetriever;
+      protected Model.IParameterFactory _parameterFactory;
       protected IContainerTask _containerTask;
       protected ICloner _cloner;
 
@@ -20,9 +21,10 @@ namespace PKSim.Core
       {
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _schemaItemParameterRetriever = A.Fake<ISchemaItemParameterRetriever>();
+         _parameterFactory = A.Fake<Model.IParameterFactory>();
          _containerTask = A.Fake<IContainerTask>();
          _cloner = A.Fake<ICloner>();
-         sut = new SchemaItemFactory(_objectBaseFactory, _schemaItemParameterRetriever, _containerTask, _cloner);
+         sut = new SchemaItemFactory(_objectBaseFactory, _schemaItemParameterRetriever, _parameterFactory, _containerTask, _cloner);
          A.CallTo(() => _objectBaseFactory.Create<SchemaItem>()).Returns(new SchemaItem());
       }
    }
@@ -101,6 +103,55 @@ namespace PKSim.Core
       public void should_use_the_container_task_to_retrieve_a_unique_name_for_the_schema_item()
       {
          _schemaItem.Name.ShouldBeEqualTo("NEW NAME");
+      }
+   }
+
+   public class When_creating_an_event_schema_item : concern_for_SchemaItemFactory
+   {
+      private SchemaItem _schemaItem;
+      private IParameter _startTimeParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _startTimeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
+         A.CallTo(() => _parameterFactory.CreateFor(A<ParameterValueMetaData>.That.Matches(
+            p => p.ParameterName == Constants.Parameters.START_TIME))).Returns(_startTimeParameter);
+      }
+
+      protected override void Because()
+      {
+         _schemaItem = sut.CreateEvent("EVENT_1");
+      }
+
+      [Observation]
+      public void should_return_a_schema_item_with_event_application_type()
+      {
+         _schemaItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_set_the_event_placeholder()
+      {
+         _schemaItem.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+      }
+
+      [Observation]
+      public void should_have_a_start_time_parameter()
+      {
+         _schemaItem.Parameter(Constants.Parameters.START_TIME).ShouldBeEqualTo(_startTimeParameter);
+      }
+
+      [Observation]
+      public void should_not_have_a_dose_parameter()
+      {
+         _schemaItem.Parameter(CoreConstants.Parameters.INPUT_DOSE).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_be_identified_as_event()
+      {
+         _schemaItem.IsEvent.ShouldBeTrue();
       }
    }
 }

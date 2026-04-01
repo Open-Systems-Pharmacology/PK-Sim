@@ -226,6 +226,7 @@ namespace PKSim.Core
             public static readonly string Intravenous = "Intravenous";
             public static readonly string IntravenousBolus = "IntravenousBolus";
             public static readonly string UserDefined = "UserDefined";
+            public static readonly string Event = "Event";
          }
 
          public static class Route
@@ -233,6 +234,7 @@ namespace PKSim.Core
             public static readonly string Oral = "Oral";
             public static readonly string UserDefined = "UserDefined";
             public static readonly string Intravenous = "Intravenous";
+            public static readonly string Event = "Event";
          }
       }
 

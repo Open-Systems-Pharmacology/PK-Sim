@@ -504,6 +504,8 @@ namespace PKSim.Assets
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
+         public static readonly string EventPlaceholderRequired = "Event placeholder is required for event entries.";
+
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
          public static string MissingColumnInView(string propertyName) => $"Property named {propertyName} not found.";
@@ -1899,6 +1901,7 @@ namespace PKSim.Assets
          public static readonly string ReallySwitchProtocolMode = "Do you really want to switch between advanced and simple? This action will reset the administration protocol.";
          public static readonly string UsedBuildingBlocks = "Used building blocks";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string EventType = "Event";
          public static readonly string MolWeight = "Molecular weight [g/mol]";
          public static readonly string CalculateBioavailability = "Calculate Bioavailability";
          public static readonly string CalculateDDIRatio = "Calculate DDI Ratio";

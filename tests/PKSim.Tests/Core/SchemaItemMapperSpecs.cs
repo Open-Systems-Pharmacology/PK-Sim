@@ -108,4 +108,73 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchemaItem, PKSimConstants.ObjectTypes.SchemaItem, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
+
+   public class When_mapping_an_event_schema_item_to_a_snapshot : concern_for_SchemaItemMapper
+   {
+      private Snapshots.SchemaItem _eventSnapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _schemaItem.ApplicationType = ApplicationTypes.Event;
+         _schemaItem.EventPlaceholder = "EVENT_1";
+         _schemaItem.FormulationKey = null;
+         _schemaItem.TargetOrgan = null;
+         _schemaItem.TargetCompartment = null;
+      }
+
+      protected override async Task Because()
+      {
+         _eventSnapshot = await sut.MapToSnapshot(_schemaItem);
+      }
+
+      [Observation]
+      public void should_save_the_event_application_type()
+      {
+         _eventSnapshot.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event.Name);
+      }
+
+      [Observation]
+      public void should_save_the_event_placeholder()
+      {
+         _eventSnapshot.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+      }
+   }
+
+   public class When_mapping_an_event_snapshot_to_a_model_schema_item : concern_for_SchemaItemMapper
+   {
+      private SchemaItem _eventSchemaItem;
+      private SchemaItem _createdEventItem;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_schemaItem);
+         _snapshot.ApplicationType = ApplicationTypes.Event.Name;
+         _snapshot.EventPlaceholder = "EVENT_1";
+         _snapshot.FormulationKey = null;
+         _snapshot.TargetOrgan = null;
+         _snapshot.TargetCompartment = null;
+
+         _createdEventItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventPlaceholder = "EVENT_1" };
+         A.CallTo(() => _schemaItemFactory.CreateEvent("EVENT_1", null)).Returns(_createdEventItem);
+      }
+
+      protected override async Task Because()
+      {
+         _eventSchemaItem = await sut.MapToModel(_snapshot, new SnapshotContext());
+      }
+
+      [Observation]
+      public void should_create_an_event_schema_item()
+      {
+         _eventSchemaItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_set_the_event_placeholder()
+      {
+         _eventSchemaItem.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+      }
+   }
 }

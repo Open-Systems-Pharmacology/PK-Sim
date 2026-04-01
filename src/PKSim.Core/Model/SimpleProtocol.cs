@@ -48,7 +48,11 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _targetOrgan, value);
       }
 
+      public virtual string EventPlaceholder { get; set; }
+
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
+
+      public virtual bool IsEvent => false;
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 

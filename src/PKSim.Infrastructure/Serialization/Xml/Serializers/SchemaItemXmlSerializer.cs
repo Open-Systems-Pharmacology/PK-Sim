@@ -11,6 +11,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.FormulationKey);
          Map(x => x.TargetOrgan);
          Map(x => x.TargetCompartment);
+         Map(x => x.EventPlaceholder);
       }
    }
 }
