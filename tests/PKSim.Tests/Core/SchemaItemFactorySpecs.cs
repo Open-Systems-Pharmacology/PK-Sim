@@ -13,7 +13,6 @@ namespace PKSim.Core
    {
       protected IObjectBaseFactory _objectBaseFactory;
       protected ISchemaItemParameterRetriever _schemaItemParameterRetriever;
-      protected Model.IParameterFactory _parameterFactory;
       protected IContainerTask _containerTask;
       protected ICloner _cloner;
 
@@ -21,10 +20,9 @@ namespace PKSim.Core
       {
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _schemaItemParameterRetriever = A.Fake<ISchemaItemParameterRetriever>();
-         _parameterFactory = A.Fake<Model.IParameterFactory>();
          _containerTask = A.Fake<IContainerTask>();
          _cloner = A.Fake<ICloner>();
-         sut = new SchemaItemFactory(_objectBaseFactory, _schemaItemParameterRetriever, _parameterFactory, _containerTask, _cloner);
+         sut = new SchemaItemFactory(_objectBaseFactory, _schemaItemParameterRetriever, _containerTask, _cloner);
          A.CallTo(() => _objectBaseFactory.Create<SchemaItem>()).Returns(new SchemaItem());
       }
    }
@@ -115,8 +113,7 @@ namespace PKSim.Core
       {
          base.Context();
          _startTimeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
-         A.CallTo(() => _parameterFactory.CreateFor(A<ParameterValueMetaData>.That.Matches(
-            p => p.ParameterName == Constants.Parameters.START_TIME))).Returns(_startTimeParameter);
+         A.CallTo(() => _schemaItemParameterRetriever.AllParametersFor(ApplicationTypes.Event)).Returns(new[] { _startTimeParameter });
       }
 
       protected override void Because()
@@ -131,21 +128,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_the_event_placeholder()
+      public void should_set_the_event_key()
       {
          _schemaItem.EventKey.ShouldBeEqualTo("EVENT_1");
       }
 
       [Observation]
-      public void should_have_a_start_time_parameter()
+      public void should_have_retrieved_parameters_from_the_retriever()
       {
          _schemaItem.Parameter(Constants.Parameters.START_TIME).ShouldBeEqualTo(_startTimeParameter);
-      }
-
-      [Observation]
-      public void should_not_have_a_dose_parameter()
-      {
-         _schemaItem.Parameter(CoreConstants.Parameters.INPUT_DOSE).ShouldBeNull();
       }
 
       [Observation]

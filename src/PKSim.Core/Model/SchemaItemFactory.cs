@@ -30,16 +30,14 @@ namespace PKSim.Core.Model
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ISchemaItemParameterRetriever _schemaItemParameterRetriever;
-      private readonly IParameterFactory _parameterFactory;
       private readonly IContainerTask _containerTask;
       private readonly ICloner _cloner;
 
       public SchemaItemFactory(IObjectBaseFactory objectBaseFactory, ISchemaItemParameterRetriever schemaItemParameterRetriever,
-         IParameterFactory parameterFactory, IContainerTask containerTask, ICloner cloner)
+         IContainerTask containerTask, ICloner cloner)
       {
          _objectBaseFactory = objectBaseFactory;
          _schemaItemParameterRetriever = schemaItemParameterRetriever;
-         _parameterFactory = parameterFactory;
          _containerTask = containerTask;
          _cloner = cloner;
       }
@@ -60,19 +58,8 @@ namespace PKSim.Core.Model
 
       public SchemaItem CreateEvent(string eventKey, IContainer container = null)
       {
-         var schemaItem = createSchemaItem(container);
-         schemaItem.ApplicationType = ApplicationTypes.Event;
+         var schemaItem = Create(ApplicationTypes.Event, container);
          schemaItem.EventKey = eventKey;
-
-         schemaItem.Add(_parameterFactory.CreateFor(new ParameterValueMetaData
-         {
-            ParameterName = Constants.Parameters.START_TIME,
-            DefaultValue = 0,
-            Dimension = Constants.Dimension.TIME,
-            BuildingBlockType = PKSimBuildingBlockType.Protocol,
-            IsDefault = false
-         }));
-
          return schemaItem;
       }
 
