@@ -104,7 +104,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_an_event_schema_item : concern_for_SchemaItemFactory
+   public class When_creating_a_schema_item_for_the_event_application_type : concern_for_SchemaItemFactory
    {
       private SchemaItem _schemaItem;
       private IParameter _startTimeParameter;
@@ -118,19 +118,13 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _schemaItem = sut.CreateEvent("EVENT_1");
+         _schemaItem = sut.Create(ApplicationTypes.Event);
       }
 
       [Observation]
       public void should_return_a_schema_item_with_event_application_type()
       {
          _schemaItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event);
-      }
-
-      [Observation]
-      public void should_set_the_event_key()
-      {
-         _schemaItem.EventKey.ShouldBeEqualTo("EVENT_1");
       }
 
       [Observation]

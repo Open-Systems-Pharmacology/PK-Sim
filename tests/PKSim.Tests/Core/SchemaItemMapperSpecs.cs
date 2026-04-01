@@ -156,8 +156,8 @@ namespace PKSim.Core
          _snapshot.TargetOrgan = null;
          _snapshot.TargetCompartment = null;
 
-         _createdEventItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = "EVENT_1" };
-         A.CallTo(() => _schemaItemFactory.CreateEvent("EVENT_1", null)).Returns(_createdEventItem);
+         _createdEventItem = new SchemaItem { ApplicationType = ApplicationTypes.Event };
+         A.CallTo(() => _schemaItemFactory.Create(ApplicationTypes.Event, null)).Returns(_createdEventItem);
       }
 
       protected override async Task Because()

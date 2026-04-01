@@ -14,12 +14,6 @@ namespace PKSim.Core.Model
       SchemaItem Create(ApplicationType applicationType, IContainer container = null);
 
       /// <summary>
-      /// Returns a new event <see cref="ISchemaItem"/> with the given <paramref name="eventKey"/>. Its name will be unique in the
-      /// <paramref name="container"/> if defined
-      /// </summary>
-      SchemaItem CreateEvent(string eventKey, IContainer container = null);
-
-      /// <summary>
       /// Returns an exact duplicate of the <paramref name="schemaItemToClone"/> and adjust its name to be unique in the
       /// <paramref name="container"/>
       /// </summary>
@@ -53,13 +47,6 @@ namespace PKSim.Core.Model
             schemaItem.Add(parameter);
          }
 
-         return schemaItem;
-      }
-
-      public SchemaItem CreateEvent(string eventKey, IContainer container = null)
-      {
-         var schemaItem = Create(ApplicationTypes.Event, container);
-         schemaItem.EventKey = eventKey;
          return schemaItem;
       }
 

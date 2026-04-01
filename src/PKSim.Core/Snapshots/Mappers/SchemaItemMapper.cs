@@ -32,10 +32,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelSchemaItem> MapToModel(SnapshotSchemaItem snapshot, SnapshotContext snapshotContext)
       {
          var applicationType = ApplicationTypes.ByName(snapshot.ApplicationType);
-         var schemaItem = applicationType == ApplicationTypes.Event
-            ? _schemaItemFactory.CreateEvent(snapshot.EventKey)
-            : _schemaItemFactory.Create(applicationType);
-
+         var schemaItem = _schemaItemFactory.Create(applicationType);
          MapSnapshotPropertiesToModel(snapshot, schemaItem);
          await UpdateParametersFromSnapshot(snapshot, schemaItem, snapshotContext, PKSimConstants.ObjectTypes.SchemaItem);
          schemaItem.FormulationKey = snapshot.FormulationKey;
