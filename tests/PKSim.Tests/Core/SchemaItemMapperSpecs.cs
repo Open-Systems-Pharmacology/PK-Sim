@@ -162,7 +162,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _eventSchemaItem = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _eventSchemaItem = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]
