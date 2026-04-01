@@ -48,7 +48,7 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _targetOrgan, value);
       }
 
-      public virtual string EventPlaceholder { get; set; }
+      public virtual string EventKey { get; set; }
 
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
 

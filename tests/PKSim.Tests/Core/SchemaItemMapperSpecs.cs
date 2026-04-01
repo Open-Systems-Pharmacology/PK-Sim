@@ -117,7 +117,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _schemaItem.ApplicationType = ApplicationTypes.Event;
-         _schemaItem.EventPlaceholder = "EVENT_1";
+         _schemaItem.EventKey = "EVENT_1";
          _schemaItem.FormulationKey = null;
          _schemaItem.TargetOrgan = null;
          _schemaItem.TargetCompartment = null;
@@ -137,7 +137,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_event_placeholder()
       {
-         _eventSnapshot.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         _eventSnapshot.EventKey.ShouldBeEqualTo("EVENT_1");
       }
    }
 
@@ -151,12 +151,12 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_schemaItem);
          _snapshot.ApplicationType = ApplicationTypes.Event.Name;
-         _snapshot.EventPlaceholder = "EVENT_1";
+         _snapshot.EventKey = "EVENT_1";
          _snapshot.FormulationKey = null;
          _snapshot.TargetOrgan = null;
          _snapshot.TargetCompartment = null;
 
-         _createdEventItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventPlaceholder = "EVENT_1" };
+         _createdEventItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = "EVENT_1" };
          A.CallTo(() => _schemaItemFactory.CreateEvent("EVENT_1", null)).Returns(_createdEventItem);
       }
 
@@ -174,7 +174,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_event_placeholder()
       {
-         _eventSchemaItem.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         _eventSchemaItem.EventKey.ShouldBeEqualTo("EVENT_1");
       }
    }
 }

@@ -48,11 +48,11 @@ namespace PKSim.Core
             return schemaItem;
          }
 
-         public SchemaItem CreateEvent(string eventPlaceholder, IContainer container = null)
+         public SchemaItem CreateEvent(string eventKey, IContainer container = null)
          {
             var schemaItem = Create();
             schemaItem.ApplicationType = ApplicationTypes.Event;
-            schemaItem.EventPlaceholder = eventPlaceholder;
+            schemaItem.EventKey = eventKey;
             return schemaItem;
          }
 

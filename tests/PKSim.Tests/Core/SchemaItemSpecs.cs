@@ -21,7 +21,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = "EVENT_1";
+         sut.EventKey = "EVENT_1";
       }
 
       [Observation]
@@ -63,7 +63,7 @@ namespace PKSim.Core
       [Observation]
       public void should_store_event_placeholder()
       {
-         sut.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         sut.EventKey.ShouldBeEqualTo("EVENT_1");
       }
    }
 
@@ -88,7 +88,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = "EVENT_1";
+         sut.EventKey = "EVENT_1";
       }
 
       [Observation]
@@ -104,7 +104,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = string.Empty;
+         sut.EventKey = string.Empty;
       }
 
       [Observation]
@@ -120,7 +120,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = null;
+         sut.EventKey = null;
       }
 
       [Observation]
@@ -136,7 +136,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = "EVENT_1";
+         sut.EventKey = "EVENT_1";
          sut.FormulationKey = string.Empty;
       }
 
@@ -155,7 +155,7 @@ namespace PKSim.Core
       {
          base.Context();
          sut.ApplicationType = ApplicationTypes.Event;
-         sut.EventPlaceholder = "EVENT_1";
+         sut.EventKey = "EVENT_1";
       }
 
       protected override void Because()
@@ -167,7 +167,7 @@ namespace PKSim.Core
       [Observation]
       public void should_copy_the_event_placeholder()
       {
-         _clone.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         _clone.EventKey.ShouldBeEqualTo("EVENT_1");
       }
 
       [Observation]

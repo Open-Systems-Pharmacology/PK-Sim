@@ -115,7 +115,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _eventSchemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventPlaceholder = "EVENT_1" };
+         _eventSchemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = "EVENT_1" };
          _eventSchemaItem.Add(A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME));
       }
 

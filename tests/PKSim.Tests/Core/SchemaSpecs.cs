@@ -52,7 +52,7 @@ namespace PKSim.Core
             var cloneSchemaItem = new SchemaItem().WithName(Guid.NewGuid().ToString());
             cloneSchemaItem.FormulationKey = schemaItem.FormulationKey;
             cloneSchemaItem.ApplicationType = schemaItem.ApplicationType;
-            cloneSchemaItem.EventPlaceholder = schemaItem.EventPlaceholder;
+            cloneSchemaItem.EventKey = schemaItem.EventKey;
             cloneSchemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(schemaItem.StartTime.Value).WithName(Constants.Parameters.START_TIME));
 
             if (schemaItem.Dose != null)
@@ -115,7 +115,7 @@ namespace PKSim.Core
          var eventItem = new SchemaItem().WithName("EventItem");
          eventItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(30).WithName(Constants.Parameters.START_TIME));
          eventItem.ApplicationType = ApplicationTypes.Event;
-         eventItem.EventPlaceholder = "EVENT_1";
+         eventItem.EventKey = "EVENT_1";
 
          sut.AddSchemaItem(eventItem);
       }
@@ -146,10 +146,10 @@ namespace PKSim.Core
       [Observation]
       public void should_preserve_event_placeholder_on_expanded_items()
       {
-         _result[2].EventPlaceholder.ShouldBeEqualTo("EVENT_1");
-         _result[5].EventPlaceholder.ShouldBeEqualTo("EVENT_1");
-         _result[8].EventPlaceholder.ShouldBeEqualTo("EVENT_1");
-         _result[11].EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         _result[2].EventKey.ShouldBeEqualTo("EVENT_1");
+         _result[5].EventKey.ShouldBeEqualTo("EVENT_1");
+         _result[8].EventKey.ShouldBeEqualTo("EVENT_1");
+         _result[11].EventKey.ShouldBeEqualTo("EVENT_1");
       }
 
       [Observation]
@@ -182,12 +182,12 @@ namespace PKSim.Core
          var event1 = new SchemaItem().WithName("Event1");
          event1.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
          event1.ApplicationType = ApplicationTypes.Event;
-         event1.EventPlaceholder = "EVENT_1";
+         event1.EventKey = "EVENT_1";
 
          var event2 = new SchemaItem().WithName("Event2");
          event2.Add(DomainHelperForSpecs.ConstantParameterWithValue(30).WithName(Constants.Parameters.START_TIME));
          event2.ApplicationType = ApplicationTypes.Event;
-         event2.EventPlaceholder = "EVENT_1";
+         event2.EventKey = "EVENT_1";
 
          sut.AddSchemaItem(event1);
          sut.AddSchemaItem(event2);
@@ -203,7 +203,7 @@ namespace PKSim.Core
       {
          // 2 items per repetition * 2 repetitions = 4 total
          _result.Count.ShouldBeEqualTo(4);
-         _result.All(x => x.EventPlaceholder == "EVENT_1").ShouldBeTrue();
+         _result.All(x => x.EventKey == "EVENT_1").ShouldBeTrue();
       }
 
       [Observation]

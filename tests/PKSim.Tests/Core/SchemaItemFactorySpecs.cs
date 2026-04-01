@@ -133,7 +133,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_event_placeholder()
       {
-         _schemaItem.EventPlaceholder.ShouldBeEqualTo("EVENT_1");
+         _schemaItem.EventKey.ShouldBeEqualTo("EVENT_1");
       }
 
       [Observation]

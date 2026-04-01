@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
       public static IEnumerable<IBusinessRule> All()
       {
          yield return formulationValid;
-         yield return eventPlaceholderValid;
+         yield return eventKeyValid;
       }
 
       private static IBusinessRule formulationValid { get; } = CreateRule.For<ISchemaItem>()
@@ -17,10 +17,10 @@ namespace PKSim.Core.Model
          .WithRule(formulationIsValid)
          .WithError(formulationErrorMessage);
 
-      private static IBusinessRule eventPlaceholderValid { get; } = CreateRule.For<ISchemaItem>()
-         .Property(item => item.EventPlaceholder)
-         .WithRule(eventPlaceholderIsValid)
-         .WithError(PKSimConstants.Error.EventPlaceholderRequired);
+      private static IBusinessRule eventKeyValid { get; } = CreateRule.For<ISchemaItem>()
+         .Property(item => item.EventKey)
+         .WithRule(eventKeyIsValid)
+         .WithError(PKSimConstants.Error.EventKeyRequired);
 
       private static bool formulationIsValid(ISchemaItem schemaItem, string formulation)
       {
@@ -33,10 +33,10 @@ namespace PKSim.Core.Model
          return PKSimConstants.Error.FormulationIsRequiredForType(schemaItem.ApplicationType.ToString());
       }
 
-      private static bool eventPlaceholderIsValid(ISchemaItem schemaItem, string eventPlaceholder)
+      private static bool eventKeyIsValid(ISchemaItem schemaItem, string eventKey)
       {
          if (!schemaItem.IsEvent) return true;
-         return !string.IsNullOrEmpty(eventPlaceholder);
+         return !string.IsNullOrEmpty(eventKey);
       }
    }
 }
