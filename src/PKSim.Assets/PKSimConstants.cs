@@ -1782,6 +1782,7 @@ namespace PKSim.Assets
          public static readonly string TargetOrgan = "Target organ";
          public static readonly string TargetCompartment = "Target compartment";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
+         public static readonly string Placeholder = "Placeholder";
          public static readonly string ProtocolProperties = "Protocol Properties";
          public static readonly string Dermal = "Dermal";
          public static readonly string Subcutaneous = "Subcutaneous";

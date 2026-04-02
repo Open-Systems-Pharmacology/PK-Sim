@@ -30,6 +30,7 @@ using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using static OSPSuite.UI.UIConstants;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
 
 namespace PKSim.UI.Views.Protocols
@@ -40,6 +41,7 @@ namespace PKSim.UI.Views.Protocols
       private readonly ComboBoxUnitParameter _comboBoxUnit;
       private readonly IImageListRetriever _imageListRetriever;
       private RepositoryItemMRUEdit _formulationRepository;
+      private RepositoryItemMRUEdit _eventKeyRepository;
       private GridViewBinder<SchemaDTO> _gridProtocolBinder;
 
       private IAdvancedProtocolPresenter _presenter;
@@ -183,27 +185,29 @@ namespace PKSim.UI.Views.Protocols
          colStartTime.OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.StartTimeParameter, valueInGuiUnit.NewValue);
          colStartTime.XtraColumn.SortOrder = ColumnSortOrder.Ascending;
 
-         schemaItemBinder.AutoBind(x => x.Dose)
+         var doseColumn = schemaItemBinder.AutoBind(x => x.Dose)
             .WithCaption(PKSimConstants.UI.Dose)
             .WithFormat(dto => dto.DoseParameter.ParameterFormatter())
-            .WithEditorConfiguration((activeEditor, schemaItemDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaItemDTO.DoseParameter))
-            .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.DoseParameter, valueInGuiUnit.NewValue);
+            .WithEditorConfiguration((activeEditor, schemaItemDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, schemaItemDTO.DoseParameter));
+         doseColumn.OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.DoseParameter, valueInGuiUnit.NewValue);
+
+         configureDoseColumnForEvents(schemaItemBinder, doseColumn);
 
          var appTypeColumn = schemaItemBinder.AutoBind(x => x.ApplicationType)
             .WithRepository(x => configureApplicationRepository(applicationRepository))
-            .WithCaption(PKSimConstants.UI.ApplicationType)
+            .WithCaption(PKSimConstants.UI.Type)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          appTypeColumn.OnChanged += dto => updateApplicationParameter(schemaItemBinder, dto);
          appTypeColumn.OnValueUpdating += (dto, applicationType) => setApplicationType(dto, applicationType.NewValue);
 
-         var formulationColumn = schemaItemBinder.AutoBind(x => x.FormulationKey);
+         var placeholderColumn = schemaItemBinder.AutoBind(x => x.PlaceholderKey);
 
-         formulationColumn.WithRepository(formulationRepository)
-            .WithCaption(PKSimConstants.UI.PlaceholderFormulation)
+         placeholderColumn.WithRepository(placeholderRepository)
+            .WithCaption(PKSimConstants.UI.Placeholder)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
-         formulationColumn.OnValueUpdating += (dto, formulationType) => OnEvent(() => _presenter.SetFormulationType(dto, formulationType.NewValue));
+         placeholderColumn.OnValueUpdating += (dto, newValue) => OnEvent(() => _presenter.SetPlaceholderKey(dto, newValue.NewValue));
 
          schemaItemBinder.AddUnboundColumn()
             .WithCaption(Captions.EmptyColumn)
@@ -286,6 +290,14 @@ namespace PKSim.UI.Views.Protocols
          }
       }
 
+      private RepositoryItem placeholderRepository(SchemaItemDTO schemaItemDTO)
+      {
+         if (schemaItemDTO.IsEvent)
+            return eventKeyRepository();
+
+         return formulationRepository(schemaItemDTO);
+      }
+
       private RepositoryItem formulationRepository(SchemaItemDTO schemaItemDTO)
       {
          if (_formulationRepository == null)
@@ -298,6 +310,48 @@ namespace PKSim.UI.Views.Protocols
          _formulationRepository.Enabled = schemaItemDTO.NeedsFormulation;
 
          return _formulationRepository;
+      }
+
+      private RepositoryItem eventKeyRepository()
+      {
+         if (_eventKeyRepository == null)
+            _eventKeyRepository = new RepositoryItemMRUEdit();
+
+         return _eventKeyRepository;
+      }
+
+      private void configureDoseColumnForEvents(GridViewBinder<SchemaItemDTO> schemaItemBinder, IGridViewColumn doseColumn)
+      {
+         var gridView = schemaItemBinder.GridView;
+         var xtraColumn = doseColumn.XtraColumn;
+
+         gridView.ShowingEditor += (sender, e) =>
+         {
+            if (gridView.FocusedColumn != xtraColumn) return;
+            var dto = schemaItemBinder.ElementAt(gridView.FocusedRowHandle);
+            if (dto == null) return;
+            if (dto.IsEvent)
+               e.Cancel = true;
+         };
+
+         gridView.RowCellStyle += (sender, e) =>
+         {
+            if (e.Column != xtraColumn) return;
+            var dto = schemaItemBinder.ElementAt(e.RowHandle);
+            if (dto == null || !dto.IsEvent) return;
+            e.Appearance.BackColor = OSPSuite.UI.UIConstants.Colors.Disabled;
+         };
+
+         gridView.CustomColumnDisplayText += (sender, e) =>
+         {
+            if (e.Column != xtraColumn) return;
+            var rowHandle = gridView.GetRowHandle(e.ListSourceRowIndex);
+            if (!gridView.IsValidRowHandle(rowHandle)) return;
+            var dto = schemaItemBinder.ElementAt(rowHandle);
+            if (dto == null) return;
+            if (dto.IsEvent)
+               e.DisplayText = string.Empty;
+         };
       }
 
       private void updateApplicationParameter(GridViewBinder<SchemaItemDTO> binder, SchemaItemDTO dto)

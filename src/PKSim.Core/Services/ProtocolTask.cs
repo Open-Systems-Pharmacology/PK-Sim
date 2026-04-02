@@ -21,6 +21,7 @@ namespace PKSim.Core.Services
       IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema);
       IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment);
       IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment);
+      IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey);
    }
 
    public class ProtocolTask : IProtocolTask
@@ -101,6 +102,11 @@ namespace PKSim.Core.Services
       public IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment)
       {
          return new SetSchemaItemTargetCompartmentCommand(schemaItem, targetCompartment, _executionContext).Run(_executionContext);
+      }
+
+      public IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey)
+      {
+         return new SetSchemaItemEventKeyCommand(schemaItem, eventKey, _executionContext).Run(_executionContext);
       }
    }
 }

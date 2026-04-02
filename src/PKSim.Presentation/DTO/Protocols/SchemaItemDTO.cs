@@ -23,12 +23,23 @@ namespace PKSim.Presentation.DTO.Protocols
 
       public bool IsUserDefined => SchemaItem.ApplicationType == ApplicationTypes.UserDefined;
 
+      public bool IsEvent => SchemaItem.IsEvent;
+
+      /// <summary>
+      ///    Returns true when the placeholder column should be editable
+      ///    (either for formulation keys or event keys).
+      /// </summary>
+      public bool NeedsPlaceholder => NeedsFormulation || IsEvent;
+
       public string DisplayName
       {
          get
          {
             if (NeedsFormulation)
                return CompositeNameFor(ApplicationType.DisplayName, FormulationKey);
+
+            if (IsEvent)
+               return CompositeNameFor(ApplicationType.DisplayName, EventKey);
 
             return ApplicationType.DisplayName;
          }
@@ -44,6 +55,27 @@ namespace PKSim.Presentation.DTO.Protocols
       {
          get => SchemaItem.FormulationKey;
          set { /*nothing to do*/}
+      }
+
+      public string EventKey
+      {
+         get => SchemaItem.EventKey;
+         set { /*nothing to do*/}
+      }
+
+      /// <summary>
+      ///    Unified placeholder key that returns <see cref="FormulationKey"/> for administration types
+      ///    requiring a formulation, <see cref="EventKey"/> for event entries, or empty string otherwise.
+      /// </summary>
+      public string PlaceholderKey
+      {
+         get
+         {
+            if (IsEvent) return EventKey;
+            if (NeedsFormulation) return FormulationKey;
+            return string.Empty;
+         }
+         set { /*nothing to do - value changes handled by presenter*/ }
       }
 
       public double StartTime
