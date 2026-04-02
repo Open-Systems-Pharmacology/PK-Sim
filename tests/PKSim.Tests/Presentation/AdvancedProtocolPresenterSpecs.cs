@@ -15,6 +15,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
@@ -540,6 +541,12 @@ namespace PKSim.Presentation
       {
          _schemaItem.TargetOrgan.ShouldBeEqualTo(string.Empty);
          _schemaItem.TargetCompartment.ShouldBeEqualTo(string.Empty);
+      }
+
+      [Observation]
+      public void should_set_dose_parameter_to_null_parameter_dto()
+      {
+         _schemaItemDTO.DoseParameter.ShouldBeAnInstanceOf<NullParameterDTO>();
       }
    }
 

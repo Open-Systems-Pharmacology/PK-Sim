@@ -5,6 +5,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -92,6 +93,9 @@ namespace PKSim.Presentation.Presenters.Protocols
       public void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType)
       {
          SetApplicationType(newApplicationType, SchemaItemFrom(schemaItemDTO));
+
+         if (newApplicationType == ApplicationTypes.Event)
+            schemaItemDTO.DoseParameter = new NullParameterDTO();
       }
 
       public void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType)

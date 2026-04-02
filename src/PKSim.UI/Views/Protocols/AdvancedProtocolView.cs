@@ -341,6 +341,17 @@ namespace PKSim.UI.Views.Protocols
             if (dto == null || !dto.IsEvent) return;
             e.Appearance.BackColor = OSPSuite.UI.UIConstants.Colors.Disabled;
          };
+
+         gridView.CustomColumnDisplayText += (sender, e) =>
+         {
+            if (e.Column != xtraColumn) return;
+            var rowHandle = gridView.GetRowHandle(e.ListSourceRowIndex);
+            if (!gridView.IsValidRowHandle(rowHandle)) return;
+            var dto = schemaItemBinder.ElementAt(rowHandle);
+            if (dto == null) return;
+            if (dto.IsEvent)
+               e.DisplayText = string.Empty;
+         };
       }
 
       private void updateApplicationParameter(GridViewBinder<SchemaItemDTO> binder, SchemaItemDTO dto)
