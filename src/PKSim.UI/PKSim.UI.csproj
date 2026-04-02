@@ -54,6 +54,7 @@
     <PackageReference Include="OSPSuite.Presentation" Version="13.0.91" />
     <PackageReference Include="OSPSuite.UI" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Core" Version="13.0.91" />
+    <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

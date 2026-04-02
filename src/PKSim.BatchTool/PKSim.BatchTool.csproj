@@ -48,6 +48,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
     <PackageReference Include="OSPSuite.Core" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Assets" Version="13.0.91" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
