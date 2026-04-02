@@ -30,6 +30,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       void RemoveSchema(SchemaDTO schemaToRemove);
       void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType);
       void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType);
+      void SetPlaceholderKey(SchemaItemDTO schemaItemDTO, string newPlaceholderKey);
       void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate);
       void RemoveSchemaItem(SchemaItemDTO schemaItemDTO);
       IList DynamicContentFor(SchemaItemDTO schemaItemDTO);
@@ -96,6 +97,14 @@ namespace PKSim.Presentation.Presenters.Protocols
       public void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType)
       {
          AddCommand(_protocolTask.SetFormulationType(SchemaItemFrom(schemaItemDTO), newFormulationType));
+      }
+
+      public void SetPlaceholderKey(SchemaItemDTO schemaItemDTO, string newPlaceholderKey)
+      {
+         if (schemaItemDTO.IsEvent)
+            AddCommand(_protocolTask.SetEventKey(SchemaItemFrom(schemaItemDTO), newPlaceholderKey));
+         else
+            SetFormulationType(schemaItemDTO, newPlaceholderKey);
       }
 
       protected SchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO) => schemaItemDTO.SchemaItem;

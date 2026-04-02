@@ -17,6 +17,11 @@ namespace PKSim.Core
       public static Color Changed = Color.LightYellow;
 
       /// <summary>
+      /// Color used for disabled/read-only cells
+      /// </summary>
+      public static Color Disabled = Color.LightGray;
+
+      /// <summary>
       /// Color used for a plot back color (everything but diagram)
       /// </summary>
       public static Color ChartBack

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -467,6 +468,104 @@ namespace PKSim.Presentation
       {
          _schemaItem.TargetOrgan.ShouldBeEqualTo(CoreConstants.Organ.ARTERIAL_BLOOD);
          _schemaItem.TargetCompartment.ShouldBeEqualTo(CoreConstants.Compartment.PLASMA);
+      }
+   }
+
+   public class When_setting_the_placeholder_key_for_an_event_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private SchemaItemDTO _schemaItemDTO;
+      private SchemaItem _schemaItem;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = CoreConstants.DEFAULT_EVENT_KEY };
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+      }
+
+      protected override void Because()
+      {
+         sut.SetPlaceholderKey(_schemaItemDTO, "EVENT_2");
+      }
+
+      [Observation]
+      public void should_set_the_event_key_via_the_protocol_task()
+      {
+         A.CallTo(() => _protocolTask.SetEventKey(_schemaItem, "EVENT_2")).MustHaveHappened();
+      }
+   }
+
+   public class When_setting_the_placeholder_key_for_a_formulation_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private SchemaItemDTO _schemaItemDTO;
+      private SchemaItem _schemaItem;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral, FormulationKey = CoreConstants.DEFAULT_FORMULATION_KEY };
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+      }
+
+      protected override void Because()
+      {
+         sut.SetPlaceholderKey(_schemaItemDTO, "Formulation 2");
+      }
+
+      [Observation]
+      public void should_set_the_formulation_type_via_the_protocol_task()
+      {
+         A.CallTo(() => _protocolTask.SetFormulationType(_schemaItem, "Formulation 2")).MustHaveHappened();
+      }
+   }
+
+   public class When_the_advanced_protocol_presenter_is_setting_the_application_type_to_event_for_a_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private readonly SchemaItem _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.IntravenousBolus };
+      private SchemaItemDTO _schemaItemDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+      }
+
+      protected override void Because()
+      {
+         sut.SetApplicationType(_schemaItemDTO, ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_clear_the_target_organ_and_compartment()
+      {
+         _schemaItem.TargetOrgan.ShouldBeEqualTo(string.Empty);
+         _schemaItem.TargetCompartment.ShouldBeEqualTo(string.Empty);
+      }
+   }
+
+   public class When_retrieving_the_dynamic_content_for_an_event_schema_item : concern_for_AdvancedProtocolPresenter
+   {
+      private SchemaItemDTO _schemaItemDTO;
+      private SchemaItem _schemaItem;
+      private IList _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = CoreConstants.DEFAULT_EVENT_KEY };
+         _schemaItemDTO = new SchemaItemDTO(_schemaItem);
+         A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItem)).Returns(Enumerable.Empty<IParameter>());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.DynamicContentFor(_schemaItemDTO);
+      }
+
+      [Observation]
+      public void should_not_return_target_organ_or_compartment()
+      {
+         _result.Count.ShouldBeEqualTo(0);
       }
    }
 
