@@ -103,4 +103,40 @@ namespace PKSim.Core
          _schemaItem.Name.ShouldBeEqualTo("NEW NAME");
       }
    }
+
+   public class When_creating_a_schema_item_for_the_event_application_type : concern_for_SchemaItemFactory
+   {
+      private SchemaItem _schemaItem;
+      private IParameter _startTimeParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _startTimeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
+         A.CallTo(() => _schemaItemParameterRetriever.AllParametersFor(ApplicationTypes.Event)).Returns(new[] { _startTimeParameter });
+      }
+
+      protected override void Because()
+      {
+         _schemaItem = sut.Create(ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_return_a_schema_item_with_event_application_type()
+      {
+         _schemaItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_have_retrieved_parameters_from_the_retriever()
+      {
+         _schemaItem.Parameter(Constants.Parameters.START_TIME).ShouldBeEqualTo(_startTimeParameter);
+      }
+
+      [Observation]
+      public void should_be_identified_as_event()
+      {
+         _schemaItem.IsEvent.ShouldBeTrue();
+      }
+   }
 }

@@ -209,6 +209,17 @@ namespace PKSim.Assets
             return $"Formulation name changed from '{oldFormulaKey}' to '{newFormulaKey}'";
          }
 
+         public static string SetApplicationSchemaItemEventKeyDescription(string oldEventKey, string newEventKey)
+         {
+            if (string.IsNullOrEmpty(newEventKey))
+               return $"Removing event {oldEventKey}";
+
+            if (string.IsNullOrEmpty(oldEventKey))
+               return $"Setting event to {newEventKey}";
+
+            return $"Event name changed from '{oldEventKey}' to '{newEventKey}'";
+         }
+
          public static string SetApplicationSchemaItemTargetCompartment(string oldTargetCompartment, string newTargetCompartment)
          {
             return $"Target compartment changed from '{oldTargetCompartment}' to '{newTargetCompartment}'";
@@ -503,6 +514,8 @@ namespace PKSim.Assets
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
+
+         public static readonly string EventKeyRequired = "Event key is required for event entries.";
 
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
@@ -1899,6 +1912,7 @@ namespace PKSim.Assets
          public static readonly string ReallySwitchProtocolMode = "Do you really want to switch between advanced and simple? This action will reset the administration protocol.";
          public static readonly string UsedBuildingBlocks = "Used building blocks";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string EventType = "Event";
          public static readonly string MolWeight = "Molecular weight [g/mol]";
          public static readonly string CalculateBioavailability = "Calculate Bioavailability";
          public static readonly string CalculateDDIRatio = "Calculate DDI Ratio";

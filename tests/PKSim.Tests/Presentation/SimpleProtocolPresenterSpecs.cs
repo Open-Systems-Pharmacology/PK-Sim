@@ -9,6 +9,7 @@ using PKSim.Presentation.Views.Protocols;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Commands;
+using System.Linq;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -49,9 +50,9 @@ namespace PKSim.Presentation
    public class When_the_simple_application_presenter_is_retrieving_all_available_applications : concern_for_SimpleProtocolPresenter
    {
       [Observation]
-      public void should_return_all_the_defined_applications()
+      public void should_return_all_the_defined_applications_except_event()
       {
-         sut.AllApplications().ShouldBeEqualTo(ApplicationTypes.All());
+         sut.AllApplications().ShouldBeEqualTo(ApplicationTypes.All().Where(x => x != ApplicationTypes.Event));
       }
    }
 

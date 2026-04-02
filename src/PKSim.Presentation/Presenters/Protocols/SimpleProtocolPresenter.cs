@@ -62,6 +62,11 @@ namespace PKSim.Presentation.Presenters.Protocols
          _dynamicParameterPresenter.ReleaseFrom(eventPublisher);
       }
 
+      public override IEnumerable<ApplicationType> AllApplications()
+      {
+         return ApplicationTypes.All().Where(x => x != ApplicationTypes.Event);
+      }
+
       public IEnumerable<DosingInterval> AllDosingIntervals()
       {
          return DosingIntervals.All();

@@ -9,7 +9,14 @@ namespace PKSim.Core.Model
       string FormulationKey { get; set; }
       string TargetOrgan { get; set; }
       string TargetCompartment { get; set; }
+      /// <summary>
+      ///    Identifier for the event placeholder (e.g. "EVENT_1") used to map this entry
+      ///    to an actual PKSimEvent building block during simulation configuration.
+      ///    Only applicable when ApplicationType is Event.
+      /// </summary>
+      string EventKey { get; set; }
       bool NeedsFormulation { get; }
+      bool IsEvent { get; }
       IParameter StartTime { get; }
       IParameter Dose { get; }
    }
@@ -20,6 +27,7 @@ namespace PKSim.Core.Model
       private string _formulationKey;
       private string _targetCompartment;
       private string _targetOrgan;
+      private string _eventKey;
 
       public SchemaItem()
       {
@@ -50,7 +58,15 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _targetOrgan, value);
       }
 
+      public string EventKey
+      {
+         get => _eventKey;
+         set => SetProperty(ref _eventKey, value);
+      }
+
       public bool NeedsFormulation => ApplicationType.NeedsFormulation;
+
+      public bool IsEvent => ApplicationType == ApplicationTypes.Event;
 
       public bool IsOral => ApplicationType == ApplicationTypes.Oral;
 
@@ -71,6 +87,7 @@ namespace PKSim.Core.Model
          FormulationKey = sourceSchemaItem.FormulationKey;
          TargetOrgan = sourceSchemaItem.TargetOrgan;
          TargetCompartment = sourceSchemaItem.TargetCompartment;
+         EventKey = sourceSchemaItem.EventKey;
       }
    }
 }

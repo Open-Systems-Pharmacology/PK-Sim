@@ -27,8 +27,8 @@ namespace PKSim.Core.Services
 
       public IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType)
       {
-         return (from schemaItemParam in _schemaItemRepository.SchemaItemBy(appplicationType).AllParameters()
-                 select _cloner.Clone(schemaItemParam));
+         return from schemaItemParam in _schemaItemRepository.SchemaItemBy(appplicationType).AllParameters()
+                 select _cloner.Clone(schemaItemParam);
       }
 
       public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType)

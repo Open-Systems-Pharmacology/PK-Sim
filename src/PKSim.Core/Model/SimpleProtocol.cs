@@ -48,7 +48,11 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _targetOrgan, value);
       }
 
+      public virtual string EventKey { get; set; }
+
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
+
+      public virtual bool IsEvent => false;
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
@@ -90,6 +94,7 @@ namespace PKSim.Core.Model
          DosingInterval = simpleProtocol.DosingInterval;
          TargetOrgan = simpleProtocol.TargetOrgan;
          TargetCompartment = simpleProtocol.TargetCompartment;
+         EventKey = simpleProtocol.EventKey;
       }
    }
 }

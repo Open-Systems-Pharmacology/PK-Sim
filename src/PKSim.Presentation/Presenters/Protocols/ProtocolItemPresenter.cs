@@ -51,7 +51,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          _defaultIndividual = individualFactory.CreateParameterLessIndividual();
       }
 
-      public IEnumerable<ApplicationType> AllApplications()
+      public virtual IEnumerable<ApplicationType> AllApplications()
       {
          return ApplicationTypes.All();
       }
