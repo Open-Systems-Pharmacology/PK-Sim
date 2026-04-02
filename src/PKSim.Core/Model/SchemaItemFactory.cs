@@ -40,8 +40,8 @@ namespace PKSim.Core.Model
       {
          var schemaItem = createSchemaItem(container);
          schemaItem.ApplicationType = applicationType;
-         schemaItem.FormulationKey = applicationType.NeedsFormulation ? CoreConstants.DEFAULT_FORMULATION_KEY : string.Empty;
-         schemaItem.EventKey = applicationType == ApplicationTypes.Event ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
+         schemaItem.FormulationKey = string.Empty;
+         schemaItem.EventKey = string.Empty;
 
          foreach (var parameter in _schemaItemParameterRetriever.AllParametersFor(applicationType))
          {
