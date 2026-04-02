@@ -8,6 +8,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.PerformMapping();
          Map(x => x.CalculationMethodCache);
+         MapEnumerable(x => x.OverwriteParameterSets, x => x.AddOverwriteParameterSet);
       }
    }
 }
