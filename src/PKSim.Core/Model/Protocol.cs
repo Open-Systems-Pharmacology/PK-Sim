@@ -17,6 +17,7 @@ namespace PKSim.Core.Model
       public abstract Unit TimeUnit { get; set; }
 
       public abstract IEnumerable<string> UsedFormulationKeys { get; }
+      public abstract IEnumerable<string> UsedEventKeys { get; }
       public abstract ApplicationType ApplicationTypeUsing(string formulationKey);
       public abstract double EndTime { get; }
 

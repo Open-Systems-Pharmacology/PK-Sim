@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
@@ -14,11 +15,13 @@ namespace PKSim.Presentation
    public abstract class concern_for_SimpleProtocolToSimpleProtocolDTOMapper : ContextSpecification<ISimpleProtocolToSimpleProtocolDTOMapper>
    {
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
+      protected IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         sut = new SimpleProtocolToSimpleProtocolDTOMapper(_parameterDTOMapper);
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         sut = new SimpleProtocolToSimpleProtocolDTOMapper(_parameterDTOMapper, _buildingBlockRepository);
       }
    }
 
@@ -37,6 +40,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
          A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(_doseParameterDTO);

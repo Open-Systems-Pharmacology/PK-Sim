@@ -41,8 +41,9 @@ namespace PKSim.Presentation
          _simpleProtocolToSimpleProtocolDTOMapper = A.Fake<ISimpleProtocolToSimpleProtocolDTOMapper>();
          _individual = DomainHelperForSpecs.CreateIndividual();
          A.CallTo(() => _individualFactory.CreateParameterLessIndividual(null)).Returns(_individual);
+         var buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          sut = new SimpleProtocolPresenter(_view, _dynamicParameterPresenter, _simpleProtocolToSimpleProtocolDTOMapper,
-                                           _protocolTask, _parameterTask, _individualFactory, _representationInfoRepository);
+                                           _protocolTask, _parameterTask, _individualFactory, _representationInfoRepository, buildingBlockRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -145,6 +146,63 @@ namespace PKSim.Presentation
       public void should_return_the_list_of_direct_container_for_a_liver_zone()
       {
          sut.AllCompartmentsFor(CoreConstants.Compartment.PERIPORTAL).ShouldContain(CoreConstants.Compartment.INTRACELLULAR);
+      }
+   }
+
+   public class When_setting_an_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private PKSimEvent _event;
+      private IPKSimCommand _setEventCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _event = new PKSimEvent { Id = "event-1" };
+         _setEventCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetSimpleProtocolEvent(_simpleProtocol, "event-1")).Returns(_setEventCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(_event);
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventCommand)).MustHaveHappened();
+      }
+   }
+
+   public class When_clearing_the_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IPKSimCommand _setEventCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.TemplateEventId = "old-event-id";
+         _setEventCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetSimpleProtocolEvent(_simpleProtocol, null)).Returns(_setEventCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(null);
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_command_with_null()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventCommand)).MustHaveHappened();
       }
    }
 }

@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -34,6 +35,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       private readonly IEventTask _eventTask;
       private readonly IEventMappingDTOToEventMappingMapper _eventMappingMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IEventMappingFactory _eventMappingFactory;
       private readonly INotifyList<EventMappingDTO> _allEventsMappingDTO = new NotifyList<EventMappingDTO>();
       private EventProperties _eventProperties;
       private Simulation _simulation;
@@ -41,7 +44,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       public SimulationEventsConfigurationPresenter(ISimulationEventsConfigurationView view, IEditParameterPresenterTask editParameterPresenterTask,
          IEventMappingToEventMappingDTOMapper eventMappingDTOMapper,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, IEventTask eventTask,
-         IEventMappingDTOToEventMappingMapper eventMappingMapper)
+         IEventMappingDTOToEventMappingMapper eventMappingMapper,
+         IBuildingBlockRepository buildingBlockRepository,
+         IEventMappingFactory eventMappingFactory)
          : base(view)
       {
          _editParameterPresenterTask = editParameterPresenterTask;
@@ -49,6 +54,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _eventTask = eventTask;
          _eventMappingMapper = eventMappingMapper;
+         _buildingBlockRepository = buildingBlockRepository;
+         _eventMappingFactory = eventMappingFactory;
       }
 
       public void EditSimulation(Simulation simulation, CreationMode creationMode)
@@ -84,7 +91,34 @@ namespace PKSim.Presentation.Presenters.Simulations
             _eventProperties.AddEventMapping(_eventMappingMapper.MapFrom(eventMappingDTO, _simulation));
          });
 
-         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(_simulation, _allEventsMappingDTO.Select(x => x.Event), PKSimBuildingBlockType.Event);
+         var allEvents = _allEventsMappingDTO.Select(x => x.Event).ToList();
+
+         addProtocolEventsToEventProperties(allEvents);
+
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(_simulation, allEvents, PKSimBuildingBlockType.Event);
+      }
+
+      private void addProtocolEventsToEventProperties(List<PKSimEvent> allEvents)
+      {
+         foreach (var compoundProperties in _simulation.CompoundPropertiesList)
+         {
+            if (!(compoundProperties.ProtocolProperties.Protocol is SimpleProtocol simpleProtocol) || !simpleProtocol.HasEvent)
+               continue;
+
+            var pkSimEvent = _buildingBlockRepository.ById<PKSimEvent>(simpleProtocol.TemplateEventId);
+            if (pkSimEvent == null)
+               continue;
+
+            var eventMapping = _eventMappingFactory.Create(pkSimEvent);
+            var offsetValue = simpleProtocol.EventOffsetParameter?.Value ?? 0;
+            eventMapping.StartTime.Value = offsetValue;
+
+            _eventTask.Load(pkSimEvent);
+            _eventProperties.AddEventMapping(eventMapping);
+
+            if (!allEvents.Contains(pkSimEvent))
+               allEvents.Add(pkSimEvent);
+         }
       }
 
       public void RemoveEventMapping(EventMappingDTO eventMappingDTO)

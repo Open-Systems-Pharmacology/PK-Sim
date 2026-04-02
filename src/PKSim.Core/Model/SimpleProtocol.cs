@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -12,6 +13,7 @@ namespace PKSim.Core.Model
       private DosingInterval _dosingInterval;
       private string _targetCompartment;
       private string _targetOrgan;
+      private string _templateEventId;
 
       public SimpleProtocol()
       {
@@ -50,6 +52,19 @@ namespace PKSim.Core.Model
 
       public virtual string EventKey { get; set; }
 
+      /// <summary>
+      ///    ID of the PKSimEvent building block selected for this protocol
+      /// </summary>
+      public virtual string TemplateEventId
+      {
+         get => _templateEventId;
+         set => SetProperty(ref _templateEventId, value);
+      }
+
+      public virtual IParameter EventOffsetParameter => this.Parameter(CoreConstants.Parameters.EVENT_OFFSET);
+
+      public virtual bool HasEvent => !string.IsNullOrEmpty(TemplateEventId);
+
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
 
       public virtual bool IsEvent => false;
@@ -77,6 +92,9 @@ namespace PKSim.Core.Model
 
       public override IEnumerable<string> UsedFormulationKeys => new[] {_formulationKey};
 
+      public override IEnumerable<string> UsedEventKeys =>
+         string.IsNullOrEmpty(TemplateEventId) ? Enumerable.Empty<string>() : new[] { TemplateEventId };
+
       public override ApplicationType ApplicationTypeUsing(string formulationKey)
       {
          return _applicationType;
@@ -95,6 +113,7 @@ namespace PKSim.Core.Model
          TargetOrgan = simpleProtocol.TargetOrgan;
          TargetCompartment = simpleProtocol.TargetCompartment;
          EventKey = simpleProtocol.EventKey;
+         TemplateEventId = simpleProtocol.TemplateEventId;
       }
    }
 }

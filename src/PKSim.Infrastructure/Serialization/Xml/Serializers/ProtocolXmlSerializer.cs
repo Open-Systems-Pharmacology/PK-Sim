@@ -35,6 +35,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.TargetOrgan);
          Map(x => x.TargetCompartment);
          Map(x => x.EventKey);
+         Map(x => x.TemplateEventId);
       }
    }
 }

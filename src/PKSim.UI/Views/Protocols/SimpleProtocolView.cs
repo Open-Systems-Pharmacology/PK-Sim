@@ -9,6 +9,7 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
@@ -62,6 +63,15 @@ namespace PKSim.UI.Views.Protocols
          get => tablePanel.RowFor(cbTargetOrgan).Visible;
       }
 
+      public bool EventVisible
+      {
+         set
+         {
+            tablePanel.RowFor(uxEventOffset).Visible = value;
+         }
+         get => tablePanel.RowFor(uxEventOffset).Visible;
+      }
+
       public void AddDynamicParameterView(IView view)
       {
          panelDynamicParameters.FillWith(view);
@@ -107,6 +117,14 @@ namespace PKSim.UI.Views.Protocols
             .AndDisplays(c => _presenter.DisplayFor(c))
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetTargetCompartment(e.NewValue));
 
+         _screenBinder.Bind(x => x.SelectedEvent)
+            .To(cbEvent)
+            .WithValues(x => _presenter.AllEvents())
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetEvent(e.NewValue));
+
+         _screenBinder.Bind(x => x.EventOffset).To(uxEventOffset);
+         uxEventOffset.RegisterEditParameterEvents(_presenter);
+
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -120,11 +138,14 @@ namespace PKSim.UI.Views.Protocols
          layoutGroupProperties.Text = PKSimConstants.UI.ProtocolProperties;
          labelTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
          labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
+         labelEvent.Text = PKSimConstants.UI.EventSelection.FormatForLabel();
+         labelEventOffset.Text = PKSimConstants.UI.EventOffset.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);
          cbTargetCompartment.SetImages(_imageListRetriever);
          uxDose.Margin = cbApplicationType.Margin;
          uxEndTime.Margin = cbApplicationType.Margin;
+         uxEventOffset.Margin = cbApplicationType.Margin;
          tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
       }
    }
