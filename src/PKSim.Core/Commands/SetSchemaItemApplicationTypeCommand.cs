@@ -31,6 +31,12 @@ namespace PKSim.Core.Commands
          else if (shouldSetDefaultFormulation())
             Add(new SetSchemaItemFormulationKeyCommand(_schemaItem, CoreConstants.DEFAULT_FORMULATION_KEY, context));
 
+         if (shouldResetEventKey(oldApplicationType))
+            Add(new SetSchemaItemEventKeyCommand(_schemaItem, string.Empty, context));
+
+         else if (shouldSetDefaultEventKey())
+            Add(new SetSchemaItemEventKeyCommand(_schemaItem, CoreConstants.DEFAULT_EVENT_KEY, context));
+
          //update parameters according to application
          var applicationParameterRetriever = context.Resolve<ISchemaItemParameterRetriever>();
 
@@ -56,6 +62,19 @@ namespace PKSim.Core.Commands
       private bool shouldSetDefaultFormulation()
       {
          return _newApplicationType.NeedsFormulation && string.IsNullOrEmpty(_schemaItem.FormulationKey);
+      }
+
+      private bool shouldSetDefaultEventKey()
+      {
+         return _newApplicationType == ApplicationTypes.Event && string.IsNullOrEmpty(_schemaItem.EventKey);
+      }
+
+      private bool shouldResetEventKey(ApplicationType oldApplicationType)
+      {
+         if (string.IsNullOrEmpty(_schemaItem.EventKey))
+            return false;
+
+         return oldApplicationType == ApplicationTypes.Event && _newApplicationType != ApplicationTypes.Event;
       }
 
       private bool shouldResetFormulation(ApplicationType oldApplicationType)

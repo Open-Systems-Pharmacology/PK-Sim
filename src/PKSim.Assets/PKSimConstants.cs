@@ -209,6 +209,17 @@ namespace PKSim.Assets
             return $"Formulation name changed from '{oldFormulaKey}' to '{newFormulaKey}'";
          }
 
+         public static string SetApplicationSchemaItemEventKeyDescription(string oldEventKey, string newEventKey)
+         {
+            if (string.IsNullOrEmpty(newEventKey))
+               return $"Removing event {oldEventKey}";
+
+            if (string.IsNullOrEmpty(oldEventKey))
+               return $"Setting event to {newEventKey}";
+
+            return $"Event name changed from '{oldEventKey}' to '{newEventKey}'";
+         }
+
          public static string SetApplicationSchemaItemTargetCompartment(string oldTargetCompartment, string newTargetCompartment)
          {
             return $"Target compartment changed from '{oldTargetCompartment}' to '{newTargetCompartment}'";

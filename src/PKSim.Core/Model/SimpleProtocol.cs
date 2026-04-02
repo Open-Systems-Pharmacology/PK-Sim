@@ -94,6 +94,7 @@ namespace PKSim.Core.Model
          DosingInterval = simpleProtocol.DosingInterval;
          TargetOrgan = simpleProtocol.TargetOrgan;
          TargetCompartment = simpleProtocol.TargetCompartment;
+         EventKey = simpleProtocol.EventKey;
       }
    }
 }

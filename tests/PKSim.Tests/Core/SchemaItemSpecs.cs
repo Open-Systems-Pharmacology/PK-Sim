@@ -87,6 +87,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
+         sut.Name = "Event";
          sut.ApplicationType = ApplicationTypes.Event;
          sut.EventKey = "EVENT_1";
       }
@@ -135,6 +136,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
+         sut.Name = "Event";
          sut.ApplicationType = ApplicationTypes.Event;
          sut.EventKey = "EVENT_1";
          sut.FormulationKey = string.Empty;
