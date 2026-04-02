@@ -26,11 +26,11 @@ using OSPSuite.UI.Views;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using static OSPSuite.UI.UIConstants;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
 
 namespace PKSim.UI.Views.Protocols
@@ -339,8 +339,7 @@ namespace PKSim.UI.Views.Protocols
             if (e.Column != xtraColumn) return;
             var dto = schemaItemBinder.ElementAt(e.RowHandle);
             if (dto == null || !dto.IsEvent) return;
-            e.Appearance.BackColor = PKSimColors.Disabled;
-            e.Appearance.TextOptions.HAlignment = HorzAlignment.Center;
+            e.Appearance.BackColor = OSPSuite.UI.UIConstants.Colors.Disabled;
          };
 
          gridView.CustomColumnDisplayText += (sender, e) =>
