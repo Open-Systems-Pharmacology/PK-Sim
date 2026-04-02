@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -21,12 +22,20 @@ namespace PKSim.Core.Model
 
    public class Compound : PKSimBuildingBlock, IWithCalculationMethods
    {
+      private readonly List<OverwriteParameterSet> _overwriteParameterSets = new();
+
       public CalculationMethodCache CalculationMethodCache { get; }
+
+      public IReadOnlyList<OverwriteParameterSet> OverwriteParameterSets => _overwriteParameterSets;
 
       public Compound() : base(PKSimBuildingBlockType.Compound)
       {
          CalculationMethodCache = new CalculationMethodCache();
       }
+
+      public virtual void AddOverwriteParameterSet(OverwriteParameterSet overwriteParameterSet) => _overwriteParameterSets.Add(overwriteParameterSet);
+
+      public virtual void RemoveOverwriteParameterSet(OverwriteParameterSet overwriteParameterSet) => _overwriteParameterSets.Remove(overwriteParameterSet);
 
       public virtual void AddProcess(CompoundProcess process)
       {
@@ -124,6 +133,8 @@ namespace PKSim.Core.Model
          var sourceCompound = sourceObject as Compound;
          if (sourceCompound == null) return;
          CalculationMethodCache.UpdatePropertiesFrom(sourceCompound.CalculationMethodCache, cloneManager);
+         _overwriteParameterSets.Clear();
+         sourceCompound.OverwriteParameterSets.Each(x => AddOverwriteParameterSet(cloneManager.Clone(x)));
       }
    }
 }

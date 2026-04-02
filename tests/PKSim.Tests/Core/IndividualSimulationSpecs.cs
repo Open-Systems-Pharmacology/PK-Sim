@@ -633,4 +633,152 @@ namespace PKSim.Core
    {
 
    }
+
+   public abstract class concern_for_IndividualSimulation_compound_path_matching : concern_for_IndividualSimulation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         var compound = new Compound().WithName("Aspirin");
+         sut.AddUsedBuildingBlock(new UsedBuildingBlock("compoundTemplate", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
+      }
+   }
+
+   public class When_matching_a_parameter_path_that_contains_a_building_block_compound_name : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_the_compound_name()
+      {
+         sut.CompoundNameForParameterPath("Organism|Aspirin|Lipophilicity").ShouldBeEqualTo("Aspirin");
+      }
+   }
+
+   public class When_matching_a_parameter_path_that_does_not_contain_a_building_block_compound_name : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_null()
+      {
+         sut.CompoundNameForParameterPath("Organism|Liver|Volume").ShouldBeNull();
+      }
+   }
+
+   public class When_matching_a_parameter_path_for_an_unnamed_metabolite : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_null_since_unnamed_metabolites_are_not_building_block_compounds()
+      {
+         sut.CompoundNameForParameterPath("Organism|Metabolite|SomeParam").ShouldBeNull();
+      }
+   }
+
+   public class When_matching_a_parameter_path_where_compound_name_is_a_substring_but_not_a_path_element : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_null()
+      {
+         sut.CompoundNameForParameterPath("Organism|AspirinDerivative|SomeParam").ShouldBeNull();
+      }
+   }
+
+   public class When_matching_a_null_or_empty_parameter_path : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_null_for_null_path()
+      {
+         sut.CompoundNameForParameterPath(null).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_return_null_for_empty_path()
+      {
+         sut.CompoundNameForParameterPath(string.Empty).ShouldBeNull();
+      }
+   }
+
+   public abstract class concern_for_IndividualSimulation_with_compound : concern_for_IndividualSimulation
+   {
+      protected Compound _compound;
+      protected OverwriteParameterSet _renalImpairmentSet;
+      protected OverwriteParameterSet _hepaticImpairmentSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = new Compound().WithName("Aspirin");
+         _renalImpairmentSet = new OverwriteParameterSet { Name = "RenalImpairment" };
+         _hepaticImpairmentSet = new OverwriteParameterSet { Name = "HepaticImpairment" };
+         sut.AddUsedBuildingBlock(new UsedBuildingBlock("compoundTemplate", PKSimBuildingBlockType.Compound) {BuildingBlock = _compound});
+      }
+   }
+
+   public class When_adding_an_overwrite_parameter_set_selection_for_a_building_block_compound : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Because()
+      {
+         sut.AddOverwriteParameterSetSelection(_compound.Name, _renalImpairmentSet);
+      }
+
+      [Observation]
+      public void should_store_the_selection()
+      {
+         sut.OverwriteParameterSetSelections.Selections.Count.ShouldBeEqualTo(1);
+         sut.OverwriteParameterSetSelections.Selections[0].CompoundName.ShouldBeEqualTo(_compound.Name);
+         sut.OverwriteParameterSetSelections.Selections[0].OverwriteParameterSet.ShouldBeEqualTo(_renalImpairmentSet);
+      }
+   }
+
+   public class When_adding_an_overwrite_parameter_set_selection_for_a_compound_not_used_as_building_block : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Because()
+      {
+         sut.AddOverwriteParameterSetSelection("Metabolite", _renalImpairmentSet);
+      }
+
+      [Observation]
+      public void should_not_store_the_selection()
+      {
+         sut.OverwriteParameterSetSelections.Selections.ShouldBeEmpty();
+      }
+   }
+
+   public class When_removing_an_overwrite_parameter_set_selection : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AddOverwriteParameterSetSelection(_compound.Name, _renalImpairmentSet);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveOverwriteParameterSetSelection(_compound.Name);
+      }
+
+      [Observation]
+      public void should_no_longer_contain_the_selection()
+      {
+         sut.OverwriteParameterSetSelections.Selections.ShouldBeEmpty();
+      }
+   }
+
+   public class When_updating_an_overwrite_parameter_set_selection_for_an_existing_compound : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AddOverwriteParameterSetSelection(_compound.Name, _renalImpairmentSet);
+      }
+
+      protected override void Because()
+      {
+         sut.AddOverwriteParameterSetSelection(_compound.Name, _hepaticImpairmentSet);
+      }
+
+      [Observation]
+      public void should_update_the_selection_without_adding_a_duplicate()
+      {
+         sut.OverwriteParameterSetSelections.Selections.Count.ShouldBeEqualTo(1);
+         sut.OverwriteParameterSetSelections.Selections[0].OverwriteParameterSet.ShouldBeEqualTo(_hepaticImpairmentSet);
+      }
+   }
 }
