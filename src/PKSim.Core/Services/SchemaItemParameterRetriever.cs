@@ -33,17 +33,11 @@ namespace PKSim.Core.Services
 
       public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType)
       {
-         if (appplicationType == ApplicationTypes.Event)
-            return Enumerable.Empty<IParameter>();
-
          return AllParametersFor(appplicationType).Where(isDynamicSchemaItemParameter);
       }
 
       public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem)
       {
-         if (schemaItem.IsEvent)
-            return Enumerable.Empty<IParameter>();
-
          return schemaItem.AllParameters(isDynamicSchemaItemParameter);
       }
 

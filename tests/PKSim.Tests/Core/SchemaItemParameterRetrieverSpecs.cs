@@ -91,43 +91,4 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_dynamic_parameters_for_event_type : concern_for_SchemaItemParameterRetriever
-   {
-      private IEnumerable<IParameter> _dynamicEventParams;
-
-      protected override void Because()
-      {
-         _dynamicEventParams = sut.AllDynamicParametersFor(ApplicationTypes.Event);
-      }
-
-      [Observation]
-      public void should_return_no_dynamic_parameters()
-      {
-         _dynamicEventParams.ShouldBeEmpty();
-      }
-   }
-
-   public class When_retrieving_dynamic_parameters_for_an_event_schema_item : concern_for_SchemaItemParameterRetriever
-   {
-      private IEnumerable<IParameter> _dynamicParams;
-      private SchemaItem _eventSchemaItem;
-
-      protected override void Context()
-      {
-         base.Context();
-         _eventSchemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Event, EventKey = "EVENT_1" };
-         _eventSchemaItem.Add(A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME));
-      }
-
-      protected override void Because()
-      {
-         _dynamicParams = sut.AllDynamicParametersFor(_eventSchemaItem);
-      }
-
-      [Observation]
-      public void should_return_no_dynamic_parameters()
-      {
-         _dynamicParams.ShouldBeEmpty();
-      }
-   }
 }
