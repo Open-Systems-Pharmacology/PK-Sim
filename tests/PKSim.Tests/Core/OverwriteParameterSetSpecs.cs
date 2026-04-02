@@ -71,6 +71,27 @@ namespace PKSim.Core
       }
    }
 
+   public class When_adding_a_parameter_value_with_an_existing_path : concern_for_OverwriteParameterSet
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Add(new ParameterValue { Path = "Path|To|Param".ToObjectPath(), Value = 1.0 });
+      }
+
+      protected override void Because()
+      {
+         sut.Add(new ParameterValue { Path = "Path|To|Param".ToObjectPath(), Value = 2.0 });
+      }
+
+      [Observation]
+      public void should_replace_the_existing_parameter_value()
+      {
+         sut.ParameterValues.Count.ShouldBeEqualTo(1);
+         sut.ParameterValues[0].Value.ShouldBeEqualTo(2.0);
+      }
+   }
+
    public class When_removing_a_parameter_value : concern_for_OverwriteParameterSet
    {
       private ParameterValue _parameterValue;
