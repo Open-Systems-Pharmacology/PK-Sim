@@ -516,6 +516,7 @@ namespace PKSim.Assets
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
          public static readonly string EventKeyRequired = "Event key is required for event entries.";
+         public static readonly string EventPlaceholderRequired = "A placeholder is required when 'Administer with event' is selected.";
 
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
@@ -1781,6 +1782,10 @@ namespace PKSim.Assets
          public static readonly string ApplicationType = "Administration type";
          public static readonly string TargetOrgan = "Target organ";
          public static readonly string TargetCompartment = "Target compartment";
+         public static readonly string EventSelection = "Event";
+         public static readonly string AdministerWithEvent = "Administer with event";
+         public static readonly string EventOffset = "Event offset";
+         public static readonly string NoEvent = "<None>";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
          public static readonly string Placeholder = "Placeholder";
          public static readonly string ProtocolProperties = "Protocol Properties";

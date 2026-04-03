@@ -25,26 +25,18 @@ namespace PKSim.Core.Services
          _cloner = cloner;
       }
 
-      public IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType)
-      {
-         return from schemaItemParam in _schemaItemRepository.SchemaItemBy(appplicationType).AllParameters()
-                 select _cloner.Clone(schemaItemParam);
-      }
+      public IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType) =>
+         from schemaItemParam in _schemaItemRepository.SchemaItemBy(appplicationType).AllParameters()
+         select _cloner.Clone(schemaItemParam);
 
-      public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType)
-      {
-         return AllParametersFor(appplicationType).Where(isDynamicSchemaItemParameter);
-      }
+      public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType) =>
+         AllParametersFor(appplicationType).Where(isDynamicSchemaItemParameter);
 
-      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem)
-      {
-         return schemaItem.AllParameters(isDynamicSchemaItemParameter);
-      }
+      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem) =>
+         schemaItem.AllParameters(isDynamicSchemaItemParameter);
 
-      public IEnumerable<IParameter> AllStaticParameters(ISchemaItem schemaItem)
-      {
-         return schemaItem.AllParameters(isStaticSchemaItemParameter);
-      }
+      public IEnumerable<IParameter> AllStaticParameters(ISchemaItem schemaItem) =>
+         schemaItem.AllParameters(isStaticSchemaItemParameter);
 
       private bool isDynamicSchemaItemParameter(IParameter parameter)
       {
@@ -52,12 +44,11 @@ namespace PKSim.Core.Services
          if (string.Equals(parameter.Name, Constants.Parameters.START_TIME)) return false;
          if (string.Equals(parameter.Name, CoreConstants.Parameters.INPUT_DOSE)) return false;
          if (string.Equals(parameter.Name, Constants.Parameters.END_TIME)) return false;
+         if (string.Equals(parameter.Name, CoreConstants.Parameters.EVENT_OFFSET)) return false;
          return true;
       }
 
-      private bool isStaticSchemaItemParameter(IParameter parameter)
-      {
-         return !isDynamicSchemaItemParameter(parameter);
-      }
+      private bool isStaticSchemaItemParameter(IParameter parameter) =>
+         !isDynamicSchemaItemParameter(parameter);
    }
 }

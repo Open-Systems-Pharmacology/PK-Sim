@@ -315,7 +315,10 @@ namespace PKSim.UI.Views.Protocols
       private RepositoryItem eventKeyRepository()
       {
          if (_eventKeyRepository == null)
+         {
             _eventKeyRepository = new RepositoryItemMRUEdit();
+            _presenter.AllEventKeys().Each(key => _eventKeyRepository.Items.Add(key));
+         }
 
          return _eventKeyRepository;
       }

@@ -7,15 +7,15 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Repositories
 {
-   public interface IFormulationKeyRepository : IRepository<string>
+   public interface IEventKeyRepository : IRepository<string>
    {
    }
 
-   public class FormulationKeyRepository : IFormulationKeyRepository
+   public class EventKeyRepository : IEventKeyRepository
    {
       private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public FormulationKeyRepository(IPKSimProjectRetriever projectRetriever)
+      public EventKeyRepository(IPKSimProjectRetriever projectRetriever)
       {
          _projectRetriever = projectRetriever;
       }
@@ -25,7 +25,7 @@ namespace PKSim.Core.Repositories
          return _projectRetriever.CurrentProject
             .All<Protocol>()
             .Where(p => p.IsLoaded)
-            .SelectMany(p => p.UsedFormulationKeys)
+            .SelectMany(p => p.UsedEventKeys)
             .Where(key => !key.IsNullOrEmpty())
             .Distinct()
             .OrderBy(key => key);

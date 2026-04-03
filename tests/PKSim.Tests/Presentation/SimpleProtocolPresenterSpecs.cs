@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using System.Linq;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -145,6 +146,187 @@ namespace PKSim.Presentation
       public void should_return_the_list_of_direct_container_for_a_liver_zone()
       {
          sut.AllCompartmentsFor(CoreConstants.Compartment.PERIPORTAL).ShouldContain(CoreConstants.Compartment.INTRACELLULAR);
+      }
+   }
+
+   public class When_enabling_an_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IPKSimCommand _setEventKeyCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, CoreConstants.DEFAULT_EVENT_KEY)).Returns(_setEventKeyCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(true);
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_key_command_with_default_key()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
+      }
+   }
+
+   public class When_disabling_the_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IPKSimCommand _setEventKeyCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, string.Empty)).Returns(_setEventKeyCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(false);
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_key_command_with_empty_key()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simple_protocol_with_event : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.DosingInterval = DosingIntervals.Single;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+      }
+
+      protected override void Because()
+      {
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_visible_to_true()
+      {
+         _view.EventVisible.ShouldBeTrue();
+      }
+   }
+
+   public class When_editing_a_simple_protocol_without_event : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.DosingInterval = DosingIntervals.Single;
+      }
+
+      protected override void Because()
+      {
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_visible_to_false()
+      {
+         _view.EventVisible.ShouldBeFalse();
+      }
+   }
+
+   public class When_enabling_an_event_that_is_already_enabled : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(true);
+      }
+
+      [Observation]
+      public void should_not_execute_any_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(A<IPKSimCommand>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_disabling_an_event_that_is_already_disabled : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(false);
+      }
+
+      [Observation]
+      public void should_not_execute_any_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(A<IPKSimCommand>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_setting_the_event_key_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IPKSimCommand _setEventKeyCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, "EVENT_2")).Returns(_setEventKeyCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetSimpleProtocolEventKey("EVENT_2");
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_key_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
       }
    }
 }

@@ -4,6 +4,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -20,6 +21,8 @@ namespace PKSim.Presentation.Presenters.Protocols
       void SetDosingInterval(DosingInterval dosingInterval);
       void SetTargetOrgan(string organName);
       void SetTargetCompartment(string compartmentName);
+      void SetEvent(bool hasEvent);
+      void SetSimpleProtocolEventKey(string eventKey);
    }
 
    public class SimpleProtocolPresenter : ProtocolItemPresenter<ISimpleProtocolView, ISimpleProtocolPresenter>, ISimpleProtocolPresenter
@@ -62,14 +65,24 @@ namespace PKSim.Presentation.Presenters.Protocols
          _dynamicParameterPresenter.ReleaseFrom(eventPublisher);
       }
 
-      public override IEnumerable<ApplicationType> AllApplications()
+      public override IEnumerable<ApplicationType> AllApplications() =>
+         ApplicationTypes.All().Where(x => x != ApplicationTypes.Event);
+
+      public IEnumerable<DosingInterval> AllDosingIntervals() => DosingIntervals.All();
+
+      public void SetEvent(bool hasEvent)
       {
-         return ApplicationTypes.All().Where(x => x != ApplicationTypes.Event);
+         if (hasEvent == _protocol.HasEvent) return;
+
+         var eventKey = hasEvent ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
+         _view.BindTo(_simpleProtocolDTOMapper.MapFrom(_protocol));
+         bindToDynamicParameters();
       }
 
-      public IEnumerable<DosingInterval> AllDosingIntervals()
+      public void SetSimpleProtocolEventKey(string eventKey)
       {
-         return DosingIntervals.All();
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
       }
 
       public void SetApplicationType(ApplicationType applicationType)
@@ -113,6 +126,8 @@ namespace PKSim.Presentation.Presenters.Protocols
          _view.EndTimeVisible = !_protocol.IsSingleDosing;
          _view.DynamicParameterVisible = allDynamicParameters.Any();
          _view.TargetDefinitionVisible = _protocol.ApplicationType.UserDefined;
+         _view.EventVisible = _protocol.HasEvent;
+         _view.AdjustLayout();
       }
    }
 }

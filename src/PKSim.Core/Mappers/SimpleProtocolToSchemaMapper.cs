@@ -36,6 +36,7 @@ namespace PKSim.Core.Mappers
          {
             schema.NumberOfRepetitions.Value = 1;
             schema.AddSchemaItem(createSchemaItem(simpleProtocol.StartTime.Value, simpleProtocol, schema));
+            addEventSchemaItemIfNeeded(schema, simpleProtocol);
             return container.GetChildren<Schema>();
          }
 
@@ -43,7 +44,8 @@ namespace PKSim.Core.Mappers
          int numberOfRepetition = (int) Math.Floor(protocolDuration / simpleProtocol.DosingInterval.IntervalLength);
          schema.NumberOfRepetitions.Value = numberOfRepetition;
 
-         addDosingIntevalSchemaItemTo(schema, simpleProtocol);
+         addDosingIntervalSchemaItemTo(schema, simpleProtocol);
+         addEventSchemaItemIfNeeded(schema, simpleProtocol);
 
          if (schema.Duration == protocolDuration)
             return container.GetChildren<Schema>();
@@ -80,7 +82,7 @@ namespace PKSim.Core.Mappers
          schema.AddSchemaItem(createSchemaItem(720, simpleProtocol, schema));
       }
 
-      private void addDosingIntevalSchemaItemTo(Schema schema, SimpleProtocol simpleProtocol)
+      private void addDosingIntervalSchemaItemTo(Schema schema, SimpleProtocol simpleProtocol)
       {
          //always add a first interval
          schema.AddSchemaItem(createSchemaItem(0, simpleProtocol, schema));
@@ -99,6 +101,17 @@ namespace PKSim.Core.Mappers
             default:
                throw new ArgumentOutOfRangeException();
          }
+      }
+
+      private void addEventSchemaItemIfNeeded(Schema schema, SimpleProtocol simpleProtocol)
+      {
+         if (!simpleProtocol.HasEvent)
+            return;
+
+         var eventItem = _schemaItemFactory.Create(ApplicationTypes.Event, schema);
+         eventItem.StartTime.Value = simpleProtocol.EventOffsetParameter?.Value ?? 0;
+         eventItem.EventKey = simpleProtocol.EventKey;
+         schema.AddSchemaItem(eventItem);
       }
 
       private SchemaItem createSchemaItem(double startTime, SimpleProtocol simpleProtocol, Schema schema)
