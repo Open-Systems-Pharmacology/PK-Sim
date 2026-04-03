@@ -8,11 +8,11 @@ namespace PKSim.Core.Snapshots.Mappers;
 
 public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, SnapshotParameterValue>
 {
-   public override async Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
+   public override Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
    {
       // We will only use path and value because in an OverWriteParameterSet we only care about parameters whose values
       // are overridden in the simulation. You can only override a parameter in a simulation with a value.
-      return await SnapshotFrom(parameterValue, snapshot =>
+      return SnapshotFrom(parameterValue, snapshot =>
       {
          snapshot.Path = parameterValue.Path.ToString();
          snapshot.Value = parameterValue.Value.Value;

@@ -20,9 +20,9 @@ public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOver
       _logger = logger;
    }
 
-   public override async Task<SnapshotOverwriteParameterSetSelection> MapToSnapshot(ModelOverwriteParameterSetSelection selection, PKSimProject project)
+   public override Task<SnapshotOverwriteParameterSetSelection> MapToSnapshot(ModelOverwriteParameterSetSelection selection, PKSimProject project)
    {
-      return await SnapshotFrom(selection, snapshot =>
+      return SnapshotFrom(selection, snapshot =>
       {
          snapshot.CompoundName = selection.CompoundName;
          snapshot.OverwriteParameterSetName = selection.OverwriteParameterSet?.Name;
