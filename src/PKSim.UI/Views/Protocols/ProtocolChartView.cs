@@ -7,7 +7,9 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -91,6 +93,47 @@ namespace PKSim.UI.Views.Protocols
                   view.AxisY = axisY2;
             }
             series.Visible = true;
+         }
+
+         addEventSeries(dataToPlot);
+      }
+
+      private void addEventSeries(IProtocolChartData dataToPlot)
+      {
+         if (!dataToPlot.EventPoints.Any())
+            return;
+
+         // Position markers slightly above the X-axis so they aren't clipped
+         double maxDose = 0;
+         foreach (System.Data.DataRow row in dataToPlot.DataTable.Rows)
+         {
+            var dose = (double) row[dataToPlot.YValue];
+            if (dose > maxDose) maxDose = dose;
+         }
+
+         if (maxDose == 0) maxDose = 1;
+         var eventY = maxDose * 0.03;
+
+         foreach (var eventGroup in dataToPlot.EventPoints.GroupBy(p => p.GroupingName))
+         {
+            var series = new Series(eventGroup.Key, ViewType.Point);
+            var pointView = (PointSeriesView) series.View;
+            pointView.PointMarkerOptions.Kind = MarkerKind.Diamond;
+            pointView.PointMarkerOptions.Size = 10;
+            pointView.PointMarkerOptions.BorderVisible = true;
+            pointView.PointMarkerOptions.BorderColor = Color.Black;
+
+            foreach (var point in eventGroup)
+            {
+               var sp = new SeriesPoint(point.Time, eventY);
+               sp.Tag = point.SchemaItem;
+               series.Points.Add(sp);
+            }
+
+            series.LabelsVisibility = DefaultBoolean.False;
+            series.ArgumentScaleType = ScaleType.Numerical;
+            series.ValueScaleType = ScaleType.Numerical;
+            chart.Series.Add(series);
          }
       }
 

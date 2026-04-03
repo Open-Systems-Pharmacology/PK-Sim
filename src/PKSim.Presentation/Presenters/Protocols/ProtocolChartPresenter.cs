@@ -83,6 +83,11 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (schemaItemDTO == null)
             return string.Empty;
 
+         if (schemaItemDTO.IsEvent)
+            return PKSimConstants.UI.EventSchemaItemDescription(
+               schemaItemDTO.EventKey,
+               ParameterMessages.DisplayValueFor(schemaItemDTO.StartTimeParameter.Parameter));
+
          return
             PKSimConstants.UI.SchemaItemDescription(
                schemaItemDTO.ApplicationType.DisplayName,

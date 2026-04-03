@@ -11,6 +11,13 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
+   public class EventChartPoint
+   {
+      public string GroupingName { get; init; }
+      public double Time { get; init; }
+      public SchemaItemDTO SchemaItem { get; init; }
+   }
+
    public interface IProtocolChartData
    {
       DataTable DataTable { get; }
@@ -24,6 +31,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       Unit YAxisUnit { get; }
       Unit Y2AxisUnit { get; }
       bool NeedsMultipleAxis { get; }
+      IReadOnlyList<EventChartPoint> EventPoints { get; }
 
       bool SeriesShouldBeOnSecondAxis(string serieName);
       SchemaItemDTO SchemaItemFor(object tag);
@@ -34,10 +42,12 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly double _endTimeInMin;
 
       private readonly ICache<Compound, IReadOnlyList<SchemaItemDTO>> _allSchemaItemDTO;
+      private readonly List<EventChartPoint> _eventPoints = new();
       public IDimension TimeDimension { get; }
       public Unit TimeUnit { get; }
       public Unit YAxisUnit { get; private set; }
       public Unit Y2AxisUnit { get; private set; }
+      public IReadOnlyList<EventChartPoint> EventPoints => _eventPoints;
 
       private const string GROUPING_NAME = "GroupingName";
       private const string TIME = "Time";
@@ -56,6 +66,9 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public SchemaItemDTO SchemaItemFor(object tag)
       {
+         if (tag is SchemaItemDTO schemaItemDTO)
+            return schemaItemDTO;
+
          var dataRow = tag as DataRowView;
          return dataRow?[SchemaItemName].DowncastTo<SchemaItemDTO>();
       }
@@ -101,17 +114,21 @@ namespace PKSim.Presentation.Presenters.Protocols
             return;
 
          var allDoseUnits = allUsedDoseUnits();
-         if (allDoseUnits.Count == 0)
-            return;
+         bool hasOnlyOneDoseUnit = allDoseUnits.Count <= 1;
 
-         bool hasOnlyOneDoseUnit = allDoseUnits.Count == 1;
-         YAxisUnit = allDoseUnits[0];
-         Y2AxisUnit = allDoseUnits[hasOnlyOneDoseUnit ? 0 : 1];
+         if (allDoseUnits.Count > 0)
+         {
+            YAxisUnit = allDoseUnits[0];
+            Y2AxisUnit = allDoseUnits[hasOnlyOneDoseUnit ? 0 : 1];
+         }
 
          foreach (var schemaItemsDTOForCompound in _allSchemaItemDTO.KeyValues)
          {
             var compound = schemaItemsDTOForCompound.Key;
-            foreach (var schemaItemDTOGroup in schemaItemsDTOForCompound.Value.GroupBy(schemaItemAggregation))
+
+            foreach (var schemaItemDTOGroup in schemaItemsDTOForCompound.Value
+               .Where(x => !x.IsEvent)
+               .GroupBy(schemaItemAggregation))
             {
                var row = DataTable.NewRow();
                var schemaItemDTO = schemaItemDTOGroup.First();
@@ -121,6 +138,16 @@ namespace PKSim.Presentation.Presenters.Protocols
                row[UNIT] = schemaItemDTO.DoseParameter.DisplayUnit;
                row[SCHEMA_ITEM] = schemaItemDTO;
                DataTable.Rows.Add(row);
+            }
+
+            foreach (var eventDTO in schemaItemsDTOForCompound.Value.Where(x => x.IsEvent))
+            {
+               _eventPoints.Add(new EventChartPoint
+               {
+                  GroupingName = createEventGroupingNameFor(compound, eventDTO),
+                  Time = timeValueInDisplayUnit(eventDTO.StartTimeParameter.KernelValue),
+                  SchemaItem = eventDTO
+               });
             }
          }
       }
@@ -143,9 +170,22 @@ namespace PKSim.Presentation.Presenters.Protocols
          return hasOnlyOneDoseUnit ? baseName : Constants.NameWithUnitFor(baseName, schemaItemDTO.DoseParameter.DisplayUnit);
       }
 
+      private static string createEventGroupingNameFor(Compound compound, SchemaItemDTO schemaItemDTO)
+      {
+         var baseName = schemaItemDTO.DisplayName;
+         if (!string.IsNullOrEmpty(compound.Name))
+            baseName = CompositeNameFor(baseName, compound.Name);
+
+         return baseName;
+      }
+
       private IReadOnlyList<Unit> allUsedDoseUnits()
       {
-         return _allSchemaItemDTO.SelectMany(x => x.Select(y => y.DoseParameter.DisplayUnit)).Distinct().ToList();
+         return _allSchemaItemDTO
+            .SelectMany(x => x.Where(y => !y.IsEvent).Select(y => y.DoseParameter.DisplayUnit))
+            .Where(u => u != null)
+            .Distinct()
+            .ToList();
       }
    }
 }

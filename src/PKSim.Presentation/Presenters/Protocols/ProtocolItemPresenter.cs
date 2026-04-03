@@ -58,6 +58,11 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public IEnumerable<string> AllEventKeys() => _protocolTask.AllEventKeys();
 
+      public IEnumerable<string> AllEventKeys()
+      {
+         return _protocolTask.AllEventKeys();
+      }
+
       public void SetParameterValue(IParameterDTO parameterDTO, double newValue)
       {
          AddCommand(_parameterTask.SetParameterDisplayValue(ParameterFrom(parameterDTO), newValue));

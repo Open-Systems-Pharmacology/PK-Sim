@@ -19,7 +19,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_availble_formulation_keys : concern_for_FormulationKeyRepository
+   public class When_retrieving_the_available_formulation_keys : concern_for_FormulationKeyRepository
    {
       private string _key1;
       private string _key2;

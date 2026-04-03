@@ -8,8 +8,8 @@ namespace PKSim.Core.Services
 {
    public interface ISchemaItemParameterRetriever
    {
-      IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType);
-      IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType);
+      IEnumerable<IParameter> AllParametersFor(ApplicationType applicationType);
+      IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType applicationType);
       IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem);
       IEnumerable<IParameter> AllStaticParameters(ISchemaItem schemaItem);
    }
