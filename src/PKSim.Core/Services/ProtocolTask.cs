@@ -12,6 +12,7 @@ namespace PKSim.Core.Services
    {
       IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem);
       IEnumerable<string> AllFormulationKey();
+      IEnumerable<string> AllEventKeys();
       IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType);
       IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType);
       IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval);
@@ -27,14 +28,16 @@ namespace PKSim.Core.Services
    public class ProtocolTask : IProtocolTask
    {
       private readonly IFormulationKeyRepository _formulationKeyRepository;
+      private readonly IEventKeyRepository _eventKeyRepository;
       private readonly ISchemaTask _schemaTask;
       private readonly ISchemaItemParameterRetriever _schemaItemParameterRetriever;
       private readonly IExecutionContext _executionContext;
 
-      public ProtocolTask(IFormulationKeyRepository formulationKeyRepository,
+      public ProtocolTask(IFormulationKeyRepository formulationKeyRepository, IEventKeyRepository eventKeyRepository,
                           ISchemaTask schemaTask, ISchemaItemParameterRetriever schemaItemParameterRetriever, IExecutionContext executionContext)
       {
          _formulationKeyRepository = formulationKeyRepository;
+         _eventKeyRepository = eventKeyRepository;
          _schemaTask = schemaTask;
          _schemaItemParameterRetriever = schemaItemParameterRetriever;
          _executionContext = executionContext;
@@ -48,6 +51,11 @@ namespace PKSim.Core.Services
       public IEnumerable<string> AllFormulationKey()
       {
          return _formulationKeyRepository.All();
+      }
+
+      public IEnumerable<string> AllEventKeys()
+      {
+         return _eventKeyRepository.All();
       }
 
       public IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType)

@@ -20,6 +20,7 @@ namespace PKSim.Presentation.Presenters.Protocols
    {
       IEnumerable<ApplicationType> AllApplications();
       IEnumerable<string> AllFormulationKeys();
+      IEnumerable<string> AllEventKeys();
       void EditProtocol(Protocol protocol);
       event Action StatusChanging;
       IEnumerable<string> AllOrgans();
@@ -59,6 +60,11 @@ namespace PKSim.Presentation.Presenters.Protocols
       public IEnumerable<string> AllFormulationKeys()
       {
          return _protocolTask.AllFormulationKey();
+      }
+
+      public IEnumerable<string> AllEventKeys()
+      {
+         return _protocolTask.AllEventKeys();
       }
 
       public void SetParameterValue(IParameterDTO parameterDTO, double newValue)
