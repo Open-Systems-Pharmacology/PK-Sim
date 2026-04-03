@@ -21,6 +21,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    public class SimulationCompoundProtocolPresenter : AbstractSubPresenter<ISimulationCompoundProtocolView, ISimulationCompoundProtocolPresenter>, ISimulationCompoundProtocolPresenter
    {
       private readonly ISimulationCompoundProtocolFormulationPresenter _simulationCompoundProtocolFormulationPresenter;
+      private readonly ISimulationCompoundProtocolEventPresenter _simulationCompoundProtocolEventPresenter;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private Simulation _simulation;
@@ -33,18 +34,22 @@ namespace PKSim.Presentation.Presenters.Simulations
       public SimulationCompoundProtocolPresenter(
          ISimulationCompoundProtocolView view,
          ISimulationCompoundProtocolFormulationPresenter simulationCompoundProtocolFormulationPresenter,
-         ILazyLoadTask lazyLoadTask, 
+         ISimulationCompoundProtocolEventPresenter simulationCompoundProtocolEventPresenter,
+         ILazyLoadTask lazyLoadTask,
          IBuildingBlockInProjectManager buildingBlockInProjectManager)
          : base(view)
       {
          _simulationCompoundProtocolFormulationPresenter = simulationCompoundProtocolFormulationPresenter;
+         _simulationCompoundProtocolEventPresenter = simulationCompoundProtocolEventPresenter;
          _lazyLoadTask = lazyLoadTask;
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _view.AddFormulationMappingView(_simulationCompoundProtocolFormulationPresenter.View);
-         _simulationCompoundProtocolFormulationPresenter.StatusChanged += onFormulationChanged;
+         _view.AddEventMappingView(_simulationCompoundProtocolEventPresenter.View);
+         _simulationCompoundProtocolFormulationPresenter.StatusChanged += onMappingChanged;
+         _simulationCompoundProtocolEventPresenter.StatusChanged += onMappingChanged;
       }
 
-      private void onFormulationChanged(object sender, EventArgs e)
+      private void onMappingChanged(object sender, EventArgs e)
       {
          FormulationChanged = true;
          OnStatusChanged();
@@ -67,6 +72,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _lazyLoadTask.Load(SelectedProtocol);
          _protocolProperties.Protocol = SelectedProtocol;
          _simulationCompoundProtocolFormulationPresenter.EditSimulation(_simulation, Compound);
+         _simulationCompoundProtocolEventPresenter.EditSimulation(_simulation, Compound);
       }
 
       public void UpdateSelectedFormulation(Formulation templateFormulation)
@@ -88,9 +94,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void SaveConfiguration()
       {
          _simulationCompoundProtocolFormulationPresenter.SaveConfiguration();
+         _simulationCompoundProtocolEventPresenter.SaveConfiguration();
       }
 
-      public override bool CanClose => base.CanClose && _simulationCompoundProtocolFormulationPresenter.CanClose;
+      public override bool CanClose => base.CanClose && _simulationCompoundProtocolFormulationPresenter.CanClose && _simulationCompoundProtocolEventPresenter.CanClose;
 
       public Protocol SelectedProtocol => _protocolSelectionDTO.BuildingBlock;
 

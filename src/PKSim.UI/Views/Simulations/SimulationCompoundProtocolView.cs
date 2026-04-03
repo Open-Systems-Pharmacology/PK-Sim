@@ -51,7 +51,12 @@ namespace PKSim.UI.Views.Simulations
       public void AddFormulationMappingView(IView view)
       {
          _resizableView = view as IResizableView;
-         AddViewTo(layoutItemFormulation,layoutControl,  view);
+         AddViewTo(layoutItemFormulation, layoutControl, view);
+      }
+
+      public void AddEventMappingView(IView view)
+      {
+         AddViewTo(layoutItemEvent, layoutControl, view);
       }
 
       public bool AllowEmptyProtocolSelection

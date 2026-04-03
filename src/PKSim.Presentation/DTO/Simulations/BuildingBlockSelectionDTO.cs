@@ -41,6 +41,24 @@ namespace PKSim.Presentation.DTO.Simulations
       }
    }
 
+   public class EventSelectionDTO : BuildingBlockSelectionDTO<PKSimEvent>
+   {
+      public string DisplayName { get; set; }
+
+      public override bool Equals(object obj) => Equals(obj as EventSelectionDTO);
+
+      public bool Equals(EventSelectionDTO other)
+      {
+         if (ReferenceEquals(null, other)) return false;
+         if (ReferenceEquals(this, other)) return true;
+         return Equals(BuildingBlock, other.BuildingBlock);
+      }
+
+      public override int GetHashCode() => BuildingBlock?.GetHashCode() ?? 0;
+
+      public override string ToString() => DisplayName;
+   }
+
    public class FormulationSelectionDTO : BuildingBlockSelectionDTO<Formulation>
    {
       public string DisplayName { get; set; }

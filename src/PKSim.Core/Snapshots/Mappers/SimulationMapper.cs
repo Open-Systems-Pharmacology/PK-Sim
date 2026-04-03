@@ -385,8 +385,13 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationBuildingBlockUpdater.UpdateFormulationsInSimulation(simulation);
          _simulationBuildingBlockUpdater.UpdateProtocolsInSimulation(simulation);
 
-         var events = simulation.EventProperties.EventMappings.Select(x => project.BuildingBlockById<PKSimEvent>(x.TemplateEventId));
-         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, events, PKSimBuildingBlockType.Event);
+         var standaloneEvents = simulation.EventProperties.EventMappings.Select(x => project.BuildingBlockById<PKSimEvent>(x.TemplateEventId));
+         var protocolEvents = simulation.CompoundPropertiesList
+            .SelectMany(x => x.ProtocolProperties.EventPlaceholderMappings)
+            .Select(x => x.Event)
+            .Where(x => x != null);
+         var allEvents = standaloneEvents.Concat(protocolEvents).Distinct();
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, allEvents, PKSimBuildingBlockType.Event);
 
          var observerSets = simulation.ObserverSetProperties.ObserverSetMappings.Select(x => project.BuildingBlockById<Model.ObserverSet>(x.TemplateObserverSetId));
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, observerSets, PKSimBuildingBlockType.ObserverSet);

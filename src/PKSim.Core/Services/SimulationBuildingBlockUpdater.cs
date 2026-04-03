@@ -60,6 +60,12 @@ namespace PKSim.Core.Services
       /// </summary>
       void UpdateFormulationsInSimulation(Simulation simulation);
 
+      /// <summary>
+      ///    Update the used <see cref="PKSimEvent" /> building blocks used in the <paramref name="simulation" /> based
+      ///    on the event placeholder mappings in protocol properties
+      /// </summary>
+      void UpdateEventsInSimulation(Simulation simulation);
+
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
 
       /// <summary>
@@ -185,6 +191,17 @@ namespace PKSim.Core.Services
          var allFormulationUsed = allFormulationMappings.Select(x => x.Formulation).Distinct().ToList();
          checkThatFormulationIsUsedEitherAsTemplateOrAsSimulationFormulation(allFormulationUsed);
          UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, allFormulationUsed, PKSimBuildingBlockType.Formulation);
+      }
+
+      public void UpdateEventsInSimulation(Simulation simulation)
+      {
+         var allEventsFromProtocol = simulation.CompoundPropertiesList
+            .SelectMany(x => x.ProtocolProperties.EventPlaceholderMappings)
+            .Select(x => x.Event)
+            .Where(x => x != null);
+
+         var allEventsUsed = allEventsFromProtocol.Distinct().ToList();
+         UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, allEventsUsed, PKSimBuildingBlockType.Event);
       }
 
       private static void checkThatFormulationIsUsedEitherAsTemplateOrAsSimulationFormulation(IReadOnlyList<Formulation> allFormulationUsed)
