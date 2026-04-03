@@ -8,8 +8,8 @@ namespace PKSim.Core.Services
 {
    public interface ISchemaItemParameterRetriever
    {
-      IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType);
-      IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType);
+      IEnumerable<IParameter> AllParametersFor(ApplicationType applicationType);
+      IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType applicationType);
       IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem);
       IEnumerable<IParameter> AllStaticParameters(ISchemaItem schemaItem);
    }
@@ -25,15 +25,15 @@ namespace PKSim.Core.Services
          _cloner = cloner;
       }
 
-      public IEnumerable<IParameter> AllParametersFor(ApplicationType appplicationType)
+      public IEnumerable<IParameter> AllParametersFor(ApplicationType applicationType)
       {
-         return from schemaItemParam in _schemaItemRepository.SchemaItemBy(appplicationType).AllParameters()
+         return from schemaItemParam in _schemaItemRepository.SchemaItemBy(applicationType).AllParameters()
                  select _cloner.Clone(schemaItemParam);
       }
 
-      public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType appplicationType)
+      public IEnumerable<IParameter> AllDynamicParametersFor(ApplicationType applicationType)
       {
-         return AllParametersFor(appplicationType).Where(isDynamicSchemaItemParameter);
+         return AllParametersFor(applicationType).Where(isDynamicSchemaItemParameter);
       }
 
       public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem)
