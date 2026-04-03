@@ -22,8 +22,8 @@ namespace PKSim.Core.Model
       }
 
       private static IBusinessRule eventPlaceholderValid { get; } = CreateRule.For<SimpleProtocol>()
-         .Property(x => x.EventKey)
-         .WithRule((protocol, eventKey) => !protocol.HasEvent || !string.IsNullOrEmpty(eventKey))
+         .Property(x => x.HasEvent)
+         .WithRule((protocol, hasEvent) => !hasEvent || !string.IsNullOrEmpty(protocol.EventKey))
          .WithError(PKSimConstants.Error.EventPlaceholderRequired);
 
       public virtual ApplicationType ApplicationType
@@ -92,10 +92,7 @@ namespace PKSim.Core.Model
       public override IEnumerable<string> UsedEventKeys =>
          string.IsNullOrEmpty(EventKey) ? Enumerable.Empty<string>() : new[] { EventKey };
 
-      public override ApplicationType ApplicationTypeUsing(string formulationKey)
-      {
-         return _applicationType;
-      }
+      public override ApplicationType ApplicationTypeUsing(string formulationKey) => _applicationType;
 
       public override double EndTime => EndTimeParameter.Value;
 
