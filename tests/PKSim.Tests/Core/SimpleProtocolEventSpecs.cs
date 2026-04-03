@@ -15,6 +15,7 @@ namespace PKSim.Core
          sut = new SimpleProtocol();
          sut.ApplicationType = ApplicationTypes.IntravenousBolus;
          sut.DosingInterval = DosingIntervals.Single;
+         sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
       }
    }
 
@@ -57,6 +58,21 @@ namespace PKSim.Core
       public void used_event_keys_should_have_exactly_one_entry()
       {
          sut.UsedEventKeys.Count().ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_a_simple_protocol_has_an_event_offset_parameter : concern_for_SimpleProtocol_event
+   {
+      [Observation]
+      public void event_offset_parameter_should_not_be_null()
+      {
+         sut.EventOffsetParameter.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void event_offset_parameter_should_have_the_correct_name()
+      {
+         sut.EventOffsetParameter.Name.ShouldBeEqualTo(CoreConstants.Parameters.EVENT_OFFSET);
       }
    }
 

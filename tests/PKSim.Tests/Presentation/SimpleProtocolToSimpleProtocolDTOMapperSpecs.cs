@@ -37,6 +37,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
          A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(_doseParameterDTO);
@@ -74,6 +75,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameters.EVENT_OFFSET));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
          _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
@@ -104,6 +106,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
          A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(A.Fake<ParameterDTO>());

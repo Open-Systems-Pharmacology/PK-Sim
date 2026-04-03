@@ -7,6 +7,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
@@ -62,8 +63,12 @@ namespace PKSim.UI.Views.Protocols
 
       public bool EventVisible
       {
-         set { /* Event checkbox row is always visible */ }
-         get => true;
+         set
+         {
+            tablePanel.RowFor(cbEventKey).Visible = value;
+            tablePanel.RowFor(uxEventOffset).Visible = value;
+         }
+         get => tablePanel.RowFor(cbEventKey).Visible;
       }
 
       public void AddDynamicParameterView(IView view)
@@ -115,6 +120,15 @@ namespace PKSim.UI.Views.Protocols
             .To(cbEvent)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetEvent(e.NewValue));
 
+         _screenBinder.Bind(x => x.EventKey)
+            .To(cbEventKey)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSimpleProtocolEventKey(e.NewValue));
+
+         _presenter.AllEventKeys().Each(key => cbEventKey.Properties.Items.Add(key));
+
+         _screenBinder.Bind(x => x.EventOffset).To(uxEventOffset);
+         uxEventOffset.RegisterEditParameterEvents(_presenter);
+
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -128,12 +142,16 @@ namespace PKSim.UI.Views.Protocols
          layoutGroupProperties.Text = PKSimConstants.UI.ProtocolProperties;
          labelTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
          labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
-         labelEvent.Text = PKSimConstants.UI.EventSelection.FormatForLabel();
+         labelEvent.Text = "";
+         cbEvent.Properties.Caption = PKSimConstants.UI.AdministerWithEvent;
+         labelEventKey.Text = PKSimConstants.UI.Placeholder.FormatForLabel();
+         labelEventOffset.Text = PKSimConstants.UI.EventOffset.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);
          cbTargetCompartment.SetImages(_imageListRetriever);
          uxDose.Margin = cbApplicationType.Margin;
          uxEndTime.Margin = cbApplicationType.Margin;
+         uxEventOffset.Margin = cbApplicationType.Margin;
          tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
       }
    }

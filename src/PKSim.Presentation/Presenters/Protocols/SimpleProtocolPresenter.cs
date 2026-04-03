@@ -22,6 +22,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       void SetTargetOrgan(string organName);
       void SetTargetCompartment(string compartmentName);
       void SetEvent(bool hasEvent);
+      void SetSimpleProtocolEventKey(string eventKey);
    }
 
    public class SimpleProtocolPresenter : ProtocolItemPresenter<ISimpleProtocolView, ISimpleProtocolPresenter>, ISimpleProtocolPresenter
@@ -79,6 +80,11 @@ namespace PKSim.Presentation.Presenters.Protocols
          var eventKey = hasEvent ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
          AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
          updateViewLayout();
+      }
+
+      public void SetSimpleProtocolEventKey(string eventKey)
+      {
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
       }
 
       public void SetApplicationType(ApplicationType applicationType)

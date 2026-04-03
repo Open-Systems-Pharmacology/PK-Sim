@@ -50,6 +50,8 @@ namespace PKSim.Core.Model
 
       public virtual string EventKey { get; set; }
 
+      public virtual IParameter EventOffsetParameter => this.Parameter(CoreConstants.Parameters.EVENT_OFFSET);
+
       public virtual bool HasEvent => !string.IsNullOrEmpty(EventKey);
 
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
