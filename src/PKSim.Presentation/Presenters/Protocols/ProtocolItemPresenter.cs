@@ -52,15 +52,11 @@ namespace PKSim.Presentation.Presenters.Protocols
          _defaultIndividual = individualFactory.CreateParameterLessIndividual();
       }
 
-      public virtual IEnumerable<ApplicationType> AllApplications()
-      {
-         return ApplicationTypes.All();
-      }
+      public virtual IEnumerable<ApplicationType> AllApplications() => ApplicationTypes.All();
 
-      public IEnumerable<string> AllFormulationKeys()
-      {
-         return _protocolTask.AllFormulationKey();
-      }
+      public IEnumerable<string> AllFormulationKeys() => _protocolTask.AllFormulationKey();
+
+      public IEnumerable<string> AllEventKeys() => _protocolTask.AllEventKeys();
 
       public IEnumerable<string> AllEventKeys()
       {
@@ -89,15 +85,10 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public abstract void EditProtocol(Protocol protocol);
 
-      protected IParameter ParameterFrom(IParameterDTO parameterDTO)
-      {
-         return parameterDTO.Parameter;
-      }
+      protected IParameter ParameterFrom(IParameterDTO parameterDTO) => parameterDTO.Parameter;
 
-      public string DisplayFor(string containerName)
-      {
-         return _representationInfoRepository.DisplayNameFor(RepresentationObjectType.CONTAINER, containerName);
-      }
+      public string DisplayFor(string containerName) =>
+         _representationInfoRepository.DisplayNameFor(RepresentationObjectType.CONTAINER, containerName);
       
       protected void SetTargetOrgan(string organName, ISchemaItem schemaItem)
       {

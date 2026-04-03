@@ -43,55 +43,33 @@ namespace PKSim.Core.Services
          _executionContext = executionContext;
       }
 
-      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem)
-      {
-         return _schemaItemParameterRetriever.AllDynamicParametersFor(schemaItem).Where(p => p.Visible);
-      }
+      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem) =>
+         _schemaItemParameterRetriever.AllDynamicParametersFor(schemaItem).Where(p => p.Visible);
 
-      public IEnumerable<string> AllFormulationKey()
-      {
-         return _formulationKeyRepository.All();
-      }
+      public IEnumerable<string> AllFormulationKey() => _formulationKeyRepository.All();
 
-      public IEnumerable<string> AllEventKeys()
-      {
-         return _eventKeyRepository.All();
-      }
+      public IEnumerable<string> AllEventKeys() => _eventKeyRepository.All();
 
-      public IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType)
-      {
-         return new SetSchemaItemApplicationTypeCommand(schemaItem, applicationType).Run(_executionContext);
-      }
+      public IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType) =>
+         new SetSchemaItemApplicationTypeCommand(schemaItem, applicationType).Run(_executionContext);
 
-      public IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType)
-      {
-         return new SetSchemaItemFormulationKeyCommand(schemaItem, formulationType, _executionContext).Run(_executionContext);
-      }
+      public IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType) =>
+         new SetSchemaItemFormulationKeyCommand(schemaItem, formulationType, _executionContext).Run(_executionContext);
 
-      public IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval)
-      {
-         return _schemaTask.SetDosingInterval(protocol, dosingInterval);
-      }
+      public IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval) =>
+         _schemaTask.SetDosingInterval(protocol, dosingInterval);
 
-      public IPKSimCommand AddSchemaTo(AdvancedProtocol protocol)
-      {
-         return _schemaTask.AddSchemaTo(protocol);
-      }
+      public IPKSimCommand AddSchemaTo(AdvancedProtocol protocol) =>
+         _schemaTask.AddSchemaTo(protocol);
 
-      public IPKSimCommand RemoveSchemaFrom(Schema schemaToDelete, AdvancedProtocol protocol)
-      {
-         return _schemaTask.RemoveSchemaFrom(schemaToDelete, protocol);
-      }
+      public IPKSimCommand RemoveSchemaFrom(Schema schemaToDelete, AdvancedProtocol protocol) =>
+         _schemaTask.RemoveSchemaFrom(schemaToDelete, protocol);
 
-      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate)
-      {
-         return _schemaTask.AddSchemaItemTo(schema, schemaItemToDupicate);
-      }
+      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate) =>
+         _schemaTask.AddSchemaItemTo(schema, schemaItemToDupicate);
 
-      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema)
-      {
-         return _schemaTask.RemoveSchemaItemFrom(schemaItemToDelete, schema);
-      }
+      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema) =>
+         _schemaTask.RemoveSchemaItemFrom(schemaItemToDelete, schema);
 
       public IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment)
       {
@@ -107,14 +85,10 @@ namespace PKSim.Core.Services
          return macroCommand.Run(_executionContext);
       }
 
-      public IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment)
-      {
-         return new SetSchemaItemTargetCompartmentCommand(schemaItem, targetCompartment, _executionContext).Run(_executionContext);
-      }
+      public IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment) =>
+         new SetSchemaItemTargetCompartmentCommand(schemaItem, targetCompartment, _executionContext).Run(_executionContext);
 
-      public IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey)
-      {
-         return new SetSchemaItemEventKeyCommand(schemaItem, eventKey, _executionContext).Run(_executionContext);
-      }
+      public IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey) =>
+         new SetSchemaItemEventKeyCommand(schemaItem, eventKey, _executionContext).Run(_executionContext);
    }
 }

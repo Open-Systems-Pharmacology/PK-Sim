@@ -65,14 +65,24 @@ namespace PKSim.Presentation.Presenters.Protocols
          _dynamicParameterPresenter.ReleaseFrom(eventPublisher);
       }
 
-      public override IEnumerable<ApplicationType> AllApplications()
+      public override IEnumerable<ApplicationType> AllApplications() =>
+         ApplicationTypes.All().Where(x => x != ApplicationTypes.Event);
+
+      public IEnumerable<DosingInterval> AllDosingIntervals() => DosingIntervals.All();
+
+      public void SetEvent(bool hasEvent)
       {
-         return ApplicationTypes.All().Where(x => x != ApplicationTypes.Event);
+         if (hasEvent == _protocol.HasEvent) return;
+
+         var eventKey = hasEvent ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
+         _view.BindTo(_simpleProtocolDTOMapper.MapFrom(_protocol));
+         bindToDynamicParameters();
       }
 
-      public IEnumerable<DosingInterval> AllDosingIntervals()
+      public void SetSimpleProtocolEventKey(string eventKey)
       {
-         return DosingIntervals.All();
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
       }
 
       public void SetEvent(bool hasEvent)
