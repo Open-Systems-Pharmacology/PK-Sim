@@ -9,5 +9,7 @@ namespace PKSim.Core.Snapshots
       public string Name { get; set; }
 
       public FormulationSelection[] Formulations { get; set; }
+
+      public EventPlaceholderSelection[] Events { get; set; }
    }
 }

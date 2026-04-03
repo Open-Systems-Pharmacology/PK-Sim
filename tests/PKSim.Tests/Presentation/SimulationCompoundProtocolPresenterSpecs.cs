@@ -14,16 +14,18 @@ namespace PKSim.Presentation
       protected ISimulationCompoundProtocolView _view;
       protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationCompoundProtocolFormulationPresenter _simulationCompoundProtocolFormulationPresenter;
+      protected ISimulationCompoundProtocolEventPresenter _simulationCompoundProtocolEventPresenter;
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
          _view = A.Fake<ISimulationCompoundProtocolView>();
          _simulationCompoundProtocolFormulationPresenter = A.Fake<ISimulationCompoundProtocolFormulationPresenter>();
+         _simulationCompoundProtocolEventPresenter = A.Fake<ISimulationCompoundProtocolEventPresenter>();
          _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
 
-         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _lazyLoadTask, _buildingBlockInProjectManager);
+         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _simulationCompoundProtocolEventPresenter, _lazyLoadTask, _buildingBlockInProjectManager);
       }
    }
 

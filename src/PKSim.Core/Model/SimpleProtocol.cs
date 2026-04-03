@@ -22,8 +22,8 @@ namespace PKSim.Core.Model
       }
 
       private static IBusinessRule eventPlaceholderValid { get; } = CreateRule.For<SimpleProtocol>()
-         .Property(x => x.HasEvent)
-         .WithRule((protocol, hasEvent) => !hasEvent || !string.IsNullOrEmpty(protocol.EventKey))
+         .Property(x => x.EventKey)
+         .WithRule((protocol, eventKey) => !protocol.HasEvent || !string.IsNullOrEmpty(eventKey))
          .WithError(PKSimConstants.Error.EventPlaceholderRequired);
 
       public virtual ApplicationType ApplicationType

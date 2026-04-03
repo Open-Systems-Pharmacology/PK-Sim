@@ -85,21 +85,6 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
       }
 
-      public void SetEvent(bool hasEvent)
-      {
-         if (hasEvent == _protocol.HasEvent) return;
-
-         var eventKey = hasEvent ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
-         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
-         _view.BindTo(_simpleProtocolDTOMapper.MapFrom(_protocol));
-         bindToDynamicParameters();
-      }
-
-      public void SetSimpleProtocolEventKey(string eventKey)
-      {
-         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
-      }
-
       public void SetApplicationType(ApplicationType applicationType)
       {
          SetApplicationType(applicationType, _protocol);

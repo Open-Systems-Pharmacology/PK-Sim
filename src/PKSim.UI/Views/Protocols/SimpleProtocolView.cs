@@ -40,6 +40,7 @@ namespace PKSim.UI.Views.Protocols
          cbEventKey.Properties.Items.Clear();
          _presenter.AllEventKeys().Each(key => cbEventKey.Properties.Items.Add(key));
          _screenBinder.BindToSource(simpleProtocolDTO);
+         NotifyViewChanged();
       }
 
       public bool EndTimeVisible
@@ -69,6 +70,7 @@ namespace PKSim.UI.Views.Protocols
          {
             tablePanel.RowFor(cbEventKey).Visible = value;
             tablePanel.RowFor(uxEventOffset).Visible = value;
+            AdjustLayout();
          }
          get => tablePanel.RowFor(cbEventKey).Visible;
       }
