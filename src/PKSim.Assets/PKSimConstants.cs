@@ -516,6 +516,7 @@ namespace PKSim.Assets
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
          public static readonly string EventKeyRequired = "Event key is required for event entries.";
+         public static readonly string EventPlaceholderRequired = "A placeholder is required when 'Administer with event' is selected.";
 
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
