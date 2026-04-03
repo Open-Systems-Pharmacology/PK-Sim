@@ -83,6 +83,11 @@ namespace PKSim.UI.Views.Protocols
          _screenBinder.RefreshListElements();
       }
 
+      public void AdjustLayout()
+      {
+         layoutControlItem1.AdjustTablePanelHeight(tablePanel, layoutSimpleProtocol);
+      }
+
       public override void InitializeBinding()
       {
          _screenBinder = new ScreenBinder<SimpleProtocolDTO> {BindingMode = BindingMode.OneWay};

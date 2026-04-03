@@ -125,7 +125,6 @@ namespace PKSim.UI.Views.Protocols
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
          this.tablePanel.Size = new System.Drawing.Size(470, 240);
-         this.tablePanel.AutoSize = true;
          this.tablePanel.TabIndex = 17;
          //
          // labelTargetCompartment

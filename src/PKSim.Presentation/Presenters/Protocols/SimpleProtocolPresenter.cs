@@ -130,6 +130,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          _view.DynamicParameterVisible = allDynamicParameters.Any();
          _view.TargetDefinitionVisible = _protocol.ApplicationType.UserDefined;
          _view.EventVisible = _protocol.HasEvent;
+         _view.AdjustLayout();
       }
    }
 }

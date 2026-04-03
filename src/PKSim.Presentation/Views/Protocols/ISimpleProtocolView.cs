@@ -14,5 +14,6 @@ namespace PKSim.Presentation.Views.Protocols
       bool EventVisible { get; set; }
       void AddDynamicParameterView(IView view);
       void RefreshCompartmentList();
+      void AdjustLayout();
    }
 }
