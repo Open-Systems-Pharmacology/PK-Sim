@@ -30,6 +30,7 @@ namespace PKSim.Core.Snapshots
       public PkaType[] PkaTypes { get; set; }
       public CompoundProcess[] Processes { get; set; }
       public CalculationMethodCache CalculationMethods { get; set; }
+      public OverwriteParameterSet[] OverwriteParameterSets { get; set; }
       public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Compound;
    }
 }
