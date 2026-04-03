@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -23,8 +22,6 @@ namespace PKSim.Presentation
       private ISimulationBuildingBlockUpdater _simBuildingBlockUpdater;
       private IEventTask _eventTask;
       private IEventMappingDTOToEventMappingMapper _eventMappingMapper;
-      private IBuildingBlockRepository _buildingBlockRepository;
-      private IEventMappingFactory _eventMappingFactory;
 
       protected override void Context()
       {
@@ -34,9 +31,7 @@ namespace PKSim.Presentation
          _simBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
          _eventTask = A.Fake<IEventTask>();
          _eventMappingMapper = A.Fake<IEventMappingDTOToEventMappingMapper>();
-         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         _eventMappingFactory = A.Fake<IEventMappingFactory>();
-         sut = new SimulationEventsConfigurationPresenter(_view, _editParameterPresenterTask, _eventMappingDTOMapper, _simBuildingBlockUpdater, _eventTask, _eventMappingMapper, _buildingBlockRepository, _eventMappingFactory);
+         sut = new SimulationEventsConfigurationPresenter(_view, _editParameterPresenterTask, _eventMappingDTOMapper, _simBuildingBlockUpdater, _eventTask, _eventMappingMapper);
       }
    }
 

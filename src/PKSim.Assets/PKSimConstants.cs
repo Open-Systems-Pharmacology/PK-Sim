@@ -209,17 +209,6 @@ namespace PKSim.Assets
             return $"Formulation name changed from '{oldFormulaKey}' to '{newFormulaKey}'";
          }
 
-         public static string SetSimpleProtocolEventDescription(string oldTemplateEventId, string newTemplateEventId)
-         {
-            if (string.IsNullOrEmpty(newTemplateEventId))
-               return "Removing event from simple protocol";
-
-            if (string.IsNullOrEmpty(oldTemplateEventId))
-               return "Setting event on simple protocol";
-
-            return "Changing event on simple protocol";
-         }
-
          public static string SetApplicationSchemaItemEventKeyDescription(string oldEventKey, string newEventKey)
          {
             if (string.IsNullOrEmpty(newEventKey))

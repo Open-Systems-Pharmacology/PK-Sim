@@ -117,9 +117,8 @@ namespace PKSim.UI.Views.Protocols
             .AndDisplays(c => _presenter.DisplayFor(c))
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetTargetCompartment(e.NewValue));
 
-         _screenBinder.Bind(x => x.SelectedEvent)
+         _screenBinder.Bind(x => x.HasEvent)
             .To(cbEvent)
-            .WithValues(x => _presenter.AllEvents())
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetEvent(e.NewValue));
 
          _screenBinder.Bind(x => x.EventOffset).To(uxEventOffset);

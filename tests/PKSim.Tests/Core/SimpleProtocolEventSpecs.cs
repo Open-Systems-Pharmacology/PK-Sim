@@ -39,7 +39,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.TemplateEventId = "event-id-123";
+         sut.EventKey = "event-id-123";
       }
 
       [Observation]
@@ -89,19 +89,12 @@ namespace PKSim.Core
          _source.ApplicationType = ApplicationTypes.Oral;
          _source.DosingInterval = DosingIntervals.DI_24;
          _source.FormulationKey = "Formulation";
-         _source.TemplateEventId = "source-event-id";
          _source.EventKey = "EVENT_1";
       }
 
       protected override void Because()
       {
          sut.UpdatePropertiesFrom(_source, A.Fake<ICloneManager>());
-      }
-
-      [Observation]
-      public void should_copy_the_template_event_id()
-      {
-         sut.TemplateEventId.ShouldBeEqualTo("source-event-id");
       }
 
       [Observation]
@@ -122,12 +115,12 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.TemplateEventId = "some-event-id";
+         sut.EventKey = "some-event-id";
       }
 
       protected override void Because()
       {
-         sut.TemplateEventId = null;
+         sut.EventKey = null;
       }
 
       [Observation]

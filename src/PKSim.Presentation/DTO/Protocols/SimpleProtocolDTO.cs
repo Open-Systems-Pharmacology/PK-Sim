@@ -49,10 +49,10 @@ namespace PKSim.Presentation.DTO.Protocols
          }
       }
 
-      public PKSimEvent SelectedEvent
+      public bool HasEvent
       {
-         get;
-         set;
+         get => _simpleProtocol.HasEvent;
+         set { /*nothing to do here*/ }
       }
    }
 }

@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using System.Linq;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -41,9 +42,8 @@ namespace PKSim.Presentation
          _simpleProtocolToSimpleProtocolDTOMapper = A.Fake<ISimpleProtocolToSimpleProtocolDTOMapper>();
          _individual = DomainHelperForSpecs.CreateIndividual();
          A.CallTo(() => _individualFactory.CreateParameterLessIndividual(null)).Returns(_individual);
-         var buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          sut = new SimpleProtocolPresenter(_view, _dynamicParameterPresenter, _simpleProtocolToSimpleProtocolDTOMapper,
-                                           _protocolTask, _parameterTask, _individualFactory, _representationInfoRepository, buildingBlockRepository);
+                                           _protocolTask, _parameterTask, _individualFactory, _representationInfoRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -149,60 +149,107 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_setting_an_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   public class When_enabling_an_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
    {
       private SimpleProtocol _simpleProtocol;
-      private PKSimEvent _event;
-      private IPKSimCommand _setEventCommand;
+      private IPKSimCommand _setEventKeyCommand;
 
       protected override void Context()
       {
          base.Context();
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
-         _event = new PKSimEvent { Id = "event-1" };
-         _setEventCommand = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _protocolTask.SetSimpleProtocolEvent(_simpleProtocol, "event-1")).Returns(_setEventCommand);
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, CoreConstants.DEFAULT_EVENT_KEY)).Returns(_setEventKeyCommand);
          sut.EditProtocol(_simpleProtocol);
       }
 
       protected override void Because()
       {
-         sut.SetEvent(_event);
+         sut.SetEvent(true);
       }
 
       [Observation]
-      public void should_execute_the_set_event_command()
+      public void should_execute_the_set_event_key_command_with_default_key()
       {
-         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventCommand)).MustHaveHappened();
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
       }
    }
 
-   public class When_clearing_the_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   public class When_disabling_the_event_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
    {
       private SimpleProtocol _simpleProtocol;
-      private IPKSimCommand _setEventCommand;
+      private IPKSimCommand _setEventKeyCommand;
 
       protected override void Context()
       {
          base.Context();
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
-         _simpleProtocol.TemplateEventId = "old-event-id";
-         _setEventCommand = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _protocolTask.SetSimpleProtocolEvent(_simpleProtocol, null)).Returns(_setEventCommand);
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, string.Empty)).Returns(_setEventKeyCommand);
          sut.EditProtocol(_simpleProtocol);
       }
 
       protected override void Because()
       {
-         sut.SetEvent(null);
+         sut.SetEvent(false);
       }
 
       [Observation]
-      public void should_execute_the_set_event_command_with_null()
+      public void should_execute_the_set_event_key_command_with_empty_key()
       {
-         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventCommand)).MustHaveHappened();
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simple_protocol_with_event : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.DosingInterval = DosingIntervals.Single;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+      }
+
+      protected override void Because()
+      {
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_visible_to_true()
+      {
+         _view.EventVisible.ShouldBeTrue();
+      }
+   }
+
+   public class When_editing_a_simple_protocol_without_event : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.DosingInterval = DosingIntervals.Single;
+      }
+
+      protected override void Because()
+      {
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_visible_to_false()
+      {
+         _view.EventVisible.ShouldBeFalse();
       }
    }
 }

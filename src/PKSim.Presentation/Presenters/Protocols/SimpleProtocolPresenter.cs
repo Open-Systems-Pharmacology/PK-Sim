@@ -4,6 +4,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -20,28 +21,24 @@ namespace PKSim.Presentation.Presenters.Protocols
       void SetDosingInterval(DosingInterval dosingInterval);
       void SetTargetOrgan(string organName);
       void SetTargetCompartment(string compartmentName);
-      IEnumerable<PKSimEvent> AllEvents();
-      void SetEvent(PKSimEvent pkSimEvent);
+      void SetEvent(bool hasEvent);
    }
 
    public class SimpleProtocolPresenter : ProtocolItemPresenter<ISimpleProtocolView, ISimpleProtocolPresenter>, ISimpleProtocolPresenter
    {
       private readonly ISimpleProtocolToSimpleProtocolDTOMapper _simpleProtocolDTOMapper;
       private readonly IMultiParameterEditPresenter _dynamicParameterPresenter;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private SimpleProtocol _protocol;
 
       public SimpleProtocolPresenter(ISimpleProtocolView view,
          IMultiParameterEditPresenter dynamicParameterPresenter,
          ISimpleProtocolToSimpleProtocolDTOMapper simpleProtocolDTOMapper,
          IProtocolTask protocolTask, IParameterTask parameterTask,
-         IIndividualFactory individualFactory, IRepresentationInfoRepository representationInfoRepository,
-         IBuildingBlockRepository buildingBlockRepository)
+         IIndividualFactory individualFactory, IRepresentationInfoRepository representationInfoRepository)
          : base(view, protocolTask, parameterTask, individualFactory, representationInfoRepository)
       {
          _simpleProtocolDTOMapper = simpleProtocolDTOMapper;
          _dynamicParameterPresenter = dynamicParameterPresenter;
-         _buildingBlockRepository = buildingBlockRepository;
          _dynamicParameterPresenter.IsSimpleEditor = true;
          _dynamicParameterPresenter.ValueOriginVisible = false;
          _dynamicParameterPresenter.HeaderVisible = false;
@@ -77,15 +74,10 @@ namespace PKSim.Presentation.Presenters.Protocols
          return DosingIntervals.All();
       }
 
-      public IEnumerable<PKSimEvent> AllEvents()
+      public void SetEvent(bool hasEvent)
       {
-         return _buildingBlockRepository.All<PKSimEvent>();
-      }
-
-      public void SetEvent(PKSimEvent pkSimEvent)
-      {
-         var templateEventId = pkSimEvent?.Id;
-         AddCommand(_protocolTask.SetSimpleProtocolEvent(_protocol, templateEventId));
+         var eventKey = hasEvent ? CoreConstants.DEFAULT_EVENT_KEY : string.Empty;
+         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
          updateViewLayout();
       }
 

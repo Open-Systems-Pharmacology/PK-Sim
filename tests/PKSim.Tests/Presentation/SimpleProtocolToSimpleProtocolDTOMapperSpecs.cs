@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
@@ -15,13 +14,11 @@ namespace PKSim.Presentation
    public abstract class concern_for_SimpleProtocolToSimpleProtocolDTOMapper : ContextSpecification<ISimpleProtocolToSimpleProtocolDTOMapper>
    {
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
-      protected IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         sut = new SimpleProtocolToSimpleProtocolDTOMapper(_parameterDTOMapper, _buildingBlockRepository);
+         sut = new SimpleProtocolToSimpleProtocolDTOMapper(_parameterDTOMapper);
       }
    }
 
@@ -64,6 +61,75 @@ namespace PKSim.Presentation
       {
          _result.Dose.ShouldBeEqualTo(_doseParameterDTO);
          _result.EndTime.ShouldBeEqualTo(_endTimeParameterDTO);
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_with_event_to_dto : concern_for_SimpleProtocolToSimpleProtocolDTOMapper
+   {
+      private SimpleProtocolDTO _result;
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+         _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
+         _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EndTimeParameter)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EventOffsetParameter)).Returns(A.Fake<ParameterDTO>());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void has_event_should_be_true()
+      {
+         _result.HasEvent.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void event_offset_should_not_be_null()
+      {
+         _result.EventOffset.ShouldNotBeNull();
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_without_event_to_dto : concern_for_SimpleProtocolToSimpleProtocolDTOMapper
+   {
+      private SimpleProtocolDTO _result;
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+         _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
+         _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EndTimeParameter)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EventOffsetParameter)).Returns(A.Fake<ParameterDTO>());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void has_event_should_be_false()
+      {
+         _result.HasEvent.ShouldBeFalse();
       }
    }
 }

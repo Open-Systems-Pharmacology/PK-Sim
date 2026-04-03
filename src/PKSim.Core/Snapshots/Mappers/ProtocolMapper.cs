@@ -81,7 +81,6 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.DosingInterval = simpleProtocol.DosingInterval.Id;
             snapshot.TargetOrgan = SnapshotValueFor(simpleProtocol.TargetOrgan);
             snapshot.TargetCompartment = SnapshotValueFor(simpleProtocol.TargetCompartment);
-            snapshot.TemplateEventId = SnapshotValueFor(simpleProtocol.TemplateEventId);
          });
       }
 
@@ -92,7 +91,6 @@ namespace PKSim.Core.Snapshots.Mappers
          simpleProtocol.DosingInterval = DosingIntervals.ById(snapshotProtocol.DosingInterval);
          simpleProtocol.TargetOrgan = snapshotProtocol.TargetOrgan;
          simpleProtocol.TargetCompartment = snapshotProtocol.TargetCompartment;
-         simpleProtocol.TemplateEventId = snapshotProtocol.TemplateEventId;
          return Task.FromResult<ModelProtocol>(simpleProtocol);
       }
 

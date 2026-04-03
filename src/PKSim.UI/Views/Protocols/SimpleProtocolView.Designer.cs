@@ -47,7 +47,7 @@ namespace PKSim.UI.Views.Protocols
          this.cbDosingType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.uxDose = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.cbApplicationType = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
-         this.cbEvent = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbEvent = new DevExpress.XtraEditors.CheckEdit();
          this.uxEventOffset = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.panelDynamicParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -64,6 +64,7 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.cbDosingType.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbApplicationType.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbEvent.Properties)).BeginInit();
+
          ((System.ComponentModel.ISupportInitialize)(this.panelDynamicParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupProperties)).BeginInit();
@@ -276,8 +277,7 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.SetColumn(this.cbEvent, 1);
          this.cbEvent.Location = new System.Drawing.Point(128, 190);
          this.cbEvent.Name = "cbEvent";
-         this.cbEvent.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbEvent.Properties.Caption = "";
          this.tablePanel.SetRow(this.cbEvent, 7);
          this.cbEvent.Size = new System.Drawing.Size(339, 20);
          this.cbEvent.TabIndex = 25;
@@ -395,7 +395,7 @@ namespace PKSim.UI.Views.Protocols
       private DevExpress.XtraEditors.LabelControl labelApplicationType;
       private DevExpress.XtraEditors.LabelControl labelEvent;
       private DevExpress.XtraEditors.LabelControl labelEventOffset;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbEvent;
+      private DevExpress.XtraEditors.CheckEdit cbEvent;
       private UxParameterDTOEdit uxEventOffset;
    }
 }

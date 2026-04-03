@@ -22,7 +22,6 @@ namespace PKSim.Core.Services
       IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment);
       IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment);
       IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey);
-      IPKSimCommand SetSimpleProtocolEvent(SimpleProtocol protocol, string templateEventId);
    }
 
    public class ProtocolTask : IProtocolTask
@@ -108,11 +107,6 @@ namespace PKSim.Core.Services
       public IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey)
       {
          return new SetSchemaItemEventKeyCommand(schemaItem, eventKey, _executionContext).Run(_executionContext);
-      }
-
-      public IPKSimCommand SetSimpleProtocolEvent(SimpleProtocol protocol, string templateEventId)
-      {
-         return new SetSimpleProtocolEventCommand(protocol, templateEventId, _executionContext).Run(_executionContext);
       }
    }
 }
