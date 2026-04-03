@@ -23,7 +23,6 @@ namespace PKSim.Presentation.DTO.Mappers
          {
             Dose = _parameterDTOMapper.MapFrom(simpleProtocol.Dose),
             EndTime = _parameterDTOMapper.MapFrom(simpleProtocol.EndTimeParameter),
-            EventOffset = _parameterDTOMapper.MapFrom(simpleProtocol.EventOffsetParameter),
             ApplicationType = simpleProtocol.ApplicationType,
             DosingInterval = simpleProtocol.DosingInterval,
             TargetOrgan = simpleProtocol.TargetOrgan,

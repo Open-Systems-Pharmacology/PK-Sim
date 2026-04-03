@@ -911,7 +911,6 @@ namespace PKSim.Core
          public static readonly string PARAMETER_PKA2 = ParameterPKa(1);
          public static readonly string PARAMETER_PKA3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
 
-         public const string EVENT_OFFSET = "Event offset";
          public const string APPLICATION_RATE = "Application rate";
          public const string PERMEABILITY = "Permeability";
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";

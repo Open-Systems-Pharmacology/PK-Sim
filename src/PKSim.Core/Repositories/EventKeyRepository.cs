@@ -27,7 +27,8 @@ namespace PKSim.Core.Repositories
             .Where(p => p.IsLoaded)
             .SelectMany(p => p.UsedEventKeys)
             .Where(key => !key.IsNullOrEmpty())
-            .Distinct();
+            .Distinct()
+            .OrderBy(key => key);
       }
    }
 }

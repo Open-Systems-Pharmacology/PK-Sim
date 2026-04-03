@@ -76,11 +76,6 @@ namespace PKSim.Core.Model
          }
 
          protocol.AddParameter(_parameterFactory.CreateFor(Constants.Parameters.END_TIME, CoreConstants.DEFAULT_PROTOCOL_END_TIME_IN_MIN, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
-         var eventOffsetParameter = _parameterFactory.CreateFor(CoreConstants.Parameters.EVENT_OFFSET, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol);
-         eventOffsetParameter.Info.MinValue = null;
-         eventOffsetParameter.Info.MinIsAllowed = true;
-         eventOffsetParameter.Visible = false;
-         protocol.AddParameter(eventOffsetParameter);
 
          return protocol;
       }
