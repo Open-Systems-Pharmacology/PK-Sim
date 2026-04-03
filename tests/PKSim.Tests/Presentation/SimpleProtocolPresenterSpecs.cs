@@ -253,6 +253,55 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_enabling_an_event_that_is_already_enabled : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(true);
+      }
+
+      [Observation]
+      public void should_not_execute_any_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(A<IPKSimCommand>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_disabling_an_event_that_is_already_disabled : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetEvent(false);
+      }
+
+      [Observation]
+      public void should_not_execute_any_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(A<IPKSimCommand>._)).MustNotHaveHappened();
+      }
+   }
+
    public class When_setting_the_event_key_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
    {
       private SimpleProtocol _simpleProtocol;
