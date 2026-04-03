@@ -103,6 +103,17 @@ namespace PKSim.UI.Views.Protocols
          if (!dataToPlot.EventPoints.Any())
             return;
 
+         // Position markers slightly above the X-axis so they aren't clipped
+         double maxDose = 0;
+         foreach (System.Data.DataRow row in dataToPlot.DataTable.Rows)
+         {
+            var dose = (double) row[dataToPlot.YValue];
+            if (dose > maxDose) maxDose = dose;
+         }
+
+         if (maxDose == 0) maxDose = 1;
+         var eventY = maxDose * 0.03;
+
          foreach (var eventGroup in dataToPlot.EventPoints.GroupBy(p => p.GroupingName))
          {
             var series = new Series(eventGroup.Key, ViewType.Point);
@@ -114,7 +125,7 @@ namespace PKSim.UI.Views.Protocols
 
             foreach (var point in eventGroup)
             {
-               var sp = new SeriesPoint(point.Time, 0);
+               var sp = new SeriesPoint(point.Time, eventY);
                sp.Tag = point.SchemaItem;
                series.Points.Add(sp);
             }
