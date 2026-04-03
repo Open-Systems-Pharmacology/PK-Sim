@@ -2388,6 +2388,14 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
+         public static string EventSchemaItemDescription(string eventKey, string startTime)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{ObjectTypes.Event}= {eventKey}");
+            sb.AppendLine($"{StartTime}= {startTime}");
+            return sb.ToString();
+         }
+
          public static readonly string SelectMoBiExecutablePath = "Select MoBi executable path";
 
          public static string SelectDatabasePathFor(string speciesDisplayName) => $"Select Expressions Database for {speciesDisplayName}";

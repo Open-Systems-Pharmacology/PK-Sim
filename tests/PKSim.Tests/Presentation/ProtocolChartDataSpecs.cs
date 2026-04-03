@@ -145,7 +145,91 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_return_any_data_to_plot()
       {
-         _data.Rows.Count.ShouldBeEqualTo(0);   
+         _data.Rows.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_a_protocol_with_only_events : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
+         var eventDTO1 = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1", startTimeValue: 10);
+         var eventDTO2 = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1", startTimeValue: 20);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] { eventDTO1, eventDTO2 });
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10.0)).Returns(10);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 20.0)).Returns(20);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_not_add_any_rows_to_the_administration_data_table()
+      {
+         _data.Rows.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void should_create_event_points_for_each_event_entry()
+      {
+         sut.EventPoints.Count.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_set_the_event_time_in_display_units()
+      {
+         sut.EventPoints[0].Time.ShouldBeEqualTo(10);
+         sut.EventPoints[1].Time.ShouldBeEqualTo(20);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_a_protocol_with_mixed_administrations_and_events : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
+         var adminDTO = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit);
+         var eventDTO = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1", startTimeValue: 30);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] { adminDTO, eventDTO });
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 30.0)).Returns(30);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_add_only_administration_entries_to_the_data_table()
+      {
+         _data.Rows.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_create_event_points_separately()
+      {
+         sut.EventPoints.Count.ShouldBeEqualTo(1);
+         sut.EventPoints[0].Time.ShouldBeEqualTo(30);
+      }
+
+      [Observation]
+      public void should_include_event_key_in_event_grouping_name()
+      {
+         sut.EventPoints[0].GroupingName.Contains("EVENT_1").ShouldBeTrue();
+      }
+   }
+
+   public class When_retrieving_schema_item_from_a_tag_that_is_a_schema_item_dto_directly : concern_for_ProtocolChartData
+   {
+      private SchemaItemDTO _eventDTO;
+
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
+         _eventDTO = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1");
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] { _eventDTO });
+         base.Context();
+      }
+
+      [Observation]
+      public void should_return_the_schema_item_dto()
+      {
+         sut.SchemaItemFor(_eventDTO).ShouldBeEqualTo(_eventDTO);
       }
    }
 }
