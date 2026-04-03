@@ -15,6 +15,7 @@ namespace PKSim.Core
       protected IParameter _dose,
          _startTime,
          _endTime,
+         _eventOffset,
          _ivParam,
          _dermalParam;
 
@@ -25,6 +26,7 @@ namespace PKSim.Core
          _dose = A.Fake<IParameter>().WithName(CoreConstants.Parameters.INPUT_DOSE);
          _startTime = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _endTime = A.Fake<IParameter>().WithName(Constants.Parameters.END_TIME);
+         _eventOffset = A.Fake<IParameter>().WithName(CoreConstants.Parameters.EVENT_OFFSET);
          _ivParam = A.Fake<IParameter>().WithName(Constants.Parameters.INFUSION_TIME);
          _dermalParam = A.Fake<IParameter>().WithName("XY");
 
@@ -32,6 +34,7 @@ namespace PKSim.Core
          ivSchemaItem.Add(_dose);
          ivSchemaItem.Add(_startTime);
          ivSchemaItem.Add(_endTime);
+         ivSchemaItem.Add(_eventOffset);
          ivSchemaItem.Add(_ivParam);
 
          var oralSchemaItem = new SchemaItem() {ApplicationType = ApplicationTypes.Oral};
@@ -69,7 +72,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_correct_parameters_for_iv_application()
       {
-         _ivParams.ShouldOnlyContain(_dose, _startTime, _endTime, _ivParam);
+         _ivParams.ShouldOnlyContain(_dose, _startTime, _endTime, _eventOffset, _ivParam);
       }
 
       [Observation]

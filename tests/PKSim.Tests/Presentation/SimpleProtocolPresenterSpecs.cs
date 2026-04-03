@@ -252,4 +252,32 @@ namespace PKSim.Presentation
          _view.EventVisible.ShouldBeFalse();
       }
    }
+
+   public class When_setting_the_event_key_on_the_simple_protocol : concern_for_SimpleProtocolPresenter
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IPKSimCommand _setEventKeyCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         _setEventKeyCommand = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, "EVENT_2")).Returns(_setEventKeyCommand);
+         sut.EditProtocol(_simpleProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.SetSimpleProtocolEventKey("EVENT_2");
+      }
+
+      [Observation]
+      public void should_execute_the_set_event_key_command()
+      {
+         A.CallTo(() => sut.CommandCollector.AddCommand(_setEventKeyCommand)).MustHaveHappened();
+      }
+   }
 }

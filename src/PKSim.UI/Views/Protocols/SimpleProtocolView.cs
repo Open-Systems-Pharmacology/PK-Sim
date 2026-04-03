@@ -37,6 +37,8 @@ namespace PKSim.UI.Views.Protocols
 
       public void BindTo(SimpleProtocolDTO simpleProtocolDTO)
       {
+         cbEventKey.Properties.Items.Clear();
+         _presenter.AllEventKeys().Each(key => cbEventKey.Properties.Items.Add(key));
          _screenBinder.BindToSource(simpleProtocolDTO);
       }
 
@@ -123,8 +125,6 @@ namespace PKSim.UI.Views.Protocols
          _screenBinder.Bind(x => x.EventKey)
             .To(cbEventKey)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSimpleProtocolEventKey(e.NewValue));
-
-         _presenter.AllEventKeys().Each(key => cbEventKey.Properties.Items.Add(key));
 
          _screenBinder.Bind(x => x.EventOffset).To(uxEventOffset);
          uxEventOffset.RegisterEditParameterEvents(_presenter);
