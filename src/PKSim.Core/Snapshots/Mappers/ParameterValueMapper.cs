@@ -10,11 +10,12 @@ public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, Snap
 {
    public override async Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
    {
-      // We will only use path and value for this application
+      // We will only use path and value because in an OverWriteParameterSet we only care about parameters whose values
+      // are overridden in the simulation. You can only override a parameter in a simulation with a value.
       return await SnapshotFrom(parameterValue, snapshot =>
       {
          snapshot.Path = parameterValue.Path.ToString();
-         snapshot.Value = parameterValue.Value.GetValueOrDefault();
+         snapshot.Value = parameterValue.Value.Value;
       });
    }
 

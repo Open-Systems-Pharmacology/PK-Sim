@@ -831,6 +831,8 @@ namespace PKSim.Assets
 
          public static string SimulationTemplateBuildingBlockNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
 
+         public static string OverWriteParameterSetNotFoundInCompound(string overWriteParameterSetName, string comnpoundName)=> $"Overwrite parameter set '{overWriteParameterSetName}' not found in compound '{comnpoundName}'";
+
          public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
 
          public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
