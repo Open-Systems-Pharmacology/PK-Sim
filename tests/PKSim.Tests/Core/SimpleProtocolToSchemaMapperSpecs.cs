@@ -239,4 +239,38 @@ namespace PKSim.Core
          dosingItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Intravenous);
       }
    }
+
+   public class When_mapping_a_simple_protocol_with_event_and_non_zero_offset : concern_for_SimpleProtocolToSchemaMapper
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IEnumerable<Schema> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol
+         {
+            ApplicationType = ApplicationTypes.Intravenous,
+            DosingInterval = DosingIntervals.Single,
+            EventKey = CoreConstants.DEFAULT_EVENT_KEY
+         };
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(120).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_start_time_to_the_event_offset_value()
+      {
+         var schema = _result.ElementAt(0);
+         var eventItem = schema.SchemaItems.First(si => si.IsEvent);
+         eventItem.StartTime.Value.ShouldBeEqualTo(120);
+      }
+   }
 }
