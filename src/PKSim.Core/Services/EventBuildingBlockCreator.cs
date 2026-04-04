@@ -178,6 +178,8 @@ namespace PKSim.Core.Services
             .GroupBy(item => item.EventKey)
             .Where(g => !string.IsNullOrEmpty(g.Key));
 
+         var eventGroupNameCount = new Dictionary<string, int>();
+
          foreach (var group in eventSchemaItemsByKey)
          {
             var eventMapping = protocolProperties.EventMappingWith(group.Key);
@@ -193,9 +195,12 @@ namespace PKSim.Core.Services
             // get event group template
             var templateEventGroup = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
 
-            // create new event group
+            // create new event group with a unique name
             var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
-            eventGroup.Name = pkSimEvent.Name;
+            eventGroupNameCount.TryGetValue(pkSimEvent.Name, out var count);
+            count++;
+            eventGroupNameCount[pkSimEvent.Name] = count;
+            eventGroup.Name = count == 1 ? pkSimEvent.Name : $"{pkSimEvent.Name}_{count}";
             eventGroup.RemoveChild(eventGroup.MainSubContainer());
 
             // set event group parameters
@@ -209,7 +214,7 @@ namespace PKSim.Core.Services
                var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
 
                eventIndex += 1;
-               mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
+               mainSubContainer.Name = $"{eventGroup.Name}_{eventIndex}";
 
                _parameterSetUpdater.UpdateValue(schemaItem.StartTime, mainSubContainer.StartTime());
 

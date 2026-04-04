@@ -259,16 +259,21 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_create_two_separate_event_groups()
+      public void should_create_two_separate_event_groups_with_distinct_names()
       {
-         var eventGroups = _result.OfType<EventGroupBuilder>().Where(x => x.Name == "MyEvent").ToList();
+         var eventGroups = _result.OfType<EventGroupBuilder>()
+            .Where(x => x.Name.StartsWith("MyEvent"))
+            .ToList();
          eventGroups.Count.ShouldBeEqualTo(2);
+         eventGroups.Select(x => x.Name).ShouldOnlyContain("MyEvent", "MyEvent_2");
       }
 
       [Observation]
       public void should_create_one_sub_container_per_event_group()
       {
-         var eventGroups = _result.OfType<EventGroupBuilder>().Where(x => x.Name == "MyEvent").ToList();
+         var eventGroups = _result.OfType<EventGroupBuilder>()
+            .Where(x => x.Name.StartsWith("MyEvent"))
+            .ToList();
          eventGroups.Each(eg => eg.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(1));
       }
    }
