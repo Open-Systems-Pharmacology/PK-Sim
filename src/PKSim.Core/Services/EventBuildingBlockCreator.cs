@@ -148,9 +148,10 @@ namespace PKSim.Core.Services
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
-         //Filter out event schema items - they are not applications.
-         //TODO: Create event groups for event schema items based on EventPlaceholderMappings in ProtocolProperties
-         _schemaItemsMapper.MapFrom(protocol).Where(item => !item.IsEvent).ToList().Each((schemaItem, index) =>
+         var allSchemaItems = _schemaItemsMapper.MapFrom(protocol).ToList();
+
+         // Create applications for non-event schema items
+         allSchemaItems.Where(item => !item.IsEvent).ToList().Each((schemaItem, index) =>
          {
             //+1 to start at 1 for the nomenclature
             var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
@@ -160,6 +161,66 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, protocol);
 
          _eventGroupBuildingBlock.Add(eventGroup);
+
+         // Create event groups for event schema items based on EventPlaceholderMappings
+         createProtocolEvents(compoundProperties, allSchemaItems.Where(item => item.IsEvent).ToList());
+      }
+
+      private void createProtocolEvents(CompoundProperties compoundProperties, IReadOnlyList<ISchemaItem> eventSchemaItems)
+      {
+         if (eventSchemaItems.Count == 0)
+            return;
+
+         var protocolProperties = compoundProperties.ProtocolProperties;
+
+         // Group event schema items by their EventKey
+         var eventSchemaItemsByKey = eventSchemaItems
+            .GroupBy(item => item.EventKey)
+            .Where(g => !string.IsNullOrEmpty(g.Key));
+
+         foreach (var group in eventSchemaItemsByKey)
+         {
+            var eventMapping = protocolProperties.EventMappingWith(group.Key);
+            if (eventMapping == null)
+               continue;
+
+            var usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId);
+            if (usedBuildingBlock == null)
+               continue;
+
+            var pkSimEvent = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>();
+
+            // get event group template
+            var templateEventGroup = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
+
+            // create new event group
+            var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
+            eventGroup.Name = pkSimEvent.Name;
+            eventGroup.RemoveChild(eventGroup.MainSubContainer());
+
+            // set event group parameters
+            _parameterSetUpdater.UpdateValuesByName(pkSimEvent, eventGroup);
+
+            // create subcontainers for each schema item sharing this key
+            int eventIndex = 0;
+
+            foreach (var schemaItem in group.OrderBy(item => item.StartTime.Value))
+            {
+               var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
+
+               eventIndex += 1;
+               mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
+
+               _parameterSetUpdater.UpdateValue(schemaItem.StartTime, mainSubContainer.StartTime());
+
+               eventGroup.Add(mainSubContainer);
+            }
+
+            // update building block ids
+            _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
+
+            _eventGroupBuildingBlock.Add(eventGroup);
+         }
       }
 
       private void addApplication(EventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
