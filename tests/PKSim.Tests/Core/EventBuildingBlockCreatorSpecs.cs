@@ -194,12 +194,11 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_event_building_block_with_different_event_keys_for_same_template : concern_for_EventBuildingBlockCreator
+   public class When_creating_event_building_block_with_different_keys_mapping_to_same_event : concern_for_EventBuildingBlockCreator
    {
       private PKSimEvent _pkSimEvent;
       private EventGroupBuilder _templateEventGroup;
-      private EventGroupBuilder _clonedEventGroup1;
-      private EventGroupBuilder _clonedEventGroup2;
+      private EventGroupBuilder _clonedEventGroup;
       private EventGroupBuilder _clonedMainSub1;
       private EventGroupBuilder _clonedMainSub2;
 
@@ -210,8 +209,7 @@ namespace PKSim.Core
          _pkSimEvent = new PKSimEvent { TemplateName = "BladderEmptying" }.WithName("MyEvent").WithId("event-id");
          _templateEventGroup = createTemplateEventGroup("BladderEmptying");
 
-         _clonedEventGroup1 = createTemplateEventGroup("MyEvent");
-         _clonedEventGroup2 = createTemplateEventGroup("MyEvent");
+         _clonedEventGroup = createTemplateEventGroup("MyEvent");
          _clonedMainSub1 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
          _clonedMainSub1.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
          _clonedMainSub2 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
@@ -238,15 +236,13 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event) { BuildingBlock = _pkSimEvent });
          _simulation.Properties.AddCompoundProperties(compoundProperties);
 
+         // Different keys with different start times
          var eventSchemaItem1 = createEventSchemaItem("EVENT_1", 10);
          var eventSchemaItem2 = createEventSchemaItem("EVENT_2", 20);
 
          A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(new List<SchemaItem> { eventSchemaItem1, eventSchemaItem2 });
          A.CallTo(() => _eventGroupRepository.All()).Returns(new[] { _templateEventGroup });
-
-         var cloneIndex = 0;
-         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup))
-            .ReturnsLazily(() => cloneIndex++ == 0 ? _clonedEventGroup1 : _clonedEventGroup2);
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup)).Returns(_clonedEventGroup);
 
          var mainSubIndex = 0;
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup.MainSubContainer()))
@@ -259,22 +255,83 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_create_two_separate_event_groups_with_distinct_names()
+      public void should_create_single_event_group()
       {
-         var eventGroups = _result.OfType<EventGroupBuilder>()
-            .Where(x => x.Name.StartsWith("MyEvent"))
-            .ToList();
-         eventGroups.Count.ShouldBeEqualTo(2);
-         eventGroups.Select(x => x.Name).ShouldOnlyContain("MyEvent", "MyEvent_2");
+         _result.OfType<EventGroupBuilder>().Count(x => x.Name == "MyEvent").ShouldBeEqualTo(1);
       }
 
       [Observation]
-      public void should_create_one_sub_container_per_event_group()
+      public void should_combine_start_times_into_two_sub_containers()
       {
-         var eventGroups = _result.OfType<EventGroupBuilder>()
-            .Where(x => x.Name.StartsWith("MyEvent"))
-            .ToList();
-         eventGroups.Each(eg => eg.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(1));
+         var eventGroup = _result.OfType<EventGroupBuilder>().First(x => x.Name == "MyEvent");
+         eventGroup.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_creating_event_building_block_with_different_keys_mapping_to_same_event_with_duplicate_start_times : concern_for_EventBuildingBlockCreator
+   {
+      private PKSimEvent _pkSimEvent;
+      private EventGroupBuilder _templateEventGroup;
+      private EventGroupBuilder _clonedEventGroup;
+      private EventGroupBuilder _clonedMainSub;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _pkSimEvent = new PKSimEvent { TemplateName = "BladderEmptying" }.WithName("MyEvent").WithId("event-id");
+         _templateEventGroup = createTemplateEventGroup("BladderEmptying");
+
+         _clonedEventGroup = createTemplateEventGroup("MyEvent");
+         _clonedMainSub = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
+         _clonedMainSub.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+
+         var protocol = A.Fake<Protocol>();
+         var protocolProperties = new ProtocolProperties { Protocol = protocol };
+
+         protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping
+         {
+            EventKey = "EVENT_1",
+            TemplateEventId = _pkSimEvent.Id,
+            Event = _pkSimEvent
+         });
+         protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping
+         {
+            EventKey = "EVENT_2",
+            TemplateEventId = _pkSimEvent.Id,
+            Event = _pkSimEvent
+         });
+
+         var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event) { BuildingBlock = _pkSimEvent });
+         _simulation.Properties.AddCompoundProperties(compoundProperties);
+
+         // Same start time for both keys — should be deduplicated
+         var eventSchemaItem1 = createEventSchemaItem("EVENT_1", 10);
+         var eventSchemaItem2 = createEventSchemaItem("EVENT_2", 10);
+
+         A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(new List<SchemaItem> { eventSchemaItem1, eventSchemaItem2 });
+         A.CallTo(() => _eventGroupRepository.All()).Returns(new[] { _templateEventGroup });
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup)).Returns(_clonedEventGroup);
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup.MainSubContainer())).Returns(_clonedMainSub);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateFor(_simulation);
+      }
+
+      [Observation]
+      public void should_create_single_event_group()
+      {
+         _result.OfType<EventGroupBuilder>().Count(x => x.Name == "MyEvent").ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_deduplicate_and_create_only_one_sub_container()
+      {
+         var eventGroup = _result.OfType<EventGroupBuilder>().First(x => x.Name == "MyEvent");
+         eventGroup.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(1);
       }
    }
 }

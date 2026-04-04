@@ -173,16 +173,15 @@ namespace PKSim.Core.Services
 
          var protocolProperties = compoundProperties.ProtocolProperties;
 
-         // Group event schema items by their EventKey
-         var eventSchemaItemsByKey = eventSchemaItems
-            .GroupBy(item => item.EventKey)
-            .Where(g => !string.IsNullOrEmpty(g.Key));
+         // Resolve each event schema item to its PKSimEvent, collecting unique start times per event
+         var schemaItemsByEvent = new Dictionary<string, (PKSimEvent pkSimEvent, List<IParameter> startTimes)>();
 
-         var eventGroupNameCount = new Dictionary<string, int>();
-
-         foreach (var group in eventSchemaItemsByKey)
+         foreach (var schemaItem in eventSchemaItems)
          {
-            var eventMapping = protocolProperties.EventMappingWith(group.Key);
+            if (string.IsNullOrEmpty(schemaItem.EventKey))
+               continue;
+
+            var eventMapping = protocolProperties.EventMappingWith(schemaItem.EventKey);
             if (eventMapping == null)
                continue;
 
@@ -192,36 +191,42 @@ namespace PKSim.Core.Services
 
             var pkSimEvent = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>();
 
-            // get event group template
+            if (!schemaItemsByEvent.TryGetValue(pkSimEvent.Id, out var entry))
+            {
+               entry = (pkSimEvent, new List<IParameter>());
+               schemaItemsByEvent[pkSimEvent.Id] = entry;
+            }
+
+            // Only add if no existing start time has the same value
+            if (entry.startTimes.All(st => st.Value != schemaItem.StartTime.Value))
+               entry.startTimes.Add(schemaItem.StartTime);
+         }
+
+         // Create one event group per distinct PKSimEvent
+         foreach (var (pkSimEvent, startTimes) in schemaItemsByEvent.Values)
+         {
             var templateEventGroup = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
 
-            // create new event group with a unique name
             var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
-            eventGroupNameCount.TryGetValue(pkSimEvent.Name, out var count);
-            count++;
-            eventGroupNameCount[pkSimEvent.Name] = count;
-            eventGroup.Name = count == 1 ? pkSimEvent.Name : $"{pkSimEvent.Name}_{count}";
+            eventGroup.Name = pkSimEvent.Name;
             eventGroup.RemoveChild(eventGroup.MainSubContainer());
 
-            // set event group parameters
             _parameterSetUpdater.UpdateValuesByName(pkSimEvent, eventGroup);
 
-            // create subcontainers for each schema item sharing this key
             int eventIndex = 0;
 
-            foreach (var schemaItem in group.OrderBy(item => item.StartTime.Value))
+            foreach (var startTime in startTimes.OrderBy(st => st.Value))
             {
                var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
 
                eventIndex += 1;
-               mainSubContainer.Name = $"{eventGroup.Name}_{eventIndex}";
+               mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
 
-               _parameterSetUpdater.UpdateValue(schemaItem.StartTime, mainSubContainer.StartTime());
+               _parameterSetUpdater.UpdateValue(startTime, mainSubContainer.StartTime());
 
                eventGroup.Add(mainSubContainer);
             }
 
-            // update building block ids
             _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
 
             _eventGroupBuildingBlock.Add(eventGroup);
