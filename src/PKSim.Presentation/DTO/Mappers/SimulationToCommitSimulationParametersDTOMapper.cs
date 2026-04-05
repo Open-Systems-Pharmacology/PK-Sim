@@ -1,27 +1,28 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 
+
 namespace PKSim.Presentation.DTO.Mappers
 {
-   public interface ISimulationToCommitSimulationParametersDTOMapper
+   public interface ISimulationToCommitSimulationParametersDTOMapper : IMapper<Simulation, CommitSimulationParametersDTO>
    {
-      CommitSimulationParametersDTO MapFrom(Simulation simulation);
    }
 
    public class SimulationToCommitSimulationParametersDTOMapper : ISimulationToCommitSimulationParametersDTOMapper
    {
       private readonly IContainerTask _containerTask;
-      private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
-      public SimulationToCommitSimulationParametersDTOMapper(IContainerTask containerTask, IPKSimProjectRetriever projectRetriever)
+      public SimulationToCommitSimulationParametersDTOMapper(IContainerTask containerTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
       {
          _containerTask = containerTask;
-         _projectRetriever = projectRetriever;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public CommitSimulationParametersDTO MapFrom(Simulation simulation)
@@ -53,8 +54,7 @@ namespace PKSim.Presentation.DTO.Mappers
          if (simulationCompound == null)
             return null;
 
-         var templateId = simulation.TemplateBuildingBlockIdUsedBy(simulationCompound);
-         return _projectRetriever.Current.BuildingBlockById<Compound>(templateId);
+         return _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(simulation, simulationCompound);
       }
 
       private CompoundCommitDTO mapCompoundCommitDTO(string compoundName, Compound templateCompound, IGrouping<string, string> paths, PathCache<IParameter> parameterCache)

@@ -14,24 +14,19 @@ namespace PKSim.Presentation
    public abstract class concern_for_SimulationToCommitSimulationParametersDTOMapper : ContextSpecification<SimulationToCommitSimulationParametersDTOMapper>
    {
       protected IContainerTask _containerTask;
-      protected IPKSimProjectRetriever _projectRetriever;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected IndividualSimulation _simulation;
       protected Compound _templateCompound;
       protected Compound _simulationCompound;
-      protected PKSimProject _project;
       protected PathCache<IParameter> _parameterCache;
 
       protected override void Context()
       {
          _containerTask = A.Fake<IContainerTask>();
-         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
 
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
-
-         _project = new PKSimProject();
-         _project.AddBuildingBlock(_templateCompound);
-         A.CallTo(() => _projectRetriever.Current).Returns(_project);
 
          var root = new Container { Name = "Sim" };
          var lipophilicity = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
@@ -50,12 +45,14 @@ namespace PKSim.Presentation
             BuildingBlock = _simulationCompound
          });
 
+         A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(_simulation, _simulationCompound)).Returns(_templateCompound);
+
          _parameterCache = new PathCacheForSpecs<IParameter>();
          _parameterCache.Add("Organism|Aspirin|Lipophilicity", lipophilicity);
          _parameterCache.Add("Organism|Aspirin|Permeability", permeability);
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
 
-         sut = new SimulationToCommitSimulationParametersDTOMapper(_containerTask, _projectRetriever);
+         sut = new SimulationToCommitSimulationParametersDTOMapper(_containerTask, _buildingBlockInProjectManager);
       }
    }
 

@@ -5,6 +5,6 @@ namespace PKSim.Presentation.DTO.Simulations
 {
    public class CommitSimulationParametersDTO : DxValidatableDTO
    {
-      public List<CompoundCommitDTO> Compounds { get; set; } = new();
+      public List<CompoundCommitDTO> Compounds { get; init; } = new();
    }
 }
