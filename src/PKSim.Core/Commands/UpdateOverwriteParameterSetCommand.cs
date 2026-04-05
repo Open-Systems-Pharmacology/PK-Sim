@@ -57,7 +57,13 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new RestoreOverwriteParameterSetCommand(_overwriteParameterSet, _buildingBlock, _previousParameterValues).AsInverseFor(this);
+         var previousPaths = _previousParameterValues.Select(pv => pv.Path.PathAsString).ToHashSet();
+         var pathsAddedByThisCommand = _newParameterValues
+            .Select(pv => pv.Path.PathAsString)
+            .Where(p => !previousPaths.Contains(p))
+            .ToList();
+
+         return new UpdateOverwriteParameterSetCommand(_overwriteParameterSet, _buildingBlock, _previousParameterValues, pathsAddedByThisCommand).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
