@@ -14,7 +14,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_tracking_a_parameter_path : concern_for_SimulationParameterChangeTracker
+   public class When_tracking_a_parameter_path_with_object_path : concern_for_SimulationParameterChangeTracker
    {
       protected override void Because()
       {
@@ -30,8 +30,28 @@ namespace PKSim.Core
       [Observation]
       public void should_contain_the_tracked_path()
       {
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(1);
-         sut.GetChangedPaths()[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
+         sut.ChangedPaths.Count.ShouldBeEqualTo(1);
+         sut.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
+      }
+   }
+
+   public class When_tracking_a_parameter_path : concern_for_SimulationParameterChangeTracker
+   {
+      protected override void Because()
+      {
+         sut.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      [Observation]
+      public void should_have_uncommitted_changes()
+      {
+         sut.HasUncommittedChanges.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_contain_the_tracked_path()
+      {
+         sut.IsTracked("Organism|Aspirin|Lipophilicity").ShouldBeTrue();
       }
    }
 
@@ -39,14 +59,14 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
-         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
+         sut.Track("Organism|Aspirin|Lipophilicity");
+         sut.Track("Organism|Aspirin|Lipophilicity");
       }
 
       [Observation]
       public void should_only_contain_the_path_once()
       {
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(1);
+         sut.ChangedPaths.Count.ShouldBeEqualTo(1);
       }
    }
 
@@ -55,26 +75,26 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
-         sut.Track("Organism|Aspirin|Permeability".ToObjectPath());
+         sut.Track("Organism|Aspirin|Lipophilicity");
+         sut.Track("Organism|Aspirin|Permeability");
       }
 
       protected override void Because()
       {
-         sut.Untrack("Organism|Aspirin|Lipophilicity".ToObjectPath());
+         sut.Untrack("Organism|Aspirin|Lipophilicity");
       }
 
       [Observation]
       public void should_no_longer_contain_the_untracked_path()
       {
-         sut.GetChangedPaths().Any(p => p.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeFalse();
+         sut.IsTracked("Organism|Aspirin|Lipophilicity").ShouldBeFalse();
       }
 
       [Observation]
       public void should_still_contain_other_tracked_paths()
       {
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(1);
-         sut.GetChangedPaths()[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Permeability");
+         sut.ChangedPaths.Count.ShouldBeEqualTo(1);
+         sut.IsTracked("Organism|Aspirin|Permeability").ShouldBeTrue();
       }
    }
 
@@ -82,7 +102,7 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         sut.Untrack("Organism|Aspirin|Lipophilicity".ToObjectPath());
+         sut.Untrack("Organism|Aspirin|Lipophilicity");
       }
 
       [Observation]
@@ -97,8 +117,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
-         sut.Track("Organism|Aspirin|Permeability".ToObjectPath());
+         sut.Track("Organism|Aspirin|Lipophilicity");
+         sut.Track("Organism|Aspirin|Permeability");
       }
 
       protected override void Because()
@@ -115,7 +135,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_empty_changed_paths()
       {
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(0);
+         sut.ChangedPaths.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -130,7 +150,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_empty_changed_paths()
       {
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(0);
+         sut.ChangedPaths.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -141,8 +161,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
-         sut.Track("Organism|Aspirin|Permeability".ToObjectPath());
+         sut.Track("Organism|Aspirin|Lipophilicity");
+         sut.Track("Organism|Aspirin|Permeability");
       }
 
       protected override void Because()
@@ -153,17 +173,17 @@ namespace PKSim.Core
       [Observation]
       public void should_contain_the_same_paths()
       {
-         _clone.GetChangedPaths().Count.ShouldBeEqualTo(2);
-         _clone.GetChangedPaths().Any(p => p.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
-         _clone.GetChangedPaths().Any(p => p.PathAsString == "Organism|Aspirin|Permeability").ShouldBeTrue();
+         _clone.ChangedPaths.Count.ShouldBeEqualTo(2);
+         _clone.IsTracked("Organism|Aspirin|Lipophilicity").ShouldBeTrue();
+         _clone.IsTracked("Organism|Aspirin|Permeability").ShouldBeTrue();
       }
 
       [Observation]
       public void should_be_independent_from_original()
       {
-         _clone.Track("Organism|NewPath".ToObjectPath());
-         sut.GetChangedPaths().Count.ShouldBeEqualTo(2);
-         _clone.GetChangedPaths().Count.ShouldBeEqualTo(3);
+         _clone.Track("Organism|NewPath");
+         sut.ChangedPaths.Count.ShouldBeEqualTo(2);
+         _clone.ChangedPaths.Count.ShouldBeEqualTo(3);
       }
    }
 }

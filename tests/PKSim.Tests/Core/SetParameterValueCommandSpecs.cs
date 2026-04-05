@@ -314,7 +314,7 @@ namespace PKSim.Core
       public void should_track_the_parameter_path_in_the_simulation_change_tracker()
       {
          _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
-         _simulation.ParameterChangeTracker.GetChangedPaths()[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
+         _simulation.ParameterChangeTracker.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
       }
    }
 

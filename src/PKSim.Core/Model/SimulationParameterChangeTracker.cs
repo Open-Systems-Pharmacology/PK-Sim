@@ -25,8 +25,6 @@ namespace PKSim.Core.Model
 
       public void Clear() => _changedPaths.Clear();
 
-      public IReadOnlyList<ObjectPath> GetChangedPaths() => _changedPaths.ToList();
-
       public SimulationParameterChangeTracker Clone()
       {
          var clone = new SimulationParameterChangeTracker();

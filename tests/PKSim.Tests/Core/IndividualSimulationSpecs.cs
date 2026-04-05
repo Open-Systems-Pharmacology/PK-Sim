@@ -213,7 +213,7 @@ namespace PKSim.Core
       public void should_clone_the_parameter_change_tracker()
       {
          sut.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
-         sut.ParameterChangeTracker.GetChangedPaths()[0].PathAsString.ShouldBeEqualTo("Organism|SourceComp1|Lipophilicity");
+         sut.ParameterChangeTracker.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|SourceComp1|Lipophilicity");
       }
    }
 

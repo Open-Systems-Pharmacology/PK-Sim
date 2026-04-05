@@ -128,7 +128,9 @@ namespace PKSim.IntegrationTests
       public void should_have_deserialized_the_parameter_change_tracker()
       {
          _deserializedSimulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
-         _deserializedSimulation.ParameterChangeTracker.GetChangedPaths().Count.ShouldBeEqualTo(2);
+         _deserializedSimulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(2);
+         _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Lipophilicity").ShouldBeTrue();
+         _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Permeability").ShouldBeTrue();
       }
 
       public override void GlobalCleanup()
