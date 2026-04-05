@@ -61,7 +61,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private Compound templateCompoundFor(Simulation simulation, string compoundName)
       {
-         var simulationCompound = simulation.Compounds.FirstOrDefault(c => c.Name == compoundName);
+         var simulationCompound = simulation.Compounds.FindByName(compoundName);
          if (simulationCompound == null)
             return null;
 
