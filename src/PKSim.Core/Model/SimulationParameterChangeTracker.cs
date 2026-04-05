@@ -10,6 +10,8 @@ namespace PKSim.Core.Model
 
       public bool HasUncommittedChanges => _changedPaths.Count > 0;
 
+      public IReadOnlyList<ObjectPath> ChangedPaths => _changedPaths.ToList();
+
       public void Track(ObjectPath path) => _changedPaths.Add(path);
 
       public void Untrack(ObjectPath path) => _changedPaths.Remove(path);
@@ -17,5 +19,13 @@ namespace PKSim.Core.Model
       public void Clear() => _changedPaths.Clear();
 
       public IReadOnlyList<ObjectPath> GetChangedPaths() => _changedPaths.ToList();
+
+      public SimulationParameterChangeTracker Clone()
+      {
+         var clone = new SimulationParameterChangeTracker();
+         foreach (var path in _changedPaths)
+            clone.Track(new ObjectPath(path));
+         return clone;
+      }
    }
 }

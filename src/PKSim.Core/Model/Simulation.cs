@@ -408,6 +408,7 @@ namespace PKSim.Core.Model
 
          Properties = sourceSimulation.Properties.Clone(cloneManager);
          OverwriteParameterSetSelections = sourceSimulation.OverwriteParameterSetSelections.Clone();
+         ParameterChangeTracker = sourceSimulation.ParameterChangeTracker.Clone();
          sourceSimulation.UsedBuildingBlocks.Each(bb => AddUsedBuildingBlock(bb.Clone(cloneManager)));
          Model = cloneManager.Clone(sourceSimulation.Model);
 
@@ -491,6 +492,8 @@ namespace PKSim.Core.Model
       }
 
       public virtual OverwriteParameterSetSelections OverwriteParameterSetSelections { get; protected set; } = new();
+
+      public virtual SimulationParameterChangeTracker ParameterChangeTracker { get; protected set; } = new();
 
       /// <summary>
       ///    Adds a selection of <paramref name="overwriteParameterSet"/> for the compound with <paramref name="compoundName"/>.

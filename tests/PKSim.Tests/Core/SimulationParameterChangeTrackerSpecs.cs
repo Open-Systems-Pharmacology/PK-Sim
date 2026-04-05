@@ -133,4 +133,37 @@ namespace PKSim.Core
          sut.GetChangedPaths().Count.ShouldBeEqualTo(0);
       }
    }
+
+   public class When_cloning_the_tracker : concern_for_SimulationParameterChangeTracker
+   {
+      private SimulationParameterChangeTracker _clone;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Track("Organism|Aspirin|Lipophilicity".ToObjectPath());
+         sut.Track("Organism|Aspirin|Permeability".ToObjectPath());
+      }
+
+      protected override void Because()
+      {
+         _clone = sut.Clone();
+      }
+
+      [Observation]
+      public void should_contain_the_same_paths()
+      {
+         _clone.GetChangedPaths().Count.ShouldBeEqualTo(2);
+         _clone.GetChangedPaths().Any(p => p.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
+         _clone.GetChangedPaths().Any(p => p.PathAsString == "Organism|Aspirin|Permeability").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_be_independent_from_original()
+      {
+         _clone.Track("Organism|NewPath".ToObjectPath());
+         sut.GetChangedPaths().Count.ShouldBeEqualTo(2);
+         _clone.GetChangedPaths().Count.ShouldBeEqualTo(3);
+      }
+   }
 }
