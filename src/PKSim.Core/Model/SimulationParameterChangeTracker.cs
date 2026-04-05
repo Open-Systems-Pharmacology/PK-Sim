@@ -5,6 +5,12 @@ using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
+   /// <summary>
+   ///    Tracks compound-dependent simulation parameter paths that have been modified by the user
+   ///    but not yet committed to an <see cref="OverwriteParameterSet"/>.
+   ///    Only parameters whose path matches a building block compound are tracked (not unnamed metabolites).
+   ///    Persisted with the simulation so uncommitted changes survive save/load.
+   /// </summary>
    public class SimulationParameterChangeTracker
    {
       private readonly HashSet<ObjectPath> _changedPaths = new();
