@@ -12,6 +12,7 @@ namespace PKSim.Core.Commands
 
       public string ParameterId { get; }
       private bool _alteredOn;
+      private bool _trackedByThisCommand;
 
       public string SimulationId { get; protected set; }
 
@@ -127,12 +128,35 @@ namespace PKSim.Core.Commands
          if (simulation.CompoundNameForParameterPath(parameterPath) == null)
             return;
 
-         UpdateTrackerForParameter(simulation.ParameterChangeTracker, parameterPath);
+         var tracker = simulation.ParameterChangeTracker;
+
+         //this is a direct command
+         if (!_trackedByThisCommand)
+         {
+            var wasTracked = tracker.IsTracked(parameterPath);
+            UpdateTrackerForParameter(tracker, parameterPath);
+            var isTracked = tracker.IsTracked(parameterPath);
+
+            //this command changed the tracker state => remember so we can reverse on undo
+            if (wasTracked != isTracked)
+               _trackedByThisCommand = true;
+         }
+         //this is an inverse command => reverse the tracking action
+         else
+         {
+            ReverseTrackerForParameter(tracker, parameterPath);
+            _trackedByThisCommand = false;
+         }
       }
 
       protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {
          tracker.Track(parameterPath);
+      }
+
+      protected virtual void ReverseTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         tracker.Untrack(parameterPath);
       }
 
       protected virtual void UpdateParameter(IExecutionContext context)
@@ -159,6 +183,7 @@ namespace PKSim.Core.Commands
          base.UpdateInternalFrom(originalCommand);
          var editChangeCommand = originalCommand.DowncastTo<EditParameterCommand>();
          _alteredOn = editChangeCommand._alteredOn;
+         _trackedByThisCommand = editChangeCommand._trackedByThisCommand;
       }
    }
 }

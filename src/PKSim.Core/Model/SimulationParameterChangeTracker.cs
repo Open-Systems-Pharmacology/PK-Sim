@@ -21,6 +21,8 @@ namespace PKSim.Core.Model
 
       public void Untrack(string path) => Untrack(path.ToObjectPath());
 
+      public bool IsTracked(string path) => _changedPaths.Contains(path.ToObjectPath());
+
       public void Clear() => _changedPaths.Clear();
 
       public IReadOnlyList<ObjectPath> GetChangedPaths() => _changedPaths.ToList();

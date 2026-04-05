@@ -43,6 +43,11 @@ namespace PKSim.Core.Commands
          tracker.Untrack(parameterPath);
       }
 
+      protected override void ReverseTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         tracker.Track(parameterPath);
+      }
+
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          //inverse of a reset command set the previous value back into the parameter
