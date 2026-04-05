@@ -24,6 +24,13 @@ namespace PKSim.Core.Model
       public void Remove(ParameterValue parameterValue) =>
          _parameterValues.Remove(parameterValue.Path);
 
+      public void RemoveByPath(string parameterPath)
+      {
+         var existing = ParameterValueByPath(parameterPath);
+         if (existing != null)
+            Remove(existing);
+      }
+
       public ParameterValue ParameterValueByPath(string parameterPath) =>
          _parameterValues[parameterPath.ToObjectPath()];
 

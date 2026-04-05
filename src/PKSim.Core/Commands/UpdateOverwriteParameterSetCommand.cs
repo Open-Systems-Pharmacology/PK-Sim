@@ -44,12 +44,7 @@ namespace PKSim.Core.Commands
          _previousParameterValues = _overwriteParameterSet.ParameterValues.ToList();
 
          //Remove reset parameters
-         _pathsToRemove.Each(path =>
-         {
-            var existing = _overwriteParameterSet.ParameterValueByPath(path);
-            if (existing != null)
-               _overwriteParameterSet.Remove(existing);
-         });
+         _pathsToRemove.Each(path => _overwriteParameterSet.RemoveByPath(path));
 
          //Add or replace parameter values
          _newParameterValues.Each(pv => _overwriteParameterSet.Add(pv));
