@@ -560,6 +560,8 @@ namespace PKSim.Core
             .Returns(_simulationTimeProfile);
 
 
+         _snapshot.ChangedParameterPaths = new[] { "Organism|COMP|Lipophilicity", "Organism|COMP|Permeability" };
+
          //ensure that run will be performed
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
@@ -652,6 +654,14 @@ namespace PKSim.Core
       public void should_have_updated_the_reference_to_observed_data_in_all_charts()
       {
          A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, _project)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_restored_the_changed_parameter_paths()
+      {
+         _simulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(2);
+         _simulation.ParameterChangeTracker.IsTracked("Organism|COMP|Lipophilicity").ShouldBeTrue();
+         _simulation.ParameterChangeTracker.IsTracked("Organism|COMP|Permeability").ShouldBeTrue();
       }
    }
 
