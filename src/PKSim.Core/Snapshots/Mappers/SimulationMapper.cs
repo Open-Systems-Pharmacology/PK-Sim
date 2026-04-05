@@ -143,7 +143,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateChangedParameterPaths(ModelSimulation simulation, string[] changedParameterPaths)
       {
-         changedParameterPaths?.Each(path => simulation.ParameterChangeTracker.Track(path.ToObjectPath()));
+         changedParameterPaths?.Each(path => simulation.ParameterChangeTracker.Track(path));
       }
 
       private AlteredBuildingBlock[] alteredBuildingBlocksIn(ModelSimulation simulation)
