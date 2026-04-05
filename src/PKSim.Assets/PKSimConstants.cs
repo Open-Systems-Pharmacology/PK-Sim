@@ -272,6 +272,8 @@ namespace PKSim.Assets
             return $"Add {lowerEntityType} '{entityName}' to {lowerContainerType} '{containerName}'";
          }
 
+         public static readonly string CommitSimulationParametersDescription = "Commit simulation parameters to compounds";
+
          public static string RemoveEntityFromContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
