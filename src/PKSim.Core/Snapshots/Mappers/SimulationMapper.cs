@@ -135,7 +135,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private string[] changedParameterPathsFrom(ModelSimulation simulation)
       {
          var paths = simulation.ParameterChangeTracker.ChangedPaths;
-         if (paths.Count == 0)
+         if (!paths.Any())
             return null;
 
          return paths.Select(p => p.PathAsString).ToArray();
