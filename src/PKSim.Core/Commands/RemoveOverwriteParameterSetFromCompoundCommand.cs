@@ -40,7 +40,7 @@ namespace PKSim.Core.Commands
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
-         _overwriteParameterSet = _buildingBlock.OverwriteParameterSets.FindById(_overwriteParameterSetId);
+         _overwriteParameterSet = context.Get<OverwriteParameterSet>(_overwriteParameterSetId);
       }
    }
 }

@@ -21,6 +21,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _executionContext.BuildingBlockContaining(_compound)).Returns(_compound);
          A.CallTo(() => _executionContext.Get<Compound>(_compound.Id)).Returns(_compound);
+         A.CallTo(() => _executionContext.Get<OverwriteParameterSet>(_overwriteParameterSet.Id)).Returns(_overwriteParameterSet);
 
          sut = new AddOverwriteParameterSetToCompoundCommand(_overwriteParameterSet, _compound);
       }
