@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -39,6 +40,9 @@ namespace PKSim.Core.Commands
 
          //Command dependent implementation
          ExecuteUpdateParameter(_parameter, context);
+
+         //Track compound-dependent simulation parameter changes
+         TrackParameterChange(_parameter, context);
 
          //Once values have been updated, update dependent objects
          UpdateDependenciesOnParameter(_parameter, context);
@@ -106,6 +110,24 @@ namespace PKSim.Core.Commands
             simulation.SetAltered(_parameter.Origin.BuilingBlockId, altered: false);
             _alteredOn = false;
          }
+      }
+
+      protected virtual void TrackParameterChange(IParameter parameter, IExecutionContext context)
+      {
+         if (parameter.BuildingBlockType != PKSimBuildingBlockType.Simulation)
+            return;
+
+         var simulation = context.Get<Simulation>(SimulationId);
+         if (simulation == null)
+            return;
+
+         var entityPathResolver = context.Resolve<IEntityPathResolver>();
+         var parameterPath = entityPathResolver.PathFor(parameter);
+
+         if (simulation.CompoundNameForParameterPath(parameterPath) == null)
+            return;
+
+         simulation.ParameterChangeTracker.Track(parameterPath.ToObjectPath());
       }
 
       protected virtual void UpdateParameter(IExecutionContext context)

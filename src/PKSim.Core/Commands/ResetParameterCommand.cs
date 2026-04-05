@@ -1,5 +1,6 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -36,6 +37,24 @@ namespace PKSim.Core.Commands
 
          //reset only available for truly default parameter with a default value
          parameter.IsDefault = true;
+      }
+
+      protected override void TrackParameterChange(IParameter parameter, IExecutionContext context)
+      {
+         if (parameter.BuildingBlockType != PKSimBuildingBlockType.Simulation)
+            return;
+
+         var simulation = context.Get<Simulation>(SimulationId);
+         if (simulation == null)
+            return;
+
+         var entityPathResolver = context.Resolve<IEntityPathResolver>();
+         var parameterPath = entityPathResolver.PathFor(parameter);
+
+         if (simulation.CompoundNameForParameterPath(parameterPath) == null)
+            return;
+
+         simulation.ParameterChangeTracker.Untrack(parameterPath.ToObjectPath());
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
