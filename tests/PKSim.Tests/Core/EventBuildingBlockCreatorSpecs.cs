@@ -172,7 +172,6 @@ namespace PKSim.Core
          base.Context();
 
          var protocol = A.Fake<Protocol>();
-         // Protocol properties with no event mappings
          var protocolProperties = new ProtocolProperties { Protocol = protocol };
          var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
          _simulation.Properties.AddCompoundProperties(compoundProperties);
@@ -181,16 +180,10 @@ namespace PKSim.Core
          A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(new List<SchemaItem> { eventSchemaItem });
       }
 
-      protected override void Because()
-      {
-         _result = sut.CreateFor(_simulation);
-      }
-
       [Observation]
-      public void should_not_create_any_protocol_event_groups()
+      public void should_throw_when_event_cannot_be_resolved()
       {
-         // Should only have one child: the protocol application event group, no protocol event groups
-         _result.Count().ShouldBeEqualTo(1);
+         The.Action(() => sut.CreateFor(_simulation)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -332,6 +325,89 @@ namespace PKSim.Core
       {
          var eventGroup = _result.OfType<EventGroupBuilder>().First(x => x.Name == "MyEvent");
          eventGroup.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_creating_event_building_block_with_same_event_used_standalone_and_in_protocol : concern_for_EventBuildingBlockCreator
+   {
+      private PKSimEvent _pkSimEvent;
+      private EventGroupBuilder _templateEventGroup;
+      private EventGroupBuilder _clonedEventGroup;
+      private EventGroupBuilder _clonedMainSub1;
+      private EventGroupBuilder _clonedMainSub2;
+      private EventGroupBuilder _clonedMainSub3;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _pkSimEvent = new PKSimEvent { TemplateName = "BladderEmptying" }.WithName("MyEvent").WithId("event-id");
+         _templateEventGroup = createTemplateEventGroup("BladderEmptying");
+
+         _clonedEventGroup = createTemplateEventGroup("MyEvent");
+         _clonedMainSub1 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
+         _clonedMainSub1.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+         _clonedMainSub2 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
+         _clonedMainSub2.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+         _clonedMainSub3 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
+         _clonedMainSub3.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+
+         // Standalone event mapping at t=5
+         var standaloneStartTime = new PKSimParameter().WithName(Constants.Parameters.START_TIME);
+         standaloneStartTime.Value = 5;
+         _simulation.EventProperties.AddEventMapping(new EventMapping
+         {
+            TemplateEventId = _pkSimEvent.Id,
+            StartTime = standaloneStartTime
+         });
+
+         // Protocol event mapping at t=10 and duplicate at t=5
+         var protocol = A.Fake<Protocol>();
+         var protocolProperties = new ProtocolProperties { Protocol = protocol };
+         protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping
+         {
+            EventKey = "EVENT_1",
+            TemplateEventId = _pkSimEvent.Id,
+            Event = _pkSimEvent
+         });
+
+         var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event) { BuildingBlock = _pkSimEvent });
+         _simulation.Properties.AddCompoundProperties(compoundProperties);
+
+         var eventSchemaItem1 = createEventSchemaItem("EVENT_1", 10);
+         var eventSchemaItem2 = createEventSchemaItem("EVENT_1", 5); // duplicate of standalone
+
+         A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(new List<SchemaItem> { eventSchemaItem1, eventSchemaItem2 });
+         A.CallTo(() => _eventGroupRepository.All()).Returns(new[] { _templateEventGroup });
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup)).Returns(_clonedEventGroup);
+
+         var mainSubIndex = 0;
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_templateEventGroup.MainSubContainer()))
+            .ReturnsLazily(() =>
+            {
+               mainSubIndex++;
+               return mainSubIndex == 1 ? _clonedMainSub1 : mainSubIndex == 2 ? _clonedMainSub2 : _clonedMainSub3;
+            });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateFor(_simulation);
+      }
+
+      [Observation]
+      public void should_create_single_event_group()
+      {
+         _result.OfType<EventGroupBuilder>().Count(x => x.Name == "MyEvent").ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_merge_start_times_and_deduplicate()
+      {
+         // t=5 from standalone + t=5 from protocol (deduplicated) + t=10 from protocol = 2 unique
+         var eventGroup = _result.OfType<EventGroupBuilder>().First(x => x.Name == "MyEvent");
+         eventGroup.GetChildren<EventGroupBuilder>().Count().ShouldBeEqualTo(2);
       }
    }
 }

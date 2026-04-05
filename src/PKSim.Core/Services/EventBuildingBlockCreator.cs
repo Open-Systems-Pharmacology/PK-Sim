@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Assets;
@@ -5,10 +6,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core.Services
 {
@@ -66,7 +69,7 @@ namespace PKSim.Core.Services
 
             createApplications(_simulation.CompoundPropertiesList);
 
-            createNonApplicationEvents();
+            createEvents();
 
             _parameterDefaultStateUpdater.UpdateDefaultFor(_eventGroupBuildingBlock);
 
@@ -79,58 +82,96 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void createNonApplicationEvents()
+      private void createEvents()
       {
-         // group events by the event-building block they are using
-         var eventBuildingBlockInfos = (from eventMapping in _simulation.EventProperties.EventMappings
-               let usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId)
-               let eventBuildingBlock = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>()
-               select new { eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name })
-            .Distinct();
+         var eventStartTimes = collectEventStartTimes();
 
-         // create event groups for each used event-building block
-         foreach (var eventBuildingBlockInfo in eventBuildingBlockInfos)
+         foreach (var entry in eventStartTimes)
          {
-            // get event group template
-            var templateEventGroup = _eventGroupRepository.FindByName(eventBuildingBlockInfo.TemplateName);
-
-            // create new event group
-            var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
-            eventGroup.Name = eventBuildingBlockInfo.Name;
-            eventGroup.RemoveChild(eventGroup.MainSubContainer());
-
-            // get building block and eventgroup-template to be used
-            var eventBuildingBlock = _simulation.UsedBuildingBlockById(eventBuildingBlockInfo.Id);
-            var eventTemplate = eventBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>();
-
-            // set event group parameter
-            _parameterSetUpdater.UpdateValuesByName(eventTemplate, eventGroup);
-
-            // create subcontainers (event groups) for all events of the same type
-            int eventIndex = 0; //used for naming of event subcontainers only
-
-            foreach (var eventMapping in _simulation.EventProperties.EventMappings.OrderBy(em => em.StartTime.Value))
-            {
-               if (!eventMapping.TemplateEventId.Equals(eventBuildingBlock.TemplateId))
-                  continue; //event from different template
-
-               // clone main event subcontainer and set its start time
-               var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
-
-               eventIndex += 1;
-               mainSubContainer.Name = $"{eventBuildingBlockInfo.Name}_{eventIndex}";
-
-               _parameterSetUpdater.UpdateValue(eventMapping.StartTime, mainSubContainer.StartTime());
-
-               eventGroup.Add(mainSubContainer);
-            }
-
-            // update building block ids
-            _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, eventTemplate);
-
-            _eventGroupBuildingBlock.Add(eventGroup);
+            createEventGroup(entry.Event, entry.UniqueStartTimes);
          }
       }
+
+      private void createEventGroup(PKSimEvent pkSimEvent, IReadOnlyList<IParameter> startTimes)
+      {
+         var templateEventGroup = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
+
+         var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
+         eventGroup.Name = pkSimEvent.Name;
+         eventGroup.RemoveChild(eventGroup.MainSubContainer());
+
+         _parameterSetUpdater.UpdateValuesByName(pkSimEvent, eventGroup);
+
+         int eventIndex = 0;
+
+         foreach (var startTime in startTimes.OrderBy(st => st.Value))
+         {
+            var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
+
+            eventIndex += 1;
+            mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
+
+            _parameterSetUpdater.UpdateValue(startTime, mainSubContainer.StartTime());
+
+            eventGroup.Add(mainSubContainer);
+         }
+
+         _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
+
+         _eventGroupBuildingBlock.Add(eventGroup);
+      }
+
+      /// <summary>
+      ///    Collects unique start times grouped by PKSimEvent from both standalone event mappings
+      ///    and protocol event placeholder mappings. Duplicate start time values are removed.
+      /// </summary>
+      private Cache<string, EventStartTimeCollection> collectEventStartTimes()
+      {
+         var result = new Cache<string, EventStartTimeCollection>(x => x.Event.Id);
+         var eventStartTimeFor = eventStartTimeForDef(result);
+
+         // Standalone events
+         foreach (var eventMapping in _simulation.EventProperties.EventMappings)
+         {
+            var pkSimEvent = resolveEvent(eventMapping.TemplateEventId);
+            eventStartTimeFor(pkSimEvent).AddStartTime(eventMapping.StartTime);
+         }
+
+         // Protocol events
+         foreach (var protocolProperties in _simulation.CompoundPropertiesList.Select(x => x.ProtocolProperties))
+         {
+            if (protocolProperties.Protocol == null)
+               continue;
+
+            foreach (var schemaItem in _schemaItemsMapper.MapFrom(protocolProperties.Protocol).Where(item => item.IsEvent))
+            {
+               var mapping = protocolProperties.EventMappingWith(schemaItem.EventKey);
+               var pkSimEvent = resolveEvent(mapping?.TemplateEventId);
+               eventStartTimeFor(pkSimEvent).AddStartTime(schemaItem.StartTime);
+            }
+         }
+
+         return result;
+      }
+
+      private PKSimEvent resolveEvent(string templateEventId)
+      {
+         var usedBuildingBlock = string.IsNullOrEmpty(templateEventId) ? null : _simulation.UsedBuildingBlockByTemplateId(templateEventId);
+         var pkSimEvent = usedBuildingBlock?.BuildingBlock.DowncastTo<PKSimEvent>();
+
+         if (pkSimEvent == null)
+            throw new PKSimException($"Could not resolve event building block for template id '{templateEventId}'.");
+
+         return pkSimEvent;
+      }
+
+      private static Func<PKSimEvent, EventStartTimeCollection> eventStartTimeForDef(Cache<string, EventStartTimeCollection> cache) => pkSimEvent =>
+      {
+         if (!cache.Contains(pkSimEvent.Id))
+            cache.Add(new EventStartTimeCollection(pkSimEvent));
+
+         return cache[pkSimEvent.Id];
+      };
 
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
@@ -148,10 +189,8 @@ namespace PKSim.Core.Services
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
-         var allSchemaItems = _schemaItemsMapper.MapFrom(protocol).ToList();
-
-         // Create applications for non-event schema items
-         allSchemaItems.Where(item => !item.IsEvent).ToList().Each((schemaItem, index) =>
+         // Create applications for non-event schema items only
+         _schemaItemsMapper.MapFrom(protocol).Where(item => !item.IsEvent).ToList().Each((schemaItem, index) =>
          {
             //+1 to start at 1 for the nomenclature
             var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
@@ -161,76 +200,6 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, protocol);
 
          _eventGroupBuildingBlock.Add(eventGroup);
-
-         // Create event groups for event schema items based on EventPlaceholderMappings
-         createProtocolEvents(compoundProperties, allSchemaItems.Where(item => item.IsEvent).ToList());
-      }
-
-      private void createProtocolEvents(CompoundProperties compoundProperties, IReadOnlyList<ISchemaItem> eventSchemaItems)
-      {
-         if (eventSchemaItems.Count == 0)
-            return;
-
-         var protocolProperties = compoundProperties.ProtocolProperties;
-
-         // Resolve each event schema item to its PKSimEvent, collecting unique start times per event
-         var schemaItemsByEvent = new Dictionary<string, (PKSimEvent pkSimEvent, List<IParameter> startTimes)>();
-
-         foreach (var schemaItem in eventSchemaItems)
-         {
-            if (string.IsNullOrEmpty(schemaItem.EventKey))
-               continue;
-
-            var eventMapping = protocolProperties.EventMappingWith(schemaItem.EventKey);
-            if (eventMapping == null)
-               continue;
-
-            var usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId);
-            if (usedBuildingBlock == null)
-               continue;
-
-            var pkSimEvent = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>();
-
-            if (!schemaItemsByEvent.TryGetValue(pkSimEvent.Id, out var entry))
-            {
-               entry = (pkSimEvent, new List<IParameter>());
-               schemaItemsByEvent[pkSimEvent.Id] = entry;
-            }
-
-            // Only add if no existing start time has the same value
-            if (entry.startTimes.All(st => st.Value != schemaItem.StartTime.Value))
-               entry.startTimes.Add(schemaItem.StartTime);
-         }
-
-         // Create one event group per distinct PKSimEvent
-         foreach (var (pkSimEvent, startTimes) in schemaItemsByEvent.Values)
-         {
-            var templateEventGroup = _eventGroupRepository.FindByName(pkSimEvent.TemplateName);
-
-            var eventGroup = _cloneManagerForBuildingBlock.Clone(templateEventGroup);
-            eventGroup.Name = pkSimEvent.Name;
-            eventGroup.RemoveChild(eventGroup.MainSubContainer());
-
-            _parameterSetUpdater.UpdateValuesByName(pkSimEvent, eventGroup);
-
-            int eventIndex = 0;
-
-            foreach (var startTime in startTimes.OrderBy(st => st.Value))
-            {
-               var mainSubContainer = _cloneManagerForBuildingBlock.Clone(templateEventGroup.MainSubContainer());
-
-               eventIndex += 1;
-               mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
-
-               _parameterSetUpdater.UpdateValue(startTime, mainSubContainer.StartTime());
-
-               eventGroup.Add(mainSubContainer);
-            }
-
-            _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
-
-            _eventGroupBuildingBlock.Add(eventGroup);
-         }
       }
 
       private void addApplication(EventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
@@ -295,15 +264,15 @@ namespace PKSim.Core.Services
          CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings
-         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM };
+         var parameterNamesToBeInvisible = new List<string> { PARTICLE_DISPERSE_SYSTEM };
 
-         var numberOfBins = (int)formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int)formulationBuilder.Parameter(NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
             parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
          else
          {
-            var particlesDistributionType = (int)formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
+            var particlesDistributionType = (int)formulationBuilder.Parameter(PARTICLE_SIZE_DISTRIBUTION).Value;
 
             if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
                parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);
@@ -312,6 +281,27 @@ namespace PKSim.Core.Services
          }
 
          parameterNamesToBeInvisible.Each(paramName => formulationBuilder.Parameter(paramName).Visible = false);
+      }
+
+      private class EventStartTimeCollection
+      {
+         private readonly HashSet<double> _seenValues = new HashSet<double>();
+         private readonly List<IParameter> _startTimes = new List<IParameter>();
+
+         public PKSimEvent Event { get; }
+
+         public IReadOnlyList<IParameter> UniqueStartTimes => _startTimes;
+
+         public EventStartTimeCollection(PKSimEvent pkSimEvent)
+         {
+            Event = pkSimEvent;
+         }
+
+         public void AddStartTime(IParameter startTime)
+         {
+            if (_seenValues.Add(startTime.Value))
+               _startTimes.Add(startTime);
+         }
       }
    }
 }
