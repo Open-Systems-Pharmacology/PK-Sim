@@ -15,24 +15,28 @@ namespace PKSim.Presentation
    {
       protected IContainerTask _containerTask;
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
+      protected IParameterToParameterCommitDTOMapper _parameterCommitDTOMapper;
       protected IndividualSimulation _simulation;
       protected Compound _templateCompound;
       protected Compound _simulationCompound;
       protected PathCache<IParameter> _parameterCache;
+      protected IParameter _lipophilicity;
+      protected IParameter _permeability;
 
       protected override void Context()
       {
          _containerTask = A.Fake<IContainerTask>();
          _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
+         _parameterCommitDTOMapper = A.Fake<IParameterToParameterCommitDTOMapper>();
 
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
 
          var root = new Container { Name = "Sim" };
-         var lipophilicity = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
-         var permeability = DomainHelperForSpecs.ConstantParameterWithValue(7.2).WithName("Permeability");
-         root.Add(lipophilicity);
-         root.Add(permeability);
+         _lipophilicity = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
+         _permeability = DomainHelperForSpecs.ConstantParameterWithValue(7.2).WithName("Permeability");
+         root.Add(_lipophilicity);
+         root.Add(_permeability);
 
          _simulation = new IndividualSimulation
          {
@@ -48,11 +52,16 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(_simulation, _simulationCompound)).Returns(_templateCompound);
 
          _parameterCache = new PathCacheForSpecs<IParameter>();
-         _parameterCache.Add("Organism|Aspirin|Lipophilicity", lipophilicity);
-         _parameterCache.Add("Organism|Aspirin|Permeability", permeability);
+         _parameterCache.Add("Organism|Aspirin|Lipophilicity", _lipophilicity);
+         _parameterCache.Add("Organism|Aspirin|Permeability", _permeability);
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
 
-         sut = new SimulationToCommitSimulationParametersDTOMapper(_containerTask, _buildingBlockInProjectManager);
+         A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Lipophilicity", _lipophilicity))
+            .Returns(new ParameterCommitDTO { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 });
+         A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Permeability", _permeability))
+            .Returns(new ParameterCommitDTO { Path = "Organism|Aspirin|Permeability", Value = 7.2 });
+
+         sut = new SimulationToCommitSimulationParametersDTOMapper(_containerTask, _buildingBlockInProjectManager, _parameterCommitDTOMapper);
       }
    }
 

@@ -7,7 +7,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 
-
 namespace PKSim.Presentation.DTO.Mappers
 {
    public interface ISimulationToCommitSimulationParametersDTOMapper : IMapper<Simulation, CommitSimulationParametersDTO>
@@ -18,11 +17,16 @@ namespace PKSim.Presentation.DTO.Mappers
    {
       private readonly IContainerTask _containerTask;
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
+      private readonly IParameterToParameterCommitDTOMapper _parameterCommitDTOMapper;
 
-      public SimulationToCommitSimulationParametersDTOMapper(IContainerTask containerTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
+      public SimulationToCommitSimulationParametersDTOMapper(
+         IContainerTask containerTask,
+         IBuildingBlockInProjectManager buildingBlockInProjectManager,
+         IParameterToParameterCommitDTOMapper parameterCommitDTOMapper)
       {
          _containerTask = containerTask;
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
+         _parameterCommitDTOMapper = parameterCommitDTOMapper;
       }
 
       public CommitSimulationParametersDTO MapFrom(Simulation simulation)
@@ -42,7 +46,14 @@ namespace PKSim.Presentation.DTO.Mappers
             if (templateCompound == null)
                return;
 
-            dto.Compounds.Add(mapCompoundCommitDTO(compoundName, templateCompound, group, parameterCache));
+            dto.Compounds.Add(new CompoundCommitDTO
+            {
+               CompoundName = compoundName,
+               TemplateCompound = templateCompound,
+               AvailableExistingSets = templateCompound.OverwriteParameterSets,
+               NewSetName = compoundName,
+               Parameters = group.Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path])).ToList()
+            });
          });
 
          return dto;
@@ -55,29 +66,6 @@ namespace PKSim.Presentation.DTO.Mappers
             return null;
 
          return _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(simulation, simulationCompound);
-      }
-
-      private CompoundCommitDTO mapCompoundCommitDTO(string compoundName, Compound templateCompound, IGrouping<string, string> paths, PathCache<IParameter> parameterCache)
-      {
-         return new CompoundCommitDTO
-         {
-            CompoundName = compoundName,
-            TemplateCompound = templateCompound,
-            AvailableExistingSets = templateCompound.OverwriteParameterSets,
-            NewSetName = compoundName,
-            Parameters = paths.Select(path => mapParameterCommitDTO(path, parameterCache)).ToList()
-         };
-      }
-
-      private ParameterCommitDTO mapParameterCommitDTO(string path, PathCache<IParameter> parameterCache)
-      {
-         var parameter = parameterCache[path];
-         return new ParameterCommitDTO
-         {
-            Path = path,
-            DisplayPath = path,
-            Value = parameter?.Value ?? double.NaN
-         };
       }
    }
 }
