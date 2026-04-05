@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 
@@ -43,16 +44,15 @@ namespace PKSim.Core.Commands
          _previousParameterValues = _overwriteParameterSet.ParameterValues.ToList();
 
          //Remove reset parameters
-         foreach (var path in _pathsToRemove)
+         _pathsToRemove.Each(path =>
          {
             var existing = _overwriteParameterSet.ParameterValueByPath(path);
             if (existing != null)
                _overwriteParameterSet.Remove(existing);
-         }
+         });
 
          //Add or replace parameter values
-         foreach (var pv in _newParameterValues)
-            _overwriteParameterSet.Add(pv);
+         _newParameterValues.Each(pv => _overwriteParameterSet.Add(pv));
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
