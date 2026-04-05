@@ -11,6 +11,8 @@ namespace PKSim.Core.Model
    ///    Only parameters whose path matches a building block compound are tracked (not unnamed metabolites).
    ///    Persisted with the simulation so uncommitted changes survive save/load.
    /// </summary>
+   //TODO: Consider storing compound name alongside each path to avoid re-resolving via
+   //CompoundNameForParameterPath when grouping by compound in the commit workflow.
    public class SimulationParameterChangeTracker
    {
       private readonly HashSet<ObjectPath> _changedPaths = new();

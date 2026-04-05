@@ -43,7 +43,7 @@ namespace PKSim.Core.Commands
          ExecuteUpdateParameter(_parameter, context);
 
          //Track compound-dependent simulation parameter changes
-         trackParameterChange(_parameter, context);
+         trackCompoundParameterChange(_parameter, context);
 
          //Once values have been updated, update dependent objects
          UpdateDependenciesOnParameter(_parameter, context);
@@ -113,7 +113,7 @@ namespace PKSim.Core.Commands
          }
       }
 
-      private void trackParameterChange(IParameter parameter, IExecutionContext context)
+      private void trackCompoundParameterChange(IParameter parameter, IExecutionContext context)
       {
          if (parameter.BuildingBlockType != PKSimBuildingBlockType.Simulation)
             return;
