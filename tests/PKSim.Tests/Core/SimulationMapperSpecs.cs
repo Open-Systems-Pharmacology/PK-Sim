@@ -720,6 +720,8 @@ namespace PKSim.Core
       {
          _snapshot.ChangedParameterPaths.ShouldNotBeNull();
          _snapshot.ChangedParameterPaths.Length.ShouldBeEqualTo(2);
+         _snapshot.ChangedParameterPaths.ShouldContain("Organism|COMP|Lipophilicity");
+         _snapshot.ChangedParameterPaths.ShouldContain("Organism|COMP|Permeability");
       }
    }
 
