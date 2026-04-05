@@ -701,6 +701,42 @@ namespace PKSim.Core
       }
    }
 
+   public class When_mapping_a_simulation_with_changed_parameter_paths_to_snapshot : concern_for_SimulationMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _individualSimulation.ParameterChangeTracker.Track("Organism|COMP|Lipophilicity");
+         _individualSimulation.ParameterChangeTracker.Track("Organism|COMP|Permeability");
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
+      }
+
+      [Observation]
+      public void should_save_the_changed_parameter_paths()
+      {
+         _snapshot.ChangedParameterPaths.ShouldNotBeNull();
+         _snapshot.ChangedParameterPaths.Length.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_mapping_a_simulation_without_changed_parameter_paths_to_snapshot : concern_for_SimulationMapper
+   {
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
+      }
+
+      [Observation]
+      public void should_not_save_changed_parameter_paths()
+      {
+         _snapshot.ChangedParameterPaths.ShouldBeNull();
+      }
+   }
+
    public class When_mapping_a_simulation_with_overwrite_parameter_set_selections_to_snapshot : concern_for_SimulationMapper
    {
       private OverwriteParameterSet _overwriteParameterSet;
