@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -27,8 +28,7 @@ namespace PKSim.Core.Model
       public SimulationParameterChangeTracker Clone()
       {
          var clone = new SimulationParameterChangeTracker();
-         foreach (var path in _changedPaths)
-            clone.Track(new ObjectPath(path));
+         _changedPaths.Each(path => clone.Track(new ObjectPath(path)));
          return clone;
       }
    }
