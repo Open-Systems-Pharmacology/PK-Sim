@@ -38,15 +38,7 @@ namespace PKSim.Core.Commands
          parameter.IsDefault = true;
       }
 
-      protected override void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
-      {
-         tracker.Untrack(parameterPath);
-      }
-
-      protected override void ReverseTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
-      {
-         tracker.Track(parameterPath);
-      }
+      protected override bool ShouldTrackParameter => false;
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {

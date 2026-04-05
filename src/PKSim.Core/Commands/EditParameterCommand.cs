@@ -129,12 +129,18 @@ namespace PKSim.Core.Commands
             return;
 
          var tracker = simulation.ParameterChangeTracker;
+         var shouldTrack = ShouldTrackParameter;
 
          //this is a direct command
          if (!_trackedByThisCommand)
          {
             var wasTracked = tracker.IsTracked(parameterPath);
-            UpdateTrackerForParameter(tracker, parameterPath);
+
+            if (shouldTrack)
+               tracker.Track(parameterPath);
+            else
+               tracker.Untrack(parameterPath);
+
             var isTracked = tracker.IsTracked(parameterPath);
 
             //this command changed the tracker state => remember so we can reverse on undo
@@ -144,20 +150,20 @@ namespace PKSim.Core.Commands
          //this is an inverse command => reverse the tracking action
          else
          {
-            ReverseTrackerForParameter(tracker, parameterPath);
+            if (shouldTrack)
+               tracker.Untrack(parameterPath);
+            else
+               tracker.Track(parameterPath);
+
             _trackedByThisCommand = false;
          }
       }
 
-      protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
-      {
-         tracker.Track(parameterPath);
-      }
-
-      protected virtual void ReverseTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
-      {
-         tracker.Untrack(parameterPath);
-      }
+      /// <summary>
+      ///    Returns true if this command should add the parameter to the tracker (default).
+      ///    Override to return false for commands that remove from the tracker (e.g. reset).
+      /// </summary>
+      protected virtual bool ShouldTrackParameter => true;
 
       protected virtual void UpdateParameter(IExecutionContext context)
       {
