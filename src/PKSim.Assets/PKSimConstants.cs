@@ -1170,6 +1170,7 @@ namespace PKSim.Assets
          public static readonly string Parameter = "Parameter";
          public static readonly string DistributedParameter = "Distributed Parameter";
          public static readonly string Compound = "Compound";
+         public static readonly string OverwriteParameterSet = "Overwrite Parameter Set";
          public static readonly string ParameterGroupAlternative = "Alternative";
          public static readonly string ParameterGroup = "Group";
          public static readonly string SystemicProcess = "Systemic Process";
