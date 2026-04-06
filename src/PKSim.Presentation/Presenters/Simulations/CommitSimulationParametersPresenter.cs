@@ -12,13 +12,19 @@ namespace PKSim.Presentation.Presenters.Simulations
 {
    public interface ICommitSimulationParametersPresenter : IDisposablePresenter
    {
-      IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation);
+      /// <summary>
+      ///    Shows a modal dialog allowing the user to select which tracked parameter changes
+      ///    should be committed to compound overwrite parameter sets.
+      ///    When <paramref name="compoundFilter"/> is specified, only parameters for that compound are shown.
+      ///    Returns the list of <see cref="CompoundCommitInfo"/> selected by the user,
+      ///    or <c>null</c> if the user cancels or no compounds have uncommitted changes.
+      /// </summary>
+      IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compoundFilter = null);
    }
 
    public class CommitSimulationParametersPresenter : AbstractDisposablePresenter<ICommitSimulationParametersView, ICommitSimulationParametersPresenter>, ICommitSimulationParametersPresenter
    {
       private readonly ISimulationToCommitSimulationParametersDTOMapper _mapper;
-      private CommitSimulationParametersDTO _dto;
 
       public CommitSimulationParametersPresenter(
          ICommitSimulationParametersView view,
@@ -27,21 +33,21 @@ namespace PKSim.Presentation.Presenters.Simulations
          _mapper = mapper;
       }
 
-      public IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation)
+      public IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compoundFilter = null)
       {
-         _dto = _mapper.MapFrom(simulation);
+         var dto = _mapper.MapFrom(simulation, compoundFilter);
 
-         if (!_dto.Compounds.Any())
+         if (!dto.Compounds.Any())
             return null;
 
          _view.Caption = PKSimConstants.Command.CommitSimulationParametersDescription;
-         _view.BindTo(_dto);
+         _view.BindTo(dto);
          _view.Display();
 
          if (_view.Canceled)
             return null;
 
-         return commitInfosFrom(_dto);
+         return commitInfosFrom(dto);
       }
 
       private IReadOnlyList<CompoundCommitInfo> commitInfosFrom(CommitSimulationParametersDTO dto)

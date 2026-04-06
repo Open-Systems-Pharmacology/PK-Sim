@@ -11,6 +11,7 @@ namespace PKSim.Presentation.DTO.Mappers
 {
    public interface ISimulationToCommitSimulationParametersDTOMapper : IMapper<Simulation, CommitSimulationParametersDTO>
    {
+      CommitSimulationParametersDTO MapFrom(Simulation simulation, Compound compoundFilter = null);
    }
 
    public class SimulationToCommitSimulationParametersDTOMapper : ISimulationToCommitSimulationParametersDTOMapper
@@ -29,7 +30,9 @@ namespace PKSim.Presentation.DTO.Mappers
          _parameterCommitDTOMapper = parameterCommitDTOMapper;
       }
 
-      public CommitSimulationParametersDTO MapFrom(Simulation simulation)
+      public CommitSimulationParametersDTO MapFrom(Simulation input) => MapFrom(input, compoundFilter: null);
+
+      public CommitSimulationParametersDTO MapFrom(Simulation simulation, Compound compoundFilter = null)
       {
          var dto = new CommitSimulationParametersDTO();
          var parameterCache = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
@@ -44,6 +47,9 @@ namespace PKSim.Presentation.DTO.Mappers
             var compoundName = group.Key;
             var templateCompound = templateCompoundFor(simulation, compoundName);
             if (templateCompound == null)
+               return;
+
+            if (compoundFilter != null && templateCompound.Id != compoundFilter.Id)
                return;
 
             dto.Compounds.Add(new CompoundCommitDTO

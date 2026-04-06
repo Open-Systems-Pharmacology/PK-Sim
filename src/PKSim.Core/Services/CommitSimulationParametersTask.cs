@@ -32,7 +32,7 @@ namespace PKSim.Core.Services
       public OverwriteParameterSet ExistingOverwriteParameterSet { get; init; }
 
       /// <summary>
-      ///    Name for the new OverwriteParameterSet. Only used when <see cref="ExistingOverwriteParameterSet"/> is null.
+      ///    Name for the new OverwriteParameterSet. Only used when <see cref="ExistingOverwriteParameterSet" /> is null.
       /// </summary>
       public string NewOverwriteParameterSetName { get; init; }
 
@@ -80,6 +80,8 @@ namespace PKSim.Core.Services
                addUpdateExistingSetCommand(macroCommand, info, parameterValues, simulation);
          });
 
+         macroCommand.UpdatePropertiesFrom(macroCommand.All().FirstOrDefault());
+
          //Clear committed paths from tracker
          commitInfos.Each(info => info.ParameterPaths.Each(path => simulation.ParameterChangeTracker.Untrack(path)));
 
@@ -88,7 +90,7 @@ namespace PKSim.Core.Services
 
       private void addCreateNewSetCommand(PKSimMacroCommand macroCommand, CompoundCommitInfo info, List<ParameterValue> parameterValues)
       {
-         var newSet = new OverwriteParameterSet { Name = info.NewOverwriteParameterSetName };
+         var newSet = new OverwriteParameterSet {Name = info.NewOverwriteParameterSetName};
          parameterValues.Each(pv => newSet.Add(pv));
          macroCommand.Add(new AddOverwriteParameterSetToCompoundCommand(newSet, info.Compound));
       }
