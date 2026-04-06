@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -19,7 +18,6 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Infrastructure.Services;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
@@ -31,10 +29,11 @@ using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSchemaMapper = PKSim.Core.Snapshots.Mappers.OutputSchemaMapper;
 using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
+using OverwriteParameterSet = PKSim.Core.Model.OverwriteParameterSet;
+using OverwriteParameterSetSelection = PKSim.Core.Snapshots.OverwriteParameterSetSelection;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
-using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SnapshotOutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 using SolverSettingsMapper = PKSim.Core.Snapshots.Mappers.SolverSettingsMapper;
@@ -99,6 +98,7 @@ namespace PKSim.Core
       protected OutputMappingMapper _outputMappingMapper;
       protected SnapshotOutputMapping _snapshotOutputMapping;
       protected IChartTask _chartTask;
+      protected OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       protected override Task Context()
       {
@@ -113,6 +113,7 @@ namespace PKSim.Core
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _outputMappingMapper = A.Fake<OutputMappingMapper>();
+         _overwriteParameterSetSelectionMapper = A.Fake<OverwriteParameterSetSelectionMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
@@ -129,6 +130,7 @@ namespace PKSim.Core
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
             _advancedParameterMapper, _eventMappingMapper, _observerSetMappingMapper, _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper, _outputMappingMapper,
+            _overwriteParameterSetSelectionMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationParameterOriginIdUpdater,
@@ -136,16 +138,16 @@ namespace PKSim.Core
          );
 
          _project = new PKSimProject();
-         _individual = new Individual {Name = "IND", Id = "IndTemplateId"};
-         _compound = new Compound {Name = "COMP", Id = "COMP"};
-         _observerSet = new ObserverSet {Name = "OBS_SET", Id = "OBS_SET"};
-         _protocol = new SimpleProtocol {Name = "PROT", Id = "PROT"};
+         _individual = new Individual { Name = "IND", Id = "IndTemplateId" };
+         _compound = new Compound { Name = "COMP", Id = "COMP" };
+         _observerSet = new ObserverSet { Name = "OBS_SET", Id = "OBS_SET" };
+         _protocol = new SimpleProtocol { Name = "PROT", Id = "PROT" };
          _inductionProcess = new InductionProcess().WithName("Interaction process");
          _compound.AddProcess(_inductionProcess);
 
 
-         _event = new PKSimEvent {Name = "Event"};
-         _population = new RandomPopulation() {Name = "POP", Id = "PopTemplateId"};
+         _event = new PKSimEvent { Name = "Event" };
+         _population = new RandomPopulation() { Name = "POP", Id = "PopTemplateId" };
          _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -158,18 +160,18 @@ namespace PKSim.Core
          {
             ModelProperties = new ModelProperties
             {
-               ModelConfiguration = new ModelConfiguration {ModelName = "4Comp"}
+               ModelConfiguration = new ModelConfiguration { ModelName = "4Comp" }
             }
          };
-         _interactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
-         _noInteractionSelection = new InteractionSelection {MoleculeName = "CYP2D6"};
+         _interactionSelection = new InteractionSelection { ProcessName = _inductionProcess.Name };
+         _noInteractionSelection = new InteractionSelection { MoleculeName = "CYP2D6" };
 
          _simulationProperties.InteractionProperties.AddInteraction(_interactionSelection);
          _simulationProperties.InteractionProperties.AddInteraction(_noInteractionSelection);
 
          _settings = new SimulationSettings();
          _rootContainer = new Container().WithName("Sim");
-         _model = new OSPSuite.Core.Domain.Model {Root = _rootContainer};
+         _model = new OSPSuite.Core.Domain.Model { Root = _rootContainer };
 
          _individualSimulation = new IndividualSimulation
          {
@@ -222,7 +224,7 @@ namespace PKSim.Core
          _noSelectionSnapshotInteraction.MoleculeName = _noInteractionSelection.MoleculeName;
 
          _compoundProperties = new CompoundProperties();
-         _snapshotCompoundProperties = new Snapshots.CompoundProperties {Name = _compound.Name};
+         _snapshotCompoundProperties = new Snapshots.CompoundProperties { Name = _compound.Name };
          _individualSimulation.Properties.AddCompoundProperties(_compoundProperties);
 
          _eventMapping = new EventMapping();
@@ -292,7 +294,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _mobiSimulation = new IndividualSimulation {Properties = new SimulationProperties {Origin = Origins.MoBi}};
+         _mobiSimulation = new IndividualSimulation { Properties = new SimulationProperties { Origin = Origins.MoBi } };
       }
 
       [Observation]
@@ -349,15 +351,15 @@ namespace PKSim.Core
          _rootContainer.Add(_simulationParameter);
          _rootContainer.Add(_protocolParameter);
 
-         _localizedParameters = new[] {_individualChangedParameterSnapshot, _simulationParameterSnapshot, _protocolParameterSnapshot};
+         _localizedParameters = new[] { _individualChangedParameterSnapshot, _simulationParameterSnapshot, _protocolParameterSnapshot };
 
-         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] {_individualParameterChanged, _simulationParameter, _protocolParameter}))))
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] { _individualParameterChanged, _simulationParameter, _protocolParameter }))))
             .Returns(_localizedParameters);
 
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameterChanged.Origin.ParameterId)).Returns(_individualParameterChangedTemplate);
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameter.Origin.ParameterId)).Returns(_individualParameterTemplate);
 
-         _protocolTemplateBuildingBlock = new SimpleProtocol {Id = "ProtTemplateId"};
+         _protocolTemplateBuildingBlock = new SimpleProtocol { Id = "ProtTemplateId" };
          _project.AddBuildingBlock(_protocolTemplateBuildingBlock);
 
          var allIndividualTemplateParameters = new PathCacheForSpecs<IParameter>();
@@ -440,6 +442,12 @@ namespace PKSim.Core
       public void should_save_interactions()
       {
          _snapshot.Interactions.ShouldContain(_snapshotInteraction, _noSelectionSnapshotInteraction);
+      }
+
+      [Observation]
+      public void should_not_save_overwrite_parameter_set_selections_when_empty()
+      {
+         _snapshot.OverwriteParameterSetSelections.ShouldBeNull();
       }
 
       [Observation]
@@ -690,6 +698,44 @@ namespace PKSim.Core
          _simulation.ShouldBeAnInstanceOf<PopulationSimulation>();
          var populationSimulation = _simulation.DowncastTo<PopulationSimulation>();
          A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation, _snapshotSimulationContext)).MustHaveHappened();
+      }
+   }
+
+   public class When_mapping_a_simulation_with_overwrite_parameter_set_selections_to_snapshot : concern_for_SimulationMapper
+   {
+      private OverwriteParameterSet _overwriteParameterSet;
+      private OverwriteParameterSetSelection _snapshotOverwriteParameterSetSelection;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         _compound.AddOverwriteParameterSet(_overwriteParameterSet);
+         _individualSimulation.AddOverwriteParameterSetSelection(_compound.Name, _overwriteParameterSet);
+
+         _snapshotOverwriteParameterSetSelection = new OverwriteParameterSetSelection
+         {
+            CompoundName = _compound.Name,
+            OverwriteParameterSetName = "MySet"
+         };
+
+         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToSnapshot(
+               A<Model.OverwriteParameterSetSelection>.That.Matches(x => x.CompoundName == _compound.Name), _project))
+            .Returns(_snapshotOverwriteParameterSetSelection);
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
+      }
+
+      [Observation]
+      public void should_save_the_overwrite_parameter_set_selections()
+      {
+         _snapshot.OverwriteParameterSetSelections.ShouldNotBeNull();
+         _snapshot.OverwriteParameterSetSelections.Length.ShouldBeEqualTo(1);
+         _snapshot.OverwriteParameterSetSelections[0].CompoundName.ShouldBeEqualTo(_compound.Name);
+         _snapshot.OverwriteParameterSetSelections[0].OverwriteParameterSetName.ShouldBeEqualTo("MySet");
       }
    }
 }

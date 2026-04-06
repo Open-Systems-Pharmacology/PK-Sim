@@ -19,6 +19,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
    private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
    private readonly CompoundProcessMapper _processMapper;
    private readonly ValueOriginMapper _valueOriginMapper;
+   private readonly OverwriteParameterSetMapper _overwriteParameterSetMapper;
    private readonly ICompoundFactory _compoundFactory;
 
    public CompoundMapper(
@@ -27,12 +28,14 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       CalculationMethodCacheMapper calculationMethodCacheMapper,
       CompoundProcessMapper processMapper,
       ValueOriginMapper valueOriginMapper,
+      OverwriteParameterSetMapper overwriteParameterSetMapper,
       ICompoundFactory compoundFactory) : base(parameterMapper)
    {
       _alternativeMapper = alternativeMapper;
       _calculationMethodCacheMapper = calculationMethodCacheMapper;
       _processMapper = processMapper;
       _valueOriginMapper = valueOriginMapper;
+      _overwriteParameterSetMapper = overwriteParameterSetMapper;
       _compoundFactory = compoundFactory;
    }
 
@@ -47,6 +50,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
       snapshot.PkaTypes = await mapPkaTypes(compound);
       snapshot.Processes = await mapProcesses(compound);
+      snapshot.OverwriteParameterSets = await _overwriteParameterSetMapper.MapToSnapshots(compound.OverwriteParameterSets);
       snapshot.IsSmallMolecule = compound.IsSmallMolecule;
       snapshot.PlasmaProteinBindingPartner = SnapshotValueFor(compound.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
       return snapshot;
@@ -67,6 +71,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       updatePkaTypes(compound, snapshot);
 
       await updateProcesses(snapshot, compound, snapshotContext);
+      await updateOverwriteParameterSets(snapshot, compound, snapshotContext);
       await UpdateParametersFromSnapshot(snapshot, compound, snapshotContext);
 
       synchronizeMolWeightValueOrigins(compound);
@@ -84,6 +89,12 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
    {
       var processes = await _processMapper.MapToModels(snapshot.Processes, snapshotContext);
       processes?.Each(compound.AddProcess);
+   }
+
+   private async Task updateOverwriteParameterSets(SnapshotCompound snapshot, ModelCompound compound, SnapshotContext snapshotContext)
+   {
+      var overwriteParameterSets = await _overwriteParameterSetMapper.MapToModels(snapshot.OverwriteParameterSets, snapshotContext);
+      overwriteParameterSets?.Each(compound.AddOverwriteParameterSet);
    }
 
    private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName, SnapshotContext snapshotContext)
