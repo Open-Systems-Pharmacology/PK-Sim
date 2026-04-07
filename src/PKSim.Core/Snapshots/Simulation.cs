@@ -40,7 +40,6 @@ namespace PKSim.Core.Snapshots
 
       public CompoundProcessSelection[] Interactions { get; set; }
       public OverwriteParameterSetSelection[] OverwriteParameterSetSelections { get; set; }
-      public string[] ChangedParameterPaths { get; set; }
 
       public IReadOnlyList<OSPSuite.Core.Snapshots.Chart> Analyses
       {
