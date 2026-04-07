@@ -1397,6 +1397,7 @@ namespace PKSim.Assets
 
          public static readonly string AtLeastTwoBinsRequired = "At least two bins are required";
          public static readonly string ExceededMaximumOfBins = "Maximum of bins exceeded";
+         public static readonly string DecimalPlaceMustBeBetween0And15 = "Number of decimal places must be between 0 and 15";
       }
 
       public static class UI
