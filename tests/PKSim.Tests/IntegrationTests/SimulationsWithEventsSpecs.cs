@@ -72,5 +72,13 @@ namespace PKSim.IntegrationTests
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
          _simulation.Model.ShouldNotBeNull();
       }
+
+      [Observation]
+      public void should_create_event_group_for_protocol_event()
+      {
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+         var simEvent = _simulation.Model.Root.EntityAt<IContainer>(Constants.EVENTS, "MyEvent");
+         simEvent.ShouldNotBeNull();
+      }
    }
 }
