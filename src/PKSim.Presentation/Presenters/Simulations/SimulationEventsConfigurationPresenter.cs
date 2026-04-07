@@ -84,8 +84,8 @@ namespace PKSim.Presentation.Presenters.Simulations
             _eventProperties.AddEventMapping(_eventMappingMapper.MapFrom(eventMappingDTO, _simulation));
          });
 
-         var allEvents = _allEventsMappingDTO.Select(x => x.Event).ToList();
-
+         var standaloneEvents = _allEventsMappingDTO.Select(x => x.Event);
+         var allEvents = standaloneEvents.Concat(_simulation.AllEventsFromProtocolPlaceholderMappings()).Distinct().ToList();
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(_simulation, allEvents, PKSimBuildingBlockType.Event);
       }
 

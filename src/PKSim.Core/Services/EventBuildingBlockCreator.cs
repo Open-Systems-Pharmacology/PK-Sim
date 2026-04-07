@@ -148,7 +148,9 @@ namespace PKSim.Core.Services
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
-         _schemaItemsMapper.MapFrom(protocol).Each((schemaItem, index) =>
+         //Filter out event schema items - they are not applications.
+         //TODO: Create event groups for event schema items based on EventPlaceholderMappings in ProtocolProperties
+         _schemaItemsMapper.MapFrom(protocol).Where(item => !item.IsEvent).ToList().Each((schemaItem, index) =>
          {
             //+1 to start at 1 for the nomenclature
             var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";

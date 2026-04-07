@@ -668,6 +668,17 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
+      ///    Returns all distinct PKSimEvent building blocks referenced by event placeholder mappings across all compounds
+      /// </summary>
+      public virtual IReadOnlyList<PKSimEvent> AllEventsFromProtocolPlaceholderMappings() =>
+         CompoundPropertiesList
+            .SelectMany(x => x.ProtocolProperties.EventPlaceholderMappings)
+            .Select(x => x.Event)
+            .Where(x => x != null)
+            .Distinct()
+            .ToList();
+
+      /// <summary>
       ///    Returns the model used in the simulation
       /// </summary>
       public virtual ModelConfiguration ModelConfiguration

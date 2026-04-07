@@ -8,6 +8,7 @@ namespace PKSim.Presentation.Views.Simulations
    {
       void BindTo(ProtocolSelectionDTO protocolSelectionDTO);
       void AddFormulationMappingView(IView view);
+      void AddEventMappingView(IView view);
       bool AllowEmptyProtocolSelection { get;set; }
    }
 }

@@ -39,7 +39,7 @@ namespace PKSim.Presentation.DTO.Protocols
                return CompositeNameFor(ApplicationType.DisplayName, FormulationKey);
 
             if (IsEvent)
-               return CompositeNameFor(ApplicationType.DisplayName, EventKey);
+               return EventKey;
 
             return ApplicationType.DisplayName;
          }

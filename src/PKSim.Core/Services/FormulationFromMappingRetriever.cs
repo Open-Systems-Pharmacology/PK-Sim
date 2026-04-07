@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
          var templateFormulation = _buildingBlockRepository.ById<Formulation>(formulationMapping.TemplateFormulationId);
          var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(formulationMapping.TemplateFormulationId);
 
-         //this forumation was not used in the simulation yet, return the template
+         //this formulation was not used in the simulation yet, return the template
          if (usedBuildingBlock == null)
             return templateFormulation;
 
