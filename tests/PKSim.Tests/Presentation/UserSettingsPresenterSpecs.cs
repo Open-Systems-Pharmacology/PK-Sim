@@ -120,15 +120,32 @@ namespace PKSim.Presentation
 
    public class When_saving_settings : concern_for_UserSettingsPresenter
    {
+      private UserSettingsDTO _capturedDTO;
+
       protected override void Context()
       {
          base.Context();
+         A.CallTo(() => _view.BindTo(A<UserSettingsDTO>.Ignored))
+            .Invokes(call => _capturedDTO = call.GetArgument<UserSettingsDTO>(0));
+
          sut.EditSettings();
+
+         _capturedDTO.DecimalPlace = 7;
+         _capturedDTO.ActiveSkin = "NewSkin";
+         _capturedDTO.AbsTol = 1e-10;
       }
 
       protected override void Because()
       {
          sut.SaveSettings();
+      }
+
+      [Observation]
+      public void should_update_user_settings_from_the_dto_before_persisting()
+      {
+         _userSettings.DecimalPlace.ShouldBeEqualTo((uint)7);
+         _userSettings.ActiveSkin.ShouldBeEqualTo("NewSkin");
+         _userSettings.AbsTol.ShouldBeEqualTo(1e-10);
       }
 
       [Observation]
