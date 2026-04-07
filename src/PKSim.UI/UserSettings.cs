@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq.Expressions;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using OSPSuite.Assets;
@@ -17,7 +16,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
-using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -82,9 +80,8 @@ namespace PKSim.UI
          DirectoryMapSettings = directoryMapSettings;
 
          DisplayUnits = new DisplayUnitsManager();
-         ComparerSettings = new ComparerSettings {CompareHiddenEntities = true};
+         ComparerSettings = new ComparerSettings { CompareHiddenEntities = true };
          ProjectFiles = new List<string>();
-         Rules.AddRange(AllRules.All());
          DiagramOptions = new DiagramOptions();
          TemplateDatabasePath = configuration.DefaultTemplateUserDatabasePath;
          JournalPageEditorSettings = new JournalPageEditorSettings();
@@ -277,27 +274,6 @@ namespace PKSim.UI
          {
             PKSimColors.ChartDiagramBack = value;
             OnPropertyChanged(() => ChartDiagramBackColor);
-         }
-      }
-
-      private static class AllRules
-      {
-         private static IBusinessRule nonEmpty(Expression<Func<ICoreUserSettings, string>> expression) => GenericRules.NonEmptyRule(expression);
-
-         private static IBusinessRule numberOfCoreSmallerThanNumberOfProcessor { get; } = CreateRule.For<ICoreUserSettings>()
-            .Property(x => x.MaximumNumberOfCoresToUse)
-            .WithRule((x, numCore) => numCore > 0 && numCore <= Environment.ProcessorCount)
-            .WithError(Error.NumberOfCoreToUseShouldBeInferiorAsTheNumberOfProcessor(Environment.ProcessorCount));
-
-         public static IEnumerable<IBusinessRule> All()
-         {
-            return new[]
-            {
-               nonEmpty(x => x.DefaultFractionUnboundName),
-               nonEmpty(x => x.DefaultSolubilityName),
-               nonEmpty(x => x.DefaultLipophilicityName),
-               numberOfCoreSmallerThanNumberOfProcessor
-            };
          }
       }
    }
