@@ -131,6 +131,23 @@ namespace PKSim.Core.Snapshots.Mappers
          selections?.Each(selection => simulation.AddOverwriteParameterSetSelection(selection.CompoundName, selection.OverwriteParameterSet));
       }
 
+      private void reconstructChangedParameterPaths(ModelSimulation simulation)
+      {
+         //After loading, the simulation model already contains all user-changed parameters.
+         //We can rebuild the change tracker by finding parameters whose building block type is Simulation
+         //and whose path matches a building block compound (the same criteria used by EditParameterCommand
+         //when tracking changes during interactive edits).
+         var changedSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(p =>
+            p.BuildingBlockType == PKSimBuildingBlockType.Simulation && p.ShouldExportToSnapshot());
+
+         foreach (var parameter in changedSimulationParameters)
+         {
+            var path = _entityPathResolver.PathFor(parameter);
+            if (simulation.CompoundNameForParameterPath(path) != null)
+               simulation.ParameterChangeTracker.Track(path);
+         }
+      }
+
       private AlteredBuildingBlock[] alteredBuildingBlocksIn(ModelSimulation simulation)
       {
          var alteredUsedBuildingBlock = simulation.UsedBuildingBlocks.Where(x => x.Altered).ToList();
@@ -298,6 +315,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
          await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
+         reconstructChangedParameterPaths(simulation);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);

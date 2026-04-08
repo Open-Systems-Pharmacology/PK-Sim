@@ -1,9 +1,11 @@
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
@@ -269,6 +271,202 @@ namespace PKSim.Core
          _parameter.IsDefault.ShouldBeTrue();
          _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
          _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.ManualFit);
+      }
+   }
+
+   public class When_setting_the_value_of_a_compound_dependent_simulation_parameter : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Lipophilicity");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Organism|Aspirin|Lipophilicity");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_track_the_parameter_path_in_the_simulation_change_tracker()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
+         _simulation.ParameterChangeTracker.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
+      }
+   }
+
+   public class When_setting_the_value_of_a_non_compound_dependent_simulation_parameter : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Volume");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Organism|Liver|Volume");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_not_track_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
+
+   public class When_setting_the_value_of_a_non_simulation_building_block_parameter : concern_for_SetParameterValueCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_not_track_the_parameter_path()
+      {
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_undoing_a_set_parameter_value_command_that_tracked_a_parameter : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Lipophilicity");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Organism|Aspirin|Lipophilicity");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_untrack_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
+
+   public class When_undoing_a_set_parameter_value_command_for_an_already_tracked_parameter : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Lipophilicity");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         //Path was already tracked before this command
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Organism|Aspirin|Lipophilicity");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_not_untrack_since_it_was_not_the_one_that_tracked()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
       }
    }
 }

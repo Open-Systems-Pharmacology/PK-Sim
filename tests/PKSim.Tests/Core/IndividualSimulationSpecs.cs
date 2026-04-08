@@ -166,6 +166,8 @@ namespace PKSim.Core
          A.CallTo(() => _cloneManager.Clone((IPKSimBuildingBlock) _sourceProtocol)).Returns(_cloneProtocol);
 
          _sourceCompoundProperties1.ProtocolProperties.Protocol = _sourceProtocol;
+
+         _sourceSimulation.ParameterChangeTracker.Track("Organism|SourceComp1|Lipophilicity");
       }
 
       protected override void Because()
@@ -205,6 +207,13 @@ namespace PKSim.Core
       {
          sut.CompoundPropertiesFor(_cloneCompound1).ProtocolProperties.Protocol.ShouldBeEqualTo(_cloneProtocol);
          sut.CompoundPropertiesFor(_cloneCompound2).ProtocolProperties.Protocol.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_clone_the_parameter_change_tracker()
+      {
+         sut.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
+         sut.ParameterChangeTracker.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|SourceComp1|Lipophilicity");
       }
    }
 

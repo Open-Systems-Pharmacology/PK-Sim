@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -148,6 +149,79 @@ namespace PKSim.Core
       {
          _parameterToReset.Value.ShouldBeEqualTo(25);
          _parameterToReset.IsFixedValue.ShouldBeTrue();
+      }
+   }
+
+   public class When_resetting_a_compound_dependent_simulation_parameter : concern_for_ResetParameterCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+
+         _parameterToReset.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameterToReset.Origin.SimulationId = "SimId";
+         _parameterToReset.Value = 25;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|tralala");
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameterToReset)).Returns("Organism|Aspirin|tralala");
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_remove_the_parameter_path_from_the_tracker()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
+
+   public class When_undoing_a_reset_command_that_untracked_a_parameter : concern_for_ResetParameterCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+
+         _parameterToReset.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _parameterToReset.Origin.SimulationId = "SimId";
+         _parameterToReset.Value = 25;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|tralala");
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameterToReset)).Returns("Organism|Aspirin|tralala");
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_re_track_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|tralala").ShouldBeTrue();
       }
    }
 }

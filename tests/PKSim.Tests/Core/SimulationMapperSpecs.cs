@@ -519,10 +519,26 @@ namespace PKSim.Core
       private OutputSchema _outputSchema;
       private SimulationAnalysisContext _context;
       private DataRepository _calculatedDataRepository;
+      private IParameter _trackedSimulationParameter;
+      private IParameter _untrackedSimulationParameter;
 
       protected override async Task Context()
       {
          await base.Context();
+
+         //Simulation parameter that should be picked up by the change-tracker reconstruction:
+         //building block type is Simulation and its path contains a building block compound name.
+         _trackedSimulationParameter = DomainHelperForSpecs.ConstantParameterWithValue(2).WithName("Lipophilicity");
+         _trackedSimulationParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _rootContainer.Add(_trackedSimulationParameter);
+         A.CallTo(() => _entityPathResolver.PathFor(_trackedSimulationParameter)).Returns($"Organism|{_compound.Name}|Lipophilicity");
+
+         //Simulation parameter whose path does not contain a compound name => should NOT be tracked.
+         _untrackedSimulationParameter = DomainHelperForSpecs.ConstantParameterWithValue(3).WithName("Volume");
+         _untrackedSimulationParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _rootContainer.Add(_untrackedSimulationParameter);
+         A.CallTo(() => _entityPathResolver.PathFor(_untrackedSimulationParameter)).Returns("Organism|Liver|Volume");
+
          _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
          var individualSimulation = new IndividualSimulation
          {
@@ -535,6 +551,14 @@ namespace PKSim.Core
          {
             Name = _individual.Name,
             BuildingBlock = _individual
+         });
+
+         //Required so the reconstructed simulation knows about the compound and
+         //CompoundNameForParameterPath can match parameter paths.
+         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
+         {
+            Name = _compound.Name,
+            BuildingBlock = _compound
          });
 
          _modelProperties = new ModelProperties();
@@ -558,7 +582,6 @@ namespace PKSim.Core
          A.CallTo(() => _curveChartMapper.MapToModel(_snapshotSimulationTimeProfile, A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_simulationTimeProfile);
-
 
          //ensure that run will be performed
          _snapshot.HasResults = true;
@@ -652,6 +675,14 @@ namespace PKSim.Core
       public void should_have_updated_the_reference_to_observed_data_in_all_charts()
       {
          A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, _project)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_reconstructed_the_changed_parameter_paths_from_the_simulation_model()
+      {
+         _simulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(1);
+         _simulation.ParameterChangeTracker.IsTracked($"Organism|{_compound.Name}|Lipophilicity").ShouldBeTrue();
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Liver|Volume").ShouldBeFalse();
       }
    }
 
