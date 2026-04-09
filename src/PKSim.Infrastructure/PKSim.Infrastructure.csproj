@@ -42,7 +42,6 @@
     <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
