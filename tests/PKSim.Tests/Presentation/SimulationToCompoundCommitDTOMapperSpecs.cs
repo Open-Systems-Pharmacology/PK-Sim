@@ -12,7 +12,7 @@ using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_SimulationToCommitSimulationParametersDTOMapper : ContextSpecification<SimulationToCommitSimulationParametersDTOMapper>
+   public abstract class concern_for_SimulationToCompoundCommitDTOMapper : ContextSpecification<SimulationToCompoundCommitDTOMapper>
    {
       protected IContainerTask _containerTask;
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
@@ -62,13 +62,13 @@ namespace PKSim.Presentation
          A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Permeability", _permeability))
             .Returns(new ParameterCommitDTO { Path = "Organism|Aspirin|Permeability", Value = 7.2 });
 
-         sut = new SimulationToCommitSimulationParametersDTOMapper(_containerTask, _buildingBlockInProjectManager, _parameterCommitDTOMapper);
+         sut = new SimulationToCompoundCommitDTOMapper(_containerTask, _buildingBlockInProjectManager, _parameterCommitDTOMapper);
       }
    }
 
-   public class When_mapping_a_simulation_with_tracked_changes : concern_for_SimulationToCommitSimulationParametersDTOMapper
+   public class When_mapping_a_simulation_with_tracked_changes_for_compound : concern_for_SimulationToCompoundCommitDTOMapper
    {
-      private CommitSimulationParametersDTO _result;
+      private CompoundCommitDTO _result;
 
       protected override void Context()
       {
@@ -79,78 +79,95 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation);
+         _result = sut.MapFrom(_simulation, _simulationCompound);
       }
 
       [Observation]
-      public void should_group_parameters_by_compound()
+      public void should_return_dto_for_compound()
       {
-         _result.Compounds.Count.ShouldBeEqualTo(1);
-         _result.Compounds[0].CompoundName.ShouldBeEqualTo("Aspirin");
+         _result.ShouldNotBeNull();
+         _result.CompoundName.ShouldBeEqualTo("Aspirin");
       }
 
       [Observation]
       public void should_resolve_the_template_compound()
       {
-         _result.Compounds[0].TemplateCompound.ShouldBeEqualTo(_templateCompound);
+         _result.TemplateCompound.ShouldBeEqualTo(_templateCompound);
       }
 
       [Observation]
       public void should_map_parameter_values()
       {
-         _result.Compounds[0].Parameters.Count.ShouldBeEqualTo(2);
-         _result.Compounds[0].Parameters.Any(p => p.Path == "Organism|Aspirin|Lipophilicity" && p.Value == 3.5).ShouldBeTrue();
-         _result.Compounds[0].Parameters.Any(p => p.Path == "Organism|Aspirin|Permeability" && p.Value == 7.2).ShouldBeTrue();
+         _result.Parameters.Count.ShouldBeEqualTo(2);
+         _result.Parameters.Any(p => p.Path == "Organism|Aspirin|Lipophilicity" && p.Value == 3.5).ShouldBeTrue();
+         _result.Parameters.Any(p => p.Path == "Organism|Aspirin|Permeability" && p.Value == 7.2).ShouldBeTrue();
       }
 
       [Observation]
       public void should_set_default_new_set_name_to_compound_name()
       {
-         _result.Compounds[0].NewSetName.ShouldBeEqualTo("Aspirin");
+         _result.NewSetName.ShouldBeEqualTo("Aspirin");
       }
 
       [Observation]
       public void should_provide_available_existing_sets()
       {
-         _result.Compounds[0].AvailableExistingSets.ShouldBeEqualTo(_templateCompound.OverwriteParameterSets);
-      }
-   }
-
-   public class When_mapping_a_simulation_with_no_tracked_changes : concern_for_SimulationToCommitSimulationParametersDTOMapper
-   {
-      private CommitSimulationParametersDTO _result;
-
-      protected override void Because()
-      {
-         _result = sut.MapFrom(_simulation);
+         _result.AvailableExistingSets.ShouldBeEqualTo(_templateCompound.OverwriteParameterSets);
       }
 
       [Observation]
-      public void should_return_empty_dto()
+      public void should_default_to_create_new()
       {
-         _result.Compounds.Count.ShouldBeEqualTo(0);
+         _result.CreateNew.ShouldBeTrue();
       }
    }
 
-   public class When_mapping_a_simulation_with_non_compound_tracked_paths : concern_for_SimulationToCommitSimulationParametersDTOMapper
+   public class When_mapping_a_simulation_with_no_tracked_changes_for_compound : concern_for_SimulationToCompoundCommitDTOMapper
    {
-      private CommitSimulationParametersDTO _result;
+      private CompoundCommitDTO _result;
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _simulationCompound);
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _result.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_simulation_with_existing_overwrite_set_selection : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+      private OverwriteParameterSet _existingSet;
 
       protected override void Context()
       {
          base.Context();
-         _simulation.ParameterChangeTracker.Track("Organism|Liver|Volume");
+         _existingSet = new OverwriteParameterSet { Name = "ExistingSet" };
+         _templateCompound.AddOverwriteParameterSet(_existingSet);
+         _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", _existingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation);
+         _result = sut.MapFrom(_simulation, _simulationCompound);
       }
 
       [Observation]
-      public void should_exclude_non_compound_paths()
+      public void should_default_to_update_existing()
       {
-         _result.Compounds.Count.ShouldBeEqualTo(0);
+         _result.CreateNew.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_select_the_existing_set()
+      {
+         _result.SelectedExistingSet.ShouldBeEqualTo(_existingSet);
       }
    }
 }

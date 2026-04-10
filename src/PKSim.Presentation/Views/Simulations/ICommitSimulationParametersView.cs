@@ -6,6 +6,6 @@ namespace PKSim.Presentation.Views.Simulations
 {
    public interface ICommitSimulationParametersView : IModalView<ICommitSimulationParametersPresenter>
    {
-      void BindTo(CommitSimulationParametersDTO dto);
+      void BindTo(CompoundCommitDTO dto);
    }
 }

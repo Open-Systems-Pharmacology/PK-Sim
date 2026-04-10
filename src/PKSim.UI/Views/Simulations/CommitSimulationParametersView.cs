@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using DevExpress.XtraEditors.Controls;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
@@ -12,7 +10,6 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Views;
 using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
@@ -23,9 +20,9 @@ namespace PKSim.UI.Views.Simulations
    {
       private ICommitSimulationParametersPresenter _presenter;
       private readonly GridViewBinder<ParameterCommitDTO> _parameterGridBinder;
+      private readonly ScreenBinder<CompoundCommitDTO> _screenBinder;
       private readonly UxRepositoryItemCheckEdit _parameterCheckEditor;
-      private List<CompoundCommitDTO> _compounds;
-      private CompoundCommitDTO _selectedCompound;
+      private CompoundCommitDTO _dto;
 
       private const int CREATE_NEW = 0;
       private const int UPDATE_EXISTING = 1;
@@ -35,6 +32,7 @@ namespace PKSim.UI.Views.Simulations
          InitializeComponent();
          _parameterGridBinder = new GridViewBinder<ParameterCommitDTO>(gridViewParameters) { BindingMode = BindingMode.TwoWay };
          _parameterCheckEditor = new UxRepositoryItemCheckEdit(gridViewParameters);
+         _screenBinder = new ScreenBinder<CompoundCommitDTO>();
 
          gridViewParameters.ShowRowIndicator = false;
          gridViewParameters.OptionsDetail.EnableMasterViewMode = false;
@@ -46,23 +44,13 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      public void BindTo(CommitSimulationParametersDTO dto)
+      public void BindTo(CompoundCommitDTO dto)
       {
-         _compounds = dto.Compounds;
-
-         listCompounds.Items.Clear();
-         foreach (var compound in _compounds)
-         {
-            listCompounds.Items.Add(compound.CompoundName, compound.Selected ? CheckState.Checked : CheckState.Unchecked);
-         }
-
-         if (_compounds.Any())
-         {
-            listCompounds.SelectedIndex = 0;
-            selectCompound(_compounds.First());
-         }
-
-         updateOkButton();
+         _dto = dto;
+         _parameterGridBinder.BindToSource(dto.Parameters);
+         _screenBinder.BindToSource(dto);
+         updateCommitOptionsFor(dto);
+         SetOkButtonEnable();
       }
 
       public override void InitializeBinding()
@@ -80,14 +68,15 @@ namespace PKSim.UI.Views.Simulations
             .WithFixedWidth(120)
             .AsReadOnly();
 
-         listCompounds.SelectedIndexChanged += (s, e) => OnEvent(compoundSelectionChanged);
-         listCompounds.ItemCheck += (s, e) => OnEvent(() => compoundCheckChanged(e));
+         _screenBinder.Bind(x => x.NewSetName)
+            .To(tbNewSetName);
+
+         RegisterValidationFor(_screenBinder, statusChangedNotify: SetOkButtonEnable);
 
          radioGroupCommitMode.SelectedIndexChanged += (s, e) => OnEvent(commitModeChanged);
-         tbNewSetName.EditValueChanged += (s, e) => OnEvent(newSetNameChanged);
          cbExistingSet.SelectedIndexChanged += (s, e) => OnEvent(existingSetChanged);
 
-         _parameterGridBinder.Changed += NotifyViewChanged;
+         _parameterGridBinder.Changed += SetOkButtonEnable;
       }
 
       public override void InitializeResources()
@@ -95,11 +84,8 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          Caption = PKSimConstants.Command.CommitSimulationParametersDescription;
          ApplicationIcon = ApplicationIcons.Commit;
-         MinimumSize = new Size(550, 400);
-         ClientSize = new Size(700, 480);
-
-         listCompounds.Padding = new Padding(4);
-         listCompounds.ItemHeight = 24;
+         MinimumSize = new Size(600, 380);
+         ClientSize = new Size(700, 460);
 
          radioGroupCommitMode.Properties.AllowMouseWheel = false;
          radioGroupCommitMode.Properties.Items.AddRange([
@@ -116,34 +102,12 @@ namespace PKSim.UI.Views.Simulations
          layoutItemExistingSet.AdjustControlHeight(24);
       }
 
-      private void compoundSelectionChanged()
-      {
-         if (listCompounds.SelectedIndex < 0 || _compounds == null)
-            return;
-
-         selectCompound(_compounds[listCompounds.SelectedIndex]);
-      }
-
-      private void compoundCheckChanged(DevExpress.XtraEditors.Controls.ItemCheckEventArgs e)
-      {
-         if (_compounds == null || e.Index >= _compounds.Count)
-            return;
-
-         _compounds[e.Index].Selected = e.State == CheckState.Checked;
-         updateOkButton();
-      }
-
-      private void selectCompound(CompoundCommitDTO compound)
-      {
-         _selectedCompound = compound;
-         _parameterGridBinder.BindToSource(compound.Parameters);
-         updateCommitOptionsFor(compound);
-      }
+      protected override bool IsOkButtonEnable =>
+         base.IsOkButtonEnable && _dto != null && _dto.Parameters.Any(p => p.Selected);
 
       private void updateCommitOptionsFor(CompoundCommitDTO compound)
       {
          radioGroupCommitMode.EditValue = compound.CreateNew ? CREATE_NEW : UPDATE_EXISTING;
-         tbNewSetName.Text = compound.NewSetName;
 
          cbExistingSet.Properties.Items.Clear();
          if (compound.AvailableExistingSets != null && compound.AvailableExistingSets.Any())
@@ -163,43 +127,35 @@ namespace PKSim.UI.Views.Simulations
 
       private void updateOptionsVisibility()
       {
-         if (_selectedCompound == null) return;
+         if (_dto == null) return;
 
-         var isCreateNew = _selectedCompound.CreateNew;
+         var isCreateNew = _dto.CreateNew;
          layoutItemNewSetName.Visibility = toVisibility(isCreateNew);
          layoutItemExistingSet.Visibility = toVisibility(!isCreateNew && hasExistingSets);
 
          radioGroupCommitMode.Properties.Items[UPDATE_EXISTING].Enabled = hasExistingSets;
       }
 
-      private bool hasExistingSets => _selectedCompound?.AvailableExistingSets != null && _selectedCompound.AvailableExistingSets.Any();
+      private bool hasExistingSets => _dto?.AvailableExistingSets != null && _dto.AvailableExistingSets.Any();
 
       private void commitModeChanged()
       {
-         if (_selectedCompound == null) return;
+         if (_dto == null) return;
 
-         _selectedCompound.CreateNew = (int)radioGroupCommitMode.EditValue == CREATE_NEW;
+         _dto.CreateNew = (int)radioGroupCommitMode.EditValue == CREATE_NEW;
          updateOptionsVisibility();
-      }
-
-      private void newSetNameChanged()
-      {
-         if (_selectedCompound == null) return;
-         _selectedCompound.NewSetName = tbNewSetName.Text;
+         // Re-validate since CreateNew change affects NewSetName validation
+         _screenBinder.Validate();
+         SetOkButtonEnable();
       }
 
       private void existingSetChanged()
       {
-         if (_selectedCompound == null) return;
+         if (_dto == null) return;
 
          var selectedName = cbExistingSet.SelectedItem as string;
-         _selectedCompound.SelectedExistingSet = _selectedCompound.AvailableExistingSets?
+         _dto.SelectedExistingSet = _dto.AvailableExistingSets?
             .FirstOrDefault(s => s.Name == selectedName);
-      }
-
-      private void updateOkButton()
-      {
-         OkEnabled = _compounds != null && _compounds.Any(c => c.Selected);
       }
 
       private static DevExpress.XtraLayout.Utils.LayoutVisibility toVisibility(bool visible)
@@ -209,6 +165,6 @@ namespace PKSim.UI.Views.Simulations
             : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
       }
 
-      public override bool HasError => _parameterGridBinder.HasError;
+      public override bool HasError => _screenBinder.HasError || _parameterGridBinder.HasError;
    }
 }

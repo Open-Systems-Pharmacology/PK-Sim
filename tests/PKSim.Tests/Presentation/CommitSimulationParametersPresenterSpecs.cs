@@ -3,7 +3,6 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
@@ -16,22 +15,19 @@ namespace PKSim.Presentation
    public abstract class concern_for_CommitSimulationParametersPresenter : ContextSpecification<CommitSimulationParametersPresenter>
    {
       protected ICommitSimulationParametersView _view;
-      protected ISimulationToCommitSimulationParametersDTOMapper _mapper;
+      protected ISimulationToCompoundCommitDTOMapper _mapper;
       protected IndividualSimulation _simulation;
       protected Compound _templateCompound;
-      protected CommitSimulationParametersDTO _dto;
+      protected Compound _compound;
 
       protected override void Context()
       {
          _view = A.Fake<ICommitSimulationParametersView>();
-         _mapper = A.Fake<ISimulationToCommitSimulationParametersDTOMapper>();
+         _mapper = A.Fake<ISimulationToCompoundCommitDTOMapper>();
 
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
+         _compound = new Compound { Name = "Aspirin", Id = "CompoundId" };
          _simulation = new IndividualSimulation { Id = "SimId" };
-
-         _dto = new CommitSimulationParametersDTO();
-
-         A.CallTo(() => _mapper.MapFrom(_simulation)).Returns(_dto);
 
          sut = new CommitSimulationParametersPresenter(_view, _mapper);
       }
@@ -44,7 +40,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _dto.Compounds.Add(new CompoundCommitDTO
+         var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
             TemplateCompound = _templateCompound,
@@ -54,14 +50,15 @@ namespace PKSim.Presentation
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true }
             }
-         });
+         };
 
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
          A.CallTo(() => _view.Canceled).Returns(false);
       }
 
       protected override void Because()
       {
-         _result = sut.ShowCommitDialog(_simulation);
+         _result = sut.ShowCommitDialog(_simulation, _compound);
       }
 
       [Observation]
@@ -87,7 +84,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _dto.Compounds.Add(new CompoundCommitDTO
+         var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
             TemplateCompound = _templateCompound,
@@ -95,14 +92,15 @@ namespace PKSim.Presentation
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 }
             }
-         });
+         };
 
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
          A.CallTo(() => _view.Canceled).Returns(true);
       }
 
       protected override void Because()
       {
-         _result = sut.ShowCommitDialog(_simulation);
+         _result = sut.ShowCommitDialog(_simulation, _compound);
       }
 
       [Observation]
@@ -116,9 +114,15 @@ namespace PKSim.Presentation
    {
       private IReadOnlyList<CompoundCommitInfo> _result;
 
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(null);
+      }
+
       protected override void Because()
       {
-         _result = sut.ShowCommitDialog(_simulation);
+         _result = sut.ShowCommitDialog(_simulation, _compound);
       }
 
       [Observation]
@@ -129,39 +133,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_showing_commit_dialog_with_deselected_compound : concern_for_CommitSimulationParametersPresenter
-   {
-      private IReadOnlyList<CompoundCommitInfo> _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         _dto.Compounds.Add(new CompoundCommitDTO
-         {
-            CompoundName = "Aspirin",
-            TemplateCompound = _templateCompound,
-            Selected = false,
-            Parameters = new List<ParameterCommitDTO>
-            {
-               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 }
-            }
-         });
-
-         A.CallTo(() => _view.Canceled).Returns(false);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ShowCommitDialog(_simulation);
-      }
-
-      [Observation]
-      public void should_not_include_deselected_compound()
-      {
-         _result.Count.ShouldBeEqualTo(0);
-      }
-   }
-
    public class When_showing_commit_dialog_with_deselected_parameter : concern_for_CommitSimulationParametersPresenter
    {
       private IReadOnlyList<CompoundCommitInfo> _result;
@@ -169,7 +140,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _dto.Compounds.Add(new CompoundCommitDTO
+         var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
             TemplateCompound = _templateCompound,
@@ -180,14 +151,15 @@ namespace PKSim.Presentation
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true },
                new() { Path = "Organism|Aspirin|Permeability", Value = 7.0, Selected = false }
             }
-         });
+         };
 
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
          A.CallTo(() => _view.Canceled).Returns(false);
       }
 
       protected override void Because()
       {
-         _result = sut.ShowCommitDialog(_simulation);
+         _result = sut.ShowCommitDialog(_simulation, _compound);
       }
 
       [Observation]
@@ -195,6 +167,45 @@ namespace PKSim.Presentation
       {
          _result[0].ParameterPaths.Count.ShouldBeEqualTo(1);
          _result[0].ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
+      }
+   }
+
+   public class When_showing_commit_dialog_with_update_existing : concern_for_CommitSimulationParametersPresenter
+   {
+      private IReadOnlyList<CompoundCommitInfo> _result;
+      private OverwriteParameterSet _existingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingSet = new OverwriteParameterSet { Name = "Existing" };
+
+         var dto = new CompoundCommitDTO
+         {
+            CompoundName = "Aspirin",
+            TemplateCompound = _templateCompound,
+            CreateNew = false,
+            SelectedExistingSet = _existingSet,
+            Parameters = new List<ParameterCommitDTO>
+            {
+               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true }
+            }
+         };
+
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ShowCommitDialog(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_reference_existing_set()
+      {
+         _result[0].ExistingOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
+         _result[0].NewOverwriteParameterSetName.ShouldBeNull();
       }
    }
 }

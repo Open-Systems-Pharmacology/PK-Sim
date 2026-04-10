@@ -100,12 +100,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
 
-         if (simulation.ParameterChangeTracker.HasUncommittedChanges)
-            yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CommitSimulationParametersToCompounds)
-               .WithCommandFor<CommitSimulationParametersToCompoundsUICommand, Simulation>(simulation, _container)
-               .WithIcon(ApplicationIcons.Commit)
-               .AsGroupStarter();
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
             .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RunSimulationCommand, Simulation>(simulation, _container)

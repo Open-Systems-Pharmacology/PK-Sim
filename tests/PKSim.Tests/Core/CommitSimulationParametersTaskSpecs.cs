@@ -3,7 +3,9 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -14,7 +16,7 @@ namespace PKSim.Core
 {
    public abstract class concern_for_CommitSimulationParametersTask : ContextSpecification<CommitSimulationParametersTask>
    {
-      protected IEntityPathResolver _entityPathResolver;
+      protected IExecutionContext _executionContext;
       protected IContainerTask _containerTask;
       protected IndividualSimulation _simulation;
       protected Compound _templateCompound;
@@ -24,7 +26,7 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _executionContext = A.Fake<IExecutionContext>();
          _containerTask = A.Fake<IContainerTask>();
 
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId" };
@@ -47,8 +49,9 @@ namespace PKSim.Core
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeabilityParam);
 
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
+         A.CallTo(() => _executionContext.TypeFor(_templateCompound)).Returns("Compound");
 
-         sut = new CommitSimulationParametersTask(_entityPathResolver, _containerTask);
+         sut = new CommitSimulationParametersTask(_executionContext, _containerTask);
       }
    }
 
@@ -86,6 +89,19 @@ namespace PKSim.Core
       public void should_clear_committed_paths_from_tracker()
       {
          _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_add_the_overwrite_parameter_set_to_the_compound()
+      {
+         _templateCompound.OverwriteParameterSets.Count.ShouldBeEqualTo(1);
+         _templateCompound.OverwriteParameterSets[0].Name.ShouldBeEqualTo("MyNewSet");
+      }
+
+      [Observation]
+      public void should_set_building_block_properties_on_the_macro_command()
+      {
+         A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>.That.Matches(c => c == _result), _templateCompound)).MustHaveHappened();
       }
    }
 
@@ -127,6 +143,12 @@ namespace PKSim.Core
       public void should_clear_committed_paths_from_tracker()
       {
          _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|Lipophilicity").ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_update_the_existing_set_with_new_parameter_value()
+      {
+         _existingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
       }
    }
 

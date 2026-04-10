@@ -16,7 +16,7 @@ namespace PKSim.Presentation.UICommands
       private readonly ILazyLoadTask _lazyLoadTask;
 
       /// <summary>
-      ///    Optional: when set, only show parameters for this compound in the dialog.
+      ///    The compound for which to commit parameter overrides.
       /// </summary>
       public Compound CompoundFilter { get; set; }
 

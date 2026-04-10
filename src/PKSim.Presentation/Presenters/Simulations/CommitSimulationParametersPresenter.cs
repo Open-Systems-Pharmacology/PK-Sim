@@ -14,30 +14,29 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       /// <summary>
       ///    Shows a modal dialog allowing the user to select which tracked parameter changes
-      ///    should be committed to compound overwrite parameter sets.
-      ///    When <paramref name="compoundFilter"/> is specified, only parameters for that compound are shown.
+      ///    should be committed to the compound overwrite parameter set for <paramref name="compound"/>.
       ///    Returns the list of <see cref="CompoundCommitInfo"/> selected by the user,
-      ///    or <c>null</c> if the user cancels or no compounds have uncommitted changes.
+      ///    or <c>null</c> if the user cancels or no parameters have uncommitted changes.
       /// </summary>
-      IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compoundFilter = null);
+      IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compound);
    }
 
    public class CommitSimulationParametersPresenter : AbstractDisposablePresenter<ICommitSimulationParametersView, ICommitSimulationParametersPresenter>, ICommitSimulationParametersPresenter
    {
-      private readonly ISimulationToCommitSimulationParametersDTOMapper _mapper;
+      private readonly ISimulationToCompoundCommitDTOMapper _mapper;
 
       public CommitSimulationParametersPresenter(
          ICommitSimulationParametersView view,
-         ISimulationToCommitSimulationParametersDTOMapper mapper) : base(view)
+         ISimulationToCompoundCommitDTOMapper mapper) : base(view)
       {
          _mapper = mapper;
       }
 
-      public IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compoundFilter = null)
+      public IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compound)
       {
-         var dto = _mapper.MapFrom(simulation, compoundFilter);
+         var dto = _mapper.MapFrom(simulation, compound);
 
-         if (!dto.Compounds.Any())
+         if (dto == null)
             return null;
 
          _view.Caption = PKSimConstants.Command.CommitSimulationParametersDescription;
@@ -47,21 +46,21 @@ namespace PKSim.Presentation.Presenters.Simulations
          if (_view.Canceled)
             return null;
 
-         return commitInfosFrom(dto);
+         return commitInfoFrom(dto);
       }
 
-      private IReadOnlyList<CompoundCommitInfo> commitInfosFrom(CommitSimulationParametersDTO dto)
+      private IReadOnlyList<CompoundCommitInfo> commitInfoFrom(CompoundCommitDTO dto)
       {
-         return dto.Compounds
-            .Where(c => c.Selected)
-            .Select(c => new CompoundCommitInfo
+         return new[]
+         {
+            new CompoundCommitInfo
             {
-               Compound = c.TemplateCompound,
-               ParameterPaths = c.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
-               ExistingOverwriteParameterSet = c.CreateNew ? null : c.SelectedExistingSet,
-               NewOverwriteParameterSetName = c.CreateNew ? c.NewSetName : null
-            })
-            .ToList();
+               Compound = dto.TemplateCompound,
+               ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
+               ExistingOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
+               NewOverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : null
+            }
+         };
       }
    }
 }

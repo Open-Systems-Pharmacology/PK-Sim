@@ -42,7 +42,7 @@ namespace PKSim.Core.Services
    public interface ICommitSimulationParametersTask
    {
       /// <summary>
-      ///    Creates a macro command that commits the specified parameter changes to compounds
+      ///    Creates and executes a macro command that commits the specified parameter changes to compounds
       ///    and clears the committed paths from the tracker.
       /// </summary>
       IMacroCommand CommitParametersToCompounds(Simulation simulation, IReadOnlyList<CompoundCommitInfo> commitInfos);
@@ -50,12 +50,12 @@ namespace PKSim.Core.Services
 
    public class CommitSimulationParametersTask : ICommitSimulationParametersTask
    {
-      private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IExecutionContext _executionContext;
       private readonly IContainerTask _containerTask;
 
-      public CommitSimulationParametersTask(IEntityPathResolver entityPathResolver, IContainerTask containerTask)
+      public CommitSimulationParametersTask(IExecutionContext executionContext, IContainerTask containerTask)
       {
-         _entityPathResolver = entityPathResolver;
+         _executionContext = executionContext;
          _containerTask = containerTask;
       }
 
@@ -80,7 +80,11 @@ namespace PKSim.Core.Services
                addUpdateExistingSetCommand(macroCommand, info, parameterValues, simulation);
          });
 
-         macroCommand.UpdatePropertiesFrom(macroCommand.All().FirstOrDefault());
+         macroCommand.Run(_executionContext);
+
+         var firstCompound = commitInfos.FirstOrDefault()?.Compound;
+         if (firstCompound != null)
+            _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, firstCompound);
 
          //Clear committed paths from tracker
          commitInfos.Each(info => info.ParameterPaths.Each(path => simulation.ParameterChangeTracker.Untrack(path)));

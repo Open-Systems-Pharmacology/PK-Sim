@@ -20,6 +20,7 @@ namespace PKSim.UI.Views.Simulations
             components.Dispose();
          }
          _parameterGridBinder.Dispose();
+         _screenBinder.Dispose();
          base.Dispose(disposing);
       }
 
@@ -31,32 +32,27 @@ namespace PKSim.UI.Views.Simulations
       /// </summary>
       private void InitializeComponent()
       {
-         this.splitContainer = new DevExpress.XtraEditors.SplitContainerControl();
-         this.listCompounds = new DevExpress.XtraEditors.CheckedListBoxControl();
-         this.rightLayoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          this.radioGroupCommitMode = new DevExpress.XtraEditors.RadioGroup();
          this.tbNewSetName = new DevExpress.XtraEditors.TextEdit();
          this.cbExistingSet = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.rightLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupOptions = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemCommitMode = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemNewSetName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemExistingSet = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-         this.splitContainer.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.listCompounds)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rightLayoutControl)).BeginInit();
-         this.rightLayoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.radioGroupCommitMode.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbNewSetName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbExistingSet.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rightLayoutControlGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupOptions)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCommitMode)).BeginInit();
@@ -64,38 +60,18 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExistingSet)).BeginInit();
          this.SuspendLayout();
          //
-         // splitContainer
+         // layoutControl
          //
-         this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.splitContainer.Location = new System.Drawing.Point(0, 0);
-         this.splitContainer.Name = "splitContainer";
-         this.splitContainer.Panel1.Controls.Add(this.listCompounds);
-         this.splitContainer.Panel2.Controls.Add(this.rightLayoutControl);
-         this.splitContainer.Size = new System.Drawing.Size(684, 418);
-         this.splitContainer.SplitterPosition = 180;
-         this.splitContainer.TabIndex = 38;
-         //
-         // listCompounds
-         //
-         this.listCompounds.CheckOnClick = true;
-         this.listCompounds.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.listCompounds.Location = new System.Drawing.Point(0, 0);
-         this.listCompounds.Name = "listCompounds";
-         this.listCompounds.Size = new System.Drawing.Size(180, 418);
-         this.listCompounds.TabIndex = 0;
-         //
-         // rightLayoutControl
-         //
-         this.rightLayoutControl.Controls.Add(this.gridParameters);
-         this.rightLayoutControl.Controls.Add(this.radioGroupCommitMode);
-         this.rightLayoutControl.Controls.Add(this.tbNewSetName);
-         this.rightLayoutControl.Controls.Add(this.cbExistingSet);
-         this.rightLayoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.rightLayoutControl.Location = new System.Drawing.Point(0, 0);
-         this.rightLayoutControl.Name = "rightLayoutControl";
-         this.rightLayoutControl.Root = this.rightLayoutControlGroup;
-         this.rightLayoutControl.Size = new System.Drawing.Size(500, 418);
-         this.rightLayoutControl.TabIndex = 0;
+         this.layoutControl.Controls.Add(this.gridParameters);
+         this.layoutControl.Controls.Add(this.radioGroupCommitMode);
+         this.layoutControl.Controls.Add(this.tbNewSetName);
+         this.layoutControl.Controls.Add(this.cbExistingSet);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup;
+         this.layoutControl.Size = new System.Drawing.Size(500, 418);
+         this.layoutControl.TabIndex = 38;
          //
          // gridParameters
          //
@@ -120,7 +96,7 @@ namespace PKSim.UI.Views.Simulations
          this.radioGroupCommitMode.Location = new System.Drawing.Point(24, 302);
          this.radioGroupCommitMode.Name = "radioGroupCommitMode";
          this.radioGroupCommitMode.Size = new System.Drawing.Size(452, 50);
-         this.radioGroupCommitMode.StyleController = this.rightLayoutControl;
+         this.radioGroupCommitMode.StyleController = this.layoutControl;
          this.radioGroupCommitMode.TabIndex = 5;
          //
          // tbNewSetName
@@ -128,7 +104,7 @@ namespace PKSim.UI.Views.Simulations
          this.tbNewSetName.Location = new System.Drawing.Point(117, 356);
          this.tbNewSetName.Name = "tbNewSetName";
          this.tbNewSetName.Size = new System.Drawing.Size(359, 20);
-         this.tbNewSetName.StyleController = this.rightLayoutControl;
+         this.tbNewSetName.StyleController = this.layoutControl;
          this.tbNewSetName.TabIndex = 6;
          //
          // cbExistingSet
@@ -138,20 +114,20 @@ namespace PKSim.UI.Views.Simulations
          this.cbExistingSet.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbExistingSet.Size = new System.Drawing.Size(359, 20);
-         this.cbExistingSet.StyleController = this.rightLayoutControl;
+         this.cbExistingSet.StyleController = this.layoutControl;
          this.cbExistingSet.TabIndex = 7;
          //
-         // rightLayoutControlGroup
+         // layoutControlGroup
          //
-         this.rightLayoutControlGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.rightLayoutControlGroup.GroupBordersVisible = false;
-         this.rightLayoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+         this.layoutControlGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.layoutControlGroup.GroupBordersVisible = false;
+         this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemParameters,
             this.layoutGroupOptions});
-         this.rightLayoutControlGroup.Location = new System.Drawing.Point(0, 0);
-         this.rightLayoutControlGroup.Name = "rightLayoutControlGroup";
-         this.rightLayoutControlGroup.Size = new System.Drawing.Size(500, 418);
-         this.rightLayoutControlGroup.TextVisible = false;
+         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlGroup.Name = "layoutControlGroup";
+         this.layoutControlGroup.Size = new System.Drawing.Size(500, 418);
+         this.layoutControlGroup.TextVisible = false;
          //
          // layoutItemParameters
          //
@@ -207,23 +183,20 @@ namespace PKSim.UI.Views.Simulations
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CommitSimulationParametersView";
-         this.ClientSize = new System.Drawing.Size(684, 461);
-         this.Controls.Add(this.splitContainer);
+         this.ClientSize = new System.Drawing.Size(700, 461);
+         this.Controls.Add(this.layoutControl);
          this.Name = "CommitSimulationParametersView";
          this.Text = "CommitSimulationParametersView";
-         this.Controls.SetChildIndex(this.splitContainer, 0);
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-         this.splitContainer.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.listCompounds)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rightLayoutControl)).EndInit();
-         this.rightLayoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.radioGroupCommitMode.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbNewSetName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbExistingSet.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rightLayoutControlGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupOptions)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCommitMode)).EndInit();
@@ -234,10 +207,8 @@ namespace PKSim.UI.Views.Simulations
 
       #endregion
 
-      private DevExpress.XtraEditors.SplitContainerControl splitContainer;
-      private DevExpress.XtraEditors.CheckedListBoxControl listCompounds;
-      private OSPSuite.UI.Controls.UxLayoutControl rightLayoutControl;
-      private DevExpress.XtraLayout.LayoutControlGroup rightLayoutControlGroup;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private OSPSuite.UI.Controls.UxGridControl gridParameters;
       private PKSim.UI.Views.Core.UxGridView gridViewParameters;
       private DevExpress.XtraEditors.RadioGroup radioGroupCommitMode;
