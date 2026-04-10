@@ -29,7 +29,6 @@ namespace PKSim.Core
       protected IProgressManager _progressManager;
       protected SimulationRunOptions _simulationRunOption;
       protected IExecutionContext _executionContext;
-      protected IndividualSimulation _simulation;
 
       protected override Task Context()
       {
