@@ -7,5 +7,4 @@ REM Prerequisites:
 REM   - Build PKSim.sln in Debug configuration before running this script.
 REM   - Unload .NET assemblies in Positron/R to avoid locked DLL errors.
 cls
-rake create_local_nuget_r
-pause
+call rake create_local_nuget_r
