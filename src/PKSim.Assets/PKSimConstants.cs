@@ -272,6 +272,12 @@ namespace PKSim.Assets
             return $"Add {lowerEntityType} '{entityName}' to {lowerContainerType} '{containerName}'";
          }
 
+         public static readonly string CommitSimulationParametersDescription = "Commit simulation parameters to compounds";
+         public static readonly string CreateNewParameterSet = "Create New Parameter Set";
+         public static readonly string UpdateExistingParameterSet = "Update Existing Parameter Set";
+         public static readonly string CommitOptions = "Commit Options";
+         public static readonly string ParameterSet = "Parameter Set";
+
          public static string RemoveEntityFromContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
@@ -1025,6 +1031,7 @@ namespace PKSim.Assets
          public static readonly string Diff = "Show Differences...";
          public static readonly string Update = "Update from Building Block...";
          public static readonly string Commit = "Commit to Building Block...";
+         public static readonly string CommitSimulationParametersToCompounds = "Commit Simulation Parameters to Compounds...";
          public static readonly string File = "&File";
          public static readonly string RecentProjects = "&Recent Projects";
          public static readonly string EditQuery = "&Edit Database Query...";
@@ -1170,6 +1177,7 @@ namespace PKSim.Assets
          public static readonly string Parameter = "Parameter";
          public static readonly string DistributedParameter = "Distributed Parameter";
          public static readonly string Compound = "Compound";
+         public static readonly string OverwriteParameterSet = "Overwrite Parameter Set";
          public static readonly string ParameterGroupAlternative = "Alternative";
          public static readonly string ParameterGroup = "Group";
          public static readonly string SystemicProcess = "Systemic Process";

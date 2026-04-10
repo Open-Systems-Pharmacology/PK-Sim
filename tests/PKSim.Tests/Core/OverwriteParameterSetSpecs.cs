@@ -115,6 +115,46 @@ namespace PKSim.Core
       }
    }
 
+   public class When_removing_a_parameter_value_by_path : concern_for_OverwriteParameterSet
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Add(new ParameterValue { Path = "Path|To|Param".ToObjectPath(), Value = 1.0 });
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveByPath("Path|To|Param");
+      }
+
+      [Observation]
+      public void should_remove_the_parameter_value()
+      {
+         sut.ParameterValues.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_removing_by_path_that_does_not_exist : concern_for_OverwriteParameterSet
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Add(new ParameterValue { Path = "Path|To|Param".ToObjectPath(), Value = 1.0 });
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveByPath("NonExistent|Path");
+      }
+
+      [Observation]
+      public void should_not_throw_and_keep_existing_values()
+      {
+         sut.ParameterValues.Count.ShouldBeEqualTo(1);
+      }
+   }
+
    public class When_updating_properties_from_another_overwrite_parameter_set : concern_for_OverwriteParameterSet
    {
       private OverwriteParameterSet _source;
