@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -35,7 +34,7 @@ namespace PKSim.Presentation
 
    public class When_showing_commit_dialog_and_user_confirms : concern_for_CommitSimulationParametersPresenter
    {
-      private IReadOnlyList<CompoundCommitInfo> _result;
+      private CompoundCommitInfo _result;
 
       protected override void Context()
       {
@@ -62,12 +61,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_commit_infos()
+      public void should_return_commit_info()
       {
          _result.ShouldNotBeNull();
-         _result.Count.ShouldBeEqualTo(1);
-         _result[0].Compound.ShouldBeEqualTo(_templateCompound);
-         _result[0].ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
+         _result.Compound.ShouldBeEqualTo(_templateCompound);
+         _result.ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
       }
 
       [Observation]
@@ -79,7 +77,7 @@ namespace PKSim.Presentation
 
    public class When_showing_commit_dialog_and_user_cancels : concern_for_CommitSimulationParametersPresenter
    {
-      private IReadOnlyList<CompoundCommitInfo> _result;
+      private CompoundCommitInfo _result;
 
       protected override void Context()
       {
@@ -112,7 +110,7 @@ namespace PKSim.Presentation
 
    public class When_showing_commit_dialog_with_no_tracked_changes : concern_for_CommitSimulationParametersPresenter
    {
-      private IReadOnlyList<CompoundCommitInfo> _result;
+      private CompoundCommitInfo _result;
 
       protected override void Context()
       {
@@ -135,7 +133,7 @@ namespace PKSim.Presentation
 
    public class When_showing_commit_dialog_with_deselected_parameter : concern_for_CommitSimulationParametersPresenter
    {
-      private IReadOnlyList<CompoundCommitInfo> _result;
+      private CompoundCommitInfo _result;
 
       protected override void Context()
       {
@@ -165,14 +163,14 @@ namespace PKSim.Presentation
       [Observation]
       public void should_only_include_selected_parameters()
       {
-         _result[0].ParameterPaths.Count.ShouldBeEqualTo(1);
-         _result[0].ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
+         _result.ParameterPaths.Count.ShouldBeEqualTo(1);
+         _result.ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
       }
    }
 
    public class When_showing_commit_dialog_with_update_existing : concern_for_CommitSimulationParametersPresenter
    {
-      private IReadOnlyList<CompoundCommitInfo> _result;
+      private CompoundCommitInfo _result;
       private OverwriteParameterSet _existingSet;
 
       protected override void Context()
@@ -204,8 +202,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_reference_existing_set()
       {
-         _result[0].ExistingOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
-         _result[0].NewOverwriteParameterSetName.ShouldBeNull();
+         _result.ExistingOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
+         _result.NewOverwriteParameterSetName.ShouldBeNull();
       }
    }
 }

@@ -88,6 +88,7 @@ namespace PKSim.UI.Views.Simulations
          ClientSize = new Size(700, 460);
 
          radioGroupCommitMode.Properties.AllowMouseWheel = false;
+         cbExistingSet.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
          radioGroupCommitMode.Properties.Items.AddRange([
             new RadioGroupItem(CREATE_NEW, PKSimConstants.Command.CreateNewParameterSet),
             new RadioGroupItem(UPDATE_EXISTING, PKSimConstants.Command.UpdateExistingParameterSet)

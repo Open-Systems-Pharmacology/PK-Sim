@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Assets;
@@ -15,10 +14,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       /// <summary>
       ///    Shows a modal dialog allowing the user to select which tracked parameter changes
       ///    should be committed to the compound overwrite parameter set for <paramref name="compound"/>.
-      ///    Returns the list of <see cref="CompoundCommitInfo"/> selected by the user,
+      ///    Returns a <see cref="CompoundCommitInfo"/> with the user's selections,
       ///    or <c>null</c> if the user cancels or no parameters have uncommitted changes.
       /// </summary>
-      IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compound);
+      CompoundCommitInfo ShowCommitDialog(Simulation simulation, Compound compound);
    }
 
    public class CommitSimulationParametersPresenter : AbstractDisposablePresenter<ICommitSimulationParametersView, ICommitSimulationParametersPresenter>, ICommitSimulationParametersPresenter
@@ -32,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _mapper = mapper;
       }
 
-      public IReadOnlyList<CompoundCommitInfo> ShowCommitDialog(Simulation simulation, Compound compound)
+      public CompoundCommitInfo ShowCommitDialog(Simulation simulation, Compound compound)
       {
          var dto = _mapper.MapFrom(simulation, compound);
 
@@ -49,17 +48,14 @@ namespace PKSim.Presentation.Presenters.Simulations
          return commitInfoFrom(dto);
       }
 
-      private IReadOnlyList<CompoundCommitInfo> commitInfoFrom(CompoundCommitDTO dto)
+      private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto)
       {
-         return new[]
+         return new CompoundCommitInfo
          {
-            new CompoundCommitInfo
-            {
-               Compound = dto.TemplateCompound,
-               ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
-               ExistingOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
-               NewOverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : null
-            }
+            Compound = dto.TemplateCompound,
+            ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
+            ExistingOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
+            NewOverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : null
          };
       }
    }

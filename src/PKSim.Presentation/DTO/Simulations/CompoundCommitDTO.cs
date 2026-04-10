@@ -34,10 +34,16 @@ namespace PKSim.Presentation.DTO.Simulations
             .WithRule((dto, name) => !dto.CreateNew || dto.AvailableExistingSets == null || dto.AvailableExistingSets.All(s => s.Name != name))
             .WithError((dto, name) => PKSimConstants.Error.NameAlreadyExistsInContainerType(name, PKSimConstants.ObjectTypes.Compound));
 
+         private static IBusinessRule existingSetMustBeSelected { get; } = CreateRule.For<CompoundCommitDTO>()
+            .Property(x => x.SelectedExistingSet)
+            .WithRule((dto, selectedSet) => dto.CreateNew || selectedSet != null)
+            .WithError(PKSimConstants.Error.ValueIsRequired);
+
          public static IEnumerable<IBusinessRule> All()
          {
             yield return newSetNameNotEmpty;
             yield return newSetNameNotExisting;
+            yield return existingSetMustBeSelected;
          }
       }
    }

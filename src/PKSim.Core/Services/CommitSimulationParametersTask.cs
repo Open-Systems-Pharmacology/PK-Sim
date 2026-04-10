@@ -42,10 +42,10 @@ namespace PKSim.Core.Services
    public interface ICommitSimulationParametersTask
    {
       /// <summary>
-      ///    Creates and executes a macro command that commits the specified parameter changes to compounds
+      ///    Creates and executes a command that commits the specified parameter changes to the compound
       ///    and clears the committed paths from the tracker.
       /// </summary>
-      IMacroCommand CommitParametersToCompounds(Simulation simulation, IReadOnlyList<CompoundCommitInfo> commitInfos);
+      ICommand CommitParametersToCompound(Simulation simulation, CompoundCommitInfo commitInfo);
    }
 
    public class CommitSimulationParametersTask : ICommitSimulationParametersTask
@@ -59,50 +59,35 @@ namespace PKSim.Core.Services
          _containerTask = containerTask;
       }
 
-      public IMacroCommand CommitParametersToCompounds(Simulation simulation, IReadOnlyList<CompoundCommitInfo> commitInfos)
+      public ICommand CommitParametersToCompound(Simulation simulation, CompoundCommitInfo commitInfo)
       {
-         var macroCommand = new PKSimMacroCommand
-         {
-            CommandType = PKSimConstants.Command.CommandTypeEdit,
-            ObjectType = PKSimConstants.ObjectTypes.Simulation,
-            Description = PKSimConstants.Command.CommitSimulationParametersDescription
-         };
-
          var parameterCache = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
+         var parameterValues = createParameterValuesFor(commitInfo, parameterCache);
 
-         commitInfos.Each(info =>
-         {
-            var parameterValues = createParameterValuesFor(info, parameterCache);
+         var command = commitInfo.ShouldCreateNew
+            ? createNewSetCommand(commitInfo, parameterValues)
+            : updateExistingSetCommand(commitInfo, parameterValues, simulation);
 
-            if (info.ShouldCreateNew)
-               addCreateNewSetCommand(macroCommand, info, parameterValues);
-            else
-               addUpdateExistingSetCommand(macroCommand, info, parameterValues, simulation);
-         });
+         command.Run(_executionContext);
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(command, commitInfo.Compound);
 
-         macroCommand.Run(_executionContext);
+         //Only untrack paths that were actually resolved to parameter values
+         parameterValues.Each(pv => simulation.ParameterChangeTracker.Untrack(pv.Path.PathAsString));
 
-         var firstCompound = commitInfos.FirstOrDefault()?.Compound;
-         if (firstCompound != null)
-            _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, firstCompound);
-
-         //Clear committed paths from tracker
-         commitInfos.Each(info => info.ParameterPaths.Each(path => simulation.ParameterChangeTracker.Untrack(path)));
-
-         return macroCommand;
+         return command;
       }
 
-      private void addCreateNewSetCommand(PKSimMacroCommand macroCommand, CompoundCommitInfo info, List<ParameterValue> parameterValues)
+      private IPKSimReversibleCommand createNewSetCommand(CompoundCommitInfo info, List<ParameterValue> parameterValues)
       {
-         var newSet = new OverwriteParameterSet {Name = info.NewOverwriteParameterSetName};
+         var newSet = new OverwriteParameterSet { Name = info.NewOverwriteParameterSetName };
          parameterValues.Each(pv => newSet.Add(pv));
-         macroCommand.Add(new AddOverwriteParameterSetToCompoundCommand(newSet, info.Compound));
+         return new AddOverwriteParameterSetToCompoundCommand(newSet, info.Compound);
       }
 
-      private void addUpdateExistingSetCommand(PKSimMacroCommand macroCommand, CompoundCommitInfo info, List<ParameterValue> parameterValues, Simulation simulation)
+      private IPKSimReversibleCommand updateExistingSetCommand(CompoundCommitInfo info, List<ParameterValue> parameterValues, Simulation simulation)
       {
          var pathsToRemove = pathsResetByUser(info, simulation);
-         macroCommand.Add(new UpdateOverwriteParameterSetCommand(info.ExistingOverwriteParameterSet, info.Compound, parameterValues, pathsToRemove));
+         return new UpdateOverwriteParameterSetCommand(info.ExistingOverwriteParameterSet, info.Compound, parameterValues, pathsToRemove);
       }
 
       private List<ParameterValue> createParameterValuesFor(CompoundCommitInfo info, PathCache<IParameter> parameterCache)

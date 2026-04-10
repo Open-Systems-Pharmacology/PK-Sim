@@ -38,12 +38,12 @@ namespace PKSim.Presentation.UICommands
 
          using (var presenter = _applicationController.Start<ICommitSimulationParametersPresenter>())
          {
-            var commitInfos = presenter.ShowCommitDialog(Subject, CompoundFilter);
-            if (commitInfos == null || commitInfos.Count == 0)
+            var commitInfo = presenter.ShowCommitDialog(Subject, CompoundFilter);
+            if (commitInfo == null)
                return;
 
-            var macroCommand = _commitTask.CommitParametersToCompounds(Subject, commitInfos);
-            _buildingBlockTask.AddCommandToHistory(macroCommand);
+            var command = _commitTask.CommitParametersToCompound(Subject, commitInfo);
+            _buildingBlockTask.AddCommandToHistory(command);
          }
       }
    }

@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -57,7 +55,7 @@ namespace PKSim.Core
 
    public class When_committing_parameters_to_a_new_overwrite_parameter_set : concern_for_CommitSimulationParametersTask
    {
-      private IMacroCommand _result;
+      private ICommand _result;
 
       protected override void Context()
       {
@@ -68,21 +66,12 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.CommitParametersToCompounds(_simulation, new[]
+         _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            new CompoundCommitInfo
-            {
-               Compound = _templateCompound,
-               ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Permeability" },
-               NewOverwriteParameterSetName = "MyNewSet"
-            }
+            Compound = _templateCompound,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Permeability" },
+            NewOverwriteParameterSetName = "MyNewSet"
          });
-      }
-
-      [Observation]
-      public void should_create_an_add_command()
-      {
-         _result.All().Count().ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -99,15 +88,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_building_block_properties_on_the_macro_command()
+      public void should_set_building_block_properties_on_the_command()
       {
-         A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>.That.Matches(c => c == _result), _templateCompound)).MustHaveHappened();
+         A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>._, _templateCompound)).MustHaveHappened();
       }
    }
 
    public class When_committing_parameters_to_an_existing_overwrite_parameter_set : concern_for_CommitSimulationParametersTask
    {
-      private IMacroCommand _result;
+      private ICommand _result;
       private OverwriteParameterSet _existingSet;
 
       protected override void Context()
@@ -122,21 +111,12 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.CommitParametersToCompounds(_simulation, new[]
+         _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            new CompoundCommitInfo
-            {
-               Compound = _templateCompound,
-               ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
-               ExistingOverwriteParameterSet = _existingSet
-            }
+            Compound = _templateCompound,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            ExistingOverwriteParameterSet = _existingSet
          });
-      }
-
-      [Observation]
-      public void should_create_an_update_command()
-      {
-         _result.All().Count().ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -154,25 +134,28 @@ namespace PKSim.Core
 
    public class When_committing_and_a_parameter_cannot_be_resolved : concern_for_CommitSimulationParametersTask
    {
-      private IMacroCommand _result;
+      private ICommand _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|NonExistent");
+      }
 
       protected override void Because()
       {
-         _result = sut.CommitParametersToCompounds(_simulation, new[]
+         _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            new CompoundCommitInfo
-            {
-               Compound = _templateCompound,
-               ParameterPaths = new[] { "Organism|Aspirin|NonExistent" },
-               NewOverwriteParameterSetName = "Set"
-            }
+            Compound = _templateCompound,
+            ParameterPaths = new[] { "Organism|Aspirin|NonExistent" },
+            NewOverwriteParameterSetName = "Set"
          });
       }
 
       [Observation]
-      public void should_still_create_the_command_with_no_parameter_values()
+      public void should_not_untrack_the_unresolved_path()
       {
-         _result.All().Count().ShouldBeEqualTo(1);
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|NonExistent").ShouldBeTrue();
       }
    }
 }
