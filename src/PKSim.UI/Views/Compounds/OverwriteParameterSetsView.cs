@@ -73,8 +73,11 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       ApplicationIcon = ApplicationIcons.ParameterValues;
    }
 
-   public void BindTo(IReadOnlyList<OverwriteParameterSetDTO> overwriteParameterSets) =>
+   public void BindTo(IReadOnlyList<OverwriteParameterSetDTO> overwriteParameterSets)
+   {
       _gridViewBinderSets.BindToSource(overwriteParameterSets);
+      bindToSelectedParameterValues();
+   }
 
    private void selectedSetChanged() => bindToSelectedParameterValues();
 
