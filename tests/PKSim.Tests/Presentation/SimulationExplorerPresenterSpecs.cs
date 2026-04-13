@@ -133,6 +133,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_simulation)).Returns(ApplicationIcons.SimulationGreen);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_populationSimulation)).Returns(ApplicationIcons.SimulationGreen);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_usedCompoundBuildingBlock)).Returns(ApplicationIcons.CompoundRed);
+         A.CallTo(() => _buildingBlockIconRetriever.IconFor(_simulation, _usedCompoundBuildingBlock)).Returns(ApplicationIcons.CompoundRed);
          A.CallTo(() => _view.TreeView.NodeById(_simulation.Id)).Returns(_individualSimulationNode);
          A.CallTo(() => _view.TreeView.NodeById(_usedCompoundBuildingBlock.Id)).Returns(_usedBuildingBlockNode);
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.SimulationFolder.Id)).Returns(_simulationFolderNode);

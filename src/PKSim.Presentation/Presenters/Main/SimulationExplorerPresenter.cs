@@ -206,7 +206,7 @@ namespace PKSim.Presentation.Presenters.Main
          foreach (var usedBuildingBlock in simulation.UsedBuildingBlocksInSimulation(buildingBlockType))
          {
             _treeNodeFactory.CreateFor(simulation, usedBuildingBlock)
-               .WithIcon(_buildingBlockIconRetriever.IconFor(usedBuildingBlock))
+               .WithIcon(_buildingBlockIconRetriever.IconFor(simulation, usedBuildingBlock))
                .WithText(usedBuildingBlock.Name)
                .Under(simulationNode);
          }
@@ -294,7 +294,7 @@ namespace PKSim.Presentation.Presenters.Main
             if (usedBuildingBlockNode == null)
                continue;
 
-            usedBuildingBlockNode.WithIcon(_buildingBlockIconRetriever.IconFor(usedBuildingBlock));
+            usedBuildingBlockNode.WithIcon(_buildingBlockIconRetriever.IconFor(simulation, usedBuildingBlock));
             usedBuildingBlockNode.WithText(usedBuildingBlock.Name);
             usedBuildingBlockNode.ToolTip = _toolTipPartCreator.ToolTipFor(usedBuildingBlock);
          }
