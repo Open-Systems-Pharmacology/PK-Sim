@@ -9,14 +9,12 @@ using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Import;
-using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Presentation.Services;
-using OSPSuite.TeXReporting;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -33,8 +31,6 @@ using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.Reporting.Markdown;
 using PKSim.Infrastructure.Reporting.Markdown.Builders;
 using PKSim.Infrastructure.Reporting.Summary;
-using PKSim.Infrastructure.Reporting.TeX.Builders;
-using PKSim.Infrastructure.Reporting.TeX.Reporters;
 using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Serialization.Xml;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
@@ -182,8 +178,6 @@ namespace PKSim.Infrastructure
             scan.ExcludeNamespaceContainingType<IObjectConverter>();             //Converter
             scan.ExcludeNamespaceContainingType<IReportBuilder>();               //report builder
             scan.ExcludeNamespaceContainingType<IMarkdownBuilder>();             //Markdown builder
-            scan.ExcludeNamespaceContainingType<SimulationReporter>();           //tex reporter
-            scan.ExcludeNamespaceContainingType<IndividualTeXBuilder>();         //tex builder
             scan.ExcludeNamespaceContainingType<PKSimXmlSerializerRepository>(); //Serializer
 
             scan.ExcludeType<CommandMetaDataRepository>();
@@ -230,8 +224,6 @@ namespace PKSim.Infrastructure
 
          registerReportBuilders(container);
 
-         registerTexReporters(container);
-
          registerMarkdownBuilders(container);
 
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
@@ -241,9 +233,7 @@ namespace PKSim.Infrastructure
 
          registerORMDependencies(container);
 
-         container.AddRegister(x => x.FromType<ReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
          container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
 
@@ -278,17 +268,6 @@ namespace PKSim.Infrastructure
             scan.WithConvention<RegisterTypeConvention<IMarkdownBuilder>>();
          });
          container.Register<IMarkdownBuilderRepository, MarkdownBuilderRepository>(LifeStyle.Singleton);
-      }
-
-      private static void registerTexReporters(IContainer container)
-      {
-         container.AddScanner(scan =>
-         {
-            scan.AssemblyContainingType<InfrastructureRegister>();
-            scan.IncludeNamespaceContainingType<IndividualTeXBuilder>();
-            scan.IncludeNamespaceContainingType<SimulationReporter>();
-            scan.WithConvention<ReporterRegistrationConvention>();
-         });
       }
 
       private static void registerConverters(IContainer container)
