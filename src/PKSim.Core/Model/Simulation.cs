@@ -684,12 +684,11 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual string CompoundNameForParameterPath(string parameterPath)
       {
-         if (string.IsNullOrEmpty(parameterPath))
-            return null;
-
-         var pathElements = parameterPath.ToPathArray();
-         return CompoundNames.FirstOrDefault(pathElements.Contains);
+         return string.IsNullOrEmpty(parameterPath) ? null : CompoundNameForParameterPath(parameterPath.ToPathArray());
       }
+
+      public virtual string CompoundNameForParameterPath(string[] pathElements) => 
+         CompoundNames.FirstOrDefault(pathElements.Contains);
 
       /// <summary>
       ///    Returns <c>true</c> if the simulation has uncommitted compound-dependent parameter changes
@@ -698,7 +697,7 @@ namespace PKSim.Core.Model
       public virtual bool HasUncommittedChangesForCompound(string compoundName)
       {
          return ParameterChangeTracker.ChangedPaths
-            .Any(path => CompoundNameForParameterPath(path.ToString()) == compoundName);
+            .Any(path => CompoundNameForParameterPath(path) == compoundName);
       }
 
       /// <summary>
