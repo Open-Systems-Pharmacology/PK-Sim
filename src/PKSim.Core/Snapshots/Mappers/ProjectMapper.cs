@@ -220,7 +220,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
       {
          if (!allSimulationComparisons.Any())
-            return null;
+            return Task.FromResult<SimulationComparison[]>(null);
 
          allSimulationComparisons.Each(load);
          return _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
