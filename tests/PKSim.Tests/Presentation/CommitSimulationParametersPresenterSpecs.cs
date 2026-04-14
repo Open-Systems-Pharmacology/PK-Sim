@@ -51,7 +51,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _simulationCompound,
+            Compound = _simulationCompound,
             CreateNew = true,
             NewSetName = "MySet",
             Parameters = new List<ParameterCommitDTO>
@@ -100,7 +100,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _simulationCompound,
+            Compound = _simulationCompound,
             Parameters = new List<ParameterCommitDTO>
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 }
@@ -156,7 +156,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _simulationCompound,
+            Compound = _simulationCompound,
             CreateNew = true,
             NewSetName = "Set",
             Parameters = new List<ParameterCommitDTO>
@@ -196,7 +196,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _simulationCompound,
+            Compound = _simulationCompound,
             CreateNew = false,
             SelectedExistingSet = _existingSet,
             Parameters = new List<ParameterCommitDTO>

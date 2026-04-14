@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          return new CompoundCommitInfo
          {
-            SimulationCompound = dto.TemplateCompound,
+            SimulationCompound = dto.Compound,
             TemplateCompound = projectCompound,
             ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
             ExistingOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,

@@ -50,7 +50,7 @@ namespace PKSim.Presentation.DTO.Mappers
          return new CompoundCommitDTO
          {
             CompoundName = compound.Name,
-            TemplateCompound = templateCompound,
+            Compound = templateCompound,
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
             CreateNew = !hasExistingSelection,
             SelectedExistingSet = hasExistingSelection ? existingSelection : null,
