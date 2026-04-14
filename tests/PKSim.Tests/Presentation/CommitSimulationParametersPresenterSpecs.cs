@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -15,20 +17,27 @@ namespace PKSim.Presentation
    {
       protected ICommitSimulationParametersView _view;
       protected ISimulationToCompoundCommitDTOMapper _mapper;
+      protected IBuildingBlockRepository _buildingBlockRepository;
       protected IndividualSimulation _simulation;
-      protected Compound _templateCompound;
+      protected Compound _simulationCompound;
       protected Compound _compound;
+      protected Compound _templateCompound;
 
       protected override void Context()
       {
          _view = A.Fake<ICommitSimulationParametersView>();
          _mapper = A.Fake<ISimulationToCompoundCommitDTOMapper>();
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
 
-         _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
+         _simulationCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
          _compound = new Compound { Name = "Aspirin", Id = "CompoundId" };
+         _templateCompound = new Compound { Name = "Aspirin", Id = "ProjectCompoundId" };
          _simulation = new IndividualSimulation { Id = "SimId" };
 
-         sut = new CommitSimulationParametersPresenter(_view, _mapper);
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("ProjectCompoundId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
+         A.CallTo(() => _buildingBlockRepository.ById<Compound>("ProjectCompoundId")).Returns(_templateCompound);
+
+         sut = new CommitSimulationParametersPresenter(_view, _mapper, _buildingBlockRepository);
       }
    }
 
@@ -42,7 +51,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _templateCompound,
+            TemplateCompound = _simulationCompound,
             CreateNew = true,
             NewSetName = "MySet",
             Parameters = new List<ParameterCommitDTO>
@@ -64,8 +73,14 @@ namespace PKSim.Presentation
       public void should_return_commit_info()
       {
          _result.ShouldNotBeNull();
-         _result.Compound.ShouldBeEqualTo(_templateCompound);
+         _result.SimulationCompound.ShouldBeEqualTo(_simulationCompound);
          _result.ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
+      }
+
+      [Observation]
+      public void should_resolve_template_compound()
+      {
+         _result.TemplateCompound.ShouldBeEqualTo(_templateCompound);
       }
 
       [Observation]
@@ -85,7 +100,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _templateCompound,
+            TemplateCompound = _simulationCompound,
             Parameters = new List<ParameterCommitDTO>
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 }
@@ -141,7 +156,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _templateCompound,
+            TemplateCompound = _simulationCompound,
             CreateNew = true,
             NewSetName = "Set",
             Parameters = new List<ParameterCommitDTO>
@@ -181,7 +196,7 @@ namespace PKSim.Presentation
          var dto = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = _templateCompound,
+            TemplateCompound = _simulationCompound,
             CreateNew = false,
             SelectedExistingSet = _existingSet,
             Parameters = new List<ParameterCommitDTO>

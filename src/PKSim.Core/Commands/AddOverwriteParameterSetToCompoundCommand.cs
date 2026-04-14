@@ -1,6 +1,4 @@
-using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
 

@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
@@ -17,9 +16,14 @@ namespace PKSim.Core.Services
    public class CompoundCommitInfo
    {
       /// <summary>
-      ///    The template compound to commit to.
+      ///    The simulation compound to commit to.
       /// </summary>
-      public Compound Compound { get; init; }
+      public Compound SimulationCompound { get; init; }
+
+      /// <summary>
+      ///    The project compound to commit to
+      /// </summary>
+      public Compound TemplateCompound { get; init; }
 
       /// <summary>
       ///    Parameter paths to commit.
@@ -64,12 +68,7 @@ namespace PKSim.Core.Services
          var parameterCache = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
          var parameterValues = createParameterValuesFor(commitInfo, parameterCache);
 
-         var command = commitInfo.ShouldCreateNew
-            ? createNewSetCommand(commitInfo, parameterValues)
-            : updateExistingSetCommand(commitInfo, parameterValues, simulation);
-
-         command.Run(_executionContext);
-         _executionContext.UpdateBuildingBlockPropertiesInCommand(command, commitInfo.Compound);
+         var command = createAndRunCommitCommands(commitInfo, parameterValues, simulation);
 
          //Only untrack paths that were actually resolved to parameter values
          parameterValues.Each(pv => simulation.ParameterChangeTracker.Untrack(pv.Path.PathAsString));
@@ -77,17 +76,46 @@ namespace PKSim.Core.Services
          return command;
       }
 
-      private IPKSimReversibleCommand createNewSetCommand(CompoundCommitInfo info, List<ParameterValue> parameterValues)
+      private PKSimMacroCommand createAndRunCommitCommands(CompoundCommitInfo commitInfo, List<ParameterValue> parameterValues, Simulation simulation)
       {
-         var newSet = new OverwriteParameterSet { Name = info.NewOverwriteParameterSetName };
-         parameterValues.Each(pv => newSet.Add(pv));
-         return new AddOverwriteParameterSetToCompoundCommand(newSet, info.Compound);
+         var command = commitInfo.ShouldCreateNew
+            ? createNewSetCommand(commitInfo, parameterValues)
+            : updateExistingSetCommand(commitInfo, parameterValues, simulation);
+
+         command.Run(_executionContext);
+
+         command.All().Each(subCommand => _executionContext.UpdateBuildingBlockPropertiesInCommand(subCommand, commitInfo.SimulationCompound));
+         _executionContext.UpdateBuildingBlockPropertiesInCommand(command, commitInfo.SimulationCompound);
+
+         return command;
       }
 
-      private IPKSimReversibleCommand updateExistingSetCommand(CompoundCommitInfo info, List<ParameterValue> parameterValues, Simulation simulation)
+      private PKSimMacroCommand createNewSetCommand(CompoundCommitInfo commitInfo, List<ParameterValue> parameterValues)
       {
-         var pathsToRemove = pathsResetByUser(info, simulation);
-         return new UpdateOverwriteParameterSetCommand(info.ExistingOverwriteParameterSet, info.Compound, parameterValues, pathsToRemove);
+         var command = new PKSimMacroCommand();
+
+         command.Add(addOverwriteParameterSetCommand(commitInfo.SimulationCompound, commitInfo.NewOverwriteParameterSetName, parameterValues));
+         command.Add(addOverwriteParameterSetCommand(commitInfo.TemplateCompound, commitInfo.NewOverwriteParameterSetName, parameterValues));
+
+         return command;
+      }
+
+      private ICommand addOverwriteParameterSetCommand(Compound compound, string setName, List<ParameterValue> parameterValues)
+      {
+         var newSet = new OverwriteParameterSet { Name = setName };
+         parameterValues.Each(newSet.Add);
+         return new AddOverwriteParameterSetToCompoundCommand(newSet, compound);
+      }
+
+      private PKSimMacroCommand updateExistingSetCommand(CompoundCommitInfo commitInfo, List<ParameterValue> parameterValues, Simulation simulation)
+      {
+         var command = new PKSimMacroCommand();
+         var pathsToRemove = pathsResetByUser(commitInfo, simulation);
+
+         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingOverwriteParameterSet, commitInfo.SimulationCompound, parameterValues, pathsToRemove));
+         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingOverwriteParameterSet, commitInfo.TemplateCompound, parameterValues, pathsToRemove));
+
+         return command;
       }
 
       private List<ParameterValue> createParameterValuesFor(CompoundCommitInfo info, PathCache<IParameter> parameterCache)

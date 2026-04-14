@@ -17,6 +17,7 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected IContainerTask _containerTask;
       protected IndividualSimulation _simulation;
+      protected Compound _simulationCompound;
       protected Compound _templateCompound;
       protected IParameter _lipophilicityParam;
       protected IParameter _permeabilityParam;
@@ -27,6 +28,7 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _containerTask = A.Fake<IContainerTask>();
 
+         _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId" };
 
          _lipophilicityParam = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
@@ -47,7 +49,7 @@ namespace PKSim.Core
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeabilityParam);
 
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
-         A.CallTo(() => _executionContext.TypeFor(_templateCompound)).Returns("Compound");
+         A.CallTo(() => _executionContext.TypeFor(_simulationCompound)).Returns("Compound");
 
          sut = new CommitSimulationParametersTask(_executionContext, _containerTask);
       }
@@ -68,7 +70,8 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            Compound = _templateCompound,
+            SimulationCompound = _simulationCompound,
+            TemplateCompound = _templateCompound,
             ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Permeability" },
             NewOverwriteParameterSetName = "MyNewSet"
          });
@@ -81,7 +84,14 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_add_the_overwrite_parameter_set_to_the_compound()
+      public void should_add_the_overwrite_parameter_set_to_the_simulation_compound()
+      {
+         _simulationCompound.OverwriteParameterSets.Count.ShouldBeEqualTo(1);
+         _simulationCompound.OverwriteParameterSets[0].Name.ShouldBeEqualTo("MyNewSet");
+      }
+
+      [Observation]
+      public void should_add_the_overwrite_parameter_set_to_the_template_compound()
       {
          _templateCompound.OverwriteParameterSets.Count.ShouldBeEqualTo(1);
          _templateCompound.OverwriteParameterSets[0].Name.ShouldBeEqualTo("MyNewSet");
@@ -90,7 +100,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_building_block_properties_on_the_command()
       {
-         A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>._, _templateCompound)).MustHaveHappened();
+         A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>._, _simulationCompound)).MustHaveHappened();
       }
    }
 
@@ -104,7 +114,7 @@ namespace PKSim.Core
          base.Context();
          _existingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId" };
          _existingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
-         _templateCompound.AddOverwriteParameterSet(_existingSet);
+         _simulationCompound.AddOverwriteParameterSet(_existingSet);
 
          _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
       }
@@ -113,7 +123,8 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            Compound = _templateCompound,
+            SimulationCompound = _simulationCompound,
+            TemplateCompound = _templateCompound,
             ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
             ExistingOverwriteParameterSet = _existingSet
          });
@@ -146,7 +157,8 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            Compound = _templateCompound,
+            SimulationCompound = _simulationCompound,
+            TemplateCompound = _templateCompound,
             ParameterPaths = new[] { "Organism|Aspirin|NonExistent" },
             NewOverwriteParameterSetName = "Set"
          });
