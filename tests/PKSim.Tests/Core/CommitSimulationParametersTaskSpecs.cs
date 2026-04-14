@@ -107,14 +107,19 @@ namespace PKSim.Core
    public class When_committing_parameters_to_an_existing_overwrite_parameter_set : concern_for_CommitSimulationParametersTask
    {
       private ICommand _result;
-      private OverwriteParameterSet _existingSet;
+      private OverwriteParameterSet _simulationExistingSet;
+      private OverwriteParameterSet _templateExistingSet;
 
       protected override void Context()
       {
          base.Context();
-         _existingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId" };
-         _existingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
-         _simulationCompound.AddOverwriteParameterSet(_existingSet);
+         _simulationExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId1" };
+         _simulationExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
+         _simulationCompound.AddOverwriteParameterSet(_simulationExistingSet);
+
+         _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
 
          _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
       }
@@ -126,7 +131,8 @@ namespace PKSim.Core
             SimulationCompound = _simulationCompound,
             TemplateCompound = _templateCompound,
             ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
-            ExistingOverwriteParameterSet = _existingSet
+            ExistingSimulationOverwriteParameterSet = _simulationExistingSet,
+            ExistingTemplateOverwriteParameterSet = _templateExistingSet
          });
       }
 
@@ -137,9 +143,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_the_existing_set_with_new_parameter_value()
+      public void should_update_the_simulation_existing_set_with_new_parameter_value()
       {
-         _existingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
+         _simulationExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_update_the_template_existing_set_with_new_parameter_value()
+      {
+         _templateExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
       }
    }
 

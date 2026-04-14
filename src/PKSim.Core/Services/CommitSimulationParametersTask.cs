@@ -31,16 +31,21 @@ namespace PKSim.Core.Services
       public IReadOnlyList<string> ParameterPaths { get; init; }
 
       /// <summary>
-      ///    If set, update this existing OverwriteParameterSet instead of creating a new one.
+      ///    If set, update this existing OverwriteParameterSet in the simulation compound instead of creating a new one.
       /// </summary>
-      public OverwriteParameterSet ExistingOverwriteParameterSet { get; init; }
+      public OverwriteParameterSet ExistingSimulationOverwriteParameterSet { get; init; }
 
       /// <summary>
-      ///    Name for the new OverwriteParameterSet. Only used when <see cref="ExistingOverwriteParameterSet" /> is null.
+      ///    The corresponding OverwriteParameterSet in the template compound to update.
+      /// </summary>
+      public OverwriteParameterSet ExistingTemplateOverwriteParameterSet { get; init; }
+
+      /// <summary>
+      ///    Name for the new OverwriteParameterSet. Only used when <see cref="ExistingSimulationOverwriteParameterSet" /> is null.
       /// </summary>
       public string NewOverwriteParameterSetName { get; init; }
 
-      public bool ShouldCreateNew => ExistingOverwriteParameterSet == null;
+      public bool ShouldCreateNew => ExistingSimulationOverwriteParameterSet == null;
    }
 
    public interface ICommitSimulationParametersTask
@@ -112,8 +117,8 @@ namespace PKSim.Core.Services
          var command = new PKSimMacroCommand();
          var pathsToRemove = pathsResetByUser(commitInfo, simulation);
 
-         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingOverwriteParameterSet, commitInfo.SimulationCompound, parameterValues, pathsToRemove));
-         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingOverwriteParameterSet, commitInfo.TemplateCompound, parameterValues, pathsToRemove));
+         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingSimulationOverwriteParameterSet, commitInfo.SimulationCompound, parameterValues, pathsToRemove));
+         command.Add(new UpdateOverwriteParameterSetCommand(commitInfo.ExistingTemplateOverwriteParameterSet, commitInfo.TemplateCompound, parameterValues, pathsToRemove));
 
          return command;
       }
@@ -145,7 +150,7 @@ namespace PKSim.Core.Services
       {
          var committedPaths = new HashSet<string>(info.ParameterPaths);
 
-         return info.ExistingOverwriteParameterSet.ParameterValues
+         return info.ExistingSimulationOverwriteParameterSet.ParameterValues
             .Select(pv => pv.Path.PathAsString)
             .Where(path => !committedPaths.Contains(path) && !simulation.ParameterChangeTracker.IsTracked(path))
             .ToList();

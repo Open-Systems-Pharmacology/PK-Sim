@@ -187,11 +187,14 @@ namespace PKSim.Presentation
    {
       private CompoundCommitInfo _result;
       private OverwriteParameterSet _existingSet;
+      private OverwriteParameterSet _templateExistingSet;
 
       protected override void Context()
       {
          base.Context();
          _existingSet = new OverwriteParameterSet { Name = "Existing" };
+         _templateExistingSet = new OverwriteParameterSet { Name = "Existing" };
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
 
          var dto = new CompoundCommitDTO
          {
@@ -217,8 +220,14 @@ namespace PKSim.Presentation
       [Observation]
       public void should_reference_existing_set()
       {
-         _result.ExistingOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
+         _result.ExistingSimulationOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
          _result.NewOverwriteParameterSetName.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_resolve_existing_template_overwrite_parameter_set()
+      {
+         _result.ExistingTemplateOverwriteParameterSet.ShouldBeEqualTo(_templateExistingSet);
       }
    }
 }

@@ -1,4 +1,5 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -62,9 +63,13 @@ namespace PKSim.Presentation.Presenters.Simulations
             SimulationCompound = dto.Compound,
             TemplateCompound = projectCompound,
             ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
-            ExistingOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
+            ExistingSimulationOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
+            ExistingTemplateOverwriteParameterSet = dto.CreateNew ? null : existingOverwriteParameterSet(dto, projectCompound),
             NewOverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : null
          };
       }
+
+      private static OverwriteParameterSet existingOverwriteParameterSet(CompoundCommitDTO dto, Compound projectCompound) => 
+         projectCompound.OverwriteParameterSets.FindByName(dto.SelectedExistingSet?.Name);
    }
 }
