@@ -92,7 +92,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_resolve_the_template_compound()
       {
-         _result.TemplateCompound.ShouldBeEqualTo(_templateCompound);
+         _result.Compound.ShouldBeEqualTo(_templateCompound);
       }
 
       [Observation]
