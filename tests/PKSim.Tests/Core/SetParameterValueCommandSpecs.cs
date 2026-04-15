@@ -406,6 +406,7 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
 
          A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Id)).Returns(_parameter);
          A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Organism|Aspirin|Lipophilicity");
 

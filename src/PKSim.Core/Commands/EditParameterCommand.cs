@@ -133,29 +133,38 @@ namespace PKSim.Core.Commands
          //this is a direct command
          if (!_trackedByThisCommand)
          {
-            var wasTracked = tracker.IsTracked(parameterPath);
             UpdateTrackerForParameter(tracker, parameterPath);
-
-            //this command changed the tracker state => remember so we can reverse on undo
-            if (wasTracked != tracker.IsTracked(parameterPath))
-               _trackedByThisCommand = true;
          }
          //this is an inverse command => reverse the tracking action
          else
          {
             ReverseTrackerUpdateForParameter(tracker, parameterPath);
-            _trackedByThisCommand = false;
          }
       }
 
       protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {
+         Track(tracker, parameterPath);
+      }
+
+      protected void Track(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         var wasTracked = tracker.IsTracked(parameterPath);
          tracker.Track(parameterPath);
+         //this command changed the tracker state => remember so we can reverse on undo
+         if (wasTracked != tracker.IsTracked(parameterPath))
+            _trackedByThisCommand = true;
       }
 
       protected virtual void ReverseTrackerUpdateForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {
+         UnTrack(tracker, parameterPath);
+      }
+
+      protected void UnTrack(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
          tracker.Untrack(parameterPath);
+         _trackedByThisCommand = false;
       }
 
       protected virtual void UpdateParameter(IExecutionContext context)
