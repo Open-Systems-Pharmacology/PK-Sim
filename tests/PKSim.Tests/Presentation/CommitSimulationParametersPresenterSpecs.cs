@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -17,27 +16,22 @@ namespace PKSim.Presentation
    {
       protected ICommitSimulationParametersView _view;
       protected ISimulationToCompoundCommitDTOMapper _mapper;
-      protected IBuildingBlockRepository _buildingBlockRepository;
       protected IndividualSimulation _simulation;
       protected Compound _simulationCompound;
       protected Compound _compound;
-      protected Compound _templateCompound;
 
       protected override void Context()
       {
          _view = A.Fake<ICommitSimulationParametersView>();
          _mapper = A.Fake<ISimulationToCompoundCommitDTOMapper>();
-         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
 
-         _simulationCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
-         _compound = new Compound { Name = "Aspirin", Id = "CompoundId" };
-         _templateCompound = new Compound { Name = "Aspirin", Id = "ProjectCompoundId" };
+         _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
+         _compound = new Compound { Name = "Aspirin", Id = "ProjectCompoundId" };
          _simulation = new IndividualSimulation { Id = "SimId" };
 
-         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("ProjectCompoundId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
-         A.CallTo(() => _buildingBlockRepository.ById<Compound>("ProjectCompoundId")).Returns(_templateCompound);
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("ProjectCompoundId", PKSimBuildingBlockType.Compound) { BuildingBlock = _simulationCompound });
 
-         sut = new CommitSimulationParametersPresenter(_view, _mapper, _buildingBlockRepository);
+         sut = new CommitSimulationParametersPresenter(_view, _mapper);
       }
    }
 
@@ -73,14 +67,10 @@ namespace PKSim.Presentation
       public void should_return_commit_info()
       {
          _result.ShouldNotBeNull();
-         _result.SimulationCompound.ShouldBeEqualTo(_simulationCompound);
+         _result.TemplateCompoundId.ShouldBeEqualTo(_compound.Id);
          _result.ParameterPaths.ShouldContain("Organism|Aspirin|Lipophilicity");
-      }
-
-      [Observation]
-      public void should_resolve_template_compound()
-      {
-         _result.TemplateCompound.ShouldBeEqualTo(_templateCompound);
+         _result.ShouldCreateNew.ShouldBeTrue();
+         _result.OverwriteParameterSetName.ShouldBeEqualTo("MySet");
       }
 
       [Observation]
@@ -187,14 +177,11 @@ namespace PKSim.Presentation
    {
       private CompoundCommitInfo _result;
       private OverwriteParameterSet _existingSet;
-      private OverwriteParameterSet _templateExistingSet;
 
       protected override void Context()
       {
          base.Context();
          _existingSet = new OverwriteParameterSet { Name = "Existing" };
-         _templateExistingSet = new OverwriteParameterSet { Name = "Existing" };
-         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
 
          var dto = new CompoundCommitDTO
          {
@@ -218,16 +205,10 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_reference_existing_set()
+      public void should_reference_existing_set_by_name()
       {
-         _result.ExistingSimulationOverwriteParameterSet.ShouldBeEqualTo(_existingSet);
-         _result.NewOverwriteParameterSetName.ShouldBeNull();
-      }
-
-      [Observation]
-      public void should_resolve_existing_template_overwrite_parameter_set()
-      {
-         _result.ExistingTemplateOverwriteParameterSet.ShouldBeEqualTo(_templateExistingSet);
+         _result.ShouldCreateNew.ShouldBeFalse();
+         _result.OverwriteParameterSetName.ShouldBeEqualTo("Existing");
       }
    }
 }

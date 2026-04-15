@@ -1,9 +1,7 @@
 using System.Linq;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -25,15 +23,12 @@ namespace PKSim.Presentation.Presenters.Simulations
    public class CommitSimulationParametersPresenter : AbstractDisposablePresenter<ICommitSimulationParametersView, ICommitSimulationParametersPresenter>, ICommitSimulationParametersPresenter
    {
       private readonly ISimulationToCompoundCommitDTOMapper _mapper;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public CommitSimulationParametersPresenter(
          ICommitSimulationParametersView view,
-         ISimulationToCompoundCommitDTOMapper mapper,
-         IBuildingBlockRepository buildingBlockRepository) : base(view)
+         ISimulationToCompoundCommitDTOMapper mapper) : base(view)
       {
          _mapper = mapper;
-         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public CompoundCommitInfo ShowCommitDialog(Simulation simulation, Compound compound)
@@ -50,26 +45,18 @@ namespace PKSim.Presentation.Presenters.Simulations
          if (_view.Canceled)
             return null;
 
-         return commitInfoFrom(dto, simulation, compound);
+         return commitInfoFrom(dto, compound);
       }
 
-      private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto, Simulation simulation, Compound compound)
+      private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto, Compound compound)
       {
-         var templateId = simulation.TemplateBuildingBlockIdUsedBy(compound);
-         var projectCompound = _buildingBlockRepository.ById<Compound>(templateId);
-
          return new CompoundCommitInfo
          {
-            SimulationCompound = dto.Compound,
-            TemplateCompound = projectCompound,
+            TemplateCompoundId = compound.Id,
             ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
-            ExistingSimulationOverwriteParameterSet = dto.CreateNew ? null : dto.SelectedExistingSet,
-            ExistingTemplateOverwriteParameterSet = dto.CreateNew ? null : existingOverwriteParameterSet(dto, projectCompound),
-            NewOverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : null
+            OverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : dto.SelectedExistingSet?.Name,
+            ShouldCreateNew = dto.CreateNew
          };
       }
-
-      private static OverwriteParameterSet existingOverwriteParameterSet(CompoundCommitDTO dto, Compound projectCompound) => 
-         projectCompound.OverwriteParameterSets.FindByName(dto.SelectedExistingSet?.Name);
    }
 }

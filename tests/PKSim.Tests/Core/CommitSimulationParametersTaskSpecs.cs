@@ -16,6 +16,7 @@ namespace PKSim.Core
    {
       protected IExecutionContext _executionContext;
       protected IContainerTask _containerTask;
+      protected PKSim.Core.Repositories.IBuildingBlockRepository _buildingBlockRepository;
       protected IndividualSimulation _simulation;
       protected Compound _simulationCompound;
       protected Compound _templateCompound;
@@ -27,6 +28,7 @@ namespace PKSim.Core
       {
          _executionContext = A.Fake<IExecutionContext>();
          _containerTask = A.Fake<IContainerTask>();
+         _buildingBlockRepository = A.Fake<PKSim.Core.Repositories.IBuildingBlockRepository>();
 
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId" };
@@ -44,6 +46,9 @@ namespace PKSim.Core
             Model = new OSPSuite.Core.Domain.Model { Root = root }
          };
 
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _simulationCompound });
+         A.CallTo(() => _buildingBlockRepository.ById<Compound>("TemplateCompId")).Returns(_templateCompound);
+
          _parameterCache = new PathCacheForSpecs<IParameter>();
          _parameterCache.Add("Organism|Aspirin|Lipophilicity", _lipophilicityParam);
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeabilityParam);
@@ -51,7 +56,7 @@ namespace PKSim.Core
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
          A.CallTo(() => _executionContext.TypeFor(_simulationCompound)).Returns("Compound");
 
-         sut = new CommitSimulationParametersTask(_executionContext, _containerTask);
+         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository);
       }
    }
 
@@ -70,10 +75,10 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            SimulationCompound = _simulationCompound,
-            TemplateCompound = _templateCompound,
+            TemplateCompoundId = _templateCompound.Id,
             ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Permeability" },
-            NewOverwriteParameterSetName = "MyNewSet"
+            OverwriteParameterSetName = "MyNewSet",
+            ShouldCreateNew = true
          });
       }
 
@@ -128,11 +133,10 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            SimulationCompound = _simulationCompound,
-            TemplateCompound = _templateCompound,
+            TemplateCompoundId = _templateCompound.Id,
             ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
-            ExistingSimulationOverwriteParameterSet = _simulationExistingSet,
-            ExistingTemplateOverwriteParameterSet = _templateExistingSet
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
          });
       }
 
@@ -169,10 +173,10 @@ namespace PKSim.Core
       {
          _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
          {
-            SimulationCompound = _simulationCompound,
-            TemplateCompound = _templateCompound,
+            TemplateCompoundId = _templateCompound.Id,
             ParameterPaths = new[] { "Organism|Aspirin|NonExistent" },
-            NewOverwriteParameterSetName = "Set"
+            OverwriteParameterSetName = "Set",
+            ShouldCreateNew = true
          });
       }
 
