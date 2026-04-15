@@ -14,7 +14,7 @@ namespace PKSim.Presentation
          sut = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = new Compound { Name = "Aspirin" },
+            Compound = new Compound { Name = "Aspirin" },
             AvailableExistingSets = new List<OverwriteParameterSet>
             {
                new() { Name = "ExistingSet1" },
@@ -128,7 +128,7 @@ namespace PKSim.Presentation
          sut = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
-            TemplateCompound = new Compound { Name = "Aspirin" },
+            Compound = new Compound { Name = "Aspirin" },
             AvailableExistingSets = new List<OverwriteParameterSet>(),
             CreateNew = true,
             NewSetName = "AnyName",
