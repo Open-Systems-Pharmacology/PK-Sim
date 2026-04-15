@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.96" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.97" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.96" />
-    <PackageReference Include="OSPSuite.CLI.Core" Version="13.0.96" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.97" />
+    <PackageReference Include="OSPSuite.CLI.Core" Version="13.0.97" />
   </ItemGroup>
 
   <ItemGroup>
