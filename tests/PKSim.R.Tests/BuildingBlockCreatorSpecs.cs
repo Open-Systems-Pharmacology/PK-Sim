@@ -59,7 +59,7 @@ internal class CreateExchangeMetabolizingEnzyme : ContextForStaticIntegration
 
    protected override void Because()
    {
-      _result = BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", CoreConstants.Species.HUMAN);
+      _result = BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", CoreConstants.Species.HUMAN, "Healthy");
    }
 
    [Observation]
@@ -79,7 +79,7 @@ internal class CreateExchangeExpressionProfileWithInvalidSpecies : ContextForSta
       {
          try
          {
-            BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", "InvalidSpecies");
+            BuildingBlockCreator.CreateExpressionProfile(MetabolizingEnzyme, "CYP3A4", "InvalidSpecies", "Healthy");
          }
          catch (Exception e)
          {
@@ -97,7 +97,7 @@ internal class CreateExchangeTransportProtein : ContextForStaticIntegration
 
    protected override void Because()
    {
-      _result = BuildingBlockCreator.CreateExpressionProfile(TransportProtein, "CYP3A4", CoreConstants.Species.HUMAN);
+      _result = BuildingBlockCreator.CreateExpressionProfile(TransportProtein, "CYP3A4", CoreConstants.Species.HUMAN, "Healthy");
    }
 
    [Observation]
@@ -112,7 +112,7 @@ internal class CreateExchangeTransportProtein : ContextForStaticIntegration
 
       protected override void Because()
       {
-         _result = BuildingBlockCreator.CreateExpressionProfile(ProteinBindingPartner, "CYP3A4", CoreConstants.Species.HUMAN);
+         _result = BuildingBlockCreator.CreateExpressionProfile(ProteinBindingPartner, "CYP3A4", CoreConstants.Species.HUMAN, "Healthy");
       }
 
       [Observation]
