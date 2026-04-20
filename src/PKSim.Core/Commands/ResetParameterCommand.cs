@@ -40,12 +40,12 @@ namespace PKSim.Core.Commands
 
       protected override void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {
-         tracker.Untrack(parameterPath);
+         UnTrack(tracker, parameterPath);
       }
 
       protected override void ReverseTrackerUpdateForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {
-         tracker.Track(parameterPath);
+         Track(tracker, parameterPath);
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

@@ -694,7 +694,8 @@ namespace PKSim.Core
       [Observation]
       public void should_return_null_for_null_path()
       {
-         sut.CompoundNameForParameterPath(null).ShouldBeNull();
+         string s = null;
+         sut.CompoundNameForParameterPath(s).ShouldBeNull();
       }
 
       [Observation]

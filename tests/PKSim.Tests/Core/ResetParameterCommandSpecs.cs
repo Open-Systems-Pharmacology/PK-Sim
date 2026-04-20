@@ -32,7 +32,7 @@ namespace PKSim.Core
          container.Add(oneParameter);
          container.Add(_parameterToReset);
          _parameterToReset.Formula.AddObjectPath(objectPathFactory.CreateRelativeFormulaUsablePath(_parameterToReset, oneParameter));
-
+         _parameterToReset.Origin.SimulationId = "SimId";
          A.CallTo(() => _executionContext.Get<IParameter>(_parameterToReset.Id)).Returns(_parameterToReset);
          A.CallTo(() => _executionContext.BuildingBlockContaining(_parameterToReset)).Returns(A.Fake<IPKSimBuildingBlock>());
 
@@ -163,7 +163,6 @@ namespace PKSim.Core
          _entityPathResolver = A.Fake<IEntityPathResolver>();
 
          _parameterToReset.BuildingBlockType = PKSimBuildingBlockType.Simulation;
-         _parameterToReset.Origin.SimulationId = "SimId";
          _parameterToReset.Value = 25;
 
          var compound = new Compound { Name = "Aspirin" };
@@ -199,7 +198,6 @@ namespace PKSim.Core
          _entityPathResolver = A.Fake<IEntityPathResolver>();
 
          _parameterToReset.BuildingBlockType = PKSimBuildingBlockType.Simulation;
-         _parameterToReset.Origin.SimulationId = "SimId";
          _parameterToReset.Value = 25;
 
          var compound = new Compound { Name = "Aspirin" };

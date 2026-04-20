@@ -34,25 +34,25 @@ public static class BuildingBlockCreator
       return serializer.Serialize(mapper.MapFrom(buildingBlock));
    }
 
-   public static string CreateExpressionProfile(string category, string moleculeName, string speciesName)
+   public static string CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype)
    {
       Api.InitializeOnce();
       var (serializer, mapper) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper>();
       ExpressionProfile buildingBlock;
 
       if (string.Equals(category, TransportProtein))
-         buildingBlock = createExpressionProfile<IndividualTransporter>(category, moleculeName, speciesName);
+         buildingBlock = createExpressionProfile<IndividualTransporter>(moleculeName, speciesName, phenotype);
       else if (string.Equals(category, ProteinBindingPartner))
-         buildingBlock = createExpressionProfile<IndividualOtherProtein>(category, moleculeName, speciesName);
+         buildingBlock = createExpressionProfile<IndividualOtherProtein>(moleculeName, speciesName, phenotype);
       else if (string.Equals(category, MetabolizingEnzyme))
-         buildingBlock = createExpressionProfile<IndividualEnzyme>(category, moleculeName, speciesName);
+         buildingBlock = createExpressionProfile<IndividualEnzyme>(moleculeName, speciesName, phenotype);
       else
          throw new ArgumentException(PKSimConstants.Error.InvalidProteinCategory(category));
 
       return serializer.Serialize(mapper.MapFrom(buildingBlock));
    }
 
-   private static ExpressionProfile createExpressionProfile<T>(string category, string moleculeName, string speciesName) where T : IndividualMolecule
+   private static ExpressionProfile createExpressionProfile<T>(string moleculeName, string speciesName, string phenotype) where T : IndividualMolecule
    {
       var (expressionProfileFactory, moleculeParameterTask, speciesRepository) = Api.ResolveTasks<IExpressionProfileFactory, IMoleculeParameterTask, ISpeciesRepository>();
 
@@ -61,7 +61,7 @@ public static class BuildingBlockCreator
          throw new ArgumentException(PKSimConstants.Error.CouldNotFindValidSpecies(speciesName));
 
       var expressionProfile = expressionProfileFactory.Create<T>(species, moleculeName);
-      expressionProfile.Category = category;
+      expressionProfile.Category = phenotype;
 
       moleculeParameterTask.SetDefaultFor(expressionProfile);
 
