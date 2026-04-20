@@ -69,13 +69,12 @@ namespace PKSim.Presentation.Services
          if (usedBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Compound)
             return baseIcon;
 
-         if (_buildingBlockInProjectManager.StatusFor(usedBuildingBlock) != BuildingBlockStatus.Red)
-            return baseIcon;
-
          if (!simulation.HasUncommittedChangesForCompound(templateBuildingBlockFor(usedBuildingBlock).Name))
             return baseIcon;
 
-         return ApplicationIcons.CompoundRedOrange;
+         return _buildingBlockInProjectManager.StatusFor(usedBuildingBlock) == BuildingBlockStatus.Red
+            ? ApplicationIcons.CompoundRedOrange
+            : ApplicationIcons.CompoundGreenOrange;
       }
 
       public ApplicationIcon IconFor(ISimulationComparison simulationComparison)

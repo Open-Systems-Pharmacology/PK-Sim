@@ -4,6 +4,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -80,6 +81,8 @@ namespace PKSim.Core.Services
          //Only untrack paths that were actually resolved to parameter values
          parameterValues.Each(pv => simulation.ParameterChangeTracker.Untrack(pv.Path));
 
+         _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
+         
          return command;
       }
 

@@ -7,6 +7,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -106,6 +107,12 @@ namespace PKSim.Core
       public void should_set_building_block_properties_on_the_command()
       {
          A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>._, _simulationCompound)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_publish_a_simulation_status_changed_event_for_the_simulation()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(e => e.Simulation == _simulation))).MustHaveHappened();
       }
    }
 

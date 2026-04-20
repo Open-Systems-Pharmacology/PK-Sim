@@ -92,7 +92,42 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_retrieving_icon_for_compound_with_green_status : concern_for_BuildingBlockIconRetriever
+   public class When_retrieving_icon_for_compound_with_green_status_and_uncommitted_changes : concern_for_BuildingBlockIconRetriever
+   {
+      private ApplicationIcon _result;
+      private UsedBuildingBlock _usedBuildingBlock;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         var templateCompound = new Compound().WithName("Aspirin").WithId("templateId");
+         var simulationCompound = new Compound().WithName("Aspirin").WithId("CompId");
+         _usedBuildingBlock = new UsedBuildingBlock("templateId", PKSimBuildingBlockType.Compound);
+         _usedBuildingBlock.BuildingBlock = simulationCompound;
+
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties(), ModelProperties = new ModelProperties() };
+         _simulation.ModelConfiguration = A.Fake<ModelConfiguration>();
+         _simulation.AddUsedBuildingBlock(_usedBuildingBlock);
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_usedBuildingBlock)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _buildingBlockRepository.ById("templateId")).Returns(templateCompound);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IconFor(_simulation, _usedBuildingBlock);
+      }
+
+      [Observation]
+      public void should_return_compound_green_orange_icon()
+      {
+         _result.ShouldBeEqualTo(ApplicationIcons.CompoundGreenOrange);
+      }
+   }
+
+   public class When_retrieving_icon_for_compound_with_green_status_and_no_uncommitted_changes : concern_for_BuildingBlockIconRetriever
    {
       private ApplicationIcon _result;
       private UsedBuildingBlock _usedBuildingBlock;
