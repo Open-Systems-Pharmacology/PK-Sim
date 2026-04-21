@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core
@@ -38,6 +39,12 @@ namespace PKSim.Core
       public void should_add_the_set_to_the_compound()
       {
          _compound.OverwriteParameterSets.ShouldContain(_overwriteParameterSet);
+      }
+
+      [Observation]
+      public void should_publish_an_overwrite_parameter_set_changed_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<OverwriteParameterSetChangedEvent>.That.Matches(x => x.Compound == _compound && x.OverwriteParameterSet == _overwriteParameterSet))).MustHaveHappened();
       }
    }
 

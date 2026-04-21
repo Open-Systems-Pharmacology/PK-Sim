@@ -1,7 +1,6 @@
-using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using PKSim.Assets;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -24,6 +23,7 @@ namespace PKSim.Core.Commands
       {
          base.PerformExecuteWith(context);
          _buildingBlock.RemoveOverwriteParameterSet(_overwriteParameterSet);
+         context.PublishEvent(new OverwriteParameterSetChangedEvent(_buildingBlock, _overwriteParameterSet));
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

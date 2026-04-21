@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
    /// <summary>
-   ///    Updates an existing <see cref="OverwriteParameterSet"/> by adding/replacing parameter values
+   ///    Updates an existing <see cref="OverwriteParameterSet" /> by adding/replacing parameter values
    ///    and removing paths that were reset by the user. Stores the previous state for undo.
    /// </summary>
    public class UpdateOverwriteParameterSetCommand : BuildingBlockChangeCommand<Compound>
@@ -33,7 +33,7 @@ namespace PKSim.Core.Commands
          _newParameterValues = newParameterValues.ToList();
          _pathsToRemove = pathsToRemove.ToList();
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         Description = $"Update {PKSimConstants.ObjectTypes.OverwriteParameterSet} '{overwriteParameterSet.Name}' in {PKSimConstants.ObjectTypes.Compound} '{compound.Name}'";
+         Description = PKSimConstants.Command.UpdateOverwriteParameterSetInCompound(overwriteParameterSet.Name, compound.Name);
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)
@@ -48,6 +48,8 @@ namespace PKSim.Core.Commands
 
          //Add or replace parameter values
          _newParameterValues.Each(pv => _overwriteParameterSet.Add(pv));
+
+         context.PublishEvent(new OverwriteParameterSetChangedEvent(_buildingBlock, _overwriteParameterSet));
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
