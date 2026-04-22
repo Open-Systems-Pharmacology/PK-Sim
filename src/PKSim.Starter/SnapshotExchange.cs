@@ -13,8 +13,7 @@ public static class SnapshotExchange
    {
       var container = CLIApplicationStartup.Initialize();
       var mapper = container.Resolve<IIndividualSnapshotToIndividualBuildingBlockMapper>();
-      var cloner = container.Resolve<ICloner>();
-      var individualBuildingBlock = cloner.Clone(mapper.MapFrom(individualSnapshot));
+      var individualBuildingBlock = mapper.MapFrom(individualSnapshot);
       individualBuildingBlock.Snapshot = individualSnapshot;
       return serialize(individualBuildingBlock, container);
    }
@@ -23,8 +22,8 @@ public static class SnapshotExchange
    {
       var container = CLIApplicationStartup.Initialize();
       var mapper = container.Resolve<IExpressionProfileSnapshotToExpressionProfileBuildingBlockMapper>();
-      var cloner = container.Resolve<ICloner>();
-      var expressionProfileBuildingBlock = cloner.Clone(mapper.MapFrom(expressionProfileSnapshot));
+      
+      var expressionProfileBuildingBlock = mapper.MapFrom(expressionProfileSnapshot);
       expressionProfileBuildingBlock.Snapshot = expressionProfileSnapshot;
       return serialize(expressionProfileBuildingBlock, container);
    }

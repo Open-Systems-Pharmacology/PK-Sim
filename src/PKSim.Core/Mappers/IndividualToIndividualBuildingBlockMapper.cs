@@ -41,7 +41,8 @@ namespace PKSim.Core.Mappers
          IParameterQuery parameterQuery,
          IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository,
          ICloner cloner,
-         IDimensionRepository dimensionRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
+         IDimensionRepository dimensionRepository, 
+         IObjectIdResetter objectIdResetter) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner, objectIdResetter)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
