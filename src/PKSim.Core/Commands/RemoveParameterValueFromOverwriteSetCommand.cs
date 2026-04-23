@@ -6,7 +6,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands;
 
-public class RemoveParameterValueFromOverwriteSetCommand : BuildingBlockChangeCommand<Compound>
+public class RemoveParameterValueFromOverwriteSetCommand : BuildingBlockStructureChangeCommand<Compound>
 {
    private readonly string _overwriteParameterSetId;
    private OverwriteParameterSet _overwriteParameterSet;
@@ -54,7 +54,7 @@ public class RemoveParameterValueFromOverwriteSetCommand : BuildingBlockChangeCo
    ///    Not public: new parameter values are only added to an <see cref="OverwriteParameterSet" />
    ///    via commit from a simulation, never directly from the compound tab.
    /// </summary>
-   private class AddParameterValueToOverwriteSetCommand : BuildingBlockChangeCommand<Compound>
+   private class AddParameterValueToOverwriteSetCommand : BuildingBlockStructureChangeCommand<Compound>
    {
       private readonly string _overwriteParameterSetId;
       private OverwriteParameterSet _overwriteParameterSet;

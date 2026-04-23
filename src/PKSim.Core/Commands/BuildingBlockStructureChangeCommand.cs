@@ -1,3 +1,5 @@
+using PKSim.Core.Model;
+
 namespace PKSim.Core.Commands
 {
    public interface IBuildingBlockStructureChangeCommand : IBuildingBlockChangeCommand
@@ -6,6 +8,14 @@ namespace PKSim.Core.Commands
 
    public abstract class BuildingBlockStructureChangeCommand : BuildingBlockChangeCommand, IBuildingBlockStructureChangeCommand
    {
+   }
+
+   public abstract class BuildingBlockStructureChangeCommand<T> : BuildingBlockChangeCommand<T>, IBuildingBlockStructureChangeCommand
+      where T : class, IPKSimBuildingBlock
+   {
+      protected BuildingBlockStructureChangeCommand(T buildingBlock) : base(buildingBlock)
+      {
+      }
    }
 
    public abstract class BuildingBlockIrreversibleStructureChangeCommand : PKSimCommand, IBuildingBlockStructureChangeCommand
