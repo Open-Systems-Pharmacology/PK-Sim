@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
@@ -135,6 +136,12 @@ namespace PKSim.Core.Model
          CalculationMethodCache.UpdatePropertiesFrom(sourceCompound.CalculationMethodCache, cloneManager);
          _overwriteParameterSets.Clear();
          sourceCompound.OverwriteParameterSets.Each(x => AddOverwriteParameterSet(cloneManager.Clone(x)));
+      }
+
+      public override void AcceptVisitor(IVisitor visitor)
+      {
+         base.AcceptVisitor(visitor);
+         OverwriteParameterSets.Each(x => x.AcceptVisitor(visitor));
       }
    }
 }

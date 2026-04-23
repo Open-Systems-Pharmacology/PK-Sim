@@ -4,15 +4,15 @@ namespace PKSim.Presentation.DTO.Compounds;
 
 public class OverwriteParameterValueDTO
 {
-   private readonly ParameterValue _parameterValue;
-
    public OverwriteParameterValueDTO(ParameterValue parameterValue)
    {
-      _parameterValue = parameterValue;
+      ParameterValue = parameterValue;
    }
 
-   public string Path => _parameterValue.Path.ToString();
-   public double? Value => _parameterValue.Value;
-   public string Unit => _parameterValue.DisplayUnit.Name;
-   public string ValueOrigin => _parameterValue.ValueOrigin.Display;
+   public ParameterValue ParameterValue { get; }
+
+   public string Path => ParameterValue.Path.ToString();
+   public double? Value => ParameterValue.Value;
+   public string Unit => ParameterValue.DisplayUnit.Name;
+   public string ValueOrigin => ParameterValue.ValueOrigin.Display;
 }

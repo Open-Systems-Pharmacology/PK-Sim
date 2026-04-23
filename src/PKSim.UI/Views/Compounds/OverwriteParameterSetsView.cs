@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using DevExpress.Utils;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -8,6 +11,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds;
 
@@ -16,6 +20,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    private IOverwriteParameterSetsPresenter _presenter;
    private readonly GridViewBinder<OverwriteParameterSetDTO> _gridViewBinderSets;
    private readonly GridViewBinder<OverwriteParameterValueDTO> _gridViewBinderParameterValues;
+   private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
 
    public OverwriteParameterSetsView()
    {
@@ -31,6 +36,10 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
          BindingMode = BindingMode.OneWay
       };
 
+      gridViewSets.OptionsSelection.EnableAppearanceFocusedCell = false;
+      gridViewParameterValues.OptionsSelection.EnableAppearanceFocusedCell = false;
+      gridViewParameterValues.EditorShowMode = EditorShowMode.MouseDown;
+
       gridViewSets.FocusedRowChanged += (o, e) => OnEvent(selectedSetChanged);
    }
 
@@ -42,28 +51,44 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    public override void InitializeBinding()
    {
       _gridViewBinderSets.Bind(x => x.Name)
-         .WithCaption(PKSimConstants.UI.Name);
+         .WithCaption(PKSimConstants.UI.Name)
+         .AsReadOnly();
 
       _gridViewBinderSets.Bind(x => x.IsDefault)
-         .WithCaption(PKSimConstants.UI.IsDefault);
+         .WithCaption(PKSimConstants.UI.IsDefault)
+         .AsReadOnly();
 
       _gridViewBinderSets.Bind(x => x.Species)
-         .WithCaption(PKSimConstants.UI.Species);
+         .WithCaption(PKSimConstants.UI.Species)
+         .AsReadOnly();
 
       _gridViewBinderSets.Bind(x => x.DiseaseState)
-         .WithCaption(PKSimConstants.UI.DiseaseState);
+         .WithCaption(PKSimConstants.UI.DiseaseState)
+         .AsReadOnly();
 
       _gridViewBinderParameterValues.Bind(x => x.Path)
-         .WithCaption(Captions.Diff.ObjectPath);
+         .WithCaption(Captions.Diff.ObjectPath)
+         .AsReadOnly();
 
       _gridViewBinderParameterValues.Bind(x => x.Value)
-         .WithCaption(Captions.Value);
+         .WithCaption(Captions.Value)
+         .WithOnValueUpdating((dto, e) => OnEvent(() => onParameterValueUpdating(dto, e.NewValue)));
 
       _gridViewBinderParameterValues.Bind(x => x.Unit)
-         .WithCaption(Captions.Unit);
+         .WithCaption(Captions.Unit)
+         .AsReadOnly();
 
       _gridViewBinderParameterValues.Bind(x => x.ValueOrigin)
-         .WithCaption(Captions.ValueOrigin);
+         .WithCaption(Captions.ValueOrigin)
+         .AsReadOnly();
+
+      _gridViewBinderParameterValues.AddUnboundColumn()
+         .WithCaption(Captions.EmptyColumn)
+         .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
+         .WithShowButton(ShowButtonModeEnum.ShowAlways)
+         .WithRepository(_ => _removeButtonRepository);
+
+      _removeButtonRepository.ButtonClick += (_, _) => OnEvent(() => _presenter.RemoveParameterValue(_gridViewBinderSets.FocusedElement, _gridViewBinderParameterValues.FocusedElement));
    }
 
    public override void InitializeResources()
@@ -91,5 +116,18 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       }
 
       _gridViewBinderParameterValues.BindToSource(selectedSet.ParameterValues);
+   }
+
+   private void onParameterValueUpdating(OverwriteParameterValueDTO dto, double? newValue)
+   {
+      if (!newValue.HasValue)
+         return;
+
+      var selectedSet = _gridViewBinderSets.FocusedElement;
+      if (selectedSet == null)
+         return;
+
+      _presenter.UpdateParameterValue(selectedSet, dto, newValue.Value);
+      gridViewParameterValues.CloseEditor();
    }
 }

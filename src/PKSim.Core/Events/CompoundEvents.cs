@@ -7,20 +7,20 @@ namespace PKSim.Core.Events
       Compound Compound { get; }
    }
 
-   public class AddCompoundParameterGroupAlternativeEvent : AddEntityEvent<PKSim.Core.Model.ParameterAlternative, PKSim.Core.Model.ParameterAlternativeGroup>
+   public class AddCompoundParameterGroupAlternativeEvent : AddEntityEvent<ParameterAlternative, ParameterAlternativeGroup>
    {
    }
 
-   public class RemoveCompoundParameterGroupAlternativeEvent : RemoveEntityEvent<PKSim.Core.Model.ParameterAlternative, PKSim.Core.Model.ParameterAlternativeGroup>
+   public class RemoveCompoundParameterGroupAlternativeEvent : RemoveEntityEvent<ParameterAlternative, ParameterAlternativeGroup>
    {
    }
 
-   public class RemoveCompoundProcessEvent : RemoveEntityEvent<PKSim.Core.Model.CompoundProcess, Compound>, ICompoundEvent
+   public class RemoveCompoundProcessEvent : RemoveEntityEvent<CompoundProcess, Compound>, ICompoundEvent
    {
       public Compound Compound => Container;
    }
 
-   public class AddCompoundProcessEvent : AddEntityEvent<PKSim.Core.Model.CompoundProcess, Compound>, ICompoundEvent
+   public class AddCompoundProcessEvent : AddEntityEvent<CompoundProcess, Compound>, ICompoundEvent
    {
       public Compound Compound => Container;
    }
@@ -32,6 +32,18 @@ namespace PKSim.Core.Events
       public MoleculeRenamedInCompound(Compound compound)
       {
          Compound = compound;
+      }
+   }
+
+   public class OverwriteParameterSetChangedEvent : ICompoundEvent
+   {
+      public Compound Compound { get; }
+      public OverwriteParameterSet OverwriteParameterSet { get; }
+
+      public OverwriteParameterSetChangedEvent(Compound compound, OverwriteParameterSet overwriteParameterSet)
+      {
+         Compound = compound;
+         OverwriteParameterSet = overwriteParameterSet;
       }
    }
 }

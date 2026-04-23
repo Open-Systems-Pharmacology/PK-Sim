@@ -88,12 +88,8 @@ namespace PKSim.UI.Views.Compounds
          //
          // gridViewSets
          //
-         this.gridViewSets.AllowsFiltering = true;
-         this.gridViewSets.EnableColumnContextMenu = true;
          this.gridViewSets.GridControl = this.gridSets;
          this.gridViewSets.Name = "gridViewSets";
-         this.gridViewSets.OptionsBehavior.Editable = false;
-         this.gridViewSets.OptionsSelection.EnableAppearanceFocusedRow = true;
          //
          // gridParameterValues
          //
@@ -107,11 +103,8 @@ namespace PKSim.UI.Views.Compounds
          //
          // gridViewParameterValues
          //
-         this.gridViewParameterValues.AllowsFiltering = true;
-         this.gridViewParameterValues.EnableColumnContextMenu = true;
          this.gridViewParameterValues.GridControl = this.gridParameterValues;
          this.gridViewParameterValues.Name = "gridViewParameterValues";
-         this.gridViewParameterValues.OptionsBehavior.Editable = false;
          //
          // layoutControlGroup
          //

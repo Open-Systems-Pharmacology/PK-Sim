@@ -264,6 +264,18 @@ namespace PKSim.Assets
             return RemoveEntityFromContainer(ObjectTypes.ParameterGroupAlternative, alternativeName, ObjectTypes.ParameterGroup, groupName);
          }
 
+         public static string UpdateOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Update {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string UpdateParameterValueInOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Update value of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string RemoveParameterValueFromOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Remove '{parameterPath}' from {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string AddParameterValueToOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Add '{parameterPath}' to {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
