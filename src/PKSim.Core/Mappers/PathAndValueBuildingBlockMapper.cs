@@ -102,7 +102,8 @@ namespace PKSim.Core.Mappers
                {
                   var templateFormula = retrieveTemplateFormulaFromCache(parameter, pkSimBuildingBlock, formulaCache);
                   builderParameter.Formula = templateFormula;
-                  _objectIdResetter.ResetIdFor(builderParameter.Formula);
+                  if (builderParameter.Formula != null)
+                     _objectIdResetter.ResetIdFor(builderParameter.Formula);
                }
 
                // Only set the value of the parameter using a formula if it was indeed set
