@@ -31,8 +31,9 @@ namespace PKSim.Core.Mappers
          IFormulaFactory formulaFactory,
          IInitialConditionsCreator initialConditionsCreator,
          IMoleculeBuilderFactory moleculeBuilderFactory,
-         ICloner cloner) :
-         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
+         ICloner cloner, 
+         IObjectIdResetter objectIdResetter) :
+         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner, objectIdResetter)
       {
          _initialConditionsCreator = initialConditionsCreator;
          _moleculeBuilderFactory = moleculeBuilderFactory;

@@ -37,6 +37,7 @@ namespace PKSim.Core.Mappers
       private readonly ILazyLoadTask _lazyLoadTask;
       protected readonly IFormulaFactory _formulaFactory;
       private readonly ICloner _cloner;
+      private readonly IObjectIdResetter _objectIdResetter;
 
       protected PathAndValueBuildingBlockMapper(
          IObjectBaseFactory objectBaseFactory,
@@ -44,7 +45,8 @@ namespace PKSim.Core.Mappers
          IApplicationConfiguration applicationConfiguration,
          ILazyLoadTask lazyLoadTask,
          IFormulaFactory formulaFactory,
-         ICloner cloner)
+         ICloner cloner,
+         IObjectIdResetter objectIdResetter)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
@@ -52,6 +54,7 @@ namespace PKSim.Core.Mappers
          _lazyLoadTask = lazyLoadTask;
          _formulaFactory = formulaFactory;
          _cloner = cloner;
+         _objectIdResetter = objectIdResetter;
       }
 
       protected TBuildingBlock CreateBaseObject(TPKSimBuildingBlock pkSimBuildingBlock)
@@ -99,6 +102,8 @@ namespace PKSim.Core.Mappers
                {
                   var templateFormula = retrieveTemplateFormulaFromCache(parameter, pkSimBuildingBlock, formulaCache);
                   builderParameter.Formula = templateFormula;
+                  if (builderParameter.Formula != null)
+                     _objectIdResetter.ResetIdFor(builderParameter.Formula);
                }
 
                // Only set the value of the parameter using a formula if it was indeed set
