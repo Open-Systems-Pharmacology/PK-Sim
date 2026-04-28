@@ -7,6 +7,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
@@ -21,6 +22,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    private readonly GridViewBinder<OverwriteParameterSetDTO> _gridViewBinderSets;
    private readonly GridViewBinder<OverwriteParameterValueDTO> _gridViewBinderParameterValues;
    private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
+   private readonly UxRepositoryItemCheckEdit _isDefaultRepository;
 
    public OverwriteParameterSetsView()
    {
@@ -36,9 +38,12 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
          BindingMode = BindingMode.OneWay
       };
 
+      _isDefaultRepository = new UxRepositoryItemCheckEdit(gridViewSets);
+
       gridViewSets.OptionsSelection.EnableAppearanceFocusedCell = false;
       gridViewParameterValues.OptionsSelection.EnableAppearanceFocusedCell = false;
       gridViewParameterValues.EditorShowMode = EditorShowMode.MouseDown;
+      gridViewSets.EditorShowMode = EditorShowMode.MouseDown;
 
       gridViewSets.FocusedRowChanged += (o, e) => OnEvent(selectedSetChanged);
    }
@@ -56,7 +61,9 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
       _gridViewBinderSets.Bind(x => x.IsDefault)
          .WithCaption(PKSimConstants.UI.IsDefault)
-         .AsReadOnly();
+         .WithRepository(_ => _isDefaultRepository)
+         .WithFixedWidth(EMBEDDED_CHECK_BOX_WIDTH)
+         .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetIsDefault(dto, e.NewValue)));
 
       _gridViewBinderSets.Bind(x => x.Species)
          .WithCaption(PKSimConstants.UI.Species)

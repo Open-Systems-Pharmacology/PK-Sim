@@ -14,6 +14,7 @@ public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, ILis
 {
    void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValue);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
+   void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);
 }
 
 public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwriteParameterSetsView, IOverwriteParameterSetsPresenter>, IOverwriteParameterSetsPresenter
@@ -43,6 +44,9 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
 
    public void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO) =>
       AddCommand(_overwriteParameterSetTask.RemoveParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString));
+
+   public void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault) =>
+      AddCommand(_overwriteParameterSetTask.SetIsDefault(setDTO.OverwriteParameterSet, _compound, isDefault));
 
    public void Handle(OverwriteParameterSetChangedEvent eventToHandle)
    {

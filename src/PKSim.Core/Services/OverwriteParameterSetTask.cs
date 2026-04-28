@@ -8,16 +8,18 @@ namespace PKSim.Core.Services;
 public interface IOverwriteParameterSetTask
 {
    /// <summary>
-   ///    Updates the value of a parameter (identified by path) in an <see cref="OverwriteParameterSet"/>.
+   ///    Updates the value of a parameter (identified by path) in an <see cref="OverwriteParameterSet" />.
    ///    Returns an empty command if the parameter is not in the set or the value is unchanged.
    /// </summary>
    ICommand UpdateParameterValue(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, double newValue);
 
    /// <summary>
-   ///    Removes a parameter (identified by path) from an <see cref="OverwriteParameterSet"/>.
+   ///    Removes a parameter (identified by path) from an <see cref="OverwriteParameterSet" />.
    ///    Returns an empty command if the parameter is not in the set.
    /// </summary>
    ICommand RemoveParameterValue(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath);
+
+   ICommand SetIsDefault(OverwriteParameterSet overwriteParameterSet, Compound compound, bool isDefault);
 }
 
 public class OverwriteParameterSetTask : IOverwriteParameterSetTask
@@ -44,5 +46,16 @@ public class OverwriteParameterSetTask : IOverwriteParameterSetTask
          return new PKSimEmptyCommand();
 
       return new RemoveParameterValueFromOverwriteSetCommand(overwriteParameterSet, compound, parameterPath).Run(_executionContext);
+   }
+
+   public ICommand SetIsDefault(OverwriteParameterSet overwriteParameterSet, Compound compound, bool isDefault)
+   {
+      if (overwriteParameterSet.IsDefault == isDefault)
+         return new PKSimEmptyCommand();
+
+      if (isDefault)
+         return new SetDefaultOverwriteParameterSetCommand(overwriteParameterSet, compound).Run(_executionContext);
+
+      return new ClearDefaultOverwriteParameterSetCommand(overwriteParameterSet, compound).Run(_executionContext);
    }
 }

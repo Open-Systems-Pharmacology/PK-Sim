@@ -267,6 +267,12 @@ namespace PKSim.Assets
          public static string UpdateOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
             $"Update {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
+         public static string SetDefaultOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Set {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' as default in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string ClearDefaultOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Clear default flag from {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
          public static string UpdateParameterValueInOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
             $"Update value of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
@@ -1460,6 +1466,8 @@ namespace PKSim.Assets
          public static readonly string ProcessInCompound = "Process in compound";
          public static readonly string AlternativeInCompound = "Alternative in compound";
          public static readonly string ParameterAlternatives = "Parameter Alternatives";
+         public static readonly string OverwriteParameterSetInCompound = "Overwrite Parameter Set in compound";
+         public static readonly string OverwriteParameterSetSelection = "Overwrite Parameter Set";
          public static readonly string PlasmaClearanceInCompound = "Plasma clearance process in compound";
          public static readonly string CreatingSimulation = "Creating...";
          public static readonly string Molecule = "Molecule";
