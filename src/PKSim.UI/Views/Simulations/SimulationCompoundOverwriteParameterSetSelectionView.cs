@@ -1,7 +1,7 @@
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
@@ -19,16 +19,15 @@ namespace PKSim.UI.Views.Simulations
    {
       private readonly GridViewBinder<SimulationCompoundOverwriteParameterSetSelectionDTO> _gridViewBinder;
       private readonly UxRepositoryItemComboBox _repositoryForOverwriteParameterSets;
-      private readonly RepositoryItemTextEdit _repositoryItemDisabled;
 
       public SimulationCompoundOverwriteParameterSetSelectionView()
       {
          InitializeComponent();
          _repositoryForOverwriteParameterSets = new UxRepositoryItemComboBox(gridView);
-         _repositoryItemDisabled = new RepositoryItemTextEdit { Enabled = false, ReadOnly = true };
          _gridViewBinder = new GridViewBinder<SimulationCompoundOverwriteParameterSetSelectionDTO>(gridView);
          gridView.HorzScrollVisibility = ScrollVisibility.Never;
          gridView.ShowColumnHeaders = false;
+         gridView.RowStyle += rowStyle;
          layoutControl.AutoScroll = false;
          _repositoryForOverwriteParameterSets.AllowDropDownWhenReadOnly = DefaultBoolean.False;
       }
@@ -51,27 +50,25 @@ namespace PKSim.UI.Views.Simulations
             .AsReadOnly();
 
          _gridViewBinder.AutoBind(x => x.SelectedOverwriteParameterSet)
-            .WithRepository(repositoryForOverwriteParameterSet)
+            .WithRepository(_ => _repositoryForOverwriteParameterSets)
             .WithEditorConfiguration(configureOverwriteParameterSets)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
       }
 
       public override bool HasError => _gridViewBinder.HasError;
 
-      private RepositoryItem repositoryForOverwriteParameterSet(SimulationCompoundOverwriteParameterSetSelectionDTO dto)
-      {
-         if (dto.AllOverwriteParameterSets.Count > 1)
-            return _repositoryForOverwriteParameterSets;
-
-         return _repositoryItemDisabled;
-      }
-
       private void configureOverwriteParameterSets(BaseEdit activeEditor, SimulationCompoundOverwriteParameterSetSelectionDTO dto)
       {
-         if (dto.AllOverwriteParameterSets.Count > 1)
-            activeEditor.FillComboBoxEditorWith(dto.AllOverwriteParameterSets);
-         else
-            activeEditor.Enabled = false;
+         activeEditor.FillComboBoxEditorWith(dto.AllOverwriteParameterSets);
+         activeEditor.Enabled = dto.AllOverwriteParameterSets.Count > 1;
+      }
+
+      private void rowStyle(object sender, RowStyleEventArgs e)
+      {
+         var dto = _gridViewBinder.ElementAt(e.RowHandle);
+         if (dto == null) return;
+
+         gridView.AdjustAppearance(e, dto.AllOverwriteParameterSets.Count > 1);
       }
 
       public override void InitializeResources()
