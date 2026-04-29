@@ -124,3 +124,123 @@ public class When_removing_a_parameter_value_for_a_path_not_in_the_set : concern
       _result.IsEmpty().ShouldBeTrue();
    }
 }
+
+public abstract class concern_for_OverwriteParameterSetTask_setting_default : concern_for_OverwriteParameterSetTask
+{
+   protected OverwriteParameterSet _otherSet;
+   protected OverwriteParameterSet _previousDefault;
+
+   protected override void Context()
+   {
+      base.Context();
+      _previousDefault = new OverwriteParameterSet { Name = "PreviousDefault", Id = "PreviousDefaultId", IsDefault = true };
+      _otherSet = new OverwriteParameterSet { Name = "Other", Id = "OtherId" };
+      _compound.AddOverwriteParameterSet(_previousDefault);
+      _compound.AddOverwriteParameterSet(_otherSet);
+
+      A.CallTo(() => _executionContext.Get<OverwriteParameterSet>(_previousDefault.Id)).Returns(_previousDefault);
+      A.CallTo(() => _executionContext.Get<OverwriteParameterSet>(_otherSet.Id)).Returns(_otherSet);
+   }
+}
+
+public class When_setting_a_set_as_default_through_the_task : concern_for_OverwriteParameterSetTask_setting_default
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetIsDefault(_otherSet, _compound, true);
+   }
+
+   [Observation]
+   public void should_set_is_default_on_the_target_set()
+   {
+      _otherSet.IsDefault.ShouldBeTrue();
+   }
+
+   [Observation]
+   public void should_clear_is_default_on_the_previously_default_set()
+   {
+      _previousDefault.IsDefault.ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_leave_the_originally_added_set_unchanged()
+   {
+      _overwriteParameterSet.IsDefault.ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_clearing_the_default_flag_through_the_task : concern_for_OverwriteParameterSetTask_setting_default
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetIsDefault(_previousDefault, _compound, false);
+   }
+
+   [Observation]
+   public void should_clear_is_default_on_the_target_set()
+   {
+      _previousDefault.IsDefault.ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_leave_other_sets_unchanged()
+   {
+      _otherSet.IsDefault.ShouldBeFalse();
+      _overwriteParameterSet.IsDefault.ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_setting_a_set_as_default_that_is_already_default : concern_for_OverwriteParameterSetTask_setting_default
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetIsDefault(_previousDefault, _compound, true);
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+
+   [Observation]
+   public void should_leave_state_unchanged()
+   {
+      _previousDefault.IsDefault.ShouldBeTrue();
+      _otherSet.IsDefault.ShouldBeFalse();
+   }
+}
+
+public class When_clearing_the_default_flag_on_a_set_that_is_not_default : concern_for_OverwriteParameterSetTask_setting_default
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetIsDefault(_otherSet, _compound, false);
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+}

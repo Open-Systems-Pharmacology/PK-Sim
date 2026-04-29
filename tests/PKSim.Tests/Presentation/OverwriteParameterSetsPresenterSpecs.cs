@@ -144,6 +144,52 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_setting_is_default_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         A.CallTo(() => _task.SetIsDefault(_overwriteParameterSet, _compound, true)).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.SetIsDefault(_setDTO, true);
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.SetIsDefault(_overwriteParameterSet, _compound, true)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_clearing_is_default_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         A.CallTo(() => _task.SetIsDefault(_overwriteParameterSet, _compound, false)).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.SetIsDefault(_setDTO, false);
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.SetIsDefault(_overwriteParameterSet, _compound, false)).MustHaveHappenedOnceExactly();
+      }
+   }
+
    public class When_handling_an_overwrite_parameter_set_changed_event_for_the_edited_compound : concern_for_OverwriteParameterSetsPresenter_editing
    {
       protected override void Because()
