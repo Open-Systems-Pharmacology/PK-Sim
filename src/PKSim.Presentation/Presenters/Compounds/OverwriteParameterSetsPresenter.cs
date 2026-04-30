@@ -1,6 +1,8 @@
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -15,22 +17,26 @@ public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, ILis
    void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValue);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
    void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);
+   void RemoveSet(OverwriteParameterSetDTO setDTO);
 }
 
 public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwriteParameterSetsView, IOverwriteParameterSetsPresenter>, IOverwriteParameterSetsPresenter
 {
    private readonly IOverwriteParameterSetToOverwriteParameterSetDTOMapper _mapper;
    private readonly IOverwriteParameterSetTask _overwriteParameterSetTask;
+   private readonly IDialogCreator _dialogCreator;
    private Compound _compound;
 
    public OverwriteParameterSetsPresenter(
       IOverwriteParameterSetsView view,
       IOverwriteParameterSetToOverwriteParameterSetDTOMapper mapper,
-      IOverwriteParameterSetTask overwriteParameterSetTask)
+      IOverwriteParameterSetTask overwriteParameterSetTask,
+      IDialogCreator dialogCreator)
       : base(view)
    {
       _mapper = mapper;
       _overwriteParameterSetTask = overwriteParameterSetTask;
+      _dialogCreator = dialogCreator;
    }
 
    public void EditCompound(Compound compound)
@@ -47,6 +53,15 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
 
    public void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault) =>
       AddCommand(_overwriteParameterSetTask.SetIsDefault(setDTO.OverwriteParameterSet, _compound, isDefault));
+
+   public void RemoveSet(OverwriteParameterSetDTO setDTO)
+   {
+      var viewResult = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(PKSimConstants.ObjectTypes.OverwriteParameterSet, setDTO.Name));
+      if (viewResult == ViewResult.No)
+         return;
+
+      AddCommand(_overwriteParameterSetTask.RemoveSet(setDTO.OverwriteParameterSet, _compound));
+   }
 
    public void Handle(OverwriteParameterSetChangedEvent eventToHandle)
    {

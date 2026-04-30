@@ -6,6 +6,7 @@ using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -21,13 +22,15 @@ namespace PKSim.Presentation
       protected IOverwriteParameterSetsView _view;
       protected IOverwriteParameterSetToOverwriteParameterSetDTOMapper _mapper;
       protected IOverwriteParameterSetTask _task;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
          _view = A.Fake<IOverwriteParameterSetsView>();
          _mapper = A.Fake<IOverwriteParameterSetToOverwriteParameterSetDTOMapper>();
          _task = A.Fake<IOverwriteParameterSetTask>();
-         sut = new OverwriteParameterSetsPresenter(_view, _mapper, _task);
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new OverwriteParameterSetsPresenter(_view, _mapper, _task, _dialogCreator);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -217,6 +220,56 @@ namespace PKSim.Presentation
       public void should_not_rebind_the_view()
       {
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<OverwriteParameterSetDTO>>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_removing_a_set_through_the_presenter_and_the_user_confirms : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
+         A.CallTo(() => _task.RemoveSet(_overwriteParameterSet, _compound)).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveSet(_setDTO);
+      }
+
+      [Observation]
+      public void should_ask_the_user_to_confirm()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.RemoveSet(_overwriteParameterSet, _compound)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_removing_a_set_through_the_presenter_and_the_user_cancels : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.No);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveSet(_setDTO);
+      }
+
+      [Observation]
+      public void should_not_delegate_to_the_task()
+      {
+         A.CallTo(() => _task.RemoveSet(A<OverwriteParameterSet>._, A<Compound>._)).MustNotHaveHappened();
       }
    }
 }

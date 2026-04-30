@@ -443,6 +443,17 @@ namespace PKSim.Assets
          public const string CannotDeleteSchema = "At least one schema needs to be defined.";
          public const string CannotDeleteDefaultParameterAlternative = "The default parameter alternative cannot be deleted.";
          public const string CannotDeleteParameterAlternative = "At least one alternative needs to be defined.";
+
+         public static string CannotDeleteOverwriteParameterSetUsedInSimulations(string overwriteParameterSetName, string compoundName, IReadOnlyList<string> simulationNameList) => 
+            $"{ObjectTypes.OverwriteParameterSet} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}' is used by{nameListFrom(simulationNameList)}and cannot be deleted.";
+
+         private static string nameListFrom(IReadOnlyList<string> simulationNameList)
+         {
+            return simulationNameList.Count > 1 ?
+               $"\n\n{string.Join("\n", simulationNameList.Select(n => $"- {n}"))}\n\n" :
+               $" {simulationNameList.ToString("", "'")} ";
+         }
+
          public static string CouldNotFindAdvancedParameterContainerForParameter(string parameterName) => $"Could not find advanced parameter container for parameter '{parameterName}'.";
          public static string CouldNotFindAdvancedParameterInContainerForParameter(string containerName, string parameterName) => $"Could not find advanced parameter in container '{containerName}' for parameter '{parameterName}'.";
          public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'.";
