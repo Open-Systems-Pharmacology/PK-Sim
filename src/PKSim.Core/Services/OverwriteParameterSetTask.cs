@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services;
 
@@ -31,16 +30,16 @@ public interface IOverwriteParameterSetTask
 public class OverwriteParameterSetTask : IOverwriteParameterSetTask
 {
    private readonly IExecutionContext _executionContext;
-   private readonly IBuildingBlockRepository _buildingBlockRepository;
+   private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
    private readonly ILazyLoadTask _lazyLoadTask;
 
    public OverwriteParameterSetTask(
-      IExecutionContext executionContext, 
-      IBuildingBlockRepository buildingBlockRepository, 
+      IExecutionContext executionContext,
+      IBuildingBlockInProjectManager buildingBlockInProjectManager,
       ILazyLoadTask lazyLoadTask)
    {
       _executionContext = executionContext;
-      _buildingBlockRepository = buildingBlockRepository;
+      _buildingBlockInProjectManager = buildingBlockInProjectManager;
       _lazyLoadTask = lazyLoadTask;
    }
 
@@ -83,9 +82,9 @@ public class OverwriteParameterSetTask : IOverwriteParameterSetTask
    
    private IReadOnlyList<Simulation> simulationsUsing(OverwriteParameterSet overwriteParameterSet, Compound compound)
    {
-      var simulations = _buildingBlockRepository.All<Simulation>();
-      simulations.Each(_lazyLoadTask.Load);
-      return simulations
+      var buildingBlocksUsingCompound = _buildingBlockInProjectManager.SimulationsUsing(compound);
+      buildingBlocksUsingCompound.Each(_lazyLoadTask.Load);
+      return buildingBlocksUsingCompound
          .Where(simulation => simulation.OverwriteParameterSetSelections.Selections.Any(x =>
             string.Equals(x.CompoundName, compound.Name) &&
             string.Equals(x.OverwriteParameterSet?.Name, overwriteParameterSet.Name)))

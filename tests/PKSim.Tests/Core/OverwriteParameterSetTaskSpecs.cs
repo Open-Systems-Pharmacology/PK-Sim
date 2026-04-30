@@ -5,17 +5,15 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using IBuildingBlockRepository = PKSim.Core.Repositories.IBuildingBlockRepository;
 
 namespace PKSim.Core;
 
 public abstract class concern_for_OverwriteParameterSetTask : ContextSpecification<OverwriteParameterSetTask>
 {
    protected IExecutionContext _executionContext;
-   protected IBuildingBlockRepository _buildingBlockRepository;
+   protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
    protected ILazyLoadTask _lazyLoadTask;
    protected Compound _compound;
    protected OverwriteParameterSet _overwriteParameterSet;
@@ -24,9 +22,9 @@ public abstract class concern_for_OverwriteParameterSetTask : ContextSpecificati
    protected override void Context()
    {
       _executionContext = A.Fake<IExecutionContext>();
-      _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+      _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
       _lazyLoadTask = A.Fake<ILazyLoadTask>();
-      A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new List<Simulation>());
+      A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(A<IPKSimBuildingBlock>._)).Returns(new List<Simulation>());
 
       _compound = new Compound { Name = "Aspirin", Id = "CompId" };
       _overwriteParameterSet = new OverwriteParameterSet { Name = "MySet", Id = "SetId" };
@@ -37,7 +35,7 @@ public abstract class concern_for_OverwriteParameterSetTask : ContextSpecificati
       A.CallTo(() => _executionContext.Get<Compound>(_compound.Id)).Returns(_compound);
       A.CallTo(() => _executionContext.Get<OverwriteParameterSet>(_overwriteParameterSet.Id)).Returns(_overwriteParameterSet);
 
-      sut = new OverwriteParameterSetTask(_executionContext, _buildingBlockRepository, _lazyLoadTask);
+      sut = new OverwriteParameterSetTask(_executionContext, _buildingBlockInProjectManager, _lazyLoadTask);
    }
 }
 
@@ -286,7 +284,7 @@ public class When_removing_an_overwrite_parameter_set_used_by_a_simulation : con
       // Simulations hold clones of compounds, so the selection points to a clone of the set with a different id.
       var clonedSet = new OverwriteParameterSet { Name = _overwriteParameterSet.Name, Id = "ClonedSetId" };
       _simulation.OverwriteParameterSetSelections.SetSelectionForCompound(_compound.Name, clonedSet);
-      A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new List<Simulation> { _simulation });
+      A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_compound)).Returns(new List<Simulation> { _simulation });
    }
 
    [Observation]
@@ -316,7 +314,7 @@ public class When_removing_an_overwrite_parameter_set_used_only_by_a_set_with_th
       // Selection is for a different compound that happens to have a same-named set — must NOT block deletion.
       var otherCompoundSet = new OverwriteParameterSet { Name = _overwriteParameterSet.Name, Id = "OtherCompoundSetId" };
       _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("OtherCompound", otherCompoundSet);
-      A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new List<Simulation> { _simulation });
+      A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_compound)).Returns(new List<Simulation> { _simulation });
    }
 
    protected override void Because()
@@ -352,7 +350,7 @@ public class When_removing_an_overwrite_parameter_set_with_multiple_simulations_
 
       _otherSimulation = new IndividualSimulation { Name = "Other" };
 
-      A.CallTo(() => _buildingBlockRepository.All<Simulation>()).Returns(new List<Simulation> { _userSimulation, _otherSimulation });
+      A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_compound)).Returns(new List<Simulation> { _userSimulation, _otherSimulation });
    }
 
    [Observation]
