@@ -22,6 +22,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    private readonly GridViewBinder<OverwriteParameterSetDTO> _gridViewBinderSets;
    private readonly GridViewBinder<OverwriteParameterValueDTO> _gridViewBinderParameterValues;
    private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
+   private readonly RepositoryItemButtonEdit _removeSetButtonRepository = new UxRemoveButtonRepository();
    private readonly UxRepositoryItemCheckEdit _isDefaultRepository;
 
    public OverwriteParameterSetsView()
@@ -72,6 +73,14 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       _gridViewBinderSets.Bind(x => x.DiseaseState)
          .WithCaption(PKSimConstants.UI.DiseaseState)
          .AsReadOnly();
+
+      _gridViewBinderSets.AddUnboundColumn()
+         .WithCaption(Captions.EmptyColumn)
+         .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
+         .WithShowButton(ShowButtonModeEnum.ShowAlways)
+         .WithRepository(_ => _removeSetButtonRepository);
+
+      _removeSetButtonRepository.ButtonClick += (_, _) => OnEvent(() => _presenter.RemoveSet(_gridViewBinderSets.FocusedElement));
 
       _gridViewBinderParameterValues.Bind(x => x.Path)
          .WithCaption(Captions.Diff.ObjectPath)
