@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
@@ -5,6 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
@@ -18,6 +21,9 @@ public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, ILis
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
    void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);
    void RemoveSet(OverwriteParameterSetDTO setDTO);
+   void SetExtendedProperty(OverwriteParameterSetDTO setDTO, string propertyName, string newValue);
+   IReadOnlyList<ExtendedPropertyOptionDTO> AllSpecies();
+   IReadOnlyList<ExtendedPropertyOptionDTO> AllDiseaseStates();
 }
 
 public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwriteParameterSetsView, IOverwriteParameterSetsPresenter>, IOverwriteParameterSetsPresenter
@@ -25,19 +31,31 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
    private readonly IOverwriteParameterSetToOverwriteParameterSetDTOMapper _mapper;
    private readonly IOverwriteParameterSetTask _overwriteParameterSetTask;
    private readonly IDialogCreator _dialogCreator;
+   private readonly ISpeciesRepository _speciesRepository;
+   private readonly IDiseaseStateRepository _diseaseStateRepository;
    private Compound _compound;
 
    public OverwriteParameterSetsPresenter(
       IOverwriteParameterSetsView view,
       IOverwriteParameterSetToOverwriteParameterSetDTOMapper mapper,
       IOverwriteParameterSetTask overwriteParameterSetTask,
-      IDialogCreator dialogCreator)
+      IDialogCreator dialogCreator,
+      ISpeciesRepository speciesRepository,
+      IDiseaseStateRepository diseaseStateRepository)
       : base(view)
    {
       _mapper = mapper;
       _overwriteParameterSetTask = overwriteParameterSetTask;
       _dialogCreator = dialogCreator;
+      _speciesRepository = speciesRepository;
+      _diseaseStateRepository = diseaseStateRepository;
    }
+
+   public IReadOnlyList<ExtendedPropertyOptionDTO> AllSpecies() =>
+      _speciesRepository.All().Select(species => new ExtendedPropertyOptionDTO(species.Name, species.DisplayName, species.Icon)).ToList();
+
+   public IReadOnlyList<ExtendedPropertyOptionDTO> AllDiseaseStates() =>
+      _diseaseStateRepository.All().Select(diseaseState => new ExtendedPropertyOptionDTO(diseaseState.Name, diseaseState.DisplayName)).ToList();
 
    public void EditCompound(Compound compound)
    {
@@ -53,6 +71,9 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
 
    public void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault) =>
       AddCommand(_overwriteParameterSetTask.SetIsDefault(setDTO.OverwriteParameterSet, _compound, isDefault));
+
+   public void SetExtendedProperty(OverwriteParameterSetDTO setDTO, string propertyName, string newValue) =>
+      AddCommand(_overwriteParameterSetTask.SetExtendedProperty(setDTO.OverwriteParameterSet, _compound, propertyName, newValue));
 
    public void RemoveSet(OverwriteParameterSetDTO setDTO)
    {

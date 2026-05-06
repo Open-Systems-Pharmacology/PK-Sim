@@ -7,8 +7,10 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
@@ -23,6 +25,8 @@ namespace PKSim.Presentation
       protected IOverwriteParameterSetToOverwriteParameterSetDTOMapper _mapper;
       protected IOverwriteParameterSetTask _task;
       protected IDialogCreator _dialogCreator;
+      protected ISpeciesRepository _speciesRepository;
+      protected IDiseaseStateRepository _diseaseStateRepository;
 
       protected override void Context()
       {
@@ -30,7 +34,9 @@ namespace PKSim.Presentation
          _mapper = A.Fake<IOverwriteParameterSetToOverwriteParameterSetDTOMapper>();
          _task = A.Fake<IOverwriteParameterSetTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new OverwriteParameterSetsPresenter(_view, _mapper, _task, _dialogCreator);
+         _speciesRepository = A.Fake<ISpeciesRepository>();
+         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
+         sut = new OverwriteParameterSetsPresenter(_view, _mapper, _task, _dialogCreator, _speciesRepository, _diseaseStateRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -190,6 +196,116 @@ namespace PKSim.Presentation
       public void should_delegate_to_the_overwrite_parameter_set_task()
       {
          A.CallTo(() => _task.SetIsDefault(_overwriteParameterSet, _compound, false)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_listing_all_known_species_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
+   {
+      private System.Collections.Generic.IReadOnlyList<ExtendedPropertyOptionDTO> _result;
+      private Species _human;
+      private Species _rat;
+
+      protected override void Context()
+      {
+         base.Context();
+         _human = new Species { Name = "Human", DisplayName = "Human", Icon = "HumanIcon" };
+         _rat = new Species { Name = "Rat", DisplayName = "Rat", Icon = "RatIcon" };
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] { _human, _rat });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.AllSpecies();
+      }
+
+      [Observation]
+      public void should_return_one_option_per_species()
+      {
+         _result.Count.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_use_the_species_name_as_the_canonical_name_and_the_species_display_name_for_display()
+      {
+         _result[0].Name.ShouldBeEqualTo(_human.Name);
+         _result[0].DisplayName.ShouldBeEqualTo(_human.DisplayName);
+         _result[0].Icon.ShouldBeEqualTo(_human.Icon);
+      }
+   }
+
+   public class When_listing_all_known_disease_states_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
+   {
+      private System.Collections.Generic.IReadOnlyList<ExtendedPropertyOptionDTO> _result;
+      private DiseaseState _healthy;
+      private DiseaseState _ckd;
+
+      protected override void Context()
+      {
+         base.Context();
+         _healthy = new DiseaseState { Name = "HEALTHY", DisplayName = "Healthy" };
+         _ckd = new DiseaseState { Name = "CKD", DisplayName = "Chronic Kidney Disease" };
+         A.CallTo(() => _diseaseStateRepository.All()).Returns(new[] { _healthy, _ckd });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.AllDiseaseStates();
+      }
+
+      [Observation]
+      public void should_return_one_option_per_disease_state()
+      {
+         _result.Count.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_use_the_disease_state_name_as_the_canonical_name_and_the_disease_state_display_name_for_display()
+      {
+         _result[1].Name.ShouldBeEqualTo(_ckd.Name);
+         _result[1].DisplayName.ShouldBeEqualTo(_ckd.DisplayName);
+      }
+
+      [Observation]
+      public void should_not_carry_an_icon_for_disease_states()
+      {
+         _result[0].Icon.ShouldBeNull();
+      }
+   }
+
+   public class When_constructing_an_extended_property_option_with_only_a_name : ContextSpecification<ExtendedPropertyOptionDTO>
+   {
+      protected override void Because()
+      {
+         sut = new ExtendedPropertyOptionDTO("MyOption");
+      }
+
+      [Observation]
+      public void should_default_the_display_name_to_the_name()
+      {
+         sut.DisplayName.ShouldBeEqualTo(sut.Name);
+      }
+   }
+
+   public class When_setting_an_extended_property_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         A.CallTo(() => _task.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, "Human")).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.SetExtendedProperty(_setDTO, PKSimConstants.UI.Species, "Human");
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, "Human")).MustHaveHappenedOnceExactly();
       }
    }
 

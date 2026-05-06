@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -332,6 +333,129 @@ public class When_removing_an_overwrite_parameter_set_used_only_by_a_set_with_th
    public void should_return_a_non_empty_command()
    {
       _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_setting_an_extended_property_on_a_set_that_does_not_have_it : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, "Human");
+   }
+
+   [Observation]
+   public void should_create_the_extended_property_with_the_new_value()
+   {
+      _overwriteParameterSet.ExtendedProperties.Contains(PKSimConstants.UI.Species).ShouldBeTrue();
+      _overwriteParameterSet.ExtendedProperties[PKSimConstants.UI.Species].ValueAsObject.ShouldBeEqualTo("Human");
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_setting_an_extended_property_on_a_set_that_already_has_it_with_a_different_value : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _overwriteParameterSet.ExtendedProperties.Add(new ExtendedProperty<string> { Name = PKSimConstants.UI.Species, Value = "Mouse" });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, "Human");
+   }
+
+   [Observation]
+   public void should_update_the_value_of_the_existing_extended_property()
+   {
+      _overwriteParameterSet.ExtendedProperties[PKSimConstants.UI.Species].ValueAsObject.ShouldBeEqualTo("Human");
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_setting_an_extended_property_to_the_same_value_it_already_has : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _overwriteParameterSet.ExtendedProperties.Add(new ExtendedProperty<string> { Name = PKSimConstants.UI.Species, Value = "Human" });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, "Human");
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+}
+
+public class When_clearing_an_extended_property_with_an_empty_string : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _overwriteParameterSet.ExtendedProperties.Add(new ExtendedProperty<string> { Name = PKSimConstants.UI.Species, Value = "Human" });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, string.Empty);
+   }
+
+   [Observation]
+   public void should_remove_the_extended_property_from_the_set()
+   {
+      _overwriteParameterSet.ExtendedProperties.Contains(PKSimConstants.UI.Species).ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_setting_an_absent_extended_property_to_an_empty_value : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.SetExtendedProperty(_overwriteParameterSet, _compound, PKSimConstants.UI.Species, string.Empty);
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+
+   [Observation]
+   public void should_not_add_the_extended_property_to_the_set()
+   {
+      _overwriteParameterSet.ExtendedProperties.Contains(PKSimConstants.UI.Species).ShouldBeFalse();
    }
 }
 

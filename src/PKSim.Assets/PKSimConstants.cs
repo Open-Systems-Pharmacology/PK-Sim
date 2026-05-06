@@ -282,6 +282,9 @@ namespace PKSim.Assets
          public static string AddParameterValueToOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
             $"Add '{parameterPath}' to {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
+         public static string SetExtendedPropertyOnOverwriteParameterSet(string propertyName, string overwriteParameterSetName, string compoundName) =>
+            $"Set '{propertyName}' on {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
@@ -1719,6 +1722,7 @@ namespace PKSim.Assets
          public static readonly string DissociationConstants = "Dissociation Constants";
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
+         public static readonly string Metadata = "Metadata";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;
          public static readonly string ADME = "ADME";
