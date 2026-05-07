@@ -18,16 +18,7 @@ public class OverwriteParameterSetDTO
    public OverwriteParameterSet OverwriteParameterSet { get; }
    public string Name => OverwriteParameterSet.Name;
    public bool IsDefault => OverwriteParameterSet.IsDefault;
-   public string Species => extendedPropertyValue(PKSimConstants.UI.Species);
-   public string DiseaseState => extendedPropertyValue(PKSimConstants.UI.DiseaseState);
+   public string Species => OverwriteParameterSet.GetExtendedProperty(PKSimConstants.ObjectTypes.Species);
+   public string DiseaseState => OverwriteParameterSet.GetExtendedProperty(PKSimConstants.ObjectTypes.DiseaseState);
    public IReadOnlyList<OverwriteParameterValueDTO> ParameterValues { get; }
-
-   private string extendedPropertyValue(string propertyName)
-   {
-      if (!OverwriteParameterSet.ExtendedProperties.Contains(propertyName))
-         return string.Empty;
-
-      var property = OverwriteParameterSet.ExtendedProperties[propertyName];
-      return property.ValueAsObject?.ToString() ?? string.Empty;
-   }
 }

@@ -31,6 +31,49 @@ namespace PKSim.Core.Model
             Remove(existing);
       }
 
+      /// <summary>
+      /// Sets the value of a specified extended property. If the property already exists, its value is updated.
+      /// If the new value is <c>null</c> or empty, the property is removed.
+      /// </summary>
+      /// <param name="propertyName">
+      /// The name of the property to set or remove.
+      /// </param>
+      /// <param name="newValue">
+      /// The new value to assign to the property. If <c>null</c> or empty, the property will be removed.
+      /// </param>
+      public void SetExtendedProperty(string propertyName, string newValue)
+      {
+         if (string.IsNullOrEmpty(newValue))
+         {
+            if (ExtendedProperties.Contains(propertyName))
+               ExtendedProperties.Remove(propertyName);
+         }
+         else if (ExtendedProperties.Contains(propertyName))
+         {
+            ExtendedProperties[propertyName].ValueAsObject = newValue;
+         }
+         else
+         {
+            ExtendedProperties.Add(new ExtendedProperty<string> { Name = propertyName, Value = newValue });
+         }
+      }
+
+      /// <summary>
+      /// Retrieves the value of a specified extended property.
+      /// </summary>
+      /// <param name="propertyName">
+      /// The name of the property whose value is to be retrieved.
+      /// </param>
+      /// <returns>
+      /// The value of the specified property as a string. If the property does not exist, an empty string is returned.
+      /// </returns>
+      public string GetExtendedProperty(string propertyName)
+      {
+         return ExtendedProperties.Contains(propertyName)
+            ? ExtendedProperties[propertyName].ValueAsObject?.ToString() ?? string.Empty
+            : string.Empty;
+      }
+
       public ParameterValue ParameterValueByPath(string parameterPath) =>
          _parameterValues[parameterPath.ToObjectPath()];
 

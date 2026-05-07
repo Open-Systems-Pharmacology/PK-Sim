@@ -1,5 +1,4 @@
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -33,21 +32,9 @@ public class SetExtendedPropertyOnOverwriteSetCommand : BuildingBlockChangeComma
    {
       base.PerformExecuteWith(context);
 
-      _oldValue = currentValue();
+      _oldValue = _overwriteParameterSet.GetExtendedProperty(_propertyName);
 
-      if (string.IsNullOrEmpty(_newValue))
-      {
-         if (_overwriteParameterSet.ExtendedProperties.Contains(_propertyName))
-            _overwriteParameterSet.ExtendedProperties.Remove(_propertyName);
-      }
-      else if (_overwriteParameterSet.ExtendedProperties.Contains(_propertyName))
-      {
-         _overwriteParameterSet.ExtendedProperties[_propertyName].ValueAsObject = _newValue;
-      }
-      else
-      {
-         _overwriteParameterSet.ExtendedProperties.Add(new ExtendedProperty<string> { Name = _propertyName, Value = _newValue });
-      }
+      _overwriteParameterSet.SetExtendedProperty(_propertyName, _newValue);
 
       context.PublishEvent(new OverwriteParameterSetChangedEvent(_buildingBlock, _overwriteParameterSet));
    }
@@ -65,13 +52,5 @@ public class SetExtendedPropertyOnOverwriteSetCommand : BuildingBlockChangeComma
    {
       base.RestoreExecutionData(context);
       _overwriteParameterSet = context.Get<OverwriteParameterSet>(_overwriteParameterSetId);
-   }
-
-   private string currentValue()
-   {
-      if (!_overwriteParameterSet.ExtendedProperties.Contains(_propertyName))
-         return string.Empty;
-
-      return _overwriteParameterSet.ExtendedProperties[_propertyName].ValueAsObject?.ToString() ?? string.Empty;
    }
 }

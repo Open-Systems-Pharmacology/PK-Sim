@@ -1,6 +1,8 @@
+using OSPSuite.Core.Domain;
+
 namespace PKSim.Presentation.DTO.Compounds;
 
-public class ExtendedPropertyOptionDTO
+public class ExtendedPropertyOptionDTO : IWithName
 {
    public ExtendedPropertyOptionDTO(string name, string displayName = null, string icon = null)
    {
@@ -9,7 +11,7 @@ public class ExtendedPropertyOptionDTO
       Icon = icon;
    }
 
-   public string Name { get; }
+   public string Name { get; set; }
    public string DisplayName { get; }
    public string Icon { get; }
 }

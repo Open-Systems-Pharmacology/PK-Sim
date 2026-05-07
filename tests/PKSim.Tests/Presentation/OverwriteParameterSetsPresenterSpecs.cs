@@ -27,6 +27,10 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected ISpeciesRepository _speciesRepository;
       protected IDiseaseStateRepository _diseaseStateRepository;
+      protected DiseaseState _healthy;
+      protected DiseaseState _ckd;
+      protected Species _human;
+      protected Species _rat;
 
       protected override void Context()
       {
@@ -36,6 +40,15 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
+
+         _healthy = new DiseaseState { Name = "HEALTHY", DisplayName = "Healthy" };
+         _ckd = new DiseaseState { Name = "CKD", DisplayName = "Chronic Kidney Disease" };
+         A.CallTo(() => _diseaseStateRepository.All()).Returns(new[] { _healthy, _ckd });
+
+         _human = new Species { Name = "Human", DisplayName = "Human", Icon = "HumanIcon" };
+         _rat = new Species { Name = "Rat", DisplayName = "Rat", Icon = "RatIcon" };
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] { _human, _rat });
+
          sut = new OverwriteParameterSetsPresenter(_view, _mapper, _task, _dialogCreator, _speciesRepository, _diseaseStateRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
@@ -202,16 +215,6 @@ namespace PKSim.Presentation
    public class When_listing_all_known_species_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
    {
       private IReadOnlyList<ExtendedPropertyOptionDTO> _result;
-      private Species _human;
-      private Species _rat;
-
-      protected override void Context()
-      {
-         base.Context();
-         _human = new Species { Name = "Human", DisplayName = "Human", Icon = "HumanIcon" };
-         _rat = new Species { Name = "Rat", DisplayName = "Rat", Icon = "RatIcon" };
-         A.CallTo(() => _speciesRepository.All()).Returns(new[] { _human, _rat });
-      }
 
       protected override void Because()
       {
@@ -219,9 +222,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_one_option_per_species()
+      public void should_return_one_option_per_species_plus_empty()
       {
-         _result.Count.ShouldBeEqualTo(2);
+         _result.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]
@@ -237,16 +240,6 @@ namespace PKSim.Presentation
    public class When_listing_all_known_disease_states_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
    {
       private IReadOnlyList<ExtendedPropertyOptionDTO> _result;
-      private DiseaseState _healthy;
-      private DiseaseState _ckd;
-
-      protected override void Context()
-      {
-         base.Context();
-         _healthy = new DiseaseState { Name = "HEALTHY", DisplayName = "Healthy" };
-         _ckd = new DiseaseState { Name = "CKD", DisplayName = "Chronic Kidney Disease" };
-         A.CallTo(() => _diseaseStateRepository.All()).Returns(new[] { _healthy, _ckd });
-      }
 
       protected override void Because()
       {
@@ -254,9 +247,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_one_option_per_disease_state()
+      public void should_return_one_option_per_disease_state_plus_empty()
       {
-         _result.Count.ShouldBeEqualTo(2);
+         _result.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -9,6 +7,7 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -62,7 +61,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       _isDefaultRepository = new UxRepositoryItemCheckEdit(gridViewSets);
       _speciesRepository = new UxRepositoryItemImageComboBox(gridViewSets, imageListRetriever);
       _diseaseStateRepository = new UxRepositoryItemImageComboBox(gridViewSets, imageListRetriever);
-      
+
       // Disease state options use DisplayName for UI but no icon. Clearing the image lists hides the icon column.
       _diseaseStateRepository.SmallImages = null;
       _diseaseStateRepository.LargeImages = null;
@@ -96,13 +95,13 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
          .WithCaption(PKSimConstants.UI.Species)
          .WithRepository(_ => configureSpeciesRepository())
          .WithShowButton(ShowButtonModeEnum.ShowAlways)
-         .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetExtendedProperty(dto, PKSimConstants.UI.Species, e.NewValue)));
+         .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetExtendedProperty(dto, PKSimConstants.ObjectTypes.Species, e.NewValue)));
 
       _gridViewBinderSets.Bind(x => x.DiseaseState)
          .WithCaption(PKSimConstants.UI.DiseaseState)
          .WithRepository(_ => configureDiseaseStateRepository())
          .WithShowButton(ShowButtonModeEnum.ShowAlways)
-         .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetExtendedProperty(dto, PKSimConstants.UI.DiseaseState, e.NewValue)));
+         .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetExtendedProperty(dto, PKSimConstants.ObjectTypes.DiseaseState, e.NewValue)));
 
       _gridViewBinderSets.AddUnboundColumn()
          .WithCaption(Captions.EmptyColumn)
@@ -171,22 +170,8 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
          _metadataGroup.Move(parameterValuesGroup, InsertType.Top);
          _metadataGroup.Enabled = selectedSet != null;
 
-         metadataPropertyNamesFor(selectedSet).Each(x => addMetadataItem(selectedSet, x, valueOf(selectedSet, x)));
+         _presenter.MetadataPropertyNamesFor(selectedSet).Each(x => addMetadataItem(selectedSet, x, valueOf(selectedSet, x)));
       });
-   }
-
-   private static IEnumerable<string> metadataPropertyNamesFor(OverwriteParameterSetDTO selectedSet)
-   {
-      var defaultPropertyNames = new List<string> { PKSimConstants.UI.Species, PKSimConstants.UI.DiseaseState };
-      if (selectedSet == null)
-         return defaultPropertyNames;
-
-      var existingNames = selectedSet.OverwriteParameterSet.ExtendedProperties.All.Select(x => x.Name);
-
-      // preserve this order (adding existing names to defaults). That ensures that Species and Disease State
-      // are always created in this order and before any other extended properties
-      defaultPropertyNames.AddRange(existingNames);
-      return defaultPropertyNames.Distinct();
    }
 
    private static string valueOf(OverwriteParameterSetDTO selectedSet, string propertyName)
@@ -247,12 +232,16 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       if (withIcons)
          comboBox.Properties.SmallImages = _imageListRetriever.AllImages16x16;
 
-      comboBox.Properties.Items.Add(new ImageComboBoxItem(string.Empty, string.Empty, -1));
-      foreach (var option in options)
-         comboBox.Properties.Items.Add(new ImageComboBoxItem(option.DisplayName, option.Name, withIcons ? _imageListRetriever.ImageIndex(option.Icon) : -1));
-
+      comboBox.FillImageComboBoxEditorWith(options.AllNames(), 
+         x => imageIndex(withIcons, x), 
+         x => _presenter.ExtendedPropertyDTOFor(x).DisplayName);
       comboBox.EditValue = value ?? string.Empty;
       return comboBox;
+   }
+
+   private int imageIndex(bool withIcons, string x)
+   {
+      return withIcons ? _imageListRetriever.ImageIndex(_presenter.ExtendedPropertyDTOFor(x).Icon) : -1;
    }
 
    private void disposeMetadataGroup()
@@ -275,11 +264,9 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
    private RepositoryItem fillImageComboBoxRepository(UxRepositoryItemImageComboBox repository, IReadOnlyList<ExtendedPropertyOptionDTO> options, bool withIcons)
    {
-      repository.Items.Clear();
-      repository.Items.Add(new ImageComboBoxItem(string.Empty, string.Empty, -1));
-      foreach (var option in options)
-         repository.Items.Add(new ImageComboBoxItem(option.DisplayName, option.Name, withIcons ? _imageListRetriever.ImageIndex(option.Icon) : -1));
-
+      repository.FillImageComboBoxRepositoryWith(options.AllNames(),
+         x => imageIndex(withIcons, x),
+         x => _presenter.ExtendedPropertyDTOFor(x).DisplayName);
       return repository;
    }
 

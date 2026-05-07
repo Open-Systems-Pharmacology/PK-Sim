@@ -89,9 +89,7 @@ public class OverwriteParameterSetTask : IOverwriteParameterSetTask
    public ICommand SetExtendedProperty(OverwriteParameterSet overwriteParameterSet, Compound compound, string propertyName, string newValue)
    {
       newValue ??= string.Empty;
-      var currentValue = overwriteParameterSet.ExtendedProperties.Contains(propertyName)
-         ? overwriteParameterSet.ExtendedProperties[propertyName].ValueAsObject?.ToString() ?? string.Empty
-         : string.Empty;
+      var currentValue = overwriteParameterSet.GetExtendedProperty(propertyName);
 
       if (string.Equals(newValue, currentValue))
          return new PKSimEmptyCommand();
