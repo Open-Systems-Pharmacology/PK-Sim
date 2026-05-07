@@ -18,6 +18,7 @@ namespace PKSim.UI.Views.Compounds
             components.Dispose();
          }
          disposeMetadataGroup();
+         _metadataToolTipController?.Dispose();
          _gridViewBinderSets?.Dispose();
          _gridViewBinderParameterValues?.Dispose();
          base.Dispose(disposing);

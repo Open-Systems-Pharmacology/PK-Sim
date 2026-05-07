@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -201,7 +201,7 @@ namespace PKSim.Presentation
 
    public class When_listing_all_known_species_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
    {
-      private System.Collections.Generic.IReadOnlyList<ExtendedPropertyOptionDTO> _result;
+      private IReadOnlyList<ExtendedPropertyOptionDTO> _result;
       private Species _human;
       private Species _rat;
 
@@ -227,15 +227,16 @@ namespace PKSim.Presentation
       [Observation]
       public void should_use_the_species_name_as_the_canonical_name_and_the_species_display_name_for_display()
       {
-         _result[0].Name.ShouldBeEqualTo(_human.Name);
-         _result[0].DisplayName.ShouldBeEqualTo(_human.DisplayName);
-         _result[0].Icon.ShouldBeEqualTo(_human.Icon);
+         var humanOption = _result.FirstOrDefault(x => x.Name == _human.Name);
+         humanOption.ShouldNotBeNull();
+         humanOption.DisplayName.ShouldBeEqualTo(_human.DisplayName);
+         humanOption.Icon.ShouldBeEqualTo(_human.Icon);
       }
    }
 
    public class When_listing_all_known_disease_states_through_the_presenter : concern_for_OverwriteParameterSetsPresenter
    {
-      private System.Collections.Generic.IReadOnlyList<ExtendedPropertyOptionDTO> _result;
+      private IReadOnlyList<ExtendedPropertyOptionDTO> _result;
       private DiseaseState _healthy;
       private DiseaseState _ckd;
 
@@ -261,14 +262,17 @@ namespace PKSim.Presentation
       [Observation]
       public void should_use_the_disease_state_name_as_the_canonical_name_and_the_disease_state_display_name_for_display()
       {
-         _result[1].Name.ShouldBeEqualTo(_ckd.Name);
-         _result[1].DisplayName.ShouldBeEqualTo(_ckd.DisplayName);
+         var ckdOption = _result.FirstOrDefault(x => x.Name == _ckd.Name);
+         ckdOption.ShouldNotBeNull();
+         ckdOption.DisplayName.ShouldBeEqualTo(_ckd.DisplayName);
       }
 
       [Observation]
       public void should_not_carry_an_icon_for_disease_states()
       {
-         _result[0].Icon.ShouldBeNull();
+         var healthyOption = _result.FirstOrDefault(x => x.Name == _healthy.Name);
+         healthyOption.ShouldNotBeNull();
+         healthyOption.Icon.ShouldBeNull();
       }
    }
 

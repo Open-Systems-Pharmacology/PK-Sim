@@ -156,7 +156,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    {
       var selectedSet = _gridViewBinderSets.FocusedElement;
       buildMetadataPanel(selectedSet);
-      _gridViewBinderParameterValues.BindToSource(selectedSet.ParameterValues);
+      _gridViewBinderParameterValues.BindToSource(selectedSet?.ParameterValues ?? []);
    }
 
    private void buildMetadataPanel(OverwriteParameterSetDTO selectedSet)
