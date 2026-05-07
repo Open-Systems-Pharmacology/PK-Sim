@@ -179,11 +179,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       if (selectedSet == null)
          return string.Empty;
 
-      var extendedProperties = selectedSet.OverwriteParameterSet.ExtendedProperties;
-      if (!extendedProperties.Contains(propertyName))
-         return string.Empty;
-
-      return extendedProperties[propertyName].ValueAsObject?.ToString() ?? string.Empty;
+      return selectedSet.OverwriteParameterSet.GetExtendedProperty(propertyName);
    }
 
    private void addMetadataItem(OverwriteParameterSetDTO selectedSet, string propertyName, string value)
