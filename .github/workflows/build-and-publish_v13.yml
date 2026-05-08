@@ -39,6 +39,7 @@ jobs:
         run: dotnet pack .\PKSim.sln --no-build --no-restore -o ./ -p:PackageVersion=${{env.APP_VERSION}} --configuration=Debug
 
       - name: Push test log as artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows

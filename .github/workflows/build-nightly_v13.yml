@@ -112,6 +112,7 @@ jobs:
           file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows
