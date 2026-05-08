@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   cover:
-    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS }}
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

@@ -43,7 +43,7 @@ jobs:
     # - either the workflow was triggered manually (on 'workflow_dispatch')
     # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
-    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS }}
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
