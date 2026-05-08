@@ -9,9 +9,12 @@ on:
 permissions:
   packages: write
 
+env:
+  DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
+
 jobs:
   build-test-publish:
-    runs-on: windows-latest
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -30,7 +33,7 @@ jobs:
         run: dotnet build PKSim.sln -p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test
-        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=/testLog_Windows.html"
+        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=testLog_Windows.html"
 
       - name: Pack the project
         run: dotnet pack .\PKSim.sln --no-build --no-restore -o ./ -p:PackageVersion=${{env.APP_VERSION}} --configuration=Debug
@@ -39,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows
-          path: /testLog*.html
+          path: ./**/testLog*.html
 
       - name: Publish to GitHub registry
         run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}

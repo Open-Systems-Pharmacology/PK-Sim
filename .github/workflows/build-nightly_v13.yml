@@ -6,12 +6,12 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-env:
-  TARGET_FRAMEWORK: net8
-
 permissions:
   contents: read
   packages: read
+
+env:
+  DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
 
 jobs:
   get-latest-commit-timespan:
@@ -43,7 +43,7 @@ jobs:
     # - either the workflow was triggered manually (on 'workflow_dispatch')
     # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
-    runs-on: windows-latest
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -74,7 +74,7 @@ jobs:
           ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
           ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
         with:
-          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.exe
+          file_path: ./src/PKSim/bin/Debug/net10.0-windows/PKSim.exe
           
       - name: Sign PKSim.BatchTool.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
@@ -84,7 +84,7 @@ jobs:
           ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
           ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
         with:
-          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.BatchTool.exe
+          file_path: ./src/PKSim/bin/Debug/net10.0-windows/PKSim.BatchTool.exe
           
       - name: Sign PKSim.CLI.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
@@ -94,7 +94,7 @@ jobs:
           ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
           ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
         with:
-          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.CLI.exe
+          file_path: ./src/PKSim/bin/Debug/net10.0-windows/PKSim.CLI.exe
           
       - name: Create Setup
         run: |
