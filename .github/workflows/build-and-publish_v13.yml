@@ -9,9 +9,6 @@ on:
 permissions:
   packages: write
 
-env:
-  DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
-
 jobs:
   build-test-publish:
     runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
@@ -30,6 +27,8 @@ jobs:
           echo "APP_VERSION=13.0.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
+        env:
+          DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
         run: dotnet build PKSim.sln -p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test

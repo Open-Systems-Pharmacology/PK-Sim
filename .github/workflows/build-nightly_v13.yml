@@ -10,9 +10,6 @@ permissions:
   contents: read
   packages: read
 
-env:
-  DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
-
 jobs:
   get-latest-commit-timespan:
     runs-on: ubuntu-latest
@@ -59,6 +56,8 @@ jobs:
           echo "APP_VERSION=13.0.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
+        env:
+          DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
           dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
