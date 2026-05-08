@@ -25,6 +25,12 @@ public interface IOverwriteParameterSetTask
    ICommand SetIsDefault(OverwriteParameterSet overwriteParameterSet, Compound compound, bool isDefault);
 
    ICommand RemoveSet(OverwriteParameterSet overwriteParameterSet, Compound compound);
+
+   /// <summary>
+   ///    Sets the value of a metadata property (stored in <see cref="OverwriteParameterSet.ExtendedProperties" />)
+   ///    on an <see cref="OverwriteParameterSet" />
+   /// </summary>
+   ICommand SetExtendedProperty(OverwriteParameterSet overwriteParameterSet, Compound compound, string propertyName, string newValue);
 }
 
 public class OverwriteParameterSetTask : IOverwriteParameterSetTask
@@ -79,7 +85,18 @@ public class OverwriteParameterSetTask : IOverwriteParameterSetTask
 
       return new RemoveOverwriteParameterSetFromCompoundCommand(overwriteParameterSet, compound).Run(_executionContext);
    }
-   
+
+   public ICommand SetExtendedProperty(OverwriteParameterSet overwriteParameterSet, Compound compound, string propertyName, string newValue)
+   {
+      newValue ??= string.Empty;
+      var currentValue = overwriteParameterSet.GetExtendedProperty(propertyName);
+
+      if (string.Equals(newValue, currentValue))
+         return new PKSimEmptyCommand();
+
+      return new SetExtendedPropertyOnOverwriteSetCommand(overwriteParameterSet, compound, propertyName, newValue).Run(_executionContext);
+   }
+
    private IReadOnlyList<Simulation> simulationsUsing(OverwriteParameterSet overwriteParameterSet, Compound compound)
    {
       var buildingBlocksUsingCompound = _buildingBlockInProjectManager.SimulationsUsing(compound);
