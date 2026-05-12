@@ -1,5 +1,7 @@
-﻿using PKSim.Core.Model;
+﻿using System.Drawing;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Populations
 {
@@ -15,6 +17,10 @@ namespace PKSim.Presentation.DTO.Populations
             base.FilePath = value;
          }
       }
+
+      // Materializes the base-class Icon as a System.Drawing.Image for binding into the DevExpress
+      // PictureEdit column. Rendering lives in OSPSuite.Presentation.Extensions.ApplicationIconExtensions.
+      public Image Image => Icon.ToImage();
 
       public int? Count
       {

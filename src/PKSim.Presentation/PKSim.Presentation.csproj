@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.110" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" />
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.110" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PKSim.Assets.Images\PKSim.Assets.Images.csproj" />
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
   </ItemGroup>

@@ -1,10 +1,11 @@
 using System.Drawing;
+using DevExpress.XtraEditors.DXErrorProvider;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Reflection;
-using DevExpress.XtraEditors.DXErrorProvider;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.DTO.Simulations
 {

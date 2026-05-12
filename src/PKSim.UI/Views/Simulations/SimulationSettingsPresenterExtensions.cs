@@ -1,4 +1,5 @@
 ﻿using OSPSuite.Assets;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Simulations;
@@ -13,7 +14,7 @@ namespace PKSim.UI.Views.Simulations
       {
          var toolTip = toolTipCreator.CreateToolTip(PKSimConstants.UI.SaveSimulationSettingsToolTip, PKSimConstants.UI.SaveSimulationSettings);
          dropDownButton.Text = PKSimConstants.UI.SaveSimulationSettings;
-         dropDownButton.Image = ApplicationIcons.Save.ToImage(IconSizes.Size16x16);
+         dropDownButton.ImageOptions.SetImage(ApplicationIcons.Save, IconSizes.Size16x16);
          dropDownButton.SuperTip = toolTip;
          dropDownButton.AddMenu(PKSimConstants.UI.SaveSimulationSettingsToProject, presenter.SaveSettingsToProject, ApplicationIcons.PKSim);
          dropDownButton.AddMenu(PKSimConstants.UI.SaveSimulationSettingsToUserSettings, presenter.SaveSettingsToUserSettings, ApplicationIcons.UserSettings);
