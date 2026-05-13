@@ -12,6 +12,7 @@ using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.UI.Controls;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;

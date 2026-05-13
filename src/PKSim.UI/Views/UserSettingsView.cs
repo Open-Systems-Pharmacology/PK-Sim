@@ -218,7 +218,7 @@ namespace PKSim.UI.Views
          tbTemplateDatabase.Properties.Buttons[1].SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.CreateTemplateDatabasePath, PKSimConstants.UI.TemplateDatabasePath, ApplicationIcons.Create);
          tbTemplateDatabase.Properties.Buttons[1].ToolTip = PKSimConstants.UI.CreateTemplateDatabasePath;
          tbTemplateDatabase.Properties.Buttons[1].Kind = ButtonPredefines.Glyph;
-         tbTemplateDatabase.Properties.Buttons[1].Image = ApplicationIcons.Create.ToImage(IconSizes.Size16x16);
+         tbTemplateDatabase.Properties.Buttons[1].SetImage(ApplicationIcons.Create, IconSizes.Size16x16);
          cbDefaultSolName.FillWith(PKSimConstants.UI.PredefinedSolubilityAlternatives());
          cbDefaultFuName.FillWith(PKSimConstants.UI.PredefinedFractionUnboundAlternatives());
          cbDefaultLipoName.FillWith(PKSimConstants.UI.PredefinedLipophilicityAlternatives());

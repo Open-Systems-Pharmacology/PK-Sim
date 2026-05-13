@@ -73,7 +73,7 @@ namespace PKSim.UI.Views.Parameters
       }
 
       private DXMenuItem copyPathMenuItem() =>
-         new DXMenuItem(PKSimConstants.MenuNames.CopyPath, (s, args) => copyPath(), ApplicationIcons.Copy);
+         new DXMenuItem(PKSimConstants.MenuNames.CopyPath, (s, args) => copyPath(), ApplicationIcons.Copy.ToImage());
 
       private void copyPath() => Clipboard.SetText(_presenter.PathFor(_gridViewBinder.FocusedElement));
 

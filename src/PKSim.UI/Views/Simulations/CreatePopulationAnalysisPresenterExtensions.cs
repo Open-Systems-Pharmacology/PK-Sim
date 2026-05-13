@@ -14,7 +14,7 @@ namespace PKSim.UI.Views.Simulations
          var toolTip = toolTipCreator.CreateToolTip(PKSimConstants.UI.PopulationAnalysisSaveLoadToolTip, PKSimConstants.UI.PopulationAnalysisSaveLoad);
          var dropDownButton = new UxDropDownButton();
          dropDownButton.Text = PKSimConstants.UI.PopulationAnalysisSaveLoad;
-         dropDownButton.Image = ApplicationIcons.Save.ToImage(IconSizes.Size16x16);
+         dropDownButton.ImageOptions.SetImage(ApplicationIcons.Save, IconSizes.Size16x16);
          dropDownButton.SuperTip = toolTip;
          dropDownButton.AddMenu(PKSimConstants.UI.SaveAsTemplate, presenter.SaveAnalysis, ApplicationIcons.SaveAsTemplate);
          dropDownButton.AddMenu(PKSimConstants.UI.LoadFromTemplate, presenter.LoadAnalysisTask, ApplicationIcons.LoadFromTemplate);
