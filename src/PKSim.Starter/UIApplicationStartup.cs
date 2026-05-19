@@ -89,9 +89,10 @@ namespace PKSim.Starter
             pkSimContainer.AddRegister(x => x.FromType<PKSimStarterUserInterfaceRegister>());
 
             pkSimContainer.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
-            InfrastructureRegister.LoadSerializers(pkSimContainer);
+            InfrastructureRegister.RegisterSerializationDependencies(pkSimContainer);
+            PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(pkSimContainer);
+            InfrastructureRegister.LoadDefaultEntities(pkSimContainer);
             pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
-            InfrastructureRegister.RegisterWorkspace(pkSimContainer);
          }
 
          return pkSimContainer;

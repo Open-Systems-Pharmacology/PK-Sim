@@ -10,6 +10,9 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Serialization;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
 using CoreRegister = PKSim.Core.CoreRegister;
 using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
@@ -37,7 +40,9 @@ namespace PKSim.CLI
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
             container.AddRegister(x => x.FromType<CLIRegister>());
 
-            InfrastructureRegister.LoadSerializers(container);
+            InfrastructureRegister.RegisterSerializationDependencies(container);
+            PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(container);
+            InfrastructureRegister.LoadDefaultEntities(container);
          }
       }
 
@@ -48,6 +53,10 @@ namespace PKSim.CLI
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
          container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+         container.Register<IPKSimXmlSerializerRepository, CorePKSimXmlSerializerRepository>(LifeStyle.Singleton);
+         container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
+         container.Register<IObservedDataTask, CoreObservedDataTask>();
+         container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
       }
    }
 }

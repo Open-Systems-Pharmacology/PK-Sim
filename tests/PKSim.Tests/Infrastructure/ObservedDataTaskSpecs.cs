@@ -22,7 +22,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
-using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
+using ObservedDataTask = PKSim.Presentation.Infrastructure.Services.ObservedDataTask;
 
 namespace PKSim.Infrastructure
 {
