@@ -81,4 +81,20 @@ namespace PKSim.IntegrationTests
          allOntogenyFactors.Count().ShouldBeEqualTo(2);
       }
    }
+
+   public class When_mapping_a_building_block_from_an_individual_with_gestational_age_in_weeks : concern_for_IndividualToIndividualBuildingBlockMapper
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         //value stored in base unit of "Age in weeks" dimension i.e. weeks
+         _individual.OriginData.GestationalAge = new OriginDataParameter(40, "week(s)");
+      }
+
+      [Observation]
+      public void should_format_gestational_age_using_the_age_in_weeks_dimension()
+      {
+         _individualBuildingBlock.OriginData["Gestational age"].ValueAsObject.ShouldBeEqualTo("40.00 week(s)");
+      }
+   }
 }
