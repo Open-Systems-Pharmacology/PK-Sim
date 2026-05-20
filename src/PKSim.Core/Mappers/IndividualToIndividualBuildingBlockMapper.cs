@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
@@ -127,11 +128,11 @@ namespace PKSim.Core.Mappers
          individual.OriginData.DiseaseStateParameters.Each(x => addOriginDataToBuildingBlock(buildingBlock, x.Name, x));
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, individual.Species?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, individual.OriginData.Gender?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Age, individual.OriginData.Age);
-         addOriginDataToBuildingBlock(buildingBlock, GestationalAge, individual.OriginData.GestationalAge);
-         addOriginDataToBuildingBlock(buildingBlock, Height, individual.OriginData.Height);
-         addOriginDataToBuildingBlock(buildingBlock, BMI, individual.OriginData.BMI);
-         addOriginDataToBuildingBlock(buildingBlock, Weight, individual.OriginData.Weight);
+         addOriginDataToBuildingBlock(buildingBlock, Age, individual.OriginData.Age, _dimensionRepository.AgeInYears);
+         addOriginDataToBuildingBlock(buildingBlock, GestationalAge, individual.OriginData.GestationalAge, _dimensionRepository.AgeInWeeks);
+         addOriginDataToBuildingBlock(buildingBlock, Height, individual.OriginData.Height, _dimensionRepository.Length);
+         addOriginDataToBuildingBlock(buildingBlock, BMI, individual.OriginData.BMI, _dimensionRepository.BMI);
+         addOriginDataToBuildingBlock(buildingBlock, Weight, individual.OriginData.Weight, _dimensionRepository.Mass);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, individual.OriginData.Population?.DisplayName);
 
          individual.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, individual.Species))
@@ -151,13 +152,20 @@ namespace PKSim.Core.Mappers
          if (parameter == null)
             return;
 
-         var displayValue = originDataFormattedForDisplay(parameter);
+         addOriginDataToBuildingBlock(buildingBlock, key, parameter, _dimensionRepository.DimensionForUnit(parameter.Unit));
+      }
+
+      private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, OriginDataParameter parameter, IDimension dimension)
+      {
+         if (parameter == null)
+            return;
+
+         var displayValue = originDataFormattedForDisplay(parameter, dimension);
          addOriginDataToBuildingBlock(buildingBlock, keyForOriginDataParameter(key, parameter), $"{displayValue} {parameter.Unit}");
       }
 
-      private string originDataFormattedForDisplay(OriginDataParameter parameter)
+      private string originDataFormattedForDisplay(OriginDataParameter parameter, IDimension dimension)
       {
-         var dimension = _dimensionRepository.DimensionForUnit(parameter.Unit);
          var unit = dimension.UnitOrDefault(parameter.Unit);
          return _formatter.Format(dimension.BaseUnitValueToUnitValue(unit, parameter.Value));
       }
@@ -167,7 +175,7 @@ namespace PKSim.Core.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.Add(new ExtendedProperty<string> {Name = key, Value = value});
+         buildingBlock.OriginData.Add(new ExtendedProperty<string> { Name = key, Value = value });
       }
 
       private string keyForOriginDataParameter(string key, OriginDataParameter parameter) => string.IsNullOrEmpty(parameter.Name) ? key : parameter.Name;
