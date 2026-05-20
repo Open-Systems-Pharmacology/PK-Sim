@@ -1,7 +1,8 @@
 using System;
 using System.Data;
-using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.ProteinExpression;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
@@ -44,6 +45,5 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          dataTable.RejectChanges();
          View.Hide();
       }
-
    }
 }

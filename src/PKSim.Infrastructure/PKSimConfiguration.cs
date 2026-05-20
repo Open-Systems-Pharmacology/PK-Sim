@@ -80,7 +80,10 @@ namespace PKSim.Infrastructure
          {
             try
             {
-               return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.MOBI_REG_PATH}{Major}", Constants.RegistryPaths.INSTALL_PATH, null);
+               if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                  return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.MOBI_REG_PATH}{Major}", Constants.RegistryPaths.INSTALL_PATH, null);
+
+               return string.Empty;
             }
             catch (Exception)
             {

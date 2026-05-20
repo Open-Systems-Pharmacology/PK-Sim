@@ -6,7 +6,7 @@ using PKSim.Infrastructure.Serialization.ORM.Queries;
 using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
 
-namespace PKSim.Infrastructure.Services
+namespace PKSim.Presentation.Infrastructure.Services
 {
    public class SimulationChartsLoader : ISimulationChartsLoader
    {

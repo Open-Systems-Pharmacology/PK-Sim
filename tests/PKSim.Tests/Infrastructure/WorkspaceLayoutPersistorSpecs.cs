@@ -4,9 +4,9 @@ using NHibernate;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.Core;
-using PKSim.Infrastructure.Serialization;
-using PKSim.Infrastructure.Serialization.ORM.Mappers;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
+using PKSim.Presentation.Infrastructure.Serialization;
+using PKSim.Presentation.Infrastructure.Serialization.ORM.Mappers;
 
 namespace PKSim.Infrastructure
 {

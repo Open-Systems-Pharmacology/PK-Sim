@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Data;
 
-namespace PKSim.Presentation.Presenters.ProteinExpression
+namespace PKSim.Core.Services
 {
    public enum JoinType
    {

@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {

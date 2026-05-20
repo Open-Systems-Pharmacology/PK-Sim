@@ -2,10 +2,10 @@ using System.Linq;
 using NHibernate;
 using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Presentation.Core;
-using PKSim.Infrastructure.Serialization.ORM.Mappers;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
+using PKSim.Presentation.Infrastructure.Serialization.ORM.Mappers;
 
-namespace PKSim.Infrastructure.Serialization
+namespace PKSim.Presentation.Infrastructure.Serialization
 {
    public interface IWorkspaceLayoutPersistor : ISessionPersistor<IWorkspaceLayout>
    {

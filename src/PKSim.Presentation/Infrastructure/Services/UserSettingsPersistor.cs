@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using PKSim.Core;
 using PKSim.Core.Services;
-using PKSim.Presentation;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Services;
 
-namespace PKSim.Infrastructure.Services
+namespace PKSim.Presentation.Infrastructure.Services
 {
    public class UserSettingsPersistor : SettingsPersistor<IUserSettings>, IUserSettingsPersistor
    {

@@ -1,11 +1,10 @@
 using System;
 using System.IO;
+using NHibernate;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
@@ -15,11 +14,10 @@ using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure.Serialization
 {
-   public class WorkspacePersistor : IWorkspacePersistor
+   public class CoreWorkspacePersistor : IWorkspacePersistor
    {
       private readonly IProjectPersistor _projectPersistor;
       private readonly IHistoryManagerPersistor _historyManagerPersistor;
-      private readonly IWorkspaceLayoutPersistor _workspaceLayoutPersistor;
       private readonly ISessionManager _sessionManager;
       private readonly IProgressManager _progressManager;
       private readonly IProjectFileCompressor _projectFileCompressor;
@@ -27,10 +25,9 @@ namespace PKSim.Infrastructure.Serialization
       private readonly IJournalLoader _journalLoader;
       private readonly IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
 
-      public WorkspacePersistor(
+      public CoreWorkspacePersistor(
          IProjectPersistor projectPersistor,
          IHistoryManagerPersistor historyManagerPersistor,
-         IWorkspaceLayoutPersistor workspaceLayoutPersistor,
          ISessionManager sessionManager,
          IProgressManager progressManager,
          IProjectFileCompressor projectFileCompressor,
@@ -40,7 +37,6 @@ namespace PKSim.Infrastructure.Serialization
       {
          _projectPersistor = projectPersistor;
          _historyManagerPersistor = historyManagerPersistor;
-         _workspaceLayoutPersistor = workspaceLayoutPersistor;
          _sessionManager = sessionManager;
          _progressManager = progressManager;
          _projectFileCompressor = projectFileCompressor;
@@ -70,8 +66,7 @@ namespace PKSim.Infrastructure.Serialization
                _historyManagerPersistor.Save(workspace.HistoryManager, session);
 
                progress.IncrementProgress(PKSimConstants.UI.SavingLayout);
-               if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
-                  _workspaceLayoutPersistor.Save(withWorkspaceLayout.WorkspaceLayout, session);
+               SaveLayoutFor(workspace, session);
 
                transaction.Commit();
             }
@@ -79,7 +74,7 @@ namespace PKSim.Infrastructure.Serialization
             progress.IncrementProgress(PKSimConstants.UI.CompressionProject);
             _projectFileCompressor.Compress(fileFullPath);
 
-            //once saved, we can 
+            //once saved, we can
             _projectPersistor.UpdateProjectAfterSave(workspace.Project);
          }
 
@@ -127,21 +122,29 @@ namespace PKSim.Infrastructure.Serialization
                   workspace.Journal = journal;
 
                   progress.IncrementProgress(PKSimConstants.UI.LoadingLayout);
-                  var workspaceLayout = _workspaceLayoutPersistor.Load(session);
-                  // The workspace layout may be null if the workspace was created via CLI. In that case, we simply initialize the workspace layout
-                  if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
-                     withWorkspaceLayout.WorkspaceLayout = workspaceLayout ?? new WorkspaceLayout();
-
+                  LoadLayoutFor(workspace, session);
                }
             }
             catch (Exception)
             {
-               //Exception occurs while opening the project! 
+               //Exception occurs while opening the project!
                //close the file and rethrow the exception
                _sessionManager.CloseFactory();
                throw;
             }
          }
+      }
+
+      // Override in Presentation-aware variant to save workspace layout when workspace
+      // implements IWithWorkspaceLayout. Headless variant: no-op.
+      protected virtual void SaveLayoutFor(ICoreWorkspace workspace, ISession session)
+      {
+      }
+
+      // Override in Presentation-aware variant to load workspace layout when workspace
+      // implements IWithWorkspaceLayout. Headless variant: no-op.
+      protected virtual void LoadLayoutFor(ICoreWorkspace workspace, ISession session)
+      {
       }
 
       private void verifyProjectNotReadOnly(string fileFullPath)

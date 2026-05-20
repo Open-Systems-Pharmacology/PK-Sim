@@ -1,5 +1,6 @@
 using OSPSuite.BDDHelper;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers;
 
 namespace PKSim.IntegrationTests
 {

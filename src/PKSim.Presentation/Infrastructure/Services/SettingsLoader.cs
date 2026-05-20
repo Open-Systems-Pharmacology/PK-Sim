@@ -2,7 +2,7 @@ using OSPSuite.Utility;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 
-namespace PKSim.Infrastructure.Services
+namespace PKSim.Presentation.Infrastructure.Services
 {
    public class SettingsLoader : IStartable
    {

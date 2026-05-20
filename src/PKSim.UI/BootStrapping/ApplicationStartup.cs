@@ -128,7 +128,9 @@ namespace PKSim.UI.BootStrapping
                RegisterCommands(container);
 
                showStatusMessage(progress, PKSimConstants.UI.RegisterSerializationDependencies);
-               InfrastructureRegister.LoadSerializers(container);
+               InfrastructureRegister.RegisterSerializationDependencies(container);
+               Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(container);
+               InfrastructureRegister.LoadDefaultEntities(container);
 
                finalizeRegistration(container);
             }
@@ -143,8 +145,7 @@ namespace PKSim.UI.BootStrapping
       /// </summary>
       private void finalizeRegistration(IContainer container)
       {
-         InfrastructureRegister.RegisterWorkspace(container);
-         //Create one instance of the invokers so that the object is available in the application 
+         //Create one instance of the invokers so that the object is available in the application
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
 

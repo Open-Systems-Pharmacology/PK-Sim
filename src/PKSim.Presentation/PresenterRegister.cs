@@ -5,14 +5,18 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.Journal;
 using OSPSuite.Presentation.Presenters.Main;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Infrastructure;
+using PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Presenters.Individuals;
@@ -105,6 +109,10 @@ namespace PKSim.Presentation
 
          container.Register<IFormatterFactory, FormatterFactory>();
 
+         //Presentation-aware overrides for Infrastructure services
+         container.Register<IPKSimXmlSerializerRepository, PKSimXmlSerializerRepository>(LifeStyle.Singleton);
+         container.Register<IWorkspace, IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
+
          Captions.SimulationPath = PKSimConstants.UI.Simulation;
          Captions.ContainerPath = PKSimConstants.UI.Organ;
          Captions.BottomCompartmentPath = PKSimConstants.UI.Compartment;
@@ -121,9 +129,12 @@ namespace PKSim.Presentation
 
          //This objects were already registered in Bootstrap
          scan.ExcludeType<ApplicationController>();
-         scan.ExcludeType<StartOptions>();
+
+         //Explicit Singleton registrations in RegisterInContainer
+         scan.ExcludeType<PKSimXmlSerializerRepository>();
+         scan.ExcludeType<Workspace>();
       }
-      
+
       protected abstract void RegisterMainViewPresenters(IContainer container);
 
       private static void registerSingleStartPresenters(IContainer container)
@@ -159,7 +170,6 @@ namespace PKSim.Presentation
 
    public class PresenterRegister : BasePresenterRegister
    {
-
       protected override void RegisterMainViewPresenters(IContainer container)
       {
          container.Register<IMainViewPresenter, PKSimMainViewPresenter>(LifeStyle.Singleton);

@@ -1,17 +1,16 @@
 using System;
 using System.Xml.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Serialization.Xml.Extensions;
-using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Serializer;
 using OSPSuite.Serializer.Attributes;
 using OSPSuite.Serializer.Xml;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
@@ -22,7 +21,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       void DeserializeFormulaCache(XElement element, SerializationContext serializationContext, Type typeToDeserialize);
    }
 
-   public class PKSimXmlSerializerRepository : OSPSuiteXmlSerializerRepository, IPKSimXmlSerializerRepository
+   public class CorePKSimXmlSerializerRepository : OSPSuiteXmlSerializerRepository, IPKSimXmlSerializerRepository
    {
       protected override void AddInitialSerializer()
       {
@@ -34,7 +33,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new ObjectPathXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new SystemicProcessTypeXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new ApplicationTypeXmlAttributeMapper());
-         AttributeMapperRepository.AddAttributeMapper(new ViewLayoutXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new IconSizeAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new DosingIntervalXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new LabelGenerationStrategyXmlAttributeMapper());
@@ -54,16 +52,13 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<InteractionType, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<LoadTemplateWithReference, SerializationContext>());
 
-         //PKSim Serializers
+         //PKSim Core serializers (IPKSimXmlSerializer implementations in PKSim.Infrastructure)
          this.AddSerializers(x =>
          {
             x.Implementing<IPKSimXmlSerializer>();
-            x.InAssemblyContainingType<PKSimXmlSerializerRepository>();
+            x.InAssemblyContainingType<CorePKSimXmlSerializerRepository>();
             x.UsingAttributeRepository(AttributeMapperRepository);
          });
-
-         //OSPSuite.Presentation serializer
-         this.AddPresentationSerializers();
       }
 
       public void SerializeFormulaCache(XElement element, SerializationContext serializationContext, Type typeToSerialize)
