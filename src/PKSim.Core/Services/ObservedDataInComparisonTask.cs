@@ -62,7 +62,13 @@ namespace PKSim.Core.Services
 
       public void ApplySourceCurveOptionsTo(IndividualSimulationComparison chart, IndividualSimulation simulation)
       {
-         var sourceCurves = simulation.Charts.SelectMany(c => c.Curves).ToList();
+         //only consider the simulation's time profile charts so a non-time-profile chart
+         //(e.g. PredictedVsObserved, ResidualsVsTime) cannot match the lookup and propagate
+         //unintended styling to the comparison.
+         var sourceCurves = simulation
+            .AnalysesOfType<SimulationTimeProfileChart>()
+            .SelectMany(c => c.Curves)
+            .ToList();
          foreach (var observation in ResolveObservedDataFor(simulation).SelectMany(x => x.ObservationColumns()))
          {
             var sourceCurve = sourceCurves.FirstOrDefault(c => c.PlotsColumn(observation));
