@@ -1,10 +1,9 @@
 ﻿using OSPSuite.Assets;
-using PKSim.Presentation.Presenters.Charts;
-using PKSim.Presentation.Views.Charts;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using PKSim.Presentation.Presenters.Charts;
+using PKSim.Presentation.Views.Charts;
 
 namespace PKSim.UI.Views.Charts
 {
