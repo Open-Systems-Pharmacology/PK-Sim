@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using OSPSuite.BDDHelper;
@@ -85,8 +86,8 @@ namespace PKSim.R
 
    public class When_running_a_snapshot_export_using_the_convenient_method : concern_for_SnapshotTask
    {
-      private readonly string _inputFolder = @"C:\PKSim_SnapshotTask_Input\";
-      private readonly string _outputFolder = @"C:\PKSim_SnapshotTask_Output\";
+      private readonly string _inputFolder = Path.Combine(Path.GetTempPath(), $"PKSim_SnapshotTask_Input_{Guid.NewGuid():N}");
+      private readonly string _outputFolder = Path.Combine(Path.GetTempPath(), $"PKSim_SnapshotTask_Output_{Guid.NewGuid():N}");
 
       protected override void Context()
       {
