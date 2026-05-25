@@ -164,6 +164,161 @@ namespace PKSim.Core
       {
          _templateExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_preserve_existing_entries_for_parameters_no_longer_present_in_the_simulation()
+      {
+         _simulationExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|OldParam").ShouldBeTrue();
+         _templateExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|OldParam").ShouldBeTrue();
+      }
+   }
+
+   public class When_committing_a_tracked_parameter_to_an_existing_set_with_other_untouched_entries : concern_for_CommitSimulationParametersTask
+   {
+      private OverwriteParameterSet _simulationExistingSet;
+      private OverwriteParameterSet _templateExistingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         //Permeability is in the existing set with the same value the simulation parameter currently holds (7.2),
+         //modelling a parameter that was previously committed and has not been touched since.
+         _simulationExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId1" };
+         _simulationExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 7.2 });
+         _simulationCompound.AddOverwriteParameterSet(_simulationExistingSet);
+
+         _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 7.2 });
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
+         });
+      }
+
+      [Observation]
+      public void should_preserve_the_existing_untouched_entry_in_the_simulation_set()
+      {
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_preserve_the_existing_untouched_entry_in_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_add_the_newly_committed_entry_to_the_simulation_set()
+      {
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldNotBeNull();
+      }
+   }
+
+   public class When_committing_to_an_existing_set_after_user_has_reset_a_parameter_in_that_set : concern_for_CommitSimulationParametersTask
+   {
+      private OverwriteParameterSet _simulationExistingSet;
+      private OverwriteParameterSet _templateExistingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         //Permeability is in the existing set with stored value 99.0. The simulation's Permeability parameter is
+         //at 7.2 — different from the stored value and not tracked — which models a parameter the user has reset
+         //since the previous commit.
+         _simulationExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId1" };
+         _simulationExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 99.0 });
+         _simulationCompound.AddOverwriteParameterSet(_simulationExistingSet);
+
+         _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 99.0 });
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
+         });
+      }
+
+      [Observation]
+      public void should_remove_the_reset_entry_from_the_simulation_set()
+      {
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_remove_the_reset_entry_from_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_add_the_newly_committed_entry_to_the_simulation_set()
+      {
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldNotBeNull();
+      }
+   }
+
+   public class When_committing_to_an_existing_set_with_an_unchecked_tracked_parameter : concern_for_CommitSimulationParametersTask
+   {
+      private OverwriteParameterSet _simulationExistingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         //Permeability is tracked AND in the existing set with the same stored value, but the user unchecks it in
+         //the commit dialog (it is not in ParameterPaths). The entry should be preserved as-is rather than removed.
+         _simulationExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId1" };
+         _simulationExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 7.2 });
+         _simulationCompound.AddOverwriteParameterSet(_simulationExistingSet);
+
+         var templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 7.2 });
+         _templateCompound.AddOverwriteParameterSet(templateExistingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
+      }
+
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
+         });
+      }
+
+      [Observation]
+      public void should_preserve_the_unchecked_tracked_entry()
+      {
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_keep_the_unchecked_path_tracked()
+      {
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|Permeability").ShouldBeTrue();
+      }
    }
 
    public class When_committing_and_a_parameter_cannot_be_resolved : concern_for_CommitSimulationParametersTask
