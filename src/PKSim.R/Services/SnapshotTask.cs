@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
@@ -40,6 +41,9 @@ namespace PKSim.R.Services
       public Simulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
       {
          var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
+         if (project == null)
+            return Array.Empty<Simulation>();
+
          var allSimulations = project.All<CoreSimulation>();
 
          var matched = simulationNames.Length == 0
