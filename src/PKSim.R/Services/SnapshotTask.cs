@@ -40,7 +40,7 @@ namespace PKSim.R.Services
 
       public Simulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
       {
-         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
+         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).GetAwaiter().GetResult();
          if (project == null)
             return Array.Empty<Simulation>();
 
@@ -65,7 +65,7 @@ namespace PKSim.R.Services
             Folders = folders
          };
 
-         _snapshotRunner.RunBatchAsync(runOptions).Wait();
+         _snapshotRunner.RunBatchAsync(runOptions).GetAwaiter().GetResult();
       }
    }
 }
