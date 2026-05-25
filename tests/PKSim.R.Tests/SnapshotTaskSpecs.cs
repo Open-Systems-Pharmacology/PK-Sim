@@ -3,8 +3,8 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.R.Domain;
 using OSPSuite.Utility;
-using PKSim.Core.Model;
 using PKSim.R.Services;
 
 namespace PKSim.R

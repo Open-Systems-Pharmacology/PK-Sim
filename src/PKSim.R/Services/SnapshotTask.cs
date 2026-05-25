@@ -1,8 +1,9 @@
 using System.Linq;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
-using PKSim.Core.Model;
+using OSPSuite.R.Domain;
 using CoreSnapshotTask = PKSim.Core.Snapshots.Services.ISnapshotTask;
+using CoreSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.R.Services
 {
@@ -39,12 +40,13 @@ namespace PKSim.R.Services
       public Simulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
       {
          var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
-         var allSimulations = project.All<Simulation>();
+         var allSimulations = project.All<CoreSimulation>();
 
-         if (simulationNames.Length == 0)
-            return allSimulations.ToArray();
+         var matched = simulationNames.Length == 0
+            ? allSimulations
+            : allSimulations.Where(x => simulationNames.Contains(x.Name));
 
-         return allSimulations.Where(x => simulationNames.Contains(x.Name)).ToArray();
+         return matched.Select(x => new Simulation(x)).ToArray();
       }
 
       public void RunSnapshot(string inputFolder, string outputFolder, bool runSimulations = true,
