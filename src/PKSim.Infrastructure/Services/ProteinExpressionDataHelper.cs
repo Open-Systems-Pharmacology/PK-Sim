@@ -2,13 +2,11 @@
 using System.Collections;
 using System.Data;
 using System.Reflection;
-using PKSim.Infrastructure.ORM.Core;
+using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.DAS;
-using PKSim.Presentation.Presenters.ProteinExpression;
 
 namespace PKSim.Infrastructure.Services
 {
-  
    public class ProteinExpressionDataHelper : IProteinExpressionDataHelper
    {
       public DataTable CreateDataJoin(DataRelation dr, JoinType jt, string tableName)
@@ -37,7 +35,7 @@ namespace PKSim.Infrastructure.Services
       }
 
       /// <summary>
-      /// Fills the given data table with given object data.
+      ///    Fills the given data table with given object data.
       /// </summary>
       private static void fillData(PropertyInfo[] properties, DataTable dt, Object o)
       {
@@ -51,7 +49,7 @@ namespace PKSim.Infrastructure.Services
       }
 
       /// <summary>
-      /// All the Properties for the class array are converted to columns.
+      ///    All the Properties for the class array are converted to columns.
       /// </summary>
       private static DataTable createDataTable(PropertyInfo[] properties)
       {
@@ -67,15 +65,17 @@ namespace PKSim.Infrastructure.Services
             {
                propType = Nullable.GetUnderlyingType(propType);
             }
+
             dc.DataType = propType;
 
             dt.Columns.Add(dc);
          }
+
          return dt;
       }
 
       /// <summary>
-      /// Converts an arraylist of a class object to a data table object.
+      ///    Converts an arraylist of a class object to a data table object.
       /// </summary>
       public DataTable ConvertToDataTable(object[] array)
       {
@@ -87,9 +87,8 @@ namespace PKSim.Infrastructure.Services
          return dt;
       }
 
-   
       /// <summary>
-      /// This helping method retrieves a string collection with all distinct values of the given column.
+      ///    This helping method retrieves a string collection with all distinct values of the given column.
       /// </summary>
       public IList GetDistinctLoV(DataColumn column)
       {
@@ -101,8 +100,8 @@ namespace PKSim.Infrastructure.Services
                ret.Add(row[column].ToString());
             }
          }
+
          return ret;
       }
    }
-
 }

@@ -168,8 +168,7 @@ namespace PKSim.UI
             toolTip.Items.AddSeparator();
             toolTip.WithTitle(PKSimConstants.UI.Warning);
             var item = toolTip.Items.Add(warning);
-            item.ImageOptions.SvgImage = ApplicationIcons.Warning;
-            item.ImageOptions.SvgImageSize = IconSizes.Size16x16;
+            item.ImageOptions.SetImage(ApplicationIcons.Warning, IconSizes.Size16x16);
          }
 
          return toolTip;

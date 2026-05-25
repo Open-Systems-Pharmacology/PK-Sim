@@ -20,7 +20,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 
-namespace PKSim.Infrastructure.Services
+namespace PKSim.Presentation.Infrastructure.Services
 {
    public class ChartTemplatingTask : OSPSuite.Presentation.Services.Charts.ChartTemplatingTask, IChartTemplatingTask
    {

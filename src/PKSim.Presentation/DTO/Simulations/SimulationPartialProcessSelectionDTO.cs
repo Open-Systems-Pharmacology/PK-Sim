@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using DevExpress.XtraEditors.DXErrorProvider;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Utility.Reflection;
 using PKSim.Assets;
 using PKSim.Core.Model;

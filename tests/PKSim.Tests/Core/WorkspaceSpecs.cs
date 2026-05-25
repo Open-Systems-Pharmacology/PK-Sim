@@ -13,8 +13,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Infrastructure;
 using PKSim.Presentation;
+using PKSim.Presentation.Infrastructure;
 
 namespace PKSim.Core
 {

@@ -12,9 +12,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using IWorkspace = PKSim.Presentation.IWorkspace;
 
-namespace PKSim.Infrastructure
+namespace PKSim.Presentation.Infrastructure
 {
    public class Workspace : Workspace<PKSimProject>, IWorkspace
    {
@@ -36,7 +35,7 @@ namespace PKSim.Infrastructure
          IWorkspacePersistor workspacePersistor,
          IMRUProvider mruProvider,
          IHistoryManagerFactory historyManagerFactory
-         ) : base(eventPublisher,  fileLocker)
+      ) : base(eventPublisher, fileLocker)
       {
          _eventPublisher = eventPublisher;
          _journalSession = journalSession;
@@ -109,7 +108,7 @@ namespace PKSim.Infrastructure
             projectLoadAction();
             if (Project == null)
                return;
-            
+
             _eventPublisher.PublishEvent(new ProjectCreatedEvent(Project));
             _eventPublisher.PublishEvent(new ProjectLoadedEvent(Project));
          }
@@ -133,8 +132,6 @@ namespace PKSim.Infrastructure
       {
          LoadProject(() => Project = project);
       }
-
-   
 
       public bool ProjectLoaded => Project != null;
 

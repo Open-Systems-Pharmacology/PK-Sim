@@ -3,7 +3,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Presentation.Core;
 
-namespace PKSim.Infrastructure.Serialization.ORM.Mappers
+namespace PKSim.Presentation.Infrastructure.Serialization.ORM.Mappers
 {
    public interface IWorkspaceLayoutMetaDataToWorkspaceLayoutMapper : IMapper<WorkspaceLayoutMetaData, IWorkspaceLayout>
    {

@@ -2,9 +2,9 @@ using System.Xml.Linq;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer;
 using PKSim.Core;
-using PKSim.Presentation;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
 
-namespace PKSim.Infrastructure.Serialization.Xml.Serializers
+namespace PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers
 {
    public class UserSettingsXmlSerializer : BaseXmlSerializer<IUserSettings>
    {

@@ -3,7 +3,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
 
-namespace PKSim.Presentation
+namespace PKSim.Core
 {
    public enum StartOptionMode
    {

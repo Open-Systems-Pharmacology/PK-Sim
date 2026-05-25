@@ -1,8 +1,7 @@
-﻿using OSPSuite.Serializer.Attributes;
-using PKSim.Presentation;
-using OSPSuite.Core.Serialization.Xml;
+﻿using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer.Attributes;
 
-namespace PKSim.Infrastructure.Serialization.Xml.Serializers
+namespace PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers
 {
    public class ViewLayoutXmlAttributeMapper : AttributeMapper<ViewLayout, SerializationContext>
    {

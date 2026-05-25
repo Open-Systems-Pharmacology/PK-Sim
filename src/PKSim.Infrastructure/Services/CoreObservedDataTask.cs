@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core.Commands;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
@@ -10,33 +8,28 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Presenters;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
+   public class CoreObservedDataTask : ObservedDataTask, IObservedDataTask
    {
-      private readonly IPKSimProjectRetriever _projectRetriever;
-      private readonly IExecutionContext _executionContext;
-      private readonly IApplicationController _applicationController;
+      protected readonly IPKSimProjectRetriever _projectRetriever;
+      protected readonly IExecutionContext _executionContext;
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
       private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
 
-      public ObservedDataTask(
+      public CoreObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
          IExecutionContext executionContext,
          IDialogCreator dialogCreator,
-         IApplicationController applicationController,
          IDataRepositoryExportTask dataRepositoryTask,
          ITemplateTask templateTask,
          IContainerTask containerTask,
@@ -50,22 +43,16 @@ namespace PKSim.Infrastructure.Services
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
-         _applicationController = applicationController;
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
          _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
+      // Rename requires IApplicationController + IRenameObservedDataPresenter (Presentation-only).
+      // The Presentation-aware derived ObservedDataTask overrides this. Headless variant: no-op.
       public override void Rename(DataRepository observedData)
       {
-         using (var renamePresenter = _applicationController.Start<IRenameObservedDataPresenter>())
-         {
-            if (!renamePresenter.Edit(observedData))
-               return;
-
-            _executionContext.AddToHistory(new RenameObservedDataCommand(observedData, renamePresenter.Name).Run(_executionContext));
-         }
       }
 
       public override void UpdateMolWeight(DataRepository observedData)
@@ -87,13 +74,9 @@ namespace PKSim.Infrastructure.Services
          _pkmlPersistor.SaveToPKML(observedData, file);
       }
 
-      public void LoadFromSnapshot()
+      // LoadFromSnapshot lives in the Presentation-aware derived class (needs IApplicationController).
+      public virtual void LoadFromSnapshot()
       {
-         using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>())
-         {
-            var observedData = presenter.LoadModelFromSnapshot();
-            observedData?.Each(AddObservedDataToProject);
-         }
       }
 
       public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable)
@@ -151,7 +134,7 @@ namespace PKSim.Infrastructure.Services
          return usedObservedDatas.Select(observedDataFrom).ToList();
       }
 
-      private DataRepository observedDataFrom(UsedObservedData usedObservedDatas)
+      protected DataRepository observedDataFrom(UsedObservedData usedObservedDatas)
       {
          return _projectRetriever.CurrentProject.ObservedDataBy(usedObservedDatas.Id);
       }

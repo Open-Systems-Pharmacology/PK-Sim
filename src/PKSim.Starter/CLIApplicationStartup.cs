@@ -57,10 +57,11 @@ public class CLIApplicationStartup : ApplicationStartup
          pkSimContainer.AddRegister(x => x.FromType<CLI.Core.CLIRegister>());
 
          pkSimContainer.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
-         InfrastructureRegister.LoadSerializers(pkSimContainer);
+         InfrastructureRegister.RegisterSerializationDependencies(pkSimContainer);
+         PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(pkSimContainer);
+         InfrastructureRegister.LoadDefaultEntities(pkSimContainer);
          pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
-         InfrastructureRegister.RegisterWorkspace(pkSimContainer);
-         
+
          pkSimContainer.Register<IMRUProvider, MRUProvider>();
 
          registerCLITypes(pkSimContainer);

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using Microsoft.VisualBasic.ApplicationServices;
-using PKSim.Presentation;
+using PKSim.Core;
 using PKSim.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Main;
