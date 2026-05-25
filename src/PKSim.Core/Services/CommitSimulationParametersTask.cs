@@ -109,6 +109,14 @@ namespace PKSim.Core.Services
       ///    reset by the user (no longer differ from their original/default value) are removed from the set. Entries
       ///    the user has not touched since the previous commit are preserved.
       /// </summary>
+      /// <param name="simulationCompound">The compound used in the simulation whose OverwriteParameterSet will be updated.</param>
+      /// <param name="templateCompound">The project template compound whose corresponding OverwriteParameterSet will be updated.</param>
+      /// <param name="setName">Name of the existing OverwriteParameterSet to update in both compounds.</param>
+      /// <param name="parameterValues">The new parameter values to apply to the set.</param>
+      /// <param name="simulation">The simulation, used to check which paths are still tracked.</param>
+      /// <param name="parameterPaths">The parameter paths being committed, used to determine which paths the user has reset.</param>
+      /// <param name="parameterCache">Cache of simulation parameters, used to compare current values against the set's stored values when detecting resets.</param>
+      /// <returns>A macro command containing the update commands for both compounds.</returns>
       private PKSimMacroCommand updateExistingSetsCommand(Compound simulationCompound, Compound templateCompound, string setName,
          List<ParameterValue> parameterValues, Simulation simulation, IReadOnlyList<string> parameterPaths, PathCache<IParameter> parameterCache)
       {
