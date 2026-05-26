@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -38,13 +39,13 @@ namespace PKSim.Presentation
       protected ILazyLoadTask _lazyLoadTask;
       protected IChartEditorLayoutTask _chartLayoutTask;
       protected IChartTemplatingTask _chartTemplatingTask;
-      protected IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
       protected IProjectRetriever _projectRetriever;
       protected IUserSettings _userSettings;
       private ChartPresenterContext _chartPresenterContext;
       private ICurveNamer _curveNamer;
       private IChartUpdater _chartUpdateTask;
       protected IDialogCreator _dialogCreator;
+      protected IObservedDataInComparisonTask _observedDataInComparisonTask;
 
       protected override void Context()
       {
@@ -57,12 +58,12 @@ namespace PKSim.Presentation
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _chartLayoutTask = A.Fake<IChartEditorLayoutTask>();
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
-         _dataColumnToPathElementsMapper = A.Fake<IDataColumnToPathElementsMapper>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _chartPresenterContext = A.Fake<ChartPresenterContext>();
          _chartUpdateTask = A.Fake<IChartUpdater>();
          _userSettings = A.Fake<IUserSettings>();
          _dialogCreator = A.Fake<IDialogCreator>();
+         _observedDataInComparisonTask = A.Fake<IObservedDataInComparisonTask>();
          A.CallTo(() => _chartPresenterContext.EditorAndDisplayPresenter).Returns(_chartPresenter);
          A.CallTo(() => _chartPresenterContext.CurveNamer).Returns(_curveNamer);
          A.CallTo(() => _chartPresenterContext.EditorLayoutTask).Returns(_chartLayoutTask);
@@ -70,7 +71,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenterContext.ProjectRetriever).Returns(_projectRetriever);
 
          sut = new IndividualSimulationComparisonPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter,
-            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask, _chartUpdateTask, _userSettings, _dialogCreator);
+            _chartTask, _observedDataTask, _lazyLoadTask, _chartTemplatingTask, _chartUpdateTask, _userSettings, _dialogCreator, _observedDataInComparisonTask);
       }
    }
 
@@ -94,9 +95,10 @@ namespace PKSim.Presentation
          sut.InitializeAnalysis(_individualSimulationComparison);
          _simulation = A.Fake<IndividualSimulation>();
          A.CallTo(() => _simulation.HasResults).Returns(true);
-         var simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = _simulation});
+         A.CallTo(() => _simulation.UsedObservedData).Returns(Enumerable.Empty<UsedObservedData>());
+         var simulationNode = new SimulationNode(new ClassifiableSimulation { Subject = _simulation });
          _dropEventArgs = A.Fake<IDragEvent>();
-         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> {simulationNode});
+         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> { simulationNode });
       }
 
       protected override void Because()
@@ -120,6 +122,99 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_adding_a_simulation_with_observed_data_to_the_summary_chart : concern_for_IndividualSimulationComparisonPresenter
+   {
+      private IDragEvent _dropEventArgs;
+      private IndividualSimulation _simulation;
+      private IndividualSimulationComparison _individualSimulationComparison;
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualSimulationComparison = new IndividualSimulationComparison();
+         sut.InitializeAnalysis(_individualSimulationComparison);
+
+         _observedData = DomainHelperForSpecs.ObservedData("obs");
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim")
+         };
+         A.CallTo(() => _observedDataInComparisonTask.ResolveObservedDataFor(_simulation)).Returns(new List<DataRepository> { _observedData });
+
+         var simulationNode = new SimulationNode(new ClassifiableSimulation { Subject = _simulation });
+         _dropEventArgs = A.Fake<IDragEvent>();
+         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> { simulationNode });
+      }
+
+      protected override void Because()
+      {
+         sut.DragDrop(this, _dropEventArgs);
+      }
+
+      [Observation]
+      public void should_register_the_observed_data_on_the_chart()
+      {
+         _individualSimulationComparison.UsesObservedData(_observedData).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_create_curves_for_the_observation_columns_of_the_observed_data()
+      {
+         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<bool>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_delegate_source_curve_options_templating_to_the_service()
+      {
+         A.CallTo(() => _observedDataInComparisonTask.ApplySourceCurveOptionsTo(_individualSimulationComparison, _simulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_an_empty_individual_simulation_comparison_whose_simulation_has_observed_data : concern_for_IndividualSimulationComparisonPresenter
+   {
+      private IndividualSimulation _simulation;
+      private IndividualSimulationComparison _individualSimulationComparison;
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = DomainHelperForSpecs.ObservedData("obs");
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim")
+         };
+         A.CallTo(() => _observedDataInComparisonTask.ResolveObservedDataFor(_simulation)).Returns(new List<DataRepository> { _observedData });
+
+         _individualSimulationComparison = new IndividualSimulationComparison();
+         _individualSimulationComparison.AddSimulation(_simulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_individualSimulationComparison);
+      }
+
+      [Observation]
+      public void should_register_the_observed_data_on_the_chart()
+      {
+         _individualSimulationComparison.UsesObservedData(_observedData).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_create_curves_for_the_observation_columns_of_the_observed_data()
+      {
+         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<bool>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_delegate_source_curve_options_templating_to_the_service()
+      {
+         A.CallTo(() => _observedDataInComparisonTask.ApplySourceCurveOptionsTo(_individualSimulationComparison, _simulation)).MustHaveHappened();
+      }
+   }
+
    public class When_adding_a_simulation_to_the_summary_without_results : concern_for_IndividualSimulationComparisonPresenter
    {
       private IDragEvent _dropEventArgs;
@@ -134,9 +229,9 @@ namespace PKSim.Presentation
          sut.InitializeAnalysis(_individualSimulationComparison);
          _simulation = A.Fake<IndividualSimulation>().WithName("test");
          A.CallTo(() => _simulation.HasResults).Returns(false);
-         var simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = _simulation});
+         var simulationNode = new SimulationNode(new ClassifiableSimulation { Subject = _simulation });
          _dropEventArgs = A.Fake<IDragEvent>();
-         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> {simulationNode});
+         A.CallTo(() => _dropEventArgs.Data<IReadOnlyList<ITreeNode>>()).Returns(new List<SimulationNode> { simulationNode });
       }
 
       protected override void Because()
@@ -179,7 +274,6 @@ namespace PKSim.Presentation
       }
    }
 
-
    public class When_editing_an_individual_simulation_comparison_without_any_predefined_curves_in_a_simulation : concern_for_IndividualSimulationComparisonPresenter
    {
       private IndividualSimulationComparison _individualSimulationComparison;
@@ -188,7 +282,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation= new IndividualSimulation
+         _simulation = new IndividualSimulation
          {
             DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim")
          };
@@ -241,5 +335,4 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false, null)).MustNotHaveHappened();
       }
    }
-
 }
