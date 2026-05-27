@@ -117,8 +117,12 @@ namespace PKSim.Core.Services
       {
          var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
 
-         //should update non distributed parameters first and then distributed parameter
-         foreach (var sourceParameter in sourceParameters.KeyValues.OrderBy(x => x.Value.IsDistributed()))
+         //Process distributed parameters first. Writing a distributed parameter's value implicitly updates its
+         //percentile child (DistributedParameter.Value setter), so the child compare-equal afterwards and gets
+         //skipped. If we processed the child first instead, writing the percentile would change the parent's
+         //computed Value, the parent would then compare-equal and skip its own update — leaving the parent
+         //with IsDefault=true, which keeps it out of snapshot export (see #3530).
+         foreach (var sourceParameter in sourceParameters.KeyValues.OrderByDescending(x => x.Value.IsDistributed()))
          {
             var targetParameter = targetParameters[sourceParameter.Key];
             if (targetParameter == null)

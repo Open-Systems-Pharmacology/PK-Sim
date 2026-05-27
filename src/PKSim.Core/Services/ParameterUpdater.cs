@@ -100,11 +100,9 @@ namespace PKSim.Core.Services
 
       private ICommand setDistributionValue(IParameter sourceParameter, IDistributedParameter targetParameter)
       {
-         //distributed to distributed: force the update when the source is fixed, otherwise the parent parameter's
-         //areValuesEqual check short-circuits after the percentile child has already been written and the parent
-         //never gets its IsFixedValue/IsDefault flags updated (see #3530)
+         //distributed to distributed
          if (sourceParameter is IDistributedParameter sourceDistributedParameter)
-            return setParameterValue(sourceDistributedParameter, targetParameter, forceUpdate: sourceDistributedParameter.IsFixedValue);
+            return setParameterValue(sourceDistributedParameter, targetParameter, false);
 
          //source parameter it not distributed. Is the formula a table parameter? In that case, we are most likely
          //updating from simulation table parameter to distributed parameter in individual
@@ -121,13 +119,13 @@ namespace PKSim.Core.Services
 
       private ICommand setParameterValue(IParameter sourceParameter, IParameter targetParameter, bool forceUpdate)
       {
-         //If the parameter we are updating from is a default parameter, the target parameter should either remain as is (default or not default)
-         bool shouldUpdateDefaultState = !sourceParameter.IsDefault;
-
          //Always update the default value of the target parameter
          targetParameter.DefaultValue = sourceParameter.DefaultValue;
          if (!forceUpdate && areValuesEqual(targetParameter, sourceParameter))
          {
+            //If the parameter we are updating from is a default parameter, the target parameter should either remain as is (default or not default)
+            bool shouldUpdateDefaultState = !sourceParameter.IsDefault;
+
             //same value but not same display unit, simply update the display unit
             if (areDisplayUnitsEqual(targetParameter, sourceParameter))
                return null;
@@ -135,14 +133,17 @@ namespace PKSim.Core.Services
             return _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit, shouldUpdateDefaultState);
          }
 
-         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value, shouldUpdateDefaultState);
+         //When we reach this branch we are explicitly writing a value to the target (either values differ or forceUpdate
+         //was requested). The target should become non-default regardless of the source's IsDefault flag, otherwise
+         //a snapshot export of the template would miss the change (see #3530).
+         var setValueCommand = _parameterTask.SetParameterValue(targetParameter, sourceParameter.Value, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
 
          //Only value differs
          if (areDisplayUnitsEqual(targetParameter, sourceParameter))
             return setValueCommand;
 
          //in that case, we create a macro command that updates value and unit
-         var setDisplayUnitCommand = _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit, shouldUpdateDefaultState);
+         var setDisplayUnitCommand = _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
          var macroCommand = new PKSimMacroCommand {CommandType = setValueCommand.CommandType, ObjectType = setValueCommand.ObjectType, Description = PKSimConstants.Command.SetParameterValueAndDisplayUnitDescription};
          macroCommand.Add(setValueCommand);
          macroCommand.Add(setDisplayUnitCommand);
