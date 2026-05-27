@@ -142,7 +142,10 @@ namespace PKSim.Core.Services
          if (areDisplayUnitsEqual(targetParameter, sourceParameter))
             return setValueCommand;
 
-         //in that case, we create a macro command that updates value and unit
+         //in that case, we create a macro command that updates value and unit. Passing true here is symmetric with
+         //the setValueCommand above and a no-op in practice — the value command has already cleared IsDefault on
+         //the target, so withUpdatedDefaultStateAndValue short-circuits regardless. Keeping the flag explicit
+         //protects this branch if the order of operations is ever rearranged.
          var setDisplayUnitCommand = _parameterTask.SetParameterDisplayUnit(targetParameter, sourceParameter.DisplayUnit, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
          var macroCommand = new PKSimMacroCommand {CommandType = setValueCommand.CommandType, ObjectType = setValueCommand.ObjectType, Description = PKSimConstants.Command.SetParameterValueAndDisplayUnitDescription};
          macroCommand.Add(setValueCommand);
