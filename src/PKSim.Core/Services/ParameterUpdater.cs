@@ -100,9 +100,11 @@ namespace PKSim.Core.Services
 
       private ICommand setDistributionValue(IParameter sourceParameter, IDistributedParameter targetParameter)
       {
-         //distributed to distributed
+         //distributed to distributed: force the update when the source is fixed, otherwise the parent parameter's
+         //areValuesEqual check short-circuits after the percentile child has already been written and the parent
+         //never gets its IsFixedValue/IsDefault flags updated (see #3530)
          if (sourceParameter is IDistributedParameter sourceDistributedParameter)
-            return setParameterValue(sourceDistributedParameter, targetParameter, false);
+            return setParameterValue(sourceDistributedParameter, targetParameter, forceUpdate: sourceDistributedParameter.IsFixedValue);
 
          //source parameter it not distributed. Is the formula a table parameter? In that case, we are most likely
          //updating from simulation table parameter to distributed parameter in individual
