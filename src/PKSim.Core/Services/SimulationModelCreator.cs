@@ -92,6 +92,20 @@ namespace PKSim.Core.Services
             });
          });
 
+         //Distributed parameters (e.g. organ volumes) are created in the model without a DefaultValue, but resetting
+         //them relies on DefaultValue to restore the percentile (otherwise the percentile keeps the overwritten value
+         //and a wrong value is computed). Propagate the DefaultValue defined in the individual to the matching model
+         //parameter (#3562).
+         allIndividualParameters.KeyValues.Each(kv =>
+         {
+            if (!kv.Value.IsDistributed())
+               return;
+
+            var simulationParameter = allSimulationParameters[_entityPathResolver.PathFor(kv.Value)];
+            if (simulationParameter != null)
+               simulationParameter.DefaultValue = kv.Value.DefaultValue;
+         });
+
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
 
