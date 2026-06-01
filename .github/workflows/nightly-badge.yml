@@ -15,7 +15,7 @@ name: Badge for Nightly Build
 on:
   workflow_run:
     workflows:
-      - "Build Nightly 12.2"
+      - "Build Nightly 12.3"
     types:
       - completed
 
@@ -26,4 +26,4 @@ jobs:
   badge:
     uses: Open-Systems-Pharmacology/Workflows/.github/workflows/nightly-badge.yml@main
     with:
-      nightly-build-workflow: "build-nightly_12.2.yml"
+      nightly-build-workflow: "build-nightly_12.3.yml"

@@ -33,9 +33,9 @@ namespace PKSim.Core.Chart
          UpperValue = float.NaN;
       }
 
-      public bool IsValid => Y.IsValid() || IsRange;
+      public bool IsValid => Y.IsFinite() || IsRange;
 
-      public bool IsRange => LowerValue.IsValid() && UpperValue.IsValid();
+      public bool IsRange => LowerValue.IsFinite() && UpperValue.IsFinite();
 
       public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {

@@ -1,5 +1,5 @@
-name: Build Nightly 12.2
-run-name: Version 12.2.${{ github.run_number }}
+name: Build Nightly 12.3
+run-name: Version 12.3.${{ github.run_number }}
 
 on:
   workflow_dispatch:
@@ -7,9 +7,6 @@ on:
     - cron: '0 2 * * *'
 
 env:
-  MAJOR: 12
-  MINOR: 2
-  RUN: ${{ github.run_number }}
   TARGET_FRAMEWORK: net8
 
 permissions:
@@ -23,7 +20,7 @@ jobs:
       LATEST_COMMIT_TIMESPAN: ${{ steps.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -42,11 +39,14 @@ jobs:
 
   build-nightly:
     needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+    # the build-nightly job should be run in 2 cases:
+    # - either the workflow was triggered manually (on 'workflow_dispatch')
+    # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -57,15 +57,15 @@ jobs:
 
       - name: define env variables
         run: |
-          echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "APP_VERSION=12.3.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
-          dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}}
+          dotnet build /p:Version=${{env.APP_VERSION}}
 
       - name : Test
-        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Sign PKSim.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
@@ -120,32 +120,34 @@ jobs:
           file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows
           path: ./testLog*.html
 
       - name: Push nightly installer as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim Installer ${{env.APP_VERSION}}
           path: setup\deploy\*.msi
 
       - name: Push nightly portable as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
           path: setup\PK-Sim ${{env.APP_VERSION}}
 
       - name: Push R dependencies as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PKSim R Dependencies
           path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip
 
   cleanup-job:
-    needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN >= 86400
+    needs: build-nightly
+    # run only if the build-nightly job was skipped
+    if: always() && needs.build-nightly.result == 'skipped'
     runs-on: ubuntu-latest
     permissions:
       actions: write

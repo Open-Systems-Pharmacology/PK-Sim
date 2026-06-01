@@ -13,6 +13,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public IBusinessRuleSet Rules { get; private set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
       public string DefaultSpecies { get; set; } = CoreConstants.Species.HUMAN;
       public string DefaultPopulation { get; set; } = CoreConstants.Population.ICRP;
       public double AbsTol { get; set; }

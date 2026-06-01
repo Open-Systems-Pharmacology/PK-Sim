@@ -129,4 +129,52 @@ namespace PKSim.IntegrationTests
          _result.IsEmpty().ShouldBeFalse();
       }
    }
+
+   public class When_updating_a_distributed_organ_volume_in_a_simulation_in_the_template_building_block : concern_for_SimulationParametersToBuildingBlockUpdater
+   {
+      private IParameter _templateFatVolume;
+      private IParameter _simulationFatVolume;
+      private double _originalFatVolumeValue;
+      private double _newFatVolumeValue;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _simulationFatVolume = _simulation.Individual.Organism.Organ(FAT).Parameter(VOLUME);
+         _templateFatVolume = _templateIndividual.Organism.Organ(FAT).Parameter(VOLUME);
+
+         _originalFatVolumeValue = _simulationFatVolume.Value;
+         _newFatVolumeValue = _originalFatVolumeValue * 3;
+         _simulationFatVolume.Value = _newFatVolumeValue;
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParametersFromSimulationInBuildingBlock(_simulation, _templateIndividual);
+      }
+
+      [Observation]
+      public void should_have_transferred_the_new_value_to_the_template_parameter()
+      {
+         _templateFatVolume.Value.ShouldBeEqualTo(_newFatVolumeValue, 1e-7);
+      }
+
+      [Observation]
+      public void should_mark_the_template_parameter_as_fixed_value()
+      {
+         _templateFatVolume.IsFixedValue.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_mark_the_template_parameter_as_non_default()
+      {
+         _templateFatVolume.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_make_the_template_parameter_eligible_for_snapshot_export()
+      {
+         _templateFatVolume.ShouldExportToSnapshot().ShouldBeTrue();
+      }
+   }
 }

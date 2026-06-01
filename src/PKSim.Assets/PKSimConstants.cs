@@ -924,7 +924,7 @@ namespace PKSim.Assets
          public static string SnapshotDuplicateEntryByName(string name, string type) =>
             $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
 
-         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
+         public static string EffectiveMolWeightMustBeGreaterThan(string valueInDisplayUnit, string displayUnit) =>
             $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
       }
 
@@ -1667,7 +1667,9 @@ namespace PKSim.Assets
          public static readonly string ModelParameters = "Model Parameters";
          public static readonly string DefaultSpecies = "Species";
          public static readonly string DefaultPopulation = "Population";
-         public static readonly string DefaultParameterGroupLayout = "Parameter layout";
+         public static readonly string ParameterView = "Parameter view";
+         public static readonly string ForParameterIdentificationAndSensitivityAnalysis = "For Parameter Identification and Sensitivity Analysis";
+         public static readonly string ForOthers = "For all others";
          public static readonly string DefaultLipophilicityName = "Lipophilicity";
          public static readonly string DefaultFractionUnboundName = "Fraction unbound";
          public static readonly string DefaultSolubilityName = "Solubility";

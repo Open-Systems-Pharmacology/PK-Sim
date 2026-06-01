@@ -8,7 +8,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IMolWeightHalogensPresenter : IPresenter<IMolWeightHalogensView>, ICommandCollectorPresenter
    {
-      void EditHalogens(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight);
+      void EditHalogens(IReadOnlyList<IParameter> halogens);
       void SaveHalogens();
    }
 
@@ -32,14 +32,10 @@ namespace PKSim.Presentation.Presenters.Compounds
          _halogensPresenter.InitializeWith(commandCollector);
       }
 
-      public void EditHalogens(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight)
-      {
-         _halogensPresenter.Edit(halogens, effectiveMolWeight);
-      }
+      public void EditHalogens(IReadOnlyList<IParameter> halogens) =>
+         _halogensPresenter.Edit(halogens);
 
-      public void SaveHalogens()
-      {
+      public void SaveHalogens() =>
          _halogensPresenter.SaveEditor();
-      }
    }
 }

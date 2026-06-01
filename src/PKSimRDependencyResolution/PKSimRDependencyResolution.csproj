@@ -5,7 +5,7 @@
     <RootNamespace>ConsoleApp</RootNamespace>
     <AssemblyName>ConsoleApp</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">12.3.0</Version>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.73" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.FuncParser.MacOS.Arm64" Version="4.0.0.73" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.R" Version="12.2.26" />
+    <PackageReference Include="OSPSuite.R" Version="12.3.32" />
     <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel.MacOS.Arm64" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES.Ubuntu22" Version="4.1.0.19" GeneratePathProperty="true" />
@@ -60,10 +60,8 @@
     <ItemGroup>
       <LinuxFiles Include="$(TargetDir)runtimes/linux-x64/native/SQLite.Interop.dll" />
       <WindowsFiles Include="$(TargetDir)runtimes/win-x64/native/SQLite.Interop.dll" />
-      <MacFiles Include="$(TargetDir)runtimes/osx-x64/native/SQLite.Interop.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('runtimes/win-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
     <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles-&gt;Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
-    <Copy SourceFiles="@(MacFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(MacFiles-&gt;Replace('runtimes/osx-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll.dylib'))" />
   </Target>
 </Project>
