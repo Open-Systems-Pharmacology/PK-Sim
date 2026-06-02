@@ -190,11 +190,6 @@ namespace PKSim.Presentation.Presenters.Charts
          Column(BrowserColumns.Used).VisibleIndex = 5;
       }
 
-      public void Handle(RenamedEvent eventToHandle)
-      {
-         //nothing to do here as renamed is handle automatically with change event
-      }
-
       public virtual void OnFormClosed()
       {
          Closing(this, EventArgs.Empty);

@@ -21,6 +21,5 @@ namespace PKSim.Presentation.Services
          IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumn, CurveChartTemplate defaultChartTemplate = null);
 
       void LoadCurves(CurveChart chart, IndividualSimulation simulation);
-      void LoadCurves(IndividualSimulation simulation);
    }
 }

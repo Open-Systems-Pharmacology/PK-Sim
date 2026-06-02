@@ -34,8 +34,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       event EventHandler OnExportDataToExcel;
 
-      void ClearPlot();
-
       void ExportChartToPngFile();
    }
 
@@ -105,11 +103,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       protected virtual void SettingsChanged(object o, EventArgs e)
       {
          _chartDataBinder.UpdateSettings(AnalysisChart);
-      }
-
-      public virtual void ClearPlot()
-      {
-         _chartDataBinder.ClearPlot();
       }
 
       public void ExportChartToPngFile()

@@ -228,12 +228,5 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       {
          handle(eventToHandle, RefreshMode.RefreshPlot);
       }
-
-      public void Handle(PopulationAnalysisDataSelectionChangedEvent eventToHandle)
-      {
-         handle(eventToHandle, RefreshMode.RefreshPlot);
-         //trigger refresh of chart itself when selected
-         UpdateControls();
-      }
    }
 }

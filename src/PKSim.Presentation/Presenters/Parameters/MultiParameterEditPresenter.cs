@@ -84,11 +84,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       bool IsSimpleEditor { set; }
 
       /// <summary>
-      ///    Group by the column with the given <paramref name="pathElementId" />
-      /// </summary>
-      void GroupBy(PathElementId pathElementId);
-
-      /// <summary>
       ///    Clear the presenter of the displayed parameters
       /// </summary>
       void Clear();
@@ -332,11 +327,6 @@ namespace PKSim.Presentation.Presenters.Parameters
             ShowFavorites = !value;
             Description = string.Empty;
          }
-      }
-
-      public void GroupBy(PathElementId pathElementId)
-      {
-         View.GroupBy(pathElementId);
       }
 
       public void Clear()
