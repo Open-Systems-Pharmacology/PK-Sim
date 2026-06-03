@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -51,9 +52,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
       {
-         //Expression profile parameters are exported now in the expression profile building block
-         var changedParameters = individual.GetAllChildren<IParameter>(x => !x.IsExpressionProfile() && x.ShouldExportToSnapshot());
+         var changedParameters = individual.GetAllChildren<IParameter>(changedParameterFilter);
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
+
+         //Expression profile parameters and ontogeny factors are exported now in the expression profile building block
+         bool changedParameterFilter(IParameter p) => !p.IsExpressionProfile() && !p.IsExpressionOrOntogenyFactor() && p.ShouldExportToSnapshot();
       }
 
       public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot, SnapshotContext snapshotContext)
