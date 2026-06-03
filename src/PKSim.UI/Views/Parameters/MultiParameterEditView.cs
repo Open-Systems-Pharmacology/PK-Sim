@@ -250,11 +250,6 @@ namespace PKSim.UI.Views.Parameters
          return gridViewColumn.XtraColumn.GroupIndex >= 0;
       }
 
-      public void FixParameterColumnWidth(int parameterWidth)
-      {
-         _columnValue.WithFixedWidth(parameterWidth);
-      }
-
       public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();
 
       public IReadOnlyList<ParameterDTO> SelectedParameters

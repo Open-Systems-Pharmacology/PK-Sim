@@ -1273,11 +1273,6 @@ namespace PKSim.Assets
             public static readonly string LabelSearchCriteria = "Search Criteria";
             public static readonly string ButtonSearch = "Search";
          }
-
-         public static class PageTransfer
-         {
-            public static readonly string ButtonTransfer = "Transfer";
-         }
       }
 
       public static class Ribbons
@@ -2525,20 +2520,6 @@ namespace PKSim.Assets
          public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
       }
 
-      public static class Reporting
-      {
-         private static string listOfValuesDescriptionFor(string parameter)
-         {
-            return "{0} lists " + parameter + " values for compound {1}.";
-         }
-
-         public static readonly string LipophilicityDescription = listOfValuesDescriptionFor("lipophilicity");
-         public static readonly string FractionUnboundDescription = listOfValuesDescriptionFor("fraction unbound");
-         public static readonly string PermeabilityDescription = listOfValuesDescriptionFor("organ permeability");
-         public static readonly string IntestinalPermeabilityDescription = listOfValuesDescriptionFor("intestinal permeability");
-         public static readonly string SolubilityDescription = listOfValuesDescriptionFor("solubility");
-      }
-
       public static class Classifications
       {
          public static readonly string Species = ObjectTypes.Species;
@@ -2563,25 +2544,6 @@ namespace PKSim.Assets
          public static readonly string AggregatedPKValuesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
          public static readonly string IndividualPKValues = "Individual PK Values";
          public static readonly string IndivdualPKValuesTooltip = "PK parameter values are aggregated from individual values";
-      }
-
-      public static class Comparison
-      {
-         public static readonly string RelativeTolerance = "Relative Tolerance";
-         public static readonly string FormulaComparisonMode = "Formula Comparison";
-         public static readonly string OnlyComputeModelRelevantProperties = "Do not compare descriptions";
-         public static readonly string FormulaComparisonValue = "Compare values";
-         public static readonly string FormulaComparisonFormula = "Compare Formulas";
-         public static readonly string RunComparison = "Start";
-         public static readonly string Left = "Left";
-         public static readonly string Right = "Right";
-         public static readonly string ComparisonResults = "Results";
-         public static readonly string ComparisonSettings = "Settings";
-         public static readonly string ExportToExcel = "Export to Excel";
-         public static readonly string ShowSettings = "Settings";
-         public static readonly string HideSettings = "Hide";
-         public static readonly string Absent = "Absent";
-         public static readonly string Present = "Present";
       }
    }
 }

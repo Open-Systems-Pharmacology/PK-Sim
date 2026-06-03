@@ -29,7 +29,6 @@ namespace PKSim.Presentation.Views.Parameters
 
       void GroupByCategory();
       void GroupBy(PathElementId pathElement, int groupIndex = 0, bool useCustomSort = true);
-      void FixParameterColumnWidth(int parameterWidth);
 
       /// <summary>
       ///    Returns all parameters currently being displayed in the view. This is a subset of all edited parameters (user might

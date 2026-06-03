@@ -26,14 +26,4 @@ namespace PKSim.Core.Events
          Chart = chart;
       }
    }
-
-   public class SimulationConvertedEvent
-   {
-      public IEnumerable<SimulationLog> SimulationLogs { get; private set; }
-
-      public SimulationConvertedEvent(IEnumerable<SimulationLog> simulationLogs)
-      {
-         SimulationLogs = simulationLogs;
-      }
-   }
 }

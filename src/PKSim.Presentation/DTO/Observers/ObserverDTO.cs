@@ -75,11 +75,6 @@ namespace PKSim.Presentation.DTO.Observers
          return $"{stringToFormat}{NewLine}";
       }
 
-      public static string StartWithNewLine(string stringToFormat)
-      {
-         return $"{NewLine}{stringToFormat}";
-      }
-
       public static string NewLine = "<br>";
    }
 }

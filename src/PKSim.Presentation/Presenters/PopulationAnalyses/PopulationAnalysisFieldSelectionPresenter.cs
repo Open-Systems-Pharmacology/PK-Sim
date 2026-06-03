@@ -43,11 +43,5 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _fieldsArrangementPresenter.RefreshAnalysis();
          _numericFieldsPresenter.RefreshAnalysis();
       }
-
-      public string FieldCaptionFor(string fieldName)
-      {
-         var numericField = _populationPivotAnalysis.FieldByName(fieldName) as INumericValueField;
-         return numericField == null ? fieldName : Constants.NameWithUnitFor(fieldName, numericField.DisplayUnit);
-      }
    }
 }

@@ -619,13 +619,6 @@ namespace PKSim.UI.Views.ProteinExpression
          return pgrdExpressionData.Prefilter.CriteriaString;
       }
 
-      public string GetMappingInformation()
-      {
-         if (pgrdExpressionData == null) return String.Empty;
-         if (pgrdExpressionData.Prefilter == null) return String.Empty;
-         return pgrdExpressionData.Prefilter.CriteriaString;
-      }
-
       public void SetSelectedUnit(string unit)
       {
          _selectedUnit = unit;
