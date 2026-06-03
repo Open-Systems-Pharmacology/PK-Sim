@@ -282,6 +282,47 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_overwriting_the_value_of_a_distributed_parameter_in_the_individual : concern_for_IndividualSimulation
+   {
+      private IDistributedParameter _individualLiverVolume;
+      private double _newValue;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _individualLiverVolume = _individual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(Constants.Parameters.VOLUME) as IDistributedParameter;
+         _individualLiverVolume.ShouldNotBeNull();
+
+         _newValue = _individualLiverVolume.Value * 1.5;
+         _individualLiverVolume.Value = _newValue;
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_transfer_the_overwritten_value_to_the_simulation()
+      {
+         var simulationLiverVolume = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, Constants.Parameters.VOLUME);
+         simulationLiverVolume.Value.ShouldBeEqualTo(_newValue);
+      }
+
+      [Observation]
+      public void the_parameter_in_the_simulation_should_remain_distributed()
+      {
+         var simulationLiverVolume = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, Constants.Parameters.VOLUME);
+         simulationLiverVolume.IsDistributed().ShouldBeTrue();
+         simulationLiverVolume.Formula.ShouldBeAnInstanceOf<DistributionFormula>();
+      }
+
+      [Observation]
+      public void the_distributed_parameter_should_be_marked_as_fixed_value()
+      {
+         var simulationLiverVolume = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, Constants.Parameters.VOLUME);
+         simulationLiverVolume.IsFixedValue.ShouldBeTrue();
+      }
+
+   }
+
    public class When_creating_an_individual_simulation_2pores_with_the_standard_building_block : concern_for_IndividualSimulation
    {
       private SimulationConfiguration _simulationConfiguration;
