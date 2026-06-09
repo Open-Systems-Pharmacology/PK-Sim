@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.Presentation.Views;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation
 {

@@ -1,9 +1,8 @@
 using System.Linq;
-using PKSim.Assets;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Core
 {

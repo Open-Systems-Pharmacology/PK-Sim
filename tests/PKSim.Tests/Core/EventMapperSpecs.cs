@@ -2,12 +2,10 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Core.Snapshots.Services;
-using System.Linq;
-using OSPSuite.Core.Snapshots;
 using Event = PKSim.Core.Snapshots.Event;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 

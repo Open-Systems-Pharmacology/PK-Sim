@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;

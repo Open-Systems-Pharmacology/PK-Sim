@@ -1,7 +1,6 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Mappers;

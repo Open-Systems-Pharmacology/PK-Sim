@@ -1,4 +1,3 @@
-using System.Windows.Forms;
 using DevExpress.Utils.Layout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
@@ -13,7 +12,6 @@ using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
 using PKSim.UI.Extensions;
-using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Protocols
 {

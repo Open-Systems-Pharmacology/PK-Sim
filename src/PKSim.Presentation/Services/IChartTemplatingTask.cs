@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Core.Model;

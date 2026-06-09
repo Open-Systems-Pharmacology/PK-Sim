@@ -1,10 +1,9 @@
-﻿using OSPSuite.Utility.Extensions;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Infrastructure.Services
 {

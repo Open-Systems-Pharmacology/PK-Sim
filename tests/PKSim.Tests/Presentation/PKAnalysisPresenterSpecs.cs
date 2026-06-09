@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Format;
 using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.Simulations;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Format;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Simulations;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace PKSim.Presentation

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using PKSim.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Core.Domain;
+using PKSim.Assets;
 
 namespace PKSim.Presentation
 {

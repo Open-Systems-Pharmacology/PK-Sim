@@ -1,13 +1,12 @@
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Simulations;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

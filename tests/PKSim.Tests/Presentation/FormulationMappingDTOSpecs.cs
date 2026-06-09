@@ -1,9 +1,8 @@
-﻿using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Simulations;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
+using PKSim.Core.Model;
+using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation
 {

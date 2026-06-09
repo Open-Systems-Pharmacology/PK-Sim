@@ -10,7 +10,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Core.Snapshots.Services;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 

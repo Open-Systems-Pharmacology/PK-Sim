@@ -1,7 +1,6 @@
-﻿using PKSim.Core.Model;
-using PKSim.Core.Services;
-using OSPSuite.Core.Services;
+﻿using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Model;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 namespace PKSim.Presentation.UICommands

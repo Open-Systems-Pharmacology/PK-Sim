@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Services
 {

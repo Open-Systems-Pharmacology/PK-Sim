@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;

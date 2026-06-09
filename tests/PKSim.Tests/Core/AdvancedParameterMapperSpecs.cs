@@ -1,19 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
-using OSPSuite.Core.Services;
-using OSPSuite.Core.Snapshots;
-using OSPSuite.Core.Snapshots.Mappers;
-using PKSim.Core.Snapshots.Services;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 

@@ -1,10 +1,9 @@
-﻿using PKSim.Assets;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {

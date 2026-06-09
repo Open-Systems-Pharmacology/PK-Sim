@@ -11,7 +11,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 

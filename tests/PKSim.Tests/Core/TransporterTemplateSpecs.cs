@@ -1,7 +1,6 @@
-﻿using FakeItEasy;
+﻿using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using NUnit.Framework;
 using PKSim.Core.Model;
 
 namespace PKSim.Core

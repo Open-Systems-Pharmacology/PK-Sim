@@ -1,7 +1,6 @@
 using System.Data;
-using DevExpress.Utils;
-using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Presentation.Views.ProteinExpression;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {

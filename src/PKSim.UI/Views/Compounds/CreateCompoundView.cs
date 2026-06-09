@@ -1,10 +1,9 @@
 using System.Drawing;
-using PKSim.Assets;
 using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Compounds
 {

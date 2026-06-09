@@ -1,10 +1,9 @@
-﻿using PKSim.Assets;
-using OSPSuite.DataBinding;
+﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI.Controls;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Simulations
 {

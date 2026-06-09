@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Services;
-using FakeItEasy;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Model;
-using PKSim.Extensions;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Infrastructure.Import.Services;
 using ISimulationResultsImportTask = PKSim.Core.Services.ISimulationResultsImportTask;
 
 namespace PKSim.Presentation

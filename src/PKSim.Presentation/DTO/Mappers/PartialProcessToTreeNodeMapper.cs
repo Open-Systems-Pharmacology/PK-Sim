@@ -1,8 +1,7 @@
-﻿using OSPSuite.Presentation.Nodes;
+﻿using OSPSuite.Assets;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
-using PKSim.Presentation.Nodes;
-using OSPSuite.Assets;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.DTO.Mappers

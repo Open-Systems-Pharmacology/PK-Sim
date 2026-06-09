@@ -2,7 +2,6 @@
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using System.Threading;
 
 namespace PKSim.Core.Services
 {

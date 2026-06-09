@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Presentation.Nodes;
-using FakeItEasy;
-using PKSim.Presentation.Mappers;
-using PKSim.Presentation.Nodes;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Nodes;
+using PKSim.Presentation.Mappers;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation

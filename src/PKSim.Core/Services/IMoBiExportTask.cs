@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using OSPSuite.Core.Serialization.Exchange;
 using PKSim.Core.Model;
 

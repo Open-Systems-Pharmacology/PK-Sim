@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Infrastructure.ORM.Queries
 {

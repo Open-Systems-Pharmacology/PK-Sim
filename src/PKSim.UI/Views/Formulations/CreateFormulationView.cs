@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using OSPSuite.Assets;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Formulations;
 using PKSim.Presentation.Views.Formulations;
 using PKSim.UI.Views.Core;

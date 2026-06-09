@@ -11,7 +11,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation.Views.Charts
 {

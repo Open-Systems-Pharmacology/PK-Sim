@@ -1,8 +1,6 @@
-using OSPSuite.Utility.Collections;
-
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {

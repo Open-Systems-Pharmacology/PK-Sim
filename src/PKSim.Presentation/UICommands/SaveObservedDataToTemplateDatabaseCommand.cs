@@ -1,7 +1,6 @@
-﻿using System;
-using PKSim.Core.Services;
-using OSPSuite.Core.Domain.Data;
+﻿using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {

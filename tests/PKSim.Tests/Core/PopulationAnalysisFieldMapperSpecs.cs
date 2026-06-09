@@ -12,8 +12,6 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
-using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 using GroupingDefinition = PKSim.Core.Model.PopulationAnalyses.GroupingDefinition;
 
 namespace PKSim.Core

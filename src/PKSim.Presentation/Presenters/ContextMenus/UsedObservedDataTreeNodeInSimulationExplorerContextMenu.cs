@@ -1,16 +1,15 @@
 using System.Collections.Generic;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
-using System.ComponentModel;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.ContextMenus

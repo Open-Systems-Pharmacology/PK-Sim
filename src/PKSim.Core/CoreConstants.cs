@@ -1,7 +1,6 @@
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core

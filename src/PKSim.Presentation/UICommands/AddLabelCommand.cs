@@ -1,5 +1,4 @@
 using OSPSuite.Presentation.MenuAndBars;
-using PKSim.Presentation.Core;
 using OSPSuite.Presentation.Services.Commands;
 using PKSim.Core;
 

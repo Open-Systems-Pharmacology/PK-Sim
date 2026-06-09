@@ -1,9 +1,8 @@
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {

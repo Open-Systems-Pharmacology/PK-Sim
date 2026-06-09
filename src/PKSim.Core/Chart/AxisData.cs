@@ -1,4 +1,3 @@
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 

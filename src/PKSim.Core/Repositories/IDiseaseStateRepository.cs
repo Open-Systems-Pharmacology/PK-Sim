@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;

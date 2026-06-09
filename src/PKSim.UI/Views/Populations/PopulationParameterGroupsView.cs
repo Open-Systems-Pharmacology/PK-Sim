@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Populations
 {

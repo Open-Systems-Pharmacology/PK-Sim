@@ -1,10 +1,7 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Repositories;
 using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests

@@ -1,12 +1,11 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Validation;
-using PKSim.Core;
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.DTO.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
+using PKSim.Core;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using PKSim.Infrastructure.ORM.DAS;
+﻿using PKSim.Infrastructure.ORM.DAS;
 
 namespace PKSim.Infrastructure.ORM.Core
 {

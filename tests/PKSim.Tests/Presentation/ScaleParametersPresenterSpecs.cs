@@ -1,10 +1,7 @@
-using OSPSuite.Utility.Extensions;
-
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.Presenters.Parameters;
-
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation

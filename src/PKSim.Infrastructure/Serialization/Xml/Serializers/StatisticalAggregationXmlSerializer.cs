@@ -1,4 +1,3 @@
-using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers

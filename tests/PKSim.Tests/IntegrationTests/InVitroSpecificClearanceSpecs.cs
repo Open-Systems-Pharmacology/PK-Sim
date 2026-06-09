@@ -1,11 +1,10 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using PKSim.Core;
+using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {

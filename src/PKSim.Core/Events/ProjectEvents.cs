@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using PKSim.Core.Model;

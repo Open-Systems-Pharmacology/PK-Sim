@@ -1,12 +1,11 @@
-using OSPSuite.BDDHelper;
 using FakeItEasy;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters.Populations;
-using PKSim.Presentation.Views.Populations;
+using OSPSuite.BDDHelper;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Presentation.Presenters.Populations;
+using PKSim.Presentation.Views.Populations;
 
 namespace PKSim.Presentation
 {

@@ -3,7 +3,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 
 namespace PKSim.Core.Commands
 {

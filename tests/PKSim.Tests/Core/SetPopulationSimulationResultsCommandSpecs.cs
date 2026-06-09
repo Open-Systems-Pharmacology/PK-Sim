@@ -3,13 +3,12 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Commands;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {

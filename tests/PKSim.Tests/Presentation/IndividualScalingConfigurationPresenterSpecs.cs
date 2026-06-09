@@ -1,20 +1,15 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Core.Domain;
-using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
-
-
-using FakeItEasy;
+using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation
 {
