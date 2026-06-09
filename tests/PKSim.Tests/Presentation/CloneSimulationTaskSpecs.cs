@@ -1,15 +1,14 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {

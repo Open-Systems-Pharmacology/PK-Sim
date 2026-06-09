@@ -5,12 +5,11 @@ using System.Linq;
 using System.Reflection;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.Mappers;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure
 {

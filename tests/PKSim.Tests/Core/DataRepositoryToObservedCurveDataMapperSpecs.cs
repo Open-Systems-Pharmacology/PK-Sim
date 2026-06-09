@@ -1,19 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Mappers;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.Mappers;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Mappers;
 
 namespace PKSim.Core
 {

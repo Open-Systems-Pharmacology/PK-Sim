@@ -11,7 +11,6 @@ namespace PKSim.UI.Views.ProteinExpression
       SuperToolTip GetTipForDataBaseRecIdHeader(string fieldCaption);
       SuperToolTip GetTipForGenderHeader(string fieldCaption);
       SuperToolTip GetTipForTissueHeader(string fieldCaption);
-      SuperToolTip GetTipForHealthStateHeader(string fieldCaption);
       SuperToolTip GetTipForSampleSourceHeader(string fieldCaption);
       SuperToolTip GetTipForAgeHeader(string fieldCaption, string ageMinCaption, string ageMaxCaption);
       SuperToolTip GetTipForAgeMinHeader(string fieldCaption);
@@ -79,12 +78,6 @@ namespace PKSim.UI.Views.ProteinExpression
       {
          return new SuperToolTip().WithTitle(fieldCaption)
             .WithText("This information says in which tissue the expression data has been measured.");
-      }
-
-      public SuperToolTip GetTipForHealthStateHeader(string fieldCaption)
-      {
-         return new SuperToolTip().WithTitle(fieldCaption)
-            .WithText("The population which has been used in the experiments has been catogorized in different health states.");
       }
 
       public SuperToolTip GetTipForSampleSourceHeader(string fieldCaption)

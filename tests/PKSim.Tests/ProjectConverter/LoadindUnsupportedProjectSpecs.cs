@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using PKSim.Infrastructure.Serialization;

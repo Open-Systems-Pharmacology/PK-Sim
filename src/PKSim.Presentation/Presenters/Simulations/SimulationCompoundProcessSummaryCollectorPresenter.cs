@@ -1,13 +1,12 @@
 ﻿using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Events;
+using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Diagrams;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

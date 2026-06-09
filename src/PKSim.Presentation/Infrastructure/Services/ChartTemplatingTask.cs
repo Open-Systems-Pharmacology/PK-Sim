@@ -135,11 +135,6 @@ namespace PKSim.Presentation.Infrastructure.Services
          initializeFromTemplate(chart, chart, simulation);
       }
 
-      public void LoadCurves(IndividualSimulation simulation)
-      {
-         simulation?.Charts.Each(c => LoadCurves(c, simulation));
-      }
-
       protected override ICommand ReplaceTemplatesCommand(IWithChartTemplates withChartTemplates, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          return updateChartTemplates(withChartTemplates, x =>

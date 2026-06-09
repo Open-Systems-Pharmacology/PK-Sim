@@ -9,7 +9,6 @@ using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {

@@ -1,11 +1,10 @@
 ﻿using System.Data;
 using System.IO;
+using OSPSuite.Core.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Services
 {

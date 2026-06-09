@@ -13,7 +13,6 @@ using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;

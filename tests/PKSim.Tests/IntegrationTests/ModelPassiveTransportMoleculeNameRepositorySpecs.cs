@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Builder;
 using PKSim.Core;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.IntegrationTests
 {

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 
 namespace PKSim.IntegrationTests
 {

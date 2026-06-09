@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -30,7 +29,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Update all parameters defined in the target container  with the value of the same parameter in the source cache
       ///    <paramref name="sourceParameters" />. Same parameter is defined as "have the same absolute path".
-      /// <param name="sourceParameters"> Parameters from which the value should be taken</param>
+      ///    <param name="sourceParameters"> Parameters from which the value should be taken</param>
       ///    <param name="targetContainer">container for which the parameter values should be updated</param>
       /// </summary>
       IPKSimMacroCommand UpdateValues(PathCache<IParameter> sourceParameters, IContainer targetContainer);
@@ -115,10 +114,14 @@ namespace PKSim.Core.Services
 
       public IPKSimMacroCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true)
       {
-         var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
+         var updateCommands = new PKSimMacroCommand { CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter };
 
-         //should update non distributed parameters first and then distributed parameter
-         foreach (var sourceParameter in sourceParameters.KeyValues.OrderBy(x => x.Value.IsDistributed()))
+         //Process distributed parameters first. Writing a distributed parameter's value implicitly updates its
+         //percentile child (DistributedParameter.Value setter), so the child compare-equal afterwards and gets
+         //skipped. If we processed the child first instead, writing the percentile would change the parent's
+         //computed Value, the parent would then compare-equal and skip its own update — leaving the parent
+         //with IsDefault=true, which keeps it out of snapshot export (see #3530).
+         foreach (var sourceParameter in sourceParameters.KeyValues.OrderByDescending(x => x.Value.IsDistributed()))
          {
             var targetParameter = targetParameters[sourceParameter.Key];
             if (targetParameter == null)
@@ -132,7 +135,7 @@ namespace PKSim.Core.Services
 
       public IPKSimMacroCommand UpdateValuesByName(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters)
       {
-         var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
+         var updateCommands = new PKSimMacroCommand { CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter };
          var targetParameterCache = new Cache<string, IParameter>(p => p.Name, key => null);
          targetParameterCache.AddRange(targetParameters);
 
@@ -162,7 +165,7 @@ namespace PKSim.Core.Services
          if (updateParameterOriginId)
             _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
 
-          return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
+         return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
       }
 
       private ICommand withUpdatedValueOrigin(ICommand command, IParameter sourceParameter, IParameter targetParameter)
@@ -174,7 +177,7 @@ namespace PKSim.Core.Services
          if (command == null)
             return updateValueOriginCommand;
 
-         var macroCommand = new PKSimMacroCommand {CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description};
+         var macroCommand = new PKSimMacroCommand { CommandType = command.CommandType, ObjectType = command.ObjectType, Description = command.Description };
          macroCommand.Add(command);
          macroCommand.Add(updateValueOriginCommand);
          return macroCommand;

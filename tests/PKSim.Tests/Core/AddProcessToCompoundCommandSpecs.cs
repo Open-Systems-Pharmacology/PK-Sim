@@ -7,8 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-
 
 namespace PKSim.Core
 {

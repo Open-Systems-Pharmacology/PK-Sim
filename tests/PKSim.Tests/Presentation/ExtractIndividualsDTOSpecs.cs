@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FakeItEasy;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

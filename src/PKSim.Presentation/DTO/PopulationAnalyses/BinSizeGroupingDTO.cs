@@ -1,13 +1,12 @@
 ﻿using System.Drawing;
-using PKSim.Assets;
+using OSPSuite.Core.Chart;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Core;
-using OSPSuite.Core.Chart;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.PopulationAnalyses
 {

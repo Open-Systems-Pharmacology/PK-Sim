@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Core.Domain.SensitivityAnalyses;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
 

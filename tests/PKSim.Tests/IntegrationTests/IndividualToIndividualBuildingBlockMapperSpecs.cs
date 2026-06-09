@@ -58,6 +58,41 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_mapping_an_individual_with_an_overwritten_distributed_parameter_to_building_block : concern_for_IndividualToIndividualBuildingBlockMapper
+   {
+      private IDistributedParameter _individualLiverVolume;
+      private double _overwrittenValue;
+      private IndividualParameter _mappedLiverVolume;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _individualLiverVolume = _individual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(Constants.Parameters.VOLUME) as IDistributedParameter;
+         _individualLiverVolume.ShouldNotBeNull();
+
+         _overwrittenValue = _individualLiverVolume.Value * 1.5;
+         _individualLiverVolume.Value = _overwrittenValue;
+      }
+
+      protected override void Because()
+      {
+         base.Because();
+         _mappedLiverVolume = _individualBuildingBlock.Single(x => x.Name == Constants.Parameters.VOLUME && x.ContainerPath.Contains(CoreConstants.Organ.LIVER));
+      }
+
+      [Observation]
+      public void should_have_exported_the_overwritten_value()
+      {
+         _mappedLiverVolume.Value.ShouldBeEqualTo(_overwrittenValue);
+      }
+
+      [Observation]
+      public void should_have_preserved_the_distribution_type()
+      {
+         _mappedLiverVolume.DistributionType.ShouldBeEqualTo(_individualLiverVolume.Formula.DistributionType);
+      }
+   }
+
    public class When_mapping_an_individual_with_expression_to_individual : concern_for_IndividualToIndividualBuildingBlockMapper
    {
       public override void GlobalContext()

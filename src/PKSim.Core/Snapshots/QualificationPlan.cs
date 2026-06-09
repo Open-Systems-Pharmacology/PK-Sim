@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Core.Snapshots;
+﻿using OSPSuite.Core.Snapshots;
 
 namespace PKSim.Core.Snapshots
 {

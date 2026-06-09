@@ -2,16 +2,15 @@
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core
 {

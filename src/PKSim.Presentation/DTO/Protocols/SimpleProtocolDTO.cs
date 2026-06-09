@@ -1,6 +1,5 @@
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Protocols
 {

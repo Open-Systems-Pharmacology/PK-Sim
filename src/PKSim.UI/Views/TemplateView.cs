@@ -193,17 +193,6 @@ namespace PKSim.UI.Views
          _presenter = presenter;
       }
 
-    
-      public void SelectTemplate(TemplateDTO templateDTO)
-      {
-         if (templateDTO == null)
-            return;
-
-         var rowHandle = _gridViewBinder.RowHandleFor(templateDTO);
-         gridView.FocusedRowHandle = rowHandle;
-         gridView.SelectRow(rowHandle);
-      }
-
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)
       {
          _gridViewBinder.BindToSource(availableTemplates);

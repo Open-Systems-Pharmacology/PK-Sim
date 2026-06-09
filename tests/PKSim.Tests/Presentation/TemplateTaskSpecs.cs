@@ -3,15 +3,14 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation
 {

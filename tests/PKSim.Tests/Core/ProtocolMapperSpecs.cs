@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -10,7 +9,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Core.Snapshots.Services;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 using Protocol = PKSim.Core.Snapshots.Protocol;
 

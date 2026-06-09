@@ -1,6 +1,5 @@
-﻿using OSPSuite.Assets;
+﻿using OSPSuite.Presentation.Views;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.PopulationAnalyses
 {

@@ -7,7 +7,6 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Views;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 

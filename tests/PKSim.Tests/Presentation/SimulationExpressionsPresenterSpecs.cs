@@ -8,7 +8,6 @@ using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Presenters.Parameters;

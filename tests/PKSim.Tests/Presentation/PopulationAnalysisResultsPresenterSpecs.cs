@@ -1,7 +1,7 @@
 ﻿using System;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -9,7 +9,6 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {

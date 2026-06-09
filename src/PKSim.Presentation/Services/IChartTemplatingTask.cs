@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Core.Model;
@@ -21,6 +20,5 @@ namespace PKSim.Presentation.Services
          IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumn, CurveChartTemplate defaultChartTemplate = null);
 
       void LoadCurves(CurveChart chart, IndividualSimulation simulation);
-      void LoadCurves(IndividualSimulation simulation);
    }
 }

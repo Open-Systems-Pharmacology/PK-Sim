@@ -4,8 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Mappers;
-using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.IntegrationTests
 {

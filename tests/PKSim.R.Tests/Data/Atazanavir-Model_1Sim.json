@@ -1,5 +1,100 @@
 {
-  "Version": 76,
+  "Name": "Atazanavir-Model_1Sim",
+  "Version": 81,
+  "ExpressionProfiles": [
+    {
+      "Type": "Enzyme",
+      "Species": "Human",
+      "Molecule": "CYP3A4",
+      "Category": "Acosta2007",
+      "Parameters": [
+        {
+          "Path": "CYP3A4|Reference concentration",
+          "Value": 4.32,
+          "Unit": "µmol/l",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "CYP3A4|t1/2 (intestine)",
+          "Value": 1380.0,
+          "Unit": "min",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "CYP3A4|t1/2 (liver)",
+          "Value": 22.0,
+          "Unit": "h",
+          "ValueOrigin": {
+            "Source": "Unknown"
+          }
+        },
+        {
+          "Path": "Organism|Brain|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0041682898325,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Gonads|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.00078691079081,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Kidney|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0053603428126,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Liver|Pericentral|Intracellular|CYP3A4|Relative expression",
+          "Value": 1.0,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Liver|Periportal|Intracellular|CYP3A4|Relative expression",
+          "Value": 1.0,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Lung|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.00042695753798,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerJejunum|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperIleum|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperJejunum|Intracellular|CYP3A4|Relative expression",
+          "Value": 0.0727697702,
+          "ValueOrigin": {}
+        }
+      ],
+      "Localization": "Intracellular, BloodCellsIntracellular, VascEndosome",
+      "Ontogeny": {
+        "Name": "CYP3A4"
+      }
+    }
+  ],
   "Individuals": [
     {
       "Name": "Acosta2007",
@@ -21,78 +116,372 @@
           "Unit": "kg"
         }
       },
-      "Molecules": [
+      "ExpressionProfiles": [
+        "CYP3A4|Human|Acosta2007"
+      ]
+    }
+  ],
+  "Compounds": [
+    {
+      "Name": "Alfentanil",
+      "IsSmallMolecule": true,
+      "PlasmaProteinBindingPartner": "Glycoprotein",
+      "Lipophilicity": [
         {
-          "Name": "CYP3A4",
-          "Type": "Enzyme",
-          "MembraneLocation": "Apical",
-          "TissueLocation": "Intracellular",
-          "IntracellularVascularEndoLocation": "Endosomal",
-          "Expression": [
-            {
-              "Name": "Brain",
-              "Value": 0.0041682898325
-            },
-            {
-              "Name": "Gonads",
-              "Value": 0.00078691079081
-            },
-            {
-              "Name": "Kidney",
-              "Value": 0.0053603428126
-            },
-            {
-              "Name": "Periportal",
-              "Value": 1.0
-            },
-            {
-              "Name": "Pericentral",
-              "Value": 1.0
-            },
-            {
-              "Name": "Lung",
-              "Value": 0.00042695753798
-            },
-            {
-              "Name": "SmallIntestine",
-              "Value": 0.0727697702
-            },
-            {
-              "Name": "Duodenum",
-              "Value": 0.0727697702
-            },
-            {
-              "Name": "UpperJejunum",
-              "Value": 0.0727697702
-            },
-            {
-              "Name": "LowerJejunum",
-              "Value": 0.0727697702
-            },
-            {
-              "Name": "UpperIleum",
-              "Value": 0.0727697702
-            },
-            {
-              "Name": "LowerIleum",
-              "Value": 0.0727697702
-            }
-          ],
-          "Ontogeny": {
-            "Name": "CYP3A4"
-          },
+          "Name": "Fit",
           "Parameters": [
             {
-              "Name": "t1/2 (liver)",
-              "Value": 22.0,
-              "Unit": "h",
+              "Name": "Lipophilicity",
+              "Value": 1.8463211883,
+              "Unit": "Log Units",
               "ValueOrigin": {
-                "Source": "Unknown"
+                "Source": "ParameterIdentification",
+                "Method": "ParameterIdentification",
+                "Description": "Value updated from 'Parameter Identification 4' on 2019-09-06 11:28"
               }
             }
           ]
         }
+      ],
+      "FractionUnbound": [
+        {
+          "Name": "Healthy",
+          "Species": "Human",
+          "Parameters": [
+            {
+              "Name": "Fraction unbound (plasma, reference value)",
+              "Value": 0.1,
+              "ValueOrigin": {
+                "Source": "ParameterIdentification",
+                "Method": "ParameterIdentification",
+                "Description": "Value updated from 'Parameter Identification 4' on 2019-09-06 11:28"
+              }
+            }
+          ]
+        }
+      ],
+      "Solubility": [
+        {
+          "Name": "Baneyx 2014",
+          "Parameters": [
+            {
+              "Name": "Solubility at reference pH",
+              "Value": 992.0,
+              "Unit": "mg/l",
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "Hanke 2018"
+              }
+            },
+            {
+              "Name": "Reference pH",
+              "Value": 6.5,
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "Hanke 2018"
+              }
+            }
+          ]
+        }
+      ],
+      "IntestinalPermeability": [
+        {
+          "Name": "Optimized",
+          "Parameters": [
+            {
+              "Name": "Specific intestinal permeability (transcellular)",
+              "Value": 0.00057373577138,
+              "Unit": "cm/min",
+              "ValueOrigin": {
+                "Source": "ParameterIdentification",
+                "Method": "ParameterIdentification",
+                "Description": "Value updated from 'Parameter Identification 4' on 2019-09-06 11:28"
+              }
+            }
+          ]
+        }
+      ],
+      "Permeability": [
+        {
+          "Name": "Optimized",
+          "Parameters": [
+            {
+              "Name": "Permeability",
+              "Value": 0.0068752756625,
+              "Unit": "cm/min",
+              "ValueOrigin": {
+                "Source": "ParameterIdentification",
+                "Method": "ParameterIdentification",
+                "Description": "Value updated from 'Parameter Identification 4' on 2019-09-06 11:28"
+              }
+            }
+          ]
+        }
+      ],
+      "PkaTypes": [
+        {
+          "Type": "Base",
+          "Pka": 6.5,
+          "ValueOrigin": {
+            "Source": "Publication",
+            "Description": "Hanke 2018"
+          }
+        }
+      ],
+      "Processes": [
+        {
+          "InternalName": "MetabolizationIntrinsic_FirstOrder",
+          "DataSource": "1st order CL",
+          "Species": "Human",
+          "Molecule": "CYP3A4",
+          "Parameters": [
+            {
+              "Name": "Intrinsic clearance",
+              "Value": 0.5272297928,
+              "Unit": "l/min",
+              "ValueOrigin": {
+                "Source": "ParameterIdentification",
+                "Method": "ParameterIdentification",
+                "Description": "Value updated from 'Parameter Identification 4' on 2019-09-06 11:28"
+              }
+            }
+          ]
+        },
+        {
+          "InternalName": "GlomerularFiltration",
+          "DataSource": "GFR",
+          "Species": "Human",
+          "Parameters": [
+            {
+              "Name": "GFR fraction",
+              "Value": 0.06,
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "Hanke 2018"
+              }
+            }
+          ]
+        }
+      ],
+      "CalculationMethods": [
+        "Cellular partition coefficient method - Rodgers and Rowland",
+        "Cellular permeability - PK-Sim Standard"
+      ],
+      "Parameters": [
+        {
+          "Name": "Molecular weight",
+          "Value": 416.52,
+          "Unit": "g/mol",
+          "ValueOrigin": {
+            "Source": "Publication",
+            "Description": "Drugbank"
+          }
+        }
       ]
+    }
+  ],
+  "Formulations": [
+    {
+      "Name": "Coumadin (Warfarin, Weibull release function)",
+      "FormulationType": "Formulation_Tablet_Weibull",
+      "Parameters": [
+        {
+          "Name": "Dissolution time (50% dissolved)",
+          "Value": 7.9,
+          "Unit": "min",
+          "ValueOrigin": {}
+        },
+        {
+          "Name": "Lag time",
+          "Value": 0.0,
+          "Unit": "min",
+          "ValueOrigin": {}
+        },
+        {
+          "Name": "Dissolution shape",
+          "Value": 0.92,
+          "ValueOrigin": {}
+        },
+        {
+          "Name": "Use as suspension",
+          "Value": 0.0,
+          "ValueOrigin": {}
+        }
+      ],
+      "Description": "Version 1.1"
+    }
+  ],
+  "Protocols": [
+    {
+      "Name": "Rifampicin, po, 600 mg, 7 d",
+      "ApplicationType": "Oral",
+      "DosingInterval": "DI_24",
+      "Parameters": [
+        {
+          "Name": "Start time",
+          "Value": 0.0,
+          "Unit": "h",
+          "ValueOrigin": {}
+        },
+        {
+          "Name": "InputDose",
+          "Value": 600.0,
+          "Unit": "mg",
+          "ValueOrigin": {}
+        },
+        {
+          "Name": "End time",
+          "Value": 168.0,
+          "Unit": "h",
+          "ValueOrigin": {
+            "Source": "Unknown"
+          }
+        },
+        {
+          "Name": "Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        }
+      ],
+      "Description": "Version 1.1"
+    }
+  ],
+  "Simulations": [
+    {
+      "Name": "test",
+      "Model": "4Comp",
+      "Solver": {},
+      "OutputSchema": [
+        {
+          "Parameters": [
+            {
+              "Name": "Start time",
+              "Value": 0.0,
+              "Unit": "h",
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "End time",
+              "Value": 2.0,
+              "Unit": "h",
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "Resolution",
+              "Value": 20.0,
+              "Unit": "pts/h",
+              "ValueOrigin": {}
+            }
+          ]
+        },
+        {
+          "Parameters": [
+            {
+              "Name": "Start time",
+              "Value": 2.0,
+              "Unit": "h",
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "End time",
+              "Value": 192.0,
+              "Unit": "h",
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "Resolution",
+              "Value": 4.0,
+              "Unit": "pts/h",
+              "ValueOrigin": {}
+            }
+          ]
+        }
+      ],
+      "Parameters": [
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_1|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_2|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_3|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_4|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_5|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_6|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Events|Rifampicin, po, 600 mg, 7 d|Coumadin (Warfarin, Weibull release function)|Application_7|ProtocolSchemaItem|Volume of water/body weight",
+          "Value": 3.5,
+          "Unit": "ml/kg",
+          "ValueOrigin": {}
+        }
+      ],
+      "Individual": "Acosta2007",
+      "Compounds": [
+        {
+          "Name": "Alfentanil",
+          "CalculationMethods": [
+            "Cellular partition coefficient method - Rodgers and Rowland",
+            "Cellular permeability - PK-Sim Standard"
+          ],
+          "Alternatives": [
+            {
+              "AlternativeName": "Optimized",
+              "GroupName": "COMPOUND_PERMEABILITY"
+            },
+            {
+              "AlternativeName": "Optimized",
+              "GroupName": "COMPOUND_INTESTINAL_PERMEABILITY"
+            }
+          ],
+          "Processes": [
+            {
+              "Name": "CYP3A4-1st order CL",
+              "MoleculeName": "CYP3A4"
+            },
+            {
+              "Name": "Glomerular Filtration-GFR",
+              "SystemicProcessType": "GFR"
+            }
+          ],
+          "Protocol": {
+            "Name": "Rifampicin, po, 600 mg, 7 d",
+            "Formulations": [
+              {
+                "Name": "Coumadin (Warfarin, Weibull release function)",
+                "Key": "Formulation"
+              }
+            ]
+          }
+        }
+      ],
+      "HasResults": false
     }
   ]
 }

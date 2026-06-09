@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Presenters.Compounds;
-using PKSim.Presentation.Repositories;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Utility.Container;
+using PKSim.Assets;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters.Compounds;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {

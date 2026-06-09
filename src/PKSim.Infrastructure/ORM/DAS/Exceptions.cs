@@ -79,13 +79,6 @@ namespace PKSim.Infrastructure.ORM.DAS
       }
    }
 
-   public class UnknownTableException : System.Exception
-   {
-      public UnknownTableException(string TableName): base(string.Format("Table :{0} is unknown!", TableName))
-      {
-      }
-   }
-
    public class InvalidRowStateException : System.Exception
    {
       public InvalidRowStateException(DataRowState RowState) : base(string.Format("RowState :{0} is invalid!", RowState))

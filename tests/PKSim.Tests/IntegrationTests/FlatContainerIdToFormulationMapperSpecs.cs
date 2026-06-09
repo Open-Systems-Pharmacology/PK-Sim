@@ -1,12 +1,11 @@
 using System.Linq;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 
 namespace PKSim.IntegrationTests
 {

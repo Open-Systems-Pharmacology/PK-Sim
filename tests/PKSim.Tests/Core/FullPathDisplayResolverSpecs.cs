@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 
 namespace PKSim.Core
 {

@@ -1,6 +1,5 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
+using PKSim.Assets;
 
 namespace PKSim.Core.Services
 {

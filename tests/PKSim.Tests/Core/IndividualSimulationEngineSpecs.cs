@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -12,7 +11,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;

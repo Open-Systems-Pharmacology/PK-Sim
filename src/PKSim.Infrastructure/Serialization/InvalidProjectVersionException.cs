@@ -26,11 +26,4 @@ namespace PKSim.Infrastructure.Serialization
       {
       }
    }
-
-   public class InvalidBuildingBlockVersionException : PKSimException
-   {
-      public InvalidBuildingBlockVersionException(int version) : base(PKSimConstants.Error.BuildingBlockVersionIsTooOld(version))
-      {
-      }
-   }
 }

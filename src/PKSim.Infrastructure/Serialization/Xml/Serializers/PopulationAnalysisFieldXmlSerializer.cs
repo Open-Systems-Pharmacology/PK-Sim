@@ -1,11 +1,10 @@
 ﻿using System.Xml.Linq;
+using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Core.Serialization.Xml.Extensions;
 using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Serialization.Xml;
-using OSPSuite.Core.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {

@@ -1,10 +1,4 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -12,16 +6,21 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Binders;
-using PKSim.Core.Model;
 using static OSPSuite.UI.UIConstants.Size;
-using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Compounds
 {

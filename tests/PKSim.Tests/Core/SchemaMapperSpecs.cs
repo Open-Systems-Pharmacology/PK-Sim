@@ -8,7 +8,6 @@ using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core
 {

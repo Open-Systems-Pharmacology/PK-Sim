@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-using PKSim.Presentation.DTO.Formulations;
+using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-
+using PKSim.Presentation.DTO.Formulations;
 using PKSim.Presentation.DTO.Mappers;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 
 namespace PKSim.Presentation
 {

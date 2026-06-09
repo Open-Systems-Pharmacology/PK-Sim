@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -14,6 +15,7 @@ using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -36,6 +38,7 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected IndividualSimulationComparison _individualSimulationComparison;
       protected SimulationComparisonMapper _simulationComparisonMapper;
+      protected IObservedDataInComparisonTask _observedDataInComparisonTask;
 
       protected override void Context()
       {
@@ -49,6 +52,7 @@ namespace PKSim.Presentation
          _simulationAnalysisCreator = A.Fake<ISimulationAnalysisCreator>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _simulationComparisonMapper = A.Fake<SimulationComparisonMapper>();
+         _observedDataInComparisonTask = A.Fake<IObservedDataInComparisonTask>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
 
          _individualSimulationComparison = new IndividualSimulationComparison().WithName("chart");
@@ -62,7 +66,8 @@ namespace PKSim.Presentation
             _executionContext,
             _simulationAnalysisCreator,
             _dialogCreator,
-            _simulationComparisonMapper
+            _simulationComparisonMapper,
+            _observedDataInComparisonTask
          );
       }
    }
@@ -75,8 +80,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          A.CallTo(() => _chartFactory.CreateIndividualSimulationComparison()).Returns(_individualSimulationComparison);
-         A.CallTo(() => _executionContext.PublishEvent(A<SimulationComparisonCreatedEvent>.Ignored)).Invokes(
-            x => _event = x.GetArgument<SimulationComparisonCreatedEvent>(0));
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationComparisonCreatedEvent>.Ignored)).Invokes(x => _event = x.GetArgument<SimulationComparisonCreatedEvent>(0));
       }
 
       protected override void Because()
@@ -95,6 +99,38 @@ namespace PKSim.Presentation
       {
          _event.SimulationComparison.ShouldBeEqualTo(_individualSimulationComparison);
          _event.Project.ShouldBeEqualTo(_project);
+      }
+   }
+
+   public class When_creating_an_individual_simulation_comparison_for_a_simulation_with_observed_data : concern_for_SimulationComparisonTask
+   {
+      private IndividualSimulation _simulation;
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _chartFactory.CreateIndividualSimulationComparison()).Returns(_individualSimulationComparison);
+
+         _observedData = DomainHelperForSpecs.ObservedData("obs");
+         _project.AddObservedData(_observedData);
+
+         _simulation = new IndividualSimulation();
+         _simulation.AddUsedObservedData(_observedData);
+         _simulation.DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim");
+
+         A.CallTo(() => _observedDataInComparisonTask.ResolveObservedDataFor(_simulation)).Returns(new[] { _observedData });
+      }
+
+      protected override void Because()
+      {
+         sut.CreateIndividualSimulationComparison(_simulation);
+      }
+
+      [Observation]
+      public void should_register_the_simulations_observed_data_on_the_chart()
+      {
+         _individualSimulationComparison.UsesObservedData(_observedData).ShouldBeTrue();
       }
    }
 
@@ -195,17 +231,57 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_configuring_a_population_simulation_comparison_with_an_existing_time_profile_analysis : concern_for_SimulationComparisonTask
+   {
+      private PopulationSimulationComparison _populationSimulationComparison;
+      private ISimulationSelectionForComparisonPresenter _selectionPresenter;
+      private TimeProfileAnalysisChart _timeProfileAnalysis;
+      private BoxWhiskerAnalysisChart _boxWhiskerAnalysis;
+
+      protected override void Context()
+      {
+         base.Context();
+         _selectionPresenter = A.Fake<ISimulationSelectionForComparisonPresenter>();
+         A.CallTo(() => _applicationController.Start<ISimulationSelectionForComparisonPresenter>()).Returns(_selectionPresenter);
+
+         _timeProfileAnalysis = new TimeProfileAnalysisChart();
+         _boxWhiskerAnalysis = new BoxWhiskerAnalysisChart();
+         _populationSimulationComparison = new PopulationSimulationComparison();
+         _populationSimulationComparison.AddAnalysis(_timeProfileAnalysis);
+         _populationSimulationComparison.AddAnalysis(_boxWhiskerAnalysis);
+
+         A.CallTo(() => _selectionPresenter.Edit(_populationSimulationComparison)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.ConfigurePopulationSimulationComparison(_populationSimulationComparison);
+      }
+
+      [Observation]
+      public void should_re_template_the_time_profile_analysis_against_the_current_simulation_selection()
+      {
+         A.CallTo(() => _observedDataInComparisonTask.AddObservedDataToTimeProfile(_populationSimulationComparison, _timeProfileAnalysis)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_touch_other_population_analysis_types()
+      {
+         A.CallTo(() => _observedDataInComparisonTask.AddObservedDataToTimeProfile(_populationSimulationComparison, A<TimeProfileAnalysisChart>.That.Not.IsEqualTo(_timeProfileAnalysis))).MustNotHaveHappened();
+      }
+   }
+
    public class When_the_user_decides_to_delete_some_simulation_comparisons : concern_for_SimulationComparisonTask
    {
       protected override void Because()
       {
-         sut.Delete(new[] {_individualSimulationComparison,});
+         sut.Delete(new[] { _individualSimulationComparison, });
       }
 
       [Observation]
       public void the_user_should_be_asked_to_confirm_the_deletion()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] {_individualSimulationComparison.Name}), ViewResult.Yes)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).MustHaveHappened();
       }
    }
 
@@ -214,13 +290,13 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] {_individualSimulationComparison.Name}), ViewResult.Yes)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).Returns(ViewResult.No);
          _project.AddSimulationComparison(_individualSimulationComparison);
       }
 
       protected override void Because()
       {
-         sut.Delete(new[] {_individualSimulationComparison,});
+         sut.Delete(new[] { _individualSimulationComparison, });
       }
 
       [Observation]
@@ -237,15 +313,14 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] {_individualSimulationComparison.Name}), ViewResult.Yes)).Returns(ViewResult.Yes);
-         A.CallTo(() => _executionContext.PublishEvent(A<SimulationComparisonDeletedEvent>.Ignored)).Invokes(
-            x => _comparisonDeletedEvent = x.GetArgument<SimulationComparisonDeletedEvent>(0));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteSimulationComparisons(new[] { _individualSimulationComparison.Name }), ViewResult.Yes)).Returns(ViewResult.Yes);
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationComparisonDeletedEvent>.Ignored)).Invokes(x => _comparisonDeletedEvent = x.GetArgument<SimulationComparisonDeletedEvent>(0));
          _project.AddSimulationComparison(_individualSimulationComparison);
       }
 
       protected override void Because()
       {
-         sut.Delete(new[] {_individualSimulationComparison,});
+         sut.Delete(new[] { _individualSimulationComparison, });
       }
 
       [Observation]
@@ -274,8 +349,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         var snapshot  =new SimulationComparison();
-         _clone =new IndividualSimulationComparison();
+         var snapshot = new SimulationComparison();
+         _clone = new IndividualSimulationComparison();
          A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_individualSimulationComparison)).Returns(snapshot);
          A.CallTo(() => _simulationComparisonMapper.MapToModel(snapshot, A<SnapshotContext>._)).Returns(_clone);
       }
@@ -283,7 +358,7 @@ namespace PKSim.Presentation
       [Observation]
       public async Task should_use_the_snapshot_to_create_a_snapshot_and_a_brand_new_instance_of_the_comparison()
       {
-         var clone =  await sut.CloneSimulationComparision(_individualSimulationComparison);
+         var clone = await sut.CloneSimulationComparision(_individualSimulationComparison);
          clone.ShouldBeEqualTo(_clone);
       }
    }

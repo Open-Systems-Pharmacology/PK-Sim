@@ -1,4 +1,3 @@
-using OSPSuite.Utility;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services

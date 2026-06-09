@@ -2,18 +2,15 @@
 using System.Data;
 using System.IO;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Chart;
-using PKSim.Core.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 using OSPSuite.Core.Maths;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Chart;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {

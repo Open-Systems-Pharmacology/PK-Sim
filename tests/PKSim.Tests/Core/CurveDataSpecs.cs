@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NUnit.Framework;
-using PKSim.Core.Chart;
-using OSPSuite.Core.Chart;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-
+using PKSim.Core.Chart;
 
 namespace PKSim.Core
 {

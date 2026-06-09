@@ -1,9 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {

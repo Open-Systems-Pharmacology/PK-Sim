@@ -6,9 +6,6 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using PKSim.Core;
-using PKSim.Presentation.DTO;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation
 {

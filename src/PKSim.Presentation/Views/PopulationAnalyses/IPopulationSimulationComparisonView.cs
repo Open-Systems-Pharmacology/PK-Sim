@@ -1,6 +1,5 @@
-﻿using PKSim.Presentation.Presenters.PopulationAnalyses;
-using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
+using PKSim.Presentation.Presenters.PopulationAnalyses;
 
 namespace PKSim.Presentation.Views.PopulationAnalyses
 {

@@ -1,9 +1,8 @@
-using System.Linq;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.AdvancedParameters;
 using PKSim.Presentation.Views.AdvancedParameters;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Presentation.Presenters.Populations
 {

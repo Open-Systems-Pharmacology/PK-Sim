@@ -1,13 +1,12 @@
+using System.Drawing.Imaging;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
-using System.Drawing.Imaging;
 
 namespace PKSim.UI.Views.Protocols
 {

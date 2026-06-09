@@ -11,7 +11,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants.ContainerName;

@@ -14,6 +14,7 @@ using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
@@ -32,6 +33,7 @@ namespace PKSim.Presentation.Services
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly IDialogCreator _dialogCreator;
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
+      private readonly IObservedDataInComparisonTask _observedDataInComparisonTask;
 
       public SimulationComparisonTask(
          IPKSimChartFactory chartFactory,
@@ -42,7 +44,8 @@ namespace PKSim.Presentation.Services
          IExecutionContext executionContext,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          IDialogCreator dialogCreator,
-         SimulationComparisonMapper simulationComparisonMapper
+         SimulationComparisonMapper simulationComparisonMapper,
+         IObservedDataInComparisonTask observedDataInComparisonTask
       )
       {
          _chartFactory = chartFactory;
@@ -54,6 +57,7 @@ namespace PKSim.Presentation.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _dialogCreator = dialogCreator;
          _simulationComparisonMapper = simulationComparisonMapper;
+         _observedDataInComparisonTask = observedDataInComparisonTask;
       }
 
       public ISimulationComparison CreateIndividualSimulationComparison(IndividualSimulation individualSimulation = null)
@@ -61,7 +65,10 @@ namespace PKSim.Presentation.Services
          var simulationComparison = _chartFactory.CreateIndividualSimulationComparison();
          addComparisonToProject(simulationComparison);
          if (individualSimulation != null && individualSimulation.HasResults)
+         {
             simulationComparison.AddSimulation(individualSimulation);
+            _observedDataInComparisonTask.ResolveObservedDataFor(individualSimulation).Each(simulationComparison.AddObservedData);
+         }
 
          return simulationComparison;
       }
@@ -103,6 +110,9 @@ namespace PKSim.Presentation.Services
          {
             if (!presenter.Edit(simulationComparison))
                return;
+
+            simulationComparison.Analyses.OfType<TimeProfileAnalysisChart>()
+               .Each(analysis => _observedDataInComparisonTask.AddObservedDataToTimeProfile(simulationComparison, analysis));
 
             _executionContext.ProjectChanged();
             var presenterWasOpen = _applicationController.HasPresenterOpenedFor(simulationComparison);

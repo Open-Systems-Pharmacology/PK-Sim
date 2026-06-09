@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Populations
 {

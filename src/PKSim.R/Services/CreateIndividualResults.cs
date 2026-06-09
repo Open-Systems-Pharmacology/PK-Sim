@@ -1,5 +1,4 @@
 ﻿using OSPSuite.R.Domain;
-using PKSim.R.Domain;
 
 namespace PKSim.R.Services
 {

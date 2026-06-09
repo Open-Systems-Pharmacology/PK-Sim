@@ -4,7 +4,6 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;

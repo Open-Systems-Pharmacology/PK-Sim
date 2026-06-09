@@ -47,18 +47,19 @@ namespace PKSim.IntegrationTests
                      var groupByParameter = groupContainer.GroupBy(x => x.ParameterName);
                      foreach (var groupParameter in groupByParameter)
                      {
-                       var allGA = groupParameter.Select(x => x.GestationalAge).ToList();
-                       var metaData = groupParameter.First();
-                       if (!allGA.Contains(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS))
-                       {
-                        errorList.Add(string.Format("Gestional age 40 not found for parameter {0} in {1} - {2} - {3}",
-                                                          metaData.ParameterName, metaData.Population, metaData.Gender, metaData.ContainerName));
+                        var allGA = groupParameter.Select(x => x.GestationalAge).ToList();
+                        var metaData = groupParameter.First();
+                        if (!allGA.Contains(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS))
+                        {
+                           errorList.Add(string.Format("Gestional age 40 not found for parameter {0} in {1} - {2} - {3}",
+                              metaData.ParameterName, metaData.Population, metaData.Gender, metaData.ContainerName));
                         }
                      }
                   }
                }
             }
          }
+
          errorList.Count().ShouldBeEqualTo(0, errorList.ToString("\n"));
       }
    }

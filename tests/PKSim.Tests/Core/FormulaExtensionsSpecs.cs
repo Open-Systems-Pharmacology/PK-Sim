@@ -1,13 +1,10 @@
-﻿using System;
-using System.Linq;
-using PKSim.Core.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Extensions;
+﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Descriptors;
-using PKSim.Core.Model;
+using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core
 {

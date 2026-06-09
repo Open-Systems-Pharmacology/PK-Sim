@@ -1,22 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model.PopulationAnalyses;
+using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-
 
 namespace PKSim.Presentation
 {

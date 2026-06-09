@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
 using DevExpress.Utils;
@@ -248,11 +247,6 @@ namespace PKSim.UI.Views.Parameters
       private bool isGroupBy(IGridViewColumn gridViewColumn)
       {
          return gridViewColumn.XtraColumn.GroupIndex >= 0;
-      }
-
-      public void FixParameterColumnWidth(int parameterWidth)
-      {
-         _columnValue.WithFixedWidth(parameterWidth);
       }
 
       public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();

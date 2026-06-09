@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -9,10 +12,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {

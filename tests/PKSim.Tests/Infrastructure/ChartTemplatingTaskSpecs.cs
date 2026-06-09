@@ -21,9 +21,7 @@ using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Infrastructure.Services;
-using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure
 {

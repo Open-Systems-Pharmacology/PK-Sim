@@ -1,6 +1,5 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 
 namespace PKSim.IntegrationTests

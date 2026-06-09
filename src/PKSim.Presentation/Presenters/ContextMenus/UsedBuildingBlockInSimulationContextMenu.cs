@@ -7,7 +7,6 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
