@@ -8,7 +8,6 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Events;
 using PKSim.Core.Services;
 using PKSim.Presentation.Events;
 using PKSim.Presentation.Services;

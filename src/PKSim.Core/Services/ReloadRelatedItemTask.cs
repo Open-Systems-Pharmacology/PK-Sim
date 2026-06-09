@@ -1,18 +1,17 @@
-﻿using System;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Model;
-using OSPSuite.Core;
+﻿using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Journal;
-using OSPSuite.Core.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
+using OSPSuite.Core.Journal;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Visitor;
 using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {

@@ -1,9 +1,8 @@
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Model;
+using PKSim.Presentation.Presenters.Simulations;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.UICommands

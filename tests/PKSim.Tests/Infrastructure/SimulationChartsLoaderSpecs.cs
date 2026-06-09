@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
-using PKSim.Core.Chart;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
 using PKSim.Presentation.Infrastructure.Services;
-using PKSim.Presentation.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure
 {

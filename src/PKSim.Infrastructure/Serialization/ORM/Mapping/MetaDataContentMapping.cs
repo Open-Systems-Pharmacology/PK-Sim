@@ -1,5 +1,4 @@
 using FluentNHibernate.Mapping;
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mapping

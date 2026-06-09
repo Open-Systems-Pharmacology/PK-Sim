@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {

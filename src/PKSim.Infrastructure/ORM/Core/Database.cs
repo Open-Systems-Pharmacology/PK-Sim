@@ -2,7 +2,6 @@
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
-using PKSim.Assets;
 using PKSim.Infrastructure.ORM.DAS;
 using static OSPSuite.Assets.Error;
 

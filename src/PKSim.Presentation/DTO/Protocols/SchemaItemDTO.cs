@@ -1,6 +1,5 @@
-using PKSim.Core;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation.DTO.Protocols

@@ -7,7 +7,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter.v13;
 using CoreConverter121To130 = OSPSuite.Core.Converters.v13.Converter121To130;
-using SolverSettingsFactory = OSPSuite.Core.Domain.SolverSettingsFactory;
 
 namespace PKSim.IntegrationTests
 {

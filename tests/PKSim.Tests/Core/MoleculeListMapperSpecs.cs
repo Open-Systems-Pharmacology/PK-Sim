@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;

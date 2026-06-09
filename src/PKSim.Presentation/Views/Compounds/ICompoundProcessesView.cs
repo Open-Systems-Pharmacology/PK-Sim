@@ -1,7 +1,5 @@
-﻿using OSPSuite.Presentation.Nodes;
+﻿using OSPSuite.Presentation.Views;
 using PKSim.Presentation.Presenters.Compounds;
-using PKSim.Presentation.Views.Main;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Compounds
 {

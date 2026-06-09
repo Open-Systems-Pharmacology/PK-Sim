@@ -1,20 +1,19 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation;
 
 namespace PKSim.Presentation
 {

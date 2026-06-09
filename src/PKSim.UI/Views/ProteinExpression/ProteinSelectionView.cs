@@ -9,15 +9,14 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
-using OSPSuite.Presentation;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.Core.Extensions;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.ProteinExpression
 {

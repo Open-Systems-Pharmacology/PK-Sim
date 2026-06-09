@@ -1,7 +1,6 @@
-﻿using PKSim.Assets;
-using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
 using PKSim.Core.Events;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {

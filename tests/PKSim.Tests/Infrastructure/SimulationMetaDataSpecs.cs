@@ -2,11 +2,9 @@ using System.Linq;
 using System.Text;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using NHibernate.Util;
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Core.Domain;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using PKSim.Infrastructure.Serialization.ORM.MetaData;
 
 namespace PKSim.Infrastructure
 {

@@ -1,5 +1,4 @@
 using OSPSuite.Assets;
-using OSPSuite.Presentation;
 using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Views.Charts;

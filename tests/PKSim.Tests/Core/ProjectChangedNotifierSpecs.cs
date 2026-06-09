@@ -1,11 +1,10 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Events;
-using FakeItEasy;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility.Events;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {

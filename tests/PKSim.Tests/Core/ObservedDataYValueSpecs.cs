@@ -1,8 +1,7 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Chart;
 using OSPSuite.Core.Domain.Data;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core
 {

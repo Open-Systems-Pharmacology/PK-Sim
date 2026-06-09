@@ -12,7 +12,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;

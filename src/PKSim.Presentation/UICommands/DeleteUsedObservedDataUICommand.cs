@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {

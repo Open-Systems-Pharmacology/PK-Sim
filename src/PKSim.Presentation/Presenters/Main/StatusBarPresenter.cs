@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;

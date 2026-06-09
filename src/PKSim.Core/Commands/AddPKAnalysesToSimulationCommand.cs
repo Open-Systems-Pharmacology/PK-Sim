@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using PKSim.Assets;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {

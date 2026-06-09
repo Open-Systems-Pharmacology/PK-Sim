@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Data;
+using OSPSuite.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
-using OSPSuite.Core.Chart;
 
 namespace PKSim.Presentation.DTO.Mappers
 {

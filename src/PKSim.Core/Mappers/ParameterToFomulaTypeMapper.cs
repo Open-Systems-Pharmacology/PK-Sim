@@ -1,7 +1,6 @@
-using OSPSuite.Utility;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility;
 
 namespace PKSim.Core.Mappers
 {

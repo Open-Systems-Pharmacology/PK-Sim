@@ -9,7 +9,6 @@ using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Chart;
 using PKSim.Core.Services;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
 
 namespace PKSim.Presentation

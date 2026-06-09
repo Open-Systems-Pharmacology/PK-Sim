@@ -1,7 +1,6 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;

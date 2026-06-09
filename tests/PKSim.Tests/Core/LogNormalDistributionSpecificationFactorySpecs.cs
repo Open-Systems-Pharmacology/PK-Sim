@@ -1,10 +1,9 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Maths.Interpolations;
-using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
-using FakeItEasy;
 using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 using IDistributionFormulaFactory = OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory;
 

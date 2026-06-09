@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Serialization.Xml;

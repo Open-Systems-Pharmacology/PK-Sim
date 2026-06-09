@@ -1,8 +1,12 @@
+using FakeItEasy;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
-using NUnit.Framework;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -10,11 +14,6 @@ using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation
 {

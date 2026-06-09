@@ -1,6 +1,5 @@
 using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout.Utils;
-using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -12,7 +11,6 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Compounds
 {

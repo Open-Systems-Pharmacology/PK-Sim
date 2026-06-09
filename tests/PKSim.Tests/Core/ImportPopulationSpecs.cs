@@ -1,9 +1,7 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {

@@ -1,4 +1,3 @@
-using System.Linq;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
