@@ -167,13 +167,17 @@ namespace PKSim.Core.Services
             .Where(pv =>
             {
                var path = pv.Path.PathAsString;
+               //user is committing this path: it will be re-added with a new value, not reset
                if (committedPaths.Contains(path))
                   return false;
+               //path is still tracked as changed: user has uncommitted changes for it, not reset
                if (simulation.ParameterChangeTracker.IsTracked(path))
                   return false;
                var parameter = parameterCache[path];
+               //parameter is no longer present in the simulation: preserve the stored entry
                if (parameter == null)
                   return false;
+               //parameter's current value no longer matches the value stored in the set: user has reset it
                return !ValueComparer.AreValuesEqual(parameter.Value, pv.Value.GetValueOrDefault());
             })
             .Select(pv => pv.Path.PathAsString)
