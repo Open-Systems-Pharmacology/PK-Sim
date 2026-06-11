@@ -16,11 +16,13 @@ namespace PKSim.Presentation
    public abstract class concern_for_SchemaItemToSchemaItemDTOMapper : ContextSpecification<ISchemaItemToSchemaItemDTOMapper>
    {
       protected IParameterToParameterDTOInContainerMapper<SchemaItemDTO> _parameterToParameterDTOMapper;
+      protected PKSim.Presentation.DTO.Mappers.IParameterToParameterDTOMapper _parameterMapper;
 
       protected override void Context()
       {
          _parameterToParameterDTOMapper = A.Fake<IParameterToParameterDTOInContainerMapper<SchemaItemDTO>>();
-         sut = new SchemaItemToSchemaItemDTOMapper(_parameterToParameterDTOMapper);
+         _parameterMapper = A.Fake<PKSim.Presentation.DTO.Mappers.IParameterToParameterDTOMapper>();
+         sut = new SchemaItemToSchemaItemDTOMapper(_parameterToParameterDTOMapper, _parameterMapper);
       }
    }
 
@@ -80,7 +82,7 @@ namespace PKSim.Presentation
          base.Context();
          _schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.Intravenous};
          _schemaItem.Add(DomainHelperForSpecs.ConstantParameterWithValue(15).WithName(Constants.Parameters.INFUSION_TIME));
-         A.CallTo(_parameterToParameterDTOMapper).WithReturnType<IParameterDTO>().Returns(A.Fake<IParameterDTO>());
+         A.CallTo(() => _parameterMapper.MapFrom(A<IParameter>._)).Returns(A.Fake<IParameterDTO>());
       }
 
       protected override void Because()

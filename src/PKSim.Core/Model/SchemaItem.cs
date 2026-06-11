@@ -12,6 +12,7 @@ namespace PKSim.Core.Model
       bool NeedsFormulation { get; }
       IParameter StartTime { get; }
       IParameter Dose { get; }
+      IParameter InfusionTime { get; }
    }
 
    public class SchemaItem : Container, ISchemaItem
