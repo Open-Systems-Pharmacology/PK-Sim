@@ -71,7 +71,7 @@ namespace PKSim.Core.Services
 
          var command = commitInfo.ShouldCreateNew
             ? createNewSetsCommand(simulationCompound, templateCompound, commitInfo.OverwriteParameterSetName, parameterValues)
-            : updateExistingSetsCommand(simulationCompound, templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, simulation, commitInfo.ParameterPaths);
+            : updateExistingSetsCommand(simulationCompound, templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, simulation, commitInfo.ParameterPaths, parameterCache);
 
          command.Run(_executionContext);
 
@@ -105,8 +105,9 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Creates a macro command that updates existing OverwriteParameterSets (identified by <paramref name="setName" />)
-      ///    in both the simulation and template compounds. Parameters that were previously in the set but are no longer
-      ///    tracked (i.e., reset by the user) are removed from the set.
+      ///    in both the simulation and template compounds. Parameters that were previously in the set but have been
+      ///    reset by the user (no longer differ from their original/default value) are removed from the set. Entries
+      ///    the user has not touched since the previous commit are preserved.
       /// </summary>
       /// <param name="simulationCompound">The compound used in the simulation whose OverwriteParameterSet will be updated.</param>
       /// <param name="templateCompound">The project template compound whose corresponding OverwriteParameterSet will be updated.</param>
@@ -114,15 +115,16 @@ namespace PKSim.Core.Services
       /// <param name="parameterValues">The new parameter values to apply to the set.</param>
       /// <param name="simulation">The simulation, used to check which paths are still tracked.</param>
       /// <param name="parameterPaths">The parameter paths being committed, used to determine which paths the user has reset.</param>
+      /// <param name="parameterCache">Cache of simulation parameters, used to compare current values against the set's stored values when detecting resets.</param>
       /// <returns>A macro command containing the update commands for both compounds.</returns>
       private PKSimMacroCommand updateExistingSetsCommand(Compound simulationCompound, Compound templateCompound, string setName,
-         List<ParameterValue> parameterValues, Simulation simulation, IReadOnlyList<string> parameterPaths)
+         List<ParameterValue> parameterValues, Simulation simulation, IReadOnlyList<string> parameterPaths, PathCache<IParameter> parameterCache)
       {
          var command = new PKSimMacroCommand();
 
          var existingSimulationSet = simulationCompound.OverwriteParameterSets.FindByName(setName);
          var existingTemplateSet = templateCompound.OverwriteParameterSets.FindByName(setName);
-         var pathsToRemove = pathsResetByUser(existingSimulationSet, parameterPaths, simulation);
+         var pathsToRemove = pathsResetByUser(existingSimulationSet, parameterPaths, simulation, parameterCache);
 
          command.Add(new UpdateOverwriteParameterSetCommand(existingSimulationSet, simulationCompound, parameterValues, pathsToRemove));
          command.Add(new UpdateOverwriteParameterSetCommand(existingTemplateSet, templateCompound, parameterValues, pathsToRemove));
@@ -150,16 +152,35 @@ namespace PKSim.Core.Services
       }
 
       /// <summary>
-      ///    When updating an existing set, find paths that were in the set but are no longer tracked
-      ///    (i.e., the user reset those parameters). These should be removed from the set.
+      ///    When updating an existing set, find entries the user has reset to the parameter's original value.
+      ///    An entry is considered reset when the user is not committing the path, the path is no longer tracked
+      ///    as changed, and the simulation parameter's current value no longer matches the value stored in the
+      ///    set. Entries the user has not touched (parameter value still matches the set's stored value) are
+      ///    preserved so that they are not stripped from the set on a subsequent update commit.
       /// </summary>
-      private IReadOnlyList<string> pathsResetByUser(OverwriteParameterSet existingSet, IReadOnlyList<string> parameterPaths, Simulation simulation)
+      private IReadOnlyList<string> pathsResetByUser(OverwriteParameterSet existingSet, IReadOnlyList<string> parameterPaths,
+         Simulation simulation, PathCache<IParameter> parameterCache)
       {
          var committedPaths = new HashSet<string>(parameterPaths);
 
          return existingSet.ParameterValues
+            .Where(pv =>
+            {
+               var path = pv.Path.PathAsString;
+               //user is committing this path: it will be re-added with a new value, not reset
+               if (committedPaths.Contains(path))
+                  return false;
+               //path is still tracked as changed: user has uncommitted changes for it, not reset
+               if (simulation.ParameterChangeTracker.IsTracked(path))
+                  return false;
+               var parameter = parameterCache[path];
+               //parameter is no longer present in the simulation: preserve the stored entry
+               if (parameter == null)
+                  return false;
+               //parameter's current value no longer matches the value stored in the set: user has reset it
+               return !ValueComparer.AreValuesEqual(parameter.Value, pv.Value.GetValueOrDefault());
+            })
             .Select(pv => pv.Path.PathAsString)
-            .Where(path => !committedPaths.Contains(path) && !simulation.ParameterChangeTracker.IsTracked(path))
             .ToList();
       }
    }
