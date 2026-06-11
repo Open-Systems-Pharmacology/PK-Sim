@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,22 +17,23 @@ namespace PKSim.Presentation.Presenters.Protocols
       DataTable DataTable { get; }
       string GroupingName { get; }
       string XValue { get; }
+      string XValue2 { get; }
       string YValue { get; }
+      string SchemaItemName { get; }
       double XMin { get; }
       double XMax { get; }
-      IDimension TimeDimension { get; }
-      Unit TimeUnit { get; }
       Unit YAxisUnit { get; }
       Unit Y2AxisUnit { get; }
       bool NeedsMultipleAxis { get; }
 
-      bool SeriesShouldBeOnSecondAxis(string serieName);
+      bool SeriesShouldBeOnSecondAxis(string seriesName);
       SchemaItemDTO SchemaItemFor(object tag);
    }
 
    public class ProtocolChartData : IProtocolChartData
    {
       private readonly double _endTimeInMin;
+      private double _maxEndTimeInDisplayUnit;
 
       private readonly ICache<Compound, IReadOnlyList<SchemaItemDTO>> _allSchemaItemDTO;
       public IDimension TimeDimension { get; }
@@ -41,23 +43,24 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       private const string GROUPING_NAME = "GroupingName";
       private const string TIME = "Time";
+      private const string END_TIME = "EndTime";
       private const string DOSE = "Dose";
       private const string UNIT = "Unit";
       private const string SCHEMA_ITEM = "SchemaItem";
 
       public bool NeedsMultipleAxis => YAxisUnit != Y2AxisUnit;
 
-      public bool SeriesShouldBeOnSecondAxis(string serieName)
+      public bool SeriesShouldBeOnSecondAxis(string seriesName)
       {
          return (from DataRow dataRow in DataTable.Rows
-            where Equals(dataRow[GroupingName], serieName)
+            where Equals(dataRow[GroupingName], seriesName)
             select Equals(dataRow[UnitName], Y2AxisUnit)).FirstOrDefault();
       }
 
       public SchemaItemDTO SchemaItemFor(object tag)
       {
-         var dataRow = tag as DataRowView;
-         return dataRow?[SchemaItemName].DowncastTo<SchemaItemDTO>();
+         //the chart attaches the schema item DTO directly as the tag of each series point
+         return tag as SchemaItemDTO;
       }
 
       public DataTable DataTable { get; }
@@ -71,6 +74,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          TimeUnit = timeUnit;
          DataTable.AddColumn(GROUPING_NAME);
          DataTable.AddColumn<double>(TIME);
+         DataTable.AddColumn<double>(END_TIME);
          DataTable.AddColumn<double>(DOSE);
          DataTable.AddColumn<Unit>(UNIT);
          DataTable.AddColumn<SchemaItemDTO>(SCHEMA_ITEM);
@@ -81,6 +85,8 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public string XValue => TIME;
 
+      public string XValue2 => END_TIME;
+
       public string YValue => DOSE;
 
       public string UnitName => UNIT;
@@ -89,7 +95,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public double XMin => 0;
 
-      public double XMax => timeValueInDisplayUnit(_endTimeInMin);
+      public double XMax => Math.Max(timeValueInDisplayUnit(_endTimeInMin), _maxEndTimeInDisplayUnit);
 
       private double timeValueInDisplayUnit(double timeValueInBaseUnit)
       {
@@ -115,8 +121,11 @@ namespace PKSim.Presentation.Presenters.Protocols
             {
                var row = DataTable.NewRow();
                var schemaItemDTO = schemaItemDTOGroup.First();
+               var endTime = endTimeValueInDisplayUnit(schemaItemDTO);
+               _maxEndTimeInDisplayUnit = Math.Max(_maxEndTimeInDisplayUnit, endTime);
                row[GROUPING_NAME] = createDataGroupingNameFor(hasOnlyOneDoseUnit, compound, schemaItemDTO);
                row[TIME] = timeValueInDisplayUnit(schemaItemDTO.StartTimeParameter.KernelValue);
+               row[END_TIME] = endTime;
                row[DOSE] = schemaItemDTOGroup.Sum(x => x.Dose);
                row[UNIT] = schemaItemDTO.DoseParameter.DisplayUnit;
                row[SCHEMA_ITEM] = schemaItemDTO;
@@ -131,8 +140,23 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (dto.NeedsFormulation)
             key = $"{key}|{dto.FormulationKey}";
 
+         //infusions of different durations should not be aggregated even when they share a start time and dose unit
+         if (isInfusion(dto))
+            key = $"{key}|{dto.InfusionTimeParameter.KernelValue}";
+
          return key;
       }
+
+      private double endTimeValueInDisplayUnit(SchemaItemDTO schemaItemDTO)
+      {
+         var startTimeInBaseUnit = schemaItemDTO.StartTimeParameter.KernelValue;
+         if (isInfusion(schemaItemDTO))
+            return timeValueInDisplayUnit(startTimeInBaseUnit + schemaItemDTO.InfusionTimeParameter.KernelValue);
+
+         return timeValueInDisplayUnit(startTimeInBaseUnit);
+      }
+
+      private static bool isInfusion(SchemaItemDTO schemaItemDTO) => schemaItemDTO.InfusionTimeParameter != null && schemaItemDTO.InfusionTimeParameter.KernelValue > 0;
 
       private static string createDataGroupingNameFor(bool hasOnlyOneDoseUnit, Compound compound, SchemaItemDTO schemaItemDTO)
       {

@@ -62,6 +62,9 @@ namespace PKSim.Core.Model
 
       public virtual IParameter Dose => this.Parameter(CoreConstants.Parameters.INPUT_DOSE);
 
+      //only defined for infusion application types; null otherwise
+      public virtual IParameter InfusionTime => this.Parameter(Constants.Parameters.INFUSION_TIME);
+
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
