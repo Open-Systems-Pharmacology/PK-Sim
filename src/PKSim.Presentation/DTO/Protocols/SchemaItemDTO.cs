@@ -11,6 +11,11 @@ namespace PKSim.Presentation.DTO.Protocols
       public IParameterDTO StartTimeParameter { get; set; }
       public IParameterDTO DoseParameter { get; set; }
 
+      /// <summary>
+      ///    Infusion duration of the administration. <c>null</c> for application types that are not an infusion.
+      /// </summary>
+      public IParameterDTO InfusionTimeParameter { get; set; }
+
       public SchemaItemDTO(SchemaItem schemaItem) : base(schemaItem)
       {
          SchemaItem = schemaItem;

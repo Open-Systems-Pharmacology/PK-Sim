@@ -145,7 +145,98 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_return_any_data_to_plot()
       {
-         _data.Rows.Count.ShouldBeEqualTo(0);   
+         _data.Rows.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_an_infusion_schema_item : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         var infusion = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, startTimeValue: 10, infusionTimeValue: 30); //min
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {infusion});
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10.0)).Returns(10);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 40.0)).Returns(40);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_span_from_the_start_time_to_the_start_time_plus_the_infusion_time()
+      {
+         _data.AllValuesInColumn<double>(sut.XValue).ShouldOnlyContain(10);
+         _data.AllValuesInColumn<double>(sut.XValue2).ShouldOnlyContain(40);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_an_infusion_that_ends_after_the_protocol_end_time : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         //protocol end time (_endTimeMin) is 60 min, but the infusion runs from 60 to 90 min
+         var infusion = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, startTimeValue: 60, infusionTimeValue: 30);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {infusion});
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 60.0)).Returns(60);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 90.0)).Returns(90);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_extend_the_x_axis_maximum_to_the_end_of_the_infusion()
+      {
+         sut.XMax.ShouldBeEqualTo(90);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_a_protocol_that_ends_after_the_last_administration : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         //protocol end time (_endTimeMin) is 60 min, but the only administration is a bolus at 10 min
+         var bolus = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.IntravenousBolus, _doseUnit, startTimeValue: 10);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {bolus});
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10.0)).Returns(10);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 60.0)).Returns(60);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_use_the_protocol_end_time_as_the_x_axis_maximum()
+      {
+         sut.XMax.ShouldBeEqualTo(60);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_a_non_infusion_schema_item : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         var bolus = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.IntravenousBolus, _doseUnit, startTimeValue: 10); //min
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {bolus});
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10.0)).Returns(10);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_set_the_end_time_equal_to_the_start_time()
+      {
+         _data.AllValuesInColumn<double>(sut.XValue2).ShouldOnlyContain(10);
+      }
+   }
+
+   public class When_creating_the_chart_data_for_two_infusions_with_the_same_start_time_but_different_durations : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         var infusion1 = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, doseValue: 1, startTimeValue: 0, infusionTimeValue: 30);
+         var infusion2 = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, doseValue: 2, startTimeValue: 0, infusionTimeValue: 60);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {infusion1, infusion2});
+         base.Context();
+      }
+
+      [Observation]
+      public void should_not_aggregate_infusions_that_differ_only_in_duration()
+      {
+         _data.Rows.Count.ShouldBeEqualTo(2);
       }
    }
 }

@@ -12,6 +12,7 @@ namespace PKSim.Core.Model
       bool NeedsFormulation { get; }
       IParameter StartTime { get; }
       IParameter Dose { get; }
+      IParameter InfusionTime { get; }
    }
 
    public class SchemaItem : Container, ISchemaItem
@@ -61,6 +62,9 @@ namespace PKSim.Core.Model
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
       public virtual IParameter Dose => this.Parameter(CoreConstants.Parameters.INPUT_DOSE);
+
+      //only defined for infusion application types; null otherwise
+      public virtual IParameter InfusionTime => this.Parameter(Constants.Parameters.INFUSION_TIME);
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
