@@ -707,8 +707,6 @@ namespace PKSim.Core.Model
 
       public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
 
-      public CurveChartTemplate DefaultChartTemplate => Settings.DefaultChartTemplate;
-
       #endregion
 
       public void AddChartTemplate(CurveChartTemplate chartTemplate)
