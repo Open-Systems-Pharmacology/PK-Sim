@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.R.Domain;
+using PKSim.Core.Services;
 using CoreSnapshotTask = PKSim.Core.Snapshots.Services.ISnapshotTask;
 using CoreSimulation = PKSim.Core.Model.Simulation;
 
@@ -32,11 +35,18 @@ namespace PKSim.R.Services
    {
       private readonly CoreSnapshotTask _snapshotTask;
       private readonly IBatchRunner<SnapshotRunOptions> _snapshotRunner;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
+      private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
 
-      public SnapshotTask(CoreSnapshotTask snapshotTask, IBatchRunner<SnapshotRunOptions> snapshotRunner)
+      public SnapshotTask(CoreSnapshotTask snapshotTask, 
+         IBatchRunner<SnapshotRunOptions> snapshotRunner,
+         ISimulationConfigurationTask simulationConfigurationTask, 
+         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper)
       {
          _snapshotTask = snapshotTask;
          _snapshotRunner = snapshotRunner;
+         _simulationConfigurationTask = simulationConfigurationTask;
+         _modelCoreSimulationMapper = modelCoreSimulationMapper;
       }
 
       public Simulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
@@ -51,7 +61,13 @@ namespace PKSim.R.Services
             ? allSimulations
             : allSimulations.Where(x => simulationNames.Contains(x.Name));
 
-         return matched.Select(x => new Simulation(x)).ToArray();
+         return matched.Select(x => new Simulation(coreSimulationFrom(x))).ToArray();
+      }
+
+      private IModelCoreSimulation coreSimulationFrom(CoreSimulation simulation)
+      {
+         var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         return _modelCoreSimulationMapper.MapFrom(simulation, simulationConfiguration, shouldCloneModel: false);
       }
 
       public void RunSnapshot(string inputFolder, string outputFolder, bool runSimulations = true,
