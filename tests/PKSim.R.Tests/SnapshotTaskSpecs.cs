@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using OSPSuite.Utility;
 using PKSim.R.Services;
@@ -41,6 +42,18 @@ namespace PKSim.R
       {
          _simulations.ShouldNotBeNull();
          _simulations.Length.ShouldBeGreaterThan(0);
+      }
+
+      [Observation]
+      public void should_return_simulations_that_carry_a_simulation_configuration()
+      {
+         _simulations.All(x => x.Configuration != null).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_simulations_that_wrap_a_model_core_simulation()
+      {
+         _simulations.All(x => x.CoreSimulation is ModelCoreSimulation).ShouldBeTrue();
       }
    }
 
