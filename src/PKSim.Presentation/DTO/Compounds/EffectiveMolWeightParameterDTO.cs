@@ -30,28 +30,14 @@ namespace PKSim.Presentation.DTO.Compounds
             .Property(item => item.Value)
             .WithRule((dto, valueInDisplayUnit) =>
             {
-               var valueInBaseUnit = dto.Parameter.ConvertToBaseUnit(valueInDisplayUnit);
-
                // Nan values are invalid
-               if (double.IsNaN(valueInBaseUnit))
+               if (double.IsNaN(valueInDisplayUnit))
                   return false;
 
-               // evaluate without updating the parameter because writing a value will trigger another validation
-               if (valueInBaseUnit == dto.Parameter.Value)
-                  return effectiveMolWeightIsValid(dto);
-
-               // Update the parameter value to evaluate if the effective mol weight will be valid.
-               // Reset to the old value after
-               var oldValue = dto.Parameter.Value;
-               try
-               {
-                  dto.Parameter.Value = valueInBaseUnit;
-                  return effectiveMolWeightIsValid(dto);
-               }
-               finally
-               {
-                  dto.Parameter.Value = oldValue;
-               }
+               // For effective mol weight is a formula-only calculation and is updated through halogens and/or mol weight
+               // and never directly from user input. The value at time of validation is always current because the triggering
+               // update has already occurred. Either mol weight was updated, or halogen count
+               return effectiveMolWeightIsValid(dto);
             })
             .WithError((dto, value) =>
                PKSimConstants.Error.EffectiveMolWeightMustBeGreaterThan(
