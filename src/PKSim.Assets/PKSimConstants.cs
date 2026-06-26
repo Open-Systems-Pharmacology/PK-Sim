@@ -457,6 +457,9 @@ namespace PKSim.Assets
                $" {simulationNameList.ToString("", "'")} ";
          }
 
+         public static string CannotApplyOverwriteParameterSetUnresolvedPaths(IReadOnlyList<string> unresolvedPaths) =>
+            $"The selected {ObjectTypes.OverwriteParameterSet.ToLower()} could not be applied because the following parameter path(s) could not be resolved in the simulation:{nameListFrom(unresolvedPaths)}The simulation cannot be created.";
+
          public static string CouldNotFindAdvancedParameterContainerForParameter(string parameterName) => $"Could not find advanced parameter container for parameter '{parameterName}'.";
          public static string CouldNotFindAdvancedParameterInContainerForParameter(string containerName, string parameterName) => $"Could not find advanced parameter in container '{containerName}' for parameter '{parameterName}'.";
          public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'.";
