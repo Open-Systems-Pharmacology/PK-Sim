@@ -23,8 +23,8 @@ namespace PKSim.UI
       public static void InitializeForStartup(IContainer container)
       {
          container.Register<IPKSimMainView, Shell>(LifeStyle.Singleton);
-         container.Register<ISplashView, SplashScreen>();
-         container.Register<ISplashViewPresenter, SplashViewPresenter>();
+         container.Register<ISplashView, SplashScreen>(LifeStyle.Singleton);
+         container.Register<ISplashViewPresenter, SplashViewPresenter>(LifeStyle.Singleton);
 
          var shell = container.Resolve<IPKSimMainView>().DowncastTo<Shell>();
          container.RegisterImplementationOf(shell);
