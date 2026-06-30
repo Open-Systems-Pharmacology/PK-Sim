@@ -25,6 +25,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
+using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -54,6 +55,9 @@ namespace PKSim.UI.BootStrapping
 
          var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(SynchronizationContext.Current);
+         // Register the UI thread so the EventPublisher singleton captures it (via its explicit-thread
+         // constructor) and dispatches synchronously (Send) from the UI thread rather than deferred (Post).
+         container.RegisterImplementationOf(Thread.CurrentThread);
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
@@ -104,9 +108,8 @@ namespace PKSim.UI.BootStrapping
 
       public void Start()
       {
-         var progressManager = IoC.Resolve<IProgressManager>();
          var container = IoC.Container;
-         using (var progress = progressManager.Create())
+         using (var progress = createSplashProgressUpdater(container))
          {
             progress.Initialize(8);
 
@@ -138,6 +141,26 @@ namespace PKSim.UI.BootStrapping
             showStatusMessage(progress, PKSimConstants.UI.StartingUserInterface);
             startStartableObject(container);
          }
+      }
+
+      //The splash runs on its own UI thread, so its progress updates must be dispatched to that thread. Bind a
+      //dedicated EventPublisher to the splash's own synchronization context and drive a ProgressUpdater through it, so
+      //the splash presenter handles the events on the splash thread - updating incrementally and without a cross-thread.
+      private static IProgressUpdater createSplashProgressUpdater(IContainer container)
+      {
+         var splashPresenter = container.Resolve<ISplashViewPresenter>();
+         var splashControl = (Control) splashPresenter.View;
+
+         // Wait until the control is created, up to a maximum of 5 seconds
+         SpinWait.SpinUntil(() => splashControl.IsHandleCreated, TimeSpan.FromSeconds(5));
+         if (!splashControl.IsHandleCreated)
+            return container.Resolve<IProgressManager>().Create();
+
+         var splashContext = splashControl.Invoke(() => SynchronizationContext.Current);
+         var splashThread = splashControl.Invoke(() => Thread.CurrentThread);
+         var splashPublisher = new EventPublisher(splashContext, splashThread, container.Resolve<IExceptionManager>());
+         splashPublisher.AddListener(splashPresenter);
+         return new PKSimProgressUpdater(splashPublisher);
       }
 
       /// <summary>
