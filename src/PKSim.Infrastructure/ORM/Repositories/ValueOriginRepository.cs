@@ -19,6 +19,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       };
 
       private readonly Cache<int, ValueOrigin> _allValueOrigins = new Cache<int, ValueOrigin>(onMissingKey: x => _defaultValueOrigin);
+      private bool _started;
 
       public ValueOriginRepository(IFlatValueOriginRepository flatValueOriginRepository, IFlatValueOriginToValueOriginMapper valueOriginMapper)
       {
@@ -34,7 +35,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public void Start()
       {
+         if (_started) return;
          _flatValueOriginRepository.All().Each(x => { _allValueOrigins[x.Id] = _valueOriginMapper.MapFrom(x); });
+         _started = true;
       }
 
       public ValueOrigin ValueOriginFor(IParameter parameter)
