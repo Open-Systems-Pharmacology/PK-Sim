@@ -172,6 +172,7 @@ namespace PKSim.UI.BootStrapping
          //Create one instance of the invokers so that the object is available in the application
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
+         container.Resolve<IJournalPageEditorActivator>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator)mainPresenter);
