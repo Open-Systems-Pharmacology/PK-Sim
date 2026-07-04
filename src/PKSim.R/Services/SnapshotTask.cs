@@ -6,8 +6,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.R.Domain;
 using PKSim.Core.Services;
+using PKSim.R.Mappers;
 using CoreSnapshotTask = PKSim.Core.Snapshots.Services.ISnapshotTask;
 using CoreSimulation = PKSim.Core.Model.Simulation;
+using CoreAgingData = PKSim.Core.Model.AgingData;
+using PopulationSimulation = PKSim.Core.Model.PopulationSimulation;
 
 namespace PKSim.R.Services
 {
@@ -37,16 +40,22 @@ namespace PKSim.R.Services
       private readonly IBatchRunner<SnapshotRunOptions> _snapshotRunner;
       private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
+      private readonly IPopulationSimulationToIndividualValuesCacheMapper _populationCacheMapper;
+      private readonly IAgingDataMapper _agingDataMapper;
 
-      public SnapshotTask(CoreSnapshotTask snapshotTask, 
+      public SnapshotTask(CoreSnapshotTask snapshotTask,
          IBatchRunner<SnapshotRunOptions> snapshotRunner,
-         ISimulationConfigurationTask simulationConfigurationTask, 
-         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper)
+         ISimulationConfigurationTask simulationConfigurationTask,
+         ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
+         IPopulationSimulationToIndividualValuesCacheMapper populationCacheMapper,
+         IAgingDataMapper agingDataMapper)
       {
          _snapshotTask = snapshotTask;
          _snapshotRunner = snapshotRunner;
          _simulationConfigurationTask = simulationConfigurationTask;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
+         _populationCacheMapper = populationCacheMapper;
+         _agingDataMapper = agingDataMapper;
       }
 
       public Simulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
@@ -61,7 +70,22 @@ namespace PKSim.R.Services
             ? allSimulations
             : allSimulations.Where(x => simulationNames.Contains(x.Name));
 
-         return matched.Select(x => new Simulation(coreSimulationFrom(x))).ToArray();
+         return matched.Select(simulationFrom).ToArray();
+      }
+
+      private Simulation simulationFrom(CoreSimulation simulation)
+      {
+         var rSimulation = new Simulation(coreSimulationFrom(simulation));
+
+         if (simulation is PopulationSimulation populationSimulation)
+         {
+            rSimulation.IndividualValuesCache = _populationCacheMapper.MapFrom(populationSimulation);
+
+            if (shouldExportAgingData(populationSimulation.AgingData))
+               rSimulation.AgingData = _agingDataMapper.MapFrom(populationSimulation.AgingData);
+         }
+
+         return rSimulation;
       }
 
       private IModelCoreSimulation coreSimulationFrom(CoreSimulation simulation)
@@ -69,6 +93,9 @@ namespace PKSim.R.Services
          var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
          return _modelCoreSimulationMapper.MapFrom(simulation, simulationConfiguration, shouldCloneModel: false);
       }
+
+      private static bool shouldExportAgingData(CoreAgingData agingData) =>
+         agingData != null && agingData.AllParameterData.Any(x => x.IndividualIndexes.Count > 0);
 
       public void RunSnapshot(string inputFolder, string outputFolder, bool runSimulations = true,
          SnapshotExportMode exportMode = SnapshotExportMode.Snapshot, params string[] folders)
