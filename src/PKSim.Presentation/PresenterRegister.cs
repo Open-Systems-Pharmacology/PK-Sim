@@ -109,6 +109,9 @@ namespace PKSim.Presentation
 
          container.Register<IFormatterFactory, FormatterFactory>();
 
+         //Activates the journal page editor on first use
+         container.Register<IJournalPageEditorActivator, JournalPageEditorActivator>(LifeStyle.Singleton);
+
          //Presentation-aware overrides for Infrastructure services
          container.Register<IPKSimXmlSerializerRepository, PKSimXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IWorkspace, IWithWorkspaceLayout, ICoreWorkspace, OSPSuite.Core.IWorkspace, Workspace>(LifeStyle.Singleton);
@@ -126,6 +129,9 @@ namespace PKSim.Presentation
          scan.ExcludeType<CloseSubjectPresenterInvoker>();
          scan.ExcludeType<ButtonGroupRepository>();
          scan.ExcludeType<MenuBarItemRepository>();
+
+         //Registered explicitly as singleton in RegisterInContainer
+         scan.ExcludeType<JournalPageEditorActivator>();
 
          //This objects were already registered in Bootstrap
          scan.ExcludeType<ApplicationController>();

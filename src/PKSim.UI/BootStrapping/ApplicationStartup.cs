@@ -25,6 +25,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
+using PKSim.Presentation.Infrastructure.Services;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
@@ -171,6 +172,7 @@ namespace PKSim.UI.BootStrapping
          //Create one instance of the invokers so that the object is available in the application
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
+         container.Resolve<IJournalPageEditorActivator>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator)mainPresenter);
@@ -181,8 +183,16 @@ namespace PKSim.UI.BootStrapping
 
       private void startStartableObject(IContainer container)
       {
-         var rep = container.ResolveAll<IStartable>().ToList();
-         rep.Each(item => item.Start());
+         //Resolve all startables on the UI thread (Castle Windsor resolution stays single-threaded), then warm the
+         //DB-backed repositories on a background thread so their loading overlaps the main window construction.
+         var startables = container.ResolveAll<IStartable>().ToList();
+
+         //Settings are read while the main window is built (e.g. layout restore, comparison settings), so they must
+         //be loaded synchronously before construction; only the (DB-backed) repositories are deferred.
+         var synchronousStartables = startables.OfType<SettingsLoader>().ToList();
+         synchronousStartables.Each(item => item.Start());
+
+         container.Resolve<IStartableWarmup>().Begin(startables.Except(synchronousStartables).ToList());
       }
 
       public static void RegisterCommands(IContainer container)

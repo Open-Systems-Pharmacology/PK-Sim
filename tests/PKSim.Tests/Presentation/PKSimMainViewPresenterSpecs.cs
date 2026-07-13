@@ -32,6 +32,7 @@ namespace PKSim.Presentation
       private ITabbedMdiChildViewContextMenuFactory _contextMenuFactory;
       protected IPKSimConfiguration _configuration;
       protected IPostLaunchChecker _postLaunchChecker;
+      protected IStartableWarmup _startableWarmup;
 
       protected override void Context()
       {
@@ -45,8 +46,9 @@ namespace PKSim.Presentation
          _contextMenuFactory = A.Fake<ITabbedMdiChildViewContextMenuFactory>();
          _configuration = A.Fake<IPKSimConfiguration>();
          _postLaunchChecker = A.Fake<IPostLaunchChecker>();
+         _startableWarmup = A.Fake<IStartableWarmup>();
          A.CallTo(() => _configuration.ProductDisplayName).Returns("AA");
-         sut = new PKSimMainViewPresenter(_view, _eventPublisher, _contextMenuFactory, _presenterRepository, _exitCommand, _userSettings, _projectTask, _configuration, _postLaunchChecker, _versionChecker);
+         sut = new PKSimMainViewPresenter(_view, _eventPublisher, _contextMenuFactory, _presenterRepository, _exitCommand, _userSettings, _projectTask, _configuration, _postLaunchChecker, _versionChecker, _startableWarmup);
       }
    }
 
