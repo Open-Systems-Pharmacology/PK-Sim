@@ -27,9 +27,11 @@ namespace PKSim.Presentation.Core
       public void Handle(EditJournalPageStartedEvent eventToHandle)
       {
          if (_activated) return;
-         _activated = true;
 
          _container.Resolve<IJournalPageEditorFormPresenter>();
+         //set only after a successful resolve (so a failed resolve retries on the next edit), but before
+         //re-publishing so the re-dispatched event does not re-enter this activator
+         _activated = true;
          //re-publish because the presenters created above were not yet subscribed when this event was published
          _eventPublisher.PublishEvent(eventToHandle);
          _eventPublisher.RemoveListener(this);
