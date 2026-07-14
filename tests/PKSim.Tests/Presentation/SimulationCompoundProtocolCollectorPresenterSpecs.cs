@@ -100,11 +100,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_false_if_two_selected_protocols_are_the_same()
+      public void should_return_true_if_two_selected_protocols_are_the_same()
       {
          A.CallTo(() => _subPresenter2.SelectedProtocol).Returns(_subPresenter1.SelectedProtocol);
          sut.EditSimulation(_simulation, CreationMode.New);
-         sut.CanClose.ShouldBeFalse();
+         sut.CanClose.ShouldBeTrue();
       }
 
       [Observation]
@@ -128,12 +128,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_show_a_warning_if_two_protocols_are_the_same()
+      public void should_not_show_a_warning_if_two_protocols_are_the_same()
       {
          A.CallTo(() => _subPresenter2.SelectedProtocol).Returns(_subPresenter1.SelectedProtocol);
          sut.EditSimulation(_simulation, CreationMode.New);
-         _view.WarningVisible.ShouldBeTrue();
-         _view.Warning.ShouldBeEqualTo(PKSimConstants.Error.AProtocolCanOnlyBeUsedOnceInASimulation);
+         _view.WarningVisible.ShouldBeFalse();
       }
 
       [Observation]
@@ -219,7 +218,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_update_the_selected_protocol_in_the_approriate_presenter()
+      public void should_update_the_selected_protocol_in_the_appropriate_presenter()
       {
          A.CallTo(() => _subPresenter1.ProtocolSelectionChanged(_templateProtocol)).MustHaveHappened();
       }

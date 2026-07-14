@@ -134,17 +134,39 @@ namespace PKSim.Core.Services
 
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         compoundPropertiesList.Each(addProtocol);
+         var administeredProperties = compoundPropertiesList.Where(x => x.ProtocolProperties.Protocol != null).ToList();
+         var sharedProtocolNames = sharedProtocolNamesFrom(administeredProperties);
+
+         administeredProperties.Each(compoundProperties =>
+         {
+            var protocol = compoundProperties.ProtocolProperties.Protocol;
+            var eventGroupName = eventGroupNameFor(protocol.Name, compoundProperties.Compound.Name, sharedProtocolNames);
+            addProtocol(compoundProperties, eventGroupName);
+         });
       }
 
-      private void addProtocol(CompoundProperties compoundProperties)
+      private static string eventGroupNameFor(string protocolName, string compoundName, IReadOnlyList<string> sharedProtocolNames)
+      {
+         return sharedProtocolNames.Contains(protocolName)
+            ? Constants.CompositeNameFor(protocolName, compoundName)
+            : protocolName;
+      }
+
+      private static IReadOnlyList<string> sharedProtocolNamesFrom(IReadOnlyList<CompoundProperties> administeredProperties)
+      {
+         return administeredProperties
+            .GroupBy(x => x.ProtocolProperties.Protocol.Name)
+            .Where(x => x.Count() > 1)
+            .Select(x => x.Key)
+            .ToList();
+      }
+
+      private void addProtocol(CompoundProperties compoundProperties, string eventGroupName)
       {
          var protocol = compoundProperties.ProtocolProperties.Protocol;
-         if (protocol == null)
-            return;
 
          var eventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
-            .WithName(protocol.Name);
+            .WithName(eventGroupName);
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
