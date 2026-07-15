@@ -36,6 +36,7 @@ namespace PKSim.Infrastructure
       protected IApplicationSettings _applicationSettings;
       protected IStartableProcessFactory _startableProcessFactory;
       protected IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      protected IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
       protected Simulation _sim;
       private IModelCoreSimulation _modelCoreSimulation;
 
@@ -54,7 +55,15 @@ namespace PKSim.Infrastructure
          _applicationSettings = A.Fake<IApplicationSettings>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _modelCoreSimulationSnapshotUpdater = A.Fake<IModelCoreSimulationSnapshotUpdater>();
+         _overwriteParameterSetApplicationTask = A.Fake<IOverwriteParameterSetApplicationTask>();
          _sim = A.Fake<Simulation>();
+
+         var exportConfiguration = new SimulationConfiguration();
+         exportConfiguration.AddModuleConfiguration(new ModuleConfiguration(new Module())
+         {
+            SelectedParameterValues = new ParameterValuesBuildingBlock()
+         });
+         A.CallTo(() => _simulationConfigurationTask.CreateFor(A<Simulation>._, A<bool>._, A<bool>._)).Returns(exportConfiguration);
 
          _modelCoreSimulation = new ModelCoreSimulation
          {
@@ -70,7 +79,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
 
          sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoRepository,
-            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _modelCoreSimulationSnapshotUpdater);
+            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _modelCoreSimulationSnapshotUpdater, _overwriteParameterSetApplicationTask);
       }
    }
 

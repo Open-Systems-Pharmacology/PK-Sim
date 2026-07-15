@@ -34,6 +34,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
       private readonly IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
       public MoBiExportTask(
          ISimulationConfigurationTask simulationConfigurationTask,
@@ -48,7 +49,8 @@ namespace PKSim.Infrastructure.Services
          IJournalRetriever journalRetriever,
          IApplicationSettings applicationSettings,
          IStartableProcessFactory startableProcessFactory,
-         IModelCoreSimulationSnapshotUpdater modelCoreSimulationSnapshotUpdater)
+         IModelCoreSimulationSnapshotUpdater modelCoreSimulationSnapshotUpdater,
+         IOverwriteParameterSetApplicationTask overwriteParameterSetApplicationTask)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
@@ -63,6 +65,7 @@ namespace PKSim.Infrastructure.Services
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
          _modelCoreSimulationSnapshotUpdater = modelCoreSimulationSnapshotUpdater;
+         _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
 
       public void StartWith(Simulation simulation)
@@ -122,6 +125,8 @@ namespace PKSim.Infrastructure.Services
             throw new PKSimException(PKSimConstants.Error.CannotExportAnImportedSimulation);
 
          var configuration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         // the configuration has only one module configuration, which has SelectedParameterValues by construction
+         _overwriteParameterSetApplicationTask.ApplyOverwriteParameterSetsTo(configuration.ModuleConfigurations.First().SelectedParameterValues, simulation);
          var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
