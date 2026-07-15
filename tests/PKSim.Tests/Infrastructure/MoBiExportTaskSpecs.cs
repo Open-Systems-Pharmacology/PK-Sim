@@ -150,6 +150,12 @@ namespace PKSim.Infrastructure
       {
          A.CallTo(() => _objectIdResetter.ResetIdFor(_simulationTransfer.Simulation)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_apply_the_overwrite_parameter_sets_into_the_configuration_parameter_values()
+      {
+         A.CallTo(() => _overwriteParameterSetApplicationTask.ApplyOverwriteParameterSetsTo(A<ParameterValuesBuildingBlock>._, _sim)).MustHaveHappened();
+      }
    }
 
    public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_the_setup : concern_for_MoBiExportTask
