@@ -1,3 +1,4 @@
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -13,6 +14,8 @@ namespace PKSim.Core
    public abstract class concern_for_OverwriteParameterSetApplicationTask : ContextSpecification<OverwriteParameterSetApplicationTask>
    {
       protected IContainerTask _containerTask;
+      protected IEntityPathResolver _entityPathResolver;
+      protected IParameterValuesCreator _parameterValuesCreator;
       protected IndividualSimulation _simulation;
       protected Compound _compound;
       protected IParameter _lipophilicityParam;
@@ -22,6 +25,8 @@ namespace PKSim.Core
       protected override void Context()
       {
          _containerTask = A.Fake<IContainerTask>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
 
          _compound = new Compound { Name = "Aspirin", Id = "CompId" };
 
@@ -46,7 +51,12 @@ namespace PKSim.Core
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeabilityParam);
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
 
-         sut = new OverwriteParameterSetApplicationTask(_containerTask);
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_lipophilicityParam, false)).Returns("Organism|Aspirin|Lipophilicity".ToObjectPath());
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_permeabilityParam, false)).Returns("Organism|Aspirin|Permeability".ToObjectPath());
+         A.CallTo(() => _parameterValuesCreator.CreateParameterValue(A<ObjectPath>._, A<IParameter>._))
+            .ReturnsLazily((ObjectPath path, IParameter p) => new ParameterValue { Path = path, Value = p.Value });
+
+         sut = new OverwriteParameterSetApplicationTask(_containerTask, _entityPathResolver, _parameterValuesCreator);
       }
 
       protected OverwriteParameterSet overwriteParameterSetWith(params (string path, double value)[] values)
@@ -197,6 +207,157 @@ namespace PKSim.Core
       {
          _lipophilicityParam.Origin.BuilingBlockId.ShouldBeEqualTo(_compound.Id);
          _secondCompoundParam.Origin.BuilingBlockId.ShouldBeEqualTo(_secondCompound.Id);
+      }
+   }
+
+   public class When_writing_an_overwrite_parameter_set_into_a_parameter_values_building_block : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private ParameterValuesBuildingBlock _parameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValues = new ParameterValuesBuildingBlock();
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_parameterValues, _simulation);
+      }
+
+      [Observation]
+      public void should_add_an_entry_for_the_overwritten_parameter_with_the_overwrite_value()
+      {
+         var entry = _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()];
+         entry.ShouldNotBeNull();
+         entry.Value.ShouldBeEqualTo(5.0);
+      }
+
+      [Observation]
+      public void should_write_the_entry_as_value_only_without_a_formula()
+      {
+         _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()].Formula.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_not_add_entries_for_parameters_that_are_not_part_of_the_set()
+      {
+         _parameterValues["Organism|Aspirin|Permeability".ToObjectPath()].ShouldBeNull();
+      }
+   }
+
+   public class When_writing_an_overwrite_parameter_set_over_an_existing_formula_based_entry : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private ParameterValuesBuildingBlock _parameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValues = new ParameterValuesBuildingBlock();
+         _parameterValues.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Formula = _lipophilicityParam.Formula });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_parameterValues, _simulation);
+      }
+
+      [Observation]
+      public void should_set_the_overwrite_value_on_the_existing_entry()
+      {
+         _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()].Value.ShouldBeEqualTo(5.0);
+      }
+
+      [Observation]
+      public void should_clear_the_existing_formula_so_the_entry_is_value_only()
+      {
+         _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()].Formula.ShouldBeNull();
+      }
+   }
+
+   public class When_writing_an_overwrite_parameter_set_into_a_building_block_that_already_contains_the_path : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private ParameterValuesBuildingBlock _parameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValues = new ParameterValuesBuildingBlock();
+         _parameterValues.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Value = 1.0 });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_parameterValues, _simulation);
+      }
+
+      [Observation]
+      public void should_update_the_existing_entry_rather_than_add_a_duplicate()
+      {
+         _parameterValues.Count().ShouldBeEqualTo(1);
+         _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()].Value.ShouldBeEqualTo(5.0);
+      }
+   }
+
+   public class When_writing_into_a_building_block_and_no_overwrite_parameter_set_is_selected : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private ParameterValuesBuildingBlock _parameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValues = new ParameterValuesBuildingBlock();
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", null);
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_parameterValues, _simulation);
+      }
+
+      [Observation]
+      public void should_leave_the_parameter_values_building_block_empty()
+      {
+         _parameterValues.Count().ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_writing_overwrite_parameter_sets_for_multiple_compounds_into_a_building_block : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private ParameterValuesBuildingBlock _parameterValues;
+      private Compound _secondCompound;
+      private IParameter _secondCompoundParam;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValues = new ParameterValuesBuildingBlock();
+         _secondCompound = new Compound { Name = "Midazolam", Id = "CompId2" };
+         _secondCompoundParam = DomainHelperForSpecs.ConstantParameterWithValue(1.0).WithName("Solubility");
+         _secondCompoundParam.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+
+         _simulation.Model.Root.Add(_secondCompoundParam);
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId2", PKSimBuildingBlockType.Compound) { BuildingBlock = _secondCompound });
+         _parameterCache.Add("Organism|Midazolam|Solubility", _secondCompoundParam);
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_secondCompoundParam, false)).Returns("Organism|Midazolam|Solubility".ToObjectPath());
+
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+         _simulation.AddOverwriteParameterSetSelection("Midazolam", overwriteParameterSetWith(("Organism|Midazolam|Solubility", 2.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_parameterValues, _simulation);
+      }
+
+      [Observation]
+      public void should_add_an_entry_for_each_compound_parameter_with_its_overwrite_value()
+      {
+         _parameterValues["Organism|Aspirin|Lipophilicity".ToObjectPath()].Value.ShouldBeEqualTo(5.0);
+         _parameterValues["Organism|Midazolam|Solubility".ToObjectPath()].Value.ShouldBeEqualTo(2.0);
       }
    }
 }
