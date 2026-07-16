@@ -11,7 +11,9 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Serialization;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using System;
 using System.Threading;
@@ -79,5 +81,8 @@ public class CLIApplicationStartup : ApplicationStartup
       container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
       container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIStarterUserSettings>(LifeStyle.Singleton);
       container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+      container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
+      container.Register<IObservedDataTask, CoreObservedDataTask>();
+      container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
    }
 }
