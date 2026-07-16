@@ -34,6 +34,7 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IPKSimConfiguration _configuration;
       private readonly IPostLaunchChecker _postLaunchChecker;
       private readonly IVersionChecker _versionChecker;
+      private readonly IStartableWarmup _startableWarmup;
       public StartOptions StartOptions { get; set; }
 
       public PKSimMainViewPresenter(IPKSimMainView mainView,
@@ -45,7 +46,8 @@ namespace PKSim.Presentation.Presenters.Main
          IProjectTask projectTask,
          IPKSimConfiguration configuration,
          IPostLaunchChecker postLaunchChecker,
-         IVersionChecker versionChecker
+         IVersionChecker versionChecker,
+         IStartableWarmup startableWarmup
       )
          : base(mainView, eventPublisher, contextMenuFactory)
       {
@@ -56,6 +58,7 @@ namespace PKSim.Presentation.Presenters.Main
          _configuration = configuration;
          _postLaunchChecker = postLaunchChecker;
          _versionChecker = versionChecker;
+         _startableWarmup = startableWarmup;
       }
 
       public override void Initialize()
@@ -80,6 +83,10 @@ namespace PKSim.Presentation.Presenters.Main
 
       public override void Run()
       {
+         //The repository warm-up runs on a background thread during window construction; make sure it has finished
+         //before the first DB access (project load below).
+         _startableWarmup.AwaitCompletion();
+
          _projectTask.Run(StartOptions);
 
          _postLaunchChecker.PerformPostLaunchCheckAsync();

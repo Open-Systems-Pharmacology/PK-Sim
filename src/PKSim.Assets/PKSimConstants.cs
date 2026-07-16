@@ -487,7 +487,6 @@ namespace PKSim.Assets
          public const string AtLeastOneCompoundMustBeSelected = "At least one compound must be selected.";
          public const string AtLeastOneFileRequiredToStartPopulationImport = "At least one file is required to perform the population import.";
          public const string AtLeastOneProtocolRequiredToCreateSimulation = "Select at least one protocol for the administered compound(s).";
-         public const string AProtocolCanOnlyBeUsedOnceInASimulation = "Each administered compound must have a unique administration protocol.";
          public const string CanOnlyCompareTwoObjectsAtATime = "Object comparison is only available for two objects at the same time.";
          public const string AdvancedCommitNotAvailable = "Advanced commit is not supported.";
          public const string KeywordsAndReplacementsSizeDiffer = "Keywords and replacementValues do not have the same length!";

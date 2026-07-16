@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using OSPSuite.Utility;
 using PKSim.R.Services;
@@ -41,6 +42,75 @@ namespace PKSim.R
       {
          _simulations.ShouldNotBeNull();
          _simulations.Length.ShouldBeGreaterThan(0);
+      }
+
+      [Observation]
+      public void should_return_simulations_that_carry_a_simulation_configuration()
+      {
+         _simulations.All(x => x.Configuration != null).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_simulations_that_wrap_a_model_core_simulation()
+      {
+         _simulations.All(x => x.CoreSimulation is ModelCoreSimulation).ShouldBeTrue();
+      }
+   }
+
+   public class When_loading_a_population_simulation_from_a_snapshot : concern_for_SnapshotTask
+   {
+      private Simulation[] _simulations;
+      private Simulation _populationSimulation;
+      private Simulation _individualSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshotFile = DomainHelperForSpecs.DataFilePathFor("Atazanavir-IndAndPop.json");
+      }
+
+      protected override void Because()
+      {
+         _simulations = sut.LoadSimulationsFromSnapshot(_snapshotFile);
+         _populationSimulation = _simulations.Single(x => x.IsPopulation);
+         _individualSimulation = _simulations.Single(x => !x.IsPopulation);
+      }
+
+      [Observation]
+      public void should_return_both_the_individual_and_the_population_simulation()
+      {
+         _simulations.Length.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_carry_the_complete_population_on_the_population_simulation()
+      {
+         var cache = _populationSimulation.IndividualValuesCache;
+         cache.ShouldNotBeNull();
+         cache.Count.ShouldBeEqualTo(6);
+
+         var parameterPaths = cache.AllParameterPaths();
+         parameterPaths.Length.ShouldBeGreaterThan(0);
+
+         //every varied parameter carries one value per individual: the whole cache was carried, not truncated or empty
+         parameterPaths.All(path => cache.ValuesFor(path).Count == cache.Count).ShouldBeTrue();
+
+         //real population data was carried: at least one parameter actually varies across the individuals
+         parameterPaths.Any(path => cache.ValuesFor(path).Distinct().Count() > 1).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_carry_aging_data_on_the_population_simulation()
+      {
+         _populationSimulation.AgingData.ShouldNotBeNull();
+         _populationSimulation.AgingData.IndividualIds.Length.ShouldBeGreaterThan(0);
+      }
+
+      [Observation]
+      public void should_leave_the_individual_simulation_without_population_or_aging_data()
+      {
+         _individualSimulation.IndividualValuesCache.ShouldBeNull();
+         _individualSimulation.AgingData.ShouldBeNull();
       }
    }
 

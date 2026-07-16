@@ -25,6 +25,8 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
+using PKSim.Presentation.Infrastructure.Services;
+using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -54,6 +56,9 @@ namespace PKSim.UI.BootStrapping
 
          var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(SynchronizationContext.Current);
+         // Register the UI thread so the EventPublisher singleton captures it (via its explicit-thread
+         // constructor) and dispatches synchronously (Send) from the UI thread rather than deferred (Post).
+         container.RegisterImplementationOf(Thread.CurrentThread);
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
@@ -104,9 +109,8 @@ namespace PKSim.UI.BootStrapping
 
       public void Start()
       {
-         var progressManager = IoC.Resolve<IProgressManager>();
          var container = IoC.Container;
-         using (var progress = progressManager.Create())
+         using (var progress = createSplashProgressUpdater(container))
          {
             progress.Initialize(8);
 
@@ -140,6 +144,26 @@ namespace PKSim.UI.BootStrapping
          }
       }
 
+      //The splash runs on its own UI thread, so its progress updates must be dispatched to that thread. Bind a
+      //dedicated EventPublisher to the splash's own synchronization context and drive a ProgressUpdater through it, so
+      //the splash presenter handles the events on the splash thread - updating incrementally and without a cross-thread.
+      private static IProgressUpdater createSplashProgressUpdater(IContainer container)
+      {
+         var splashPresenter = container.Resolve<ISplashViewPresenter>();
+         var splashControl = (Control) splashPresenter.View;
+
+         // Wait until the control is created, up to a maximum of 5 seconds
+         SpinWait.SpinUntil(() => splashControl.IsHandleCreated, TimeSpan.FromSeconds(5));
+         if (!splashControl.IsHandleCreated)
+            return container.Resolve<IProgressManager>().Create();
+
+         var splashContext = splashControl.Invoke(() => SynchronizationContext.Current);
+         var splashThread = splashControl.Invoke(() => Thread.CurrentThread);
+         var splashPublisher = new EventPublisher(splashContext, splashThread, container.Resolve<IExceptionManager>());
+         splashPublisher.AddListener(splashPresenter);
+         return new PKSimProgressUpdater(splashPublisher);
+      }
+
       /// <summary>
       ///    All specific registration that needs to be performed once all other registrations are done
       /// </summary>
@@ -148,6 +172,7 @@ namespace PKSim.UI.BootStrapping
          //Create one instance of the invokers so that the object is available in the application
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
+         container.Resolve<IJournalPageEditorActivator>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator)mainPresenter);
@@ -158,8 +183,16 @@ namespace PKSim.UI.BootStrapping
 
       private void startStartableObject(IContainer container)
       {
-         var rep = container.ResolveAll<IStartable>().ToList();
-         rep.Each(item => item.Start());
+         //Resolve all startables on the UI thread (Castle Windsor resolution stays single-threaded), then warm the
+         //DB-backed repositories on a background thread so their loading overlaps the main window construction.
+         var startables = container.ResolveAll<IStartable>().ToList();
+
+         //Settings are read while the main window is built (e.g. layout restore, comparison settings), so they must
+         //be loaded synchronously before construction; only the (DB-backed) repositories are deferred.
+         var synchronousStartables = startables.OfType<SettingsLoader>().ToList();
+         synchronousStartables.Each(item => item.Start());
+
+         container.Resolve<IStartableWarmup>().Begin(startables.Except(synchronousStartables).ToList());
       }
 
       public static void RegisterCommands(IContainer container)

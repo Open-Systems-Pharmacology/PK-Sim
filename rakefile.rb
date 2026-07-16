@@ -154,7 +154,7 @@ end
 private
 
 def relative_src_dir_for(configuration)
-	File.join( 'src', 'PKSim', 'bin', configuration, 'net8.0-windows')
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net10.0-windows')
 end
 
 def src_dir_for(configuration)

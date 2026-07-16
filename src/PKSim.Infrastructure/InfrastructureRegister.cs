@@ -171,6 +171,7 @@ namespace PKSim.Infrastructure
 
             scan.ExcludeType<CommandMetaDataRepository>();
             scan.ExcludeType<DefaultIndividualRetriever>();
+            scan.ExcludeType<StartableWarmup>(); //registered explicitly as singleton below
             scan.ExcludeType<SessionManager>();
             scan.ExcludeType<TemplateDatabase>();
             scan.ExcludeType<GeneExpressionDatabase>();
@@ -216,6 +217,7 @@ namespace PKSim.Infrastructure
 
          registerMarkdownBuilders(container);
 
+         container.Register<IStartableWarmup, StartableWarmup>(LifeStyle.Singleton);
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
          container.Register<IObservedDataConfiguration, ImportObservedDataTask>();
          container.Register<IFlatContainerIdToContainerMapperSpecification, FlatContainerIdToFormulationMapper>();
