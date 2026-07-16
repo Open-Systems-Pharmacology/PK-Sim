@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.Core.Services

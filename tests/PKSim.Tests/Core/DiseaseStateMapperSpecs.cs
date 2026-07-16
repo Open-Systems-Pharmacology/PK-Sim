@@ -4,10 +4,14 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using DiseaseState = PKSim.Core.Model.DiseaseState;
+using OriginData = PKSim.Core.Model.OriginData;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -57,7 +61,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_model_disease_state_to_snapshot : concern_for_DiseaseStateMapper
    {
-      private Snapshots.DiseaseState _snapshot;
+      private OSPSuite.Core.Snapshots.DiseaseState _snapshot;
 
       protected override async Task Because()
       {
@@ -79,7 +83,7 @@ namespace PKSim.Core
    public class When_mapping_an_origin_data_from_snapshot_with_disease_state : concern_for_DiseaseStateMapper
    {
       private IDimension _timeDimension;
-      private Snapshots.DiseaseState _snapshot;
+      private OSPSuite.Core.Snapshots.DiseaseState _snapshot;
 
       protected override async Task Context()
       {
@@ -97,7 +101,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext()));
+         await sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -113,7 +117,7 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_from_snapshot_with_disease_state_parameter_unknown : concern_for_DiseaseStateMapper
    {
-      private Snapshots.DiseaseState _snapshot;
+      private OSPSuite.Core.Snapshots.DiseaseState _snapshot;
 
       protected override async Task Context()
       {
@@ -129,7 +133,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext()));
+         await sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -144,7 +148,7 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_from_snapshot_with_disease_state_that_is_unknown : concern_for_DiseaseStateMapper
    {
-      private Snapshots.DiseaseState _snapshot;
+      private OSPSuite.Core.Snapshots.DiseaseState _snapshot;
 
       protected override async Task Context()
       {
@@ -156,7 +160,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext()))).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new DiseaseStateContext(_originData, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)))).ShouldThrowAn<PKSimException>();
       }
    }
 }

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using FakeItEasy;
 
 namespace PKSim.Core
 {

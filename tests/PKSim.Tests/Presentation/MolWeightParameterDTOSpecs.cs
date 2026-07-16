@@ -32,7 +32,7 @@ namespace PKSim.Presentation
          _errorInfo = new ErrorInfo();
          _effectiveMolWeightParameter.Value = 14;
          _effectiveMolWeightParameter.MinValue = 15;
-         _numericFormatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
+         _numericFormatter = new(NumericFormatterOptions.Instance);
       }
 
       protected override void Because()

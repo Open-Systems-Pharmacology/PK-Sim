@@ -5,17 +5,15 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Presenters.Snapshots;
-using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation
 {
@@ -62,7 +60,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_caption_based_on_the_snapshot_type()
       {
-         _view.Caption.ShouldBeEqualTo(PKSimConstants.UI.LoadObjectFromSnapshot(_objectType));
+         _view.Caption.ShouldBeEqualTo(Captions.LoadObjectFromSnapshot(_objectType));
       }
    }
 
@@ -122,7 +120,7 @@ namespace PKSim.Presentation
          var snapshotFile = "SnapshotFile";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(snapshotFile);
          _loadFromSnapshotDTO.SnapshotFile = snapshotFile;
-         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] {_individual});
+         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] { _individual });
          A.CallTo(() => _view.Display())
             .Invokes(x => sut.StartAsync().Wait());
          sut.LoadModelFromSnapshot();
@@ -156,7 +154,7 @@ namespace PKSim.Presentation
          var snapshotFile = "SnapshotFile";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(snapshotFile);
          _loadFromSnapshotDTO.SnapshotFile = snapshotFile;
-         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] {_individual});
+         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] { _individual });
          A.CallTo(() => _view.Display())
             .Invokes(x => sut.StartAsync().Wait());
       }

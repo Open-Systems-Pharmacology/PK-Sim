@@ -17,6 +17,7 @@ namespace PKSim.CLI
       protected ISnapshotTask _snapshotTask;
       protected IOSPSuiteLogger _logger;
       protected ISimulationExporter _simulationExporter;
+      private ICoreWorkspace _workspace;
 
       protected override Task Context()
       {
@@ -27,8 +28,9 @@ namespace PKSim.CLI
          };
          _snapshotTask = A.Fake<ISnapshotTask>();
          _logger = A.Fake<IOSPSuiteLogger>();
+         _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
-         sut = new JsonSimulationRunner(_simulationExporter, _logger, _snapshotTask);
+         sut = new JsonSimulationRunner(_simulationExporter, _logger, _snapshotTask, _workspace);
          
          var project = A.Fake<PKSimProject>();
          A.CallTo(() => project.All<Simulation>()).Returns(new List<Simulation>());

@@ -24,7 +24,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       private static class AllRules
       {
-         private static readonly NumericFormatter<double> _numericFormatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
+         private static readonly NumericFormatter<double> _numericFormatter = new(NumericFormatterOptions.Instance);
 
          private static IBusinessRule effectiveMolWeightGreaterThanMinimum { get; } = CreateRule.For<EffectiveMolWeightParameterDTO>()
             .Property(item => item.Value)

@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -17,19 +20,6 @@ using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.Populat
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationContext : SnapshotContext
-   {
-      public bool Run { get; }
-
-      public SimulationContext(bool run, SnapshotContext baseContext) : base(baseContext)
-      {
-         Run = run;
-      }
-
-      public int NumberOfSimulationsToLoad { get; set; } = 1;
-      public int NumberOfSimulationsLoaded { get; set; } = 1;
-   }
-
    public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, SimulationContext, PKSimProject>
    {
       private readonly SolverSettingsMapper _solverSettingsMapper;
@@ -49,12 +39,12 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ISimulationModelCreator _simulationModelCreator;
       private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       private readonly IModelPropertiesTask _modelPropertiesTask;
-      private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
       private readonly IOSPSuiteLogger _logger;
       private readonly IContainerTask _containerTask;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IChartTask _chartTask;
+      private readonly OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -69,12 +59,12 @@ namespace PKSim.Core.Snapshots.Mappers
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ProcessMappingMapper processMappingMapper,
          OutputMappingMapper outputMappingMapper,
+         OverwriteParameterSetSelectionMapper overwriteParameterSetSelectionMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IModelPropertiesTask modelPropertiesTask,
-         ISimulationRunner simulationRunner,
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
          IOSPSuiteLogger logger,
          IContainerTask containerTask,
@@ -93,12 +83,12 @@ namespace PKSim.Core.Snapshots.Mappers
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _processMappingMapper = processMappingMapper;
          _outputMappingMapper = outputMappingMapper;
+         _overwriteParameterSetSelectionMapper = overwriteParameterSetSelectionMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _modelPropertiesTask = modelPropertiesTask;
-         _simulationRunner = simulationRunner;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
          _logger = logger;
          _containerTask = containerTask;
@@ -131,7 +121,31 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.PopulationAnalyses = await _populationAnalysisChartMapper.MapToSnapshots(simulation.AnalysesOfType<ModelPopulationAnalysisChart>());
          snapshot.HasResults = simulation.HasResults;
          snapshot.AlteredBuildingBlocks = alteredBuildingBlocksIn(simulation);
+         snapshot.OverwriteParameterSetSelections = await _overwriteParameterSetSelectionMapper.MapToSnapshots(simulation.OverwriteParameterSetSelections.Selections, project);
          return snapshot;
+      }
+
+      private async Task updateOverwriteParameterSetSelections(ModelSimulation simulation, OverwriteParameterSetSelection[] snapshotSelections, SnapshotContext snapshotContext)
+      {
+         var selections = await _overwriteParameterSetSelectionMapper.MapToModels(snapshotSelections, snapshotContext);
+         selections?.Each(selection => simulation.AddOverwriteParameterSetSelection(selection.CompoundName, selection.OverwriteParameterSet));
+      }
+
+      private void reconstructChangedParameterPaths(ModelSimulation simulation)
+      {
+         //After loading, the simulation model already contains all user-changed parameters.
+         //We can rebuild the change tracker by finding parameters whose building block type is Simulation
+         //and whose path matches a building block compound (the same criteria used by EditParameterCommand
+         //when tracking changes during interactive edits).
+         var changedSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(p =>
+            p.BuildingBlockType == PKSimBuildingBlockType.Simulation && p.ShouldExportToSnapshot());
+
+         foreach (var parameter in changedSimulationParameters)
+         {
+            var path = _entityPathResolver.PathFor(parameter);
+            if (simulation.CompoundNameForParameterPath(path) != null)
+               simulation.ParameterChangeTracker.Track(path);
+         }
       }
 
       private AlteredBuildingBlock[] alteredBuildingBlocksIn(ModelSimulation simulation)
@@ -272,8 +286,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext snapshotContext)
       {
-         var project = snapshotContext.Project;
-         _logger.AddInfo(PKSimConstants.Information.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
+         var project = snapshotContext.PKSimProject();
+         _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
          //in global context once the whole snapshot mapping process is completed
@@ -300,12 +314,8 @@ namespace PKSim.Core.Snapshots.Mappers
          updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
-
-         if (snapshotContext.Run)
-            await runSimulation(snapshot, simulation);
-
-         simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, snapshotContext));
-         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, snapshotContext));
+         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
+         reconstructChangedParameterPaths(simulation);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);
@@ -328,7 +338,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, ISimulationSubject simulationSubject, SnapshotContext snapshotContext)
       {
-         var process = findProcess(snapshotContext.Project, snapshotInteraction, simulationSubject);
+         var process = findProcess(snapshotContext.PKSimProject(), snapshotInteraction, simulationSubject);
          if (process == null)
             return null;
 
@@ -353,41 +363,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //This might be a process that was deselected explicitly by the user
          var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
-         return molecule == null ? null : new NoInteractionProcess {MoleculeName = molecule.Name};
-      }
-
-      private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)
-      {
-         if (!snapshot.HasResults)
-            return;
-
-         await _simulationRunner.RunSimulation(simulation);
-      }
-
-      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, SimulationContext simulationContext)
-      {
-         return analysesFrom(simulation, snapshotCharts, simulationContext, _simulationTimeProfileChartMapper.MapToModels);
-      }
-
-      private Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, SimulationContext simulationContext)
-      {
-         return analysesFrom(simulation, snapshotPopulationAnalyses, simulationContext, _populationAnalysisChartMapper.MapToModels);
-      }
-
-      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, SimulationContext simulationContext,
-         Func<TSnapshotAnalysis[], SimulationAnalysisContext, Task<TAnalysis[]>> mapFunc)
-      {
-         if (snapshotAnalyses == null)
-            return Task.FromResult(new List<TAnalysis>().ToArray());
-
-         var project = simulationContext.Project;
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) {RunSimulation = simulationContext.Run};
-
-         var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation?.DataRepository != null)
-            curveChartContext.AddDataRepository(individualSimulation.DataRepository);
-
-         return mapFunc(snapshotAnalyses, curveChartContext);
+         return molecule == null ? null : new NoInteractionProcess { MoleculeName = molecule.Name };
       }
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, SnapshotContext snapshotContext)
@@ -399,7 +375,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<ModelSimulation> createModelLessSimulationFrom(SnapshotSimulation snapshot, SnapshotContext snapshotContext)
       {
-         var project = snapshotContext.Project;
+         var project = snapshotContext.PKSimProject();
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);
          var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);

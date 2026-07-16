@@ -2,7 +2,6 @@
 using System.Linq;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Extensions
 {

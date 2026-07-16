@@ -5,12 +5,13 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
+using OSPSuite.R.Domain;
 using PKSim.Core;
 using PKSim.R.Domain;
 using PKSim.R.Services;
 using static PKSim.Core.Services.CKDDiseaseStateImplementation;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.R
 {

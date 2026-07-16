@@ -3,8 +3,8 @@ using System.Linq;
 using System.Text;
 using CommandLine;
 using CommandLine.Text;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.Utility.Extensions;
-using PKSim.CLI.Core.RunOptions;
 
 namespace PKSim.CLI.Commands
 {

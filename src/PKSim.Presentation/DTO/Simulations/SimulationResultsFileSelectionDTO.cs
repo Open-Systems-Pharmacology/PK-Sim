@@ -1,5 +1,7 @@
-﻿using OSPSuite.Infrastructure.Import.Services;
+﻿using System.Drawing;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
 
 namespace PKSim.Presentation.DTO.Simulations
 {
@@ -7,6 +9,10 @@ namespace PKSim.Presentation.DTO.Simulations
    {
       private int? _numberOfIndividuals;
       private int? _numberOfQuantities;
+
+      // Materializes the base-class Icon as a System.Drawing.Image for binding into the DevExpress
+      // PictureEdit column. Rendering lives in OSPSuite.Presentation.Extensions.ApplicationIconExtensions.
+      public Image Image => Icon.ToImage();
 
       public int? NumberOfIndividuals
       {

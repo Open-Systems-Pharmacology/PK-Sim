@@ -5,7 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
 using PKSim.Core;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.Services;
+using PKSim.Presentation.Infrastructure.Services;
 using FakeItEasy;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;

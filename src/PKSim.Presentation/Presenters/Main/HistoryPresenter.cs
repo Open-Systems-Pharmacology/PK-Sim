@@ -1,12 +1,7 @@
 using System;
-using PKSim.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using PKSim.Core;
-using PKSim.Core.Events;
-using PKSim.Presentation.Regions;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Extensions;
@@ -14,7 +9,11 @@ using OSPSuite.Presentation.Presenters.Commands;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Events;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Events;
+using PKSim.Presentation.Regions;
 
 namespace PKSim.Presentation.Presenters.Main
 {

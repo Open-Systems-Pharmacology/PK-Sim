@@ -3,6 +3,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -84,7 +86,7 @@ namespace PKSim.Core
          A.CallTo(() => _genderRepository.Male).Returns(new Gender {Id = "Male", Name = "Male"});
 
          _project = new PKSimProject();
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          return Task.FromResult(true);
       }
    }
@@ -269,7 +271,7 @@ namespace PKSim.Core
          await base.Context();
          _newIndividual = new Individual();
          _project = new PKSimProject();
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
          _snapshot.ProportionOfFemales = null;
          A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _snapshotContext)).Returns(_newIndividual);

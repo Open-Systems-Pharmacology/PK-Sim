@@ -1,20 +1,15 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
-using PKSim.Core.Services;
 using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistableUpdater;
 
 namespace PKSim.Presentation

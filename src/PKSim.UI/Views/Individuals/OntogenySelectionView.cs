@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using DevExpress.Utils.Layout;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;

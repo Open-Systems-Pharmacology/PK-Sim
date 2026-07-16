@@ -2,10 +2,10 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
+using OSPSuite.R.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.R.Domain;
 
 namespace PKSim.R.Services
 {
@@ -73,14 +73,14 @@ namespace PKSim.R.Services
 
       private ParameterValue ontogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
       {
-         var path = new ObjectPath {moleculeName, parameterName};
+         var path = new ObjectPath { moleculeName, parameterName };
          double factor = _ontogenyRepository.OntogenyFactorFor(ontogeny, ontogenyLocation, originData);
          return new ParameterValue(path, factor, CoreConstants.DEFAULT_PERCENTILE);
       }
 
       private DistributedParameterValue distributedOntogenyFactorFor(Ontogeny ontogeny, string moleculeName, OriginData originData, string parameterName, string ontogenyLocation)
       {
-         var parameterPath = new ObjectPath {moleculeName, parameterName};
+         var parameterPath = new ObjectPath { moleculeName, parameterName };
          var (mean, std, distributionType) = _ontogenyRepository.OntogenyParameterDistributionFor(ontogeny, originData, ontogenyLocation);
          return new DistributedParameterValue(parameterPath, mean, CoreConstants.DEFAULT_PERCENTILE, mean, std, distributionType);
       }

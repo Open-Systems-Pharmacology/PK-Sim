@@ -77,7 +77,9 @@ namespace PKSim
          public const string TUBULAR_SECRETION = "Tubular secretion";
          public const string VMAX = "Vmax";
          public const string VMAX_LIVER_TISSUE = "Vmax (liver tissue)";
-
+         public const string USE_HYDRODYNAMIC_MODEL = "Use Hydrodynamic Model";
+         public const string USE_EFFECTIVE_DIFFUSION = "Use Effective Diffusion";
+         public const string USE_HINTZ_JOHNSON = "Use Hintz-Johnson";
       }
 
       public static class ContainerName

@@ -1,6 +1,5 @@
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
-using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -16,10 +15,10 @@ namespace PKSim.Core.Model
    {
       private static readonly Cache<SystemicProcessTypeId, SystemicProcessType> _allApplicationTypes = new Cache<SystemicProcessTypeId, SystemicProcessType>(proc => proc.SystemicProcessTypeId);
 
-      public static SystemicProcessType Hepatic = create(SystemicProcessTypeId.Hepatic, CoreConstants.Organ.LIVER, PKSimConstants.UI.TotalHepaticClearance);
-      public static SystemicProcessType Renal = create(SystemicProcessTypeId.Renal, CoreConstants.Organ.KIDNEY, PKSimConstants.UI.RenalClearance);
-      public static SystemicProcessType Biliary = create(SystemicProcessTypeId.Biliary, CoreConstants.Organ.GALLBLADDER, PKSimConstants.UI.BiliaryClearance);
-      public static SystemicProcessType GFR = create(SystemicProcessTypeId.GFR, CoreConstants.Organ.KIDNEY, PKSimConstants.UI.GlomerularFiltration);
+      public static SystemicProcessType Hepatic = create(SystemicProcessTypeId.Hepatic, CoreConstants.Organ.LIVER, CoreConstants.Process.TotalHepaticClearance);
+      public static SystemicProcessType Renal = create(SystemicProcessTypeId.Renal, CoreConstants.Organ.KIDNEY, CoreConstants.Process.RenalClearances);
+      public static SystemicProcessType Biliary = create(SystemicProcessTypeId.Biliary, CoreConstants.Organ.GALLBLADDER, CoreConstants.Process.BiliaryClearance);
+      public static SystemicProcessType GFR = create(SystemicProcessTypeId.GFR, CoreConstants.Organ.KIDNEY, CoreConstants.Process.GlomerularFiltration);
 
       public static SystemicProcessType ById(SystemicProcessTypeId systemicProcessTypeId)
       {

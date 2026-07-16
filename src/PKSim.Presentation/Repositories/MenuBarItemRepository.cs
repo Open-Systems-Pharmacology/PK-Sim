@@ -42,16 +42,16 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.ProjectDescription)
             .WithShortcut(Keys.Control | Keys.D);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportProjectToSnapshot)
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportProjectToSnapshot)
             .WithId(MenuBarItemIds.ExportProjectToSnapshot)
-            .WithCommand<ExportProjectToSnapshotCommand>(_container)
-            .WithDescription(PKSimConstants.UI.ExportProjectToSnapshotDescription)
+            .WithCommand<ExportProjectToSnapshotUICommand>(_container)
+            .WithDescription(Captions.ExportProjectToSnapshotDescription)
             .WithIcon(ApplicationIcons.SnapshotExport);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadProjectFromSnapshot)
+         yield return CreateMenuButton.WithCaption(MenuNames.LoadProjectFromSnapshot)
             .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
             .WithCommand<LoadProjectFromSnapshotUICommand>(_container)
-            .WithDescription(PKSimConstants.UI.LoadProjectFromSnapshotDescription)
+            .WithDescription(Captions.LoadProjectFromSnapshotDescription)
             .WithIcon(ApplicationIcons.SnapshotImport);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloseProject)
@@ -480,7 +480,13 @@ namespace PKSim.Presentation.Repositories
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView, _container);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage, _container);
          yield return JournalMenuBarButtons.SelectJournal(MenuBarItemIds.SelectJournal, _container);
-         yield return JournalMenuBarButtons.JournalEditorView(MenuBarItemIds.JournalEditorView, _container);
+         //Initialize JournalEditorVisibiliyUICommand on demand because it constructs expensive DevExpress components
+         yield return CreateMenuButton.WithCaption(Captions.Journal.JournalEditorView)
+            .WithId(MenuBarItemIds.JournalEditorView)
+            .WithDescription(Captions.Journal.JournalEditorViewDescription)
+            .WithActionCommand(() => _container.Resolve<JournalEditorVisibiliyUICommand>().Execute())
+            .WithIcon(ApplicationIcons.PageEdit);
+
          yield return CommonMenuBarButtons.JournalDiagramView(MenuBarItemIds.JournalDiagramView, _container);
          yield return JournalMenuBarButtons.SearchJournal(MenuBarItemIds.SearchJournal, _container);
          yield return CommonMenuBarButtons.LoadFavoritesFromFile(MenuBarItemIds.LoadFavorites, _container);

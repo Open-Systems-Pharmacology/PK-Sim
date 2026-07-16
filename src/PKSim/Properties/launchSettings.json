@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "PKSim": {
-      "commandName": "Project",
-      "commandLineArgs": "--dev"
-    }
-  }
-}

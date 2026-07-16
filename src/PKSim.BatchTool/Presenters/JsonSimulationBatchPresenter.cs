@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Services;
+﻿using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
 using PKSim.BatchTool.Views;

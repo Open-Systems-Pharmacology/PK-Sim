@@ -1,5 +1,4 @@
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer.Attributes;
 

@@ -1,9 +1,12 @@
 ﻿using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.ProjectConverter.v13;
+using CoreConverter121To130 = OSPSuite.Core.Converters.v13.Converter121To130;
 
 namespace PKSim.IntegrationTests
 {
@@ -38,11 +41,12 @@ namespace PKSim.IntegrationTests
 
       public override void GlobalContext()
       {
+         var converter = new Converter12To13(new CoreConverter121To130(A.Fake<OSPSuite.Core.Domain.ISolverSettingsFactory>()));
          base.GlobalContext();
          LoadProject("RenameApplication_V8");
          _iv = FindByName<Protocol>("aa");
          _s1 = FindByName<IndividualSimulation>("aa");
-
+         converter.Convert(_s1, 12);
          sut.RenameBuildingBlock(_iv, "bb");
       }
 

@@ -1,7 +1,6 @@
-﻿using OSPSuite.Core.Services;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

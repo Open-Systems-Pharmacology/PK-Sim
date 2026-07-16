@@ -5,7 +5,6 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using PKSim.Assets;
 using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.DiseaseStates;

@@ -2,13 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -122,10 +122,10 @@ namespace PKSim.CLI.Core.Services
          };
 
          if (exportRunOptions.RunSimulation)
-            await _simulationExporter.RunAndExport(simulation,  simulationRunOptions, simulationExportOptions);
+            await _simulationExporter.RunAndExport(simulation, simulationRunOptions, simulationExportOptions);
 
-         else 
-            await _simulationExporter.Export(simulation,  simulationExportOptions);
+         else
+            await _simulationExporter.Export(simulation, simulationExportOptions);
 
          _logger.AddDebug($"Simulation '{simulationName}' exported to '{simulationFolder}'", projectName);
          return simulationExport;

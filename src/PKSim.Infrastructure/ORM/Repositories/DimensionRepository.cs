@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization;
@@ -25,7 +24,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IPKSimConfiguration pkSimConfiguration,
          IContainer container)
       {
-         _dimensionFactory = dimensionFactory;
+         _dimensionFactory = dimensionFactory;  
          _dimensionFactory.DimensionRepository = this;
          _unitSystemXmlSerializerRepository = unitSystemXmlSerializerRepository;
          _pkSimConfiguration = pkSimConfiguration;

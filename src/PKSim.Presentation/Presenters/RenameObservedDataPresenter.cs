@@ -1,10 +1,9 @@
 using System.Linq;
-using PKSim.Assets;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.Assets;
 using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters

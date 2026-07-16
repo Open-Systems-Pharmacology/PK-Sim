@@ -56,7 +56,6 @@ namespace PKSim.Infrastructure
 
    public class IndividualEqualityComparer : GenericEqualityComparer<Individual>
    {
-
    }
 
    public class CompoundEqualityComparer : GenericEqualityComparer<Compound>

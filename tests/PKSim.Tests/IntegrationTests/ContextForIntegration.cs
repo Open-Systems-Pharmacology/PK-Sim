@@ -4,7 +4,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
@@ -15,7 +14,6 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.BatchTool;
 using PKSim.CLI.Core;
-using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
@@ -42,7 +40,6 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
-            container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
             container.Register<ISimulationConstructor, SimulationConstructor>();
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
@@ -58,16 +55,12 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
-               x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
+               x.FromType<CLIRegister>();
                x.FromType<PresenterRegister>();
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();
             });
-
-            //Register an other type that was already registered previously to ensure that we do use the presentation implementation
-            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
-
 
             var userSettings = container.Resolve<IUserSettings>();
             userSettings.AbsTol = 1e-10;
@@ -76,8 +69,10 @@ namespace PKSim.IntegrationTests
             userSettings.NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
 
 
-            InfrastructureRegister.LoadSerializers(container);
-            InfrastructureRegister.RegisterWorkspace(container);
+            InfrastructureRegister.RegisterSerializationDependencies(container);
+            PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(container);
+            InfrastructureRegister.LoadDefaultEntities(container);
+            //Workspace registration handled by PresenterRegister now (PKSim.Presentation owns Workspace).
          }
 
          //Required for usage with nunit 3

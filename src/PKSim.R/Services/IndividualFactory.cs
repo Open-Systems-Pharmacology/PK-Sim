@@ -2,8 +2,10 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.R.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Mappers;
@@ -13,6 +15,8 @@ using PKSim.R.Domain;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 using ICoreIndividualFactory = PKSim.Core.Model.IIndividualFactory;
+using OriginData = PKSim.Core.Model.OriginData;
+using ParameterValue = OSPSuite.Core.Domain.Populations.ParameterValue;
 
 namespace PKSim.R.Services
 {
@@ -112,9 +116,9 @@ namespace PKSim.R.Services
          return distributedParameters.ToArray();
       }
 
-      private OriginData originDataFrom(Core.Snapshots.OriginData originData)
+      private OriginData originDataFrom(OSPSuite.Core.Snapshots.OriginData originData)
       {
-         return _originDataMapper.MapToModel(originData, new SnapshotContext()).Result;
+         return _originDataMapper.MapToModel(originData, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
       }
 
       private ParameterValueWithUnit parameterValueFrom(IParameter parameter)

@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
 using FakeItEasy;
 using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Extensions;
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
-
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {

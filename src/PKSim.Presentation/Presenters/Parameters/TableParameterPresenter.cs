@@ -9,7 +9,6 @@ using OSPSuite.Presentation.Views.Parameters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Parameters;
-using PKSim.Presentation.Views.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters

@@ -20,7 +20,6 @@ task :cover do
   targetProjects = [
 	"PKSim.Tests.csproj",
 	"PKSim.R.Tests.csproj",
-	"PKSim.Matlab.Tests.csproj",
 	"PKSim.UI.Tests.csproj",
 	];
 
@@ -44,7 +43,7 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
 		"#{relative_src_dir}/TeXTemplates/**/*.*",
 		'examples/*.txt',
-		'src/PKSim.Assets.Images/Resources/*.ico',
+		'src/PKSim.UI/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
@@ -77,6 +76,9 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	FileUtils.copy_entry File.join(src_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
 	FileUtils.copy_entry File.join(src_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
 
+	dst_dir = File.join(setup_temp_dir, 'runtimes', 'win-x64', 'native')
+    FileUtils.mkdir_p(dst_dir)
+    FileUtils.copy_entry File.join(src_dir, 'runtimes', 'win-x64', 'native'), dst_dir
 
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
@@ -105,15 +107,25 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 		))
 end
 
+task :create_local_nuget_r do
+	nuget_repo = "../OSPSuite.Core/nuget_repo"
+	FileUtils.rm_f Dir.glob("#{nuget_repo}/PKSim.*.nupkg")
+	version_id = "13.0.0-" + generate_code(5)
+	puts("Your PKSim version is " + version_id.red)
+	abort("dotnet pack failed") unless system("dotnet", "pack", "PKSim.sln", "--no-build", "--no-restore", "-o", nuget_repo, "-p:PackageVersion=" + version_id, "--configuration", "Debug")
+	update_ospsuite_r_pksim(version_id)
+	build_dependency_manager
+end
+
 task :update_go_license, [:file_path, :license] do |t, args|
 	Utils.update_go_diagram_license args.file_path, args.license
-end	
+end
 
 task :postclean do |t, args| 
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '12.3')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.0')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
@@ -142,7 +154,7 @@ end
 private
 
 def relative_src_dir_for(configuration)
-	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net10.0-windows')
 end
 
 def src_dir_for(configuration)
@@ -171,4 +183,29 @@ end
 
 def setup_temp_dir
 	File.join(setup_dir, 'temp')
+end
+
+def generate_code(number)
+	charset = Array('A'..'Z') + Array('a'..'z')
+	Array.new(number) { charset.sample }.join
+end
+
+def find_token(file, regex)
+	file_content = File.read(file)
+	matches = file_content.match(regex)
+	return nil if matches.nil?
+	matches[1]
+end
+
+def update_ospsuite_r_pksim(version_id)
+	puts("updating OSPSuite-R with PKSim.R")
+	csproj = "../OSPSuite-R/shared/DependencyManager/src/DependencyManager.csproj"
+	token = find_token(csproj, /<PackageReference Include="PKSim.R" Version="([^"]*)"/)
+	return if token.nil?
+	Utils.replace_tokens({token => version_id}, csproj)
+end
+
+def build_dependency_manager
+	puts("building DependencyManager")
+	abort("dotnet build failed") unless system("dotnet", "build", "../OSPSuite-R/shared/DependencyManager/DependencyManager.sln", "--configuration", "Debug")
 end

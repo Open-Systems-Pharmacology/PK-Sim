@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using Population = PKSim.Core.Snapshots.Population;
 
@@ -112,7 +112,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _project = new PKSimProject();
-         _snapshotContext = new SnapshotContext(_project,ProjectVersions.Current);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          
          _randomPopulation = CreateRandomPopulation();
          _newPopulationSettings = new RandomPopulationSettings();

@@ -15,13 +15,13 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
-using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
+using ObservedDataTask = PKSim.Presentation.Infrastructure.Services.ObservedDataTask;
 
 namespace PKSim.Infrastructure
 {

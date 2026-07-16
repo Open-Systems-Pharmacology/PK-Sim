@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Services
 {
@@ -29,16 +30,24 @@ namespace PKSim.Core.Services
       private readonly IPKSimChartFactory _chartFactory;
       private readonly ICoreUserSettings _userSettings;
       private readonly ICloner _cloner;
+      private readonly IObservedDataInComparisonTask _observedDataInComparisonTask;
       private ISimulationAnalysis _simulationAnalysis;
 
-      public SimulationAnalysisCreator(IPopulationSimulationAnalysisStarter populationSimulationAnalysisStarter,
-         IExecutionContext executionContext, IContainerTask containerTask, IPKSimChartFactory chartFactory,
-         ICoreUserSettings userSettings, ICloner cloner) : base(containerTask, executionContext)
+      public SimulationAnalysisCreator(
+         IPopulationSimulationAnalysisStarter populationSimulationAnalysisStarter,
+         IExecutionContext executionContext, 
+         IContainerTask containerTask, 
+         IPKSimChartFactory chartFactory,
+         ICoreUserSettings userSettings, 
+         ICloner cloner, 
+         IObservedDataInComparisonTask observedDataInComparisonTask) : 
+         base(containerTask, executionContext)
       {
          _populationSimulationAnalysisStarter = populationSimulationAnalysisStarter;
          _chartFactory = chartFactory;
          _userSettings = userSettings;
          _cloner = cloner;
+         _observedDataInComparisonTask = observedDataInComparisonTask;
       }
 
       public ISimulationAnalysis CreateAnalysisFor(Simulation simulation)
@@ -80,6 +89,10 @@ namespace PKSim.Core.Services
       {
          var populationSimulationAnalysis =
             _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(populationDataCollector, populationAnalysisType);
+
+         if (populationDataCollector is PopulationSimulationComparison comparison && populationSimulationAnalysis is TimeProfileAnalysisChart timeProfileChart)
+            _observedDataInComparisonTask.AddObservedDataToTimeProfile(comparison, timeProfileChart);
+
          AddSimulationAnalysisTo(populationDataCollector, populationSimulationAnalysis);
          return populationSimulationAnalysis;
       }

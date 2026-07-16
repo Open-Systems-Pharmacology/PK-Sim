@@ -5,7 +5,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
 {
    public class IndividualReportBuilder : DelegateReportBuilder<Individual>
    {
-      public IndividualReportBuilder(IReportGenerator reportGenerator):base(reportGenerator)
+      public IndividualReportBuilder(IReportGenerator reportGenerator) : base(reportGenerator)
       {
       }
 

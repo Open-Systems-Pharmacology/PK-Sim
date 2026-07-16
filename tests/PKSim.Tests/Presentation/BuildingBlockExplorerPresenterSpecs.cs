@@ -14,7 +14,6 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

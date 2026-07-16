@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core.Snapshots.Services
 {
@@ -138,7 +140,7 @@ namespace PKSim.Core.Snapshots.Services
          var snapshotSimulation = await SnapshotSimulationFor(simulationConstruction);
          project.Simulations = new[] {snapshotSimulation};
 
-         var pksimProject = await _projectMapper.MapToModel(project, new ProjectContext(runSimulations:false));
+         var pksimProject = await _projectMapper.MapToModel(project, new ProjectContext(new PKSimProject(), runSimulations:false));
          return pksimProject.BuildingBlockByName<Model.Simulation>(simulationConstruction.SimulationName);
       }
    }

@@ -7,15 +7,22 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
-using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using TableFormulaMapper = PKSim.Core.Snapshots.Mappers.TableFormulaMapper;
+using IdentificationParameterMapper = PKSim.Core.Snapshots.Mappers.IdentificationParameterMapper;
+using OutputIntervalMapper = PKSim.Core.Snapshots.Mappers.OutputIntervalMapper;
+using OutputSchemaMapper = PKSim.Core.Snapshots.Mappers.OutputSchemaMapper;
+using ParameterIdentificationRunModeMapper = PKSim.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
+using SolverSettingsMapper = PKSim.Core.Snapshots.Mappers.SolverSettingsMapper;
+using ValueOriginMapper = PKSim.Core.Snapshots.Mappers.ValueOriginMapper;
 
 namespace PKSim.Core
 {
@@ -23,14 +30,14 @@ namespace PKSim.Core
    {
       public override void RegisterInContainer(IContainer container)
       {
-         container.AddRegister(x => x.FromInstance(new OSPSuite.Core.CoreRegister {RegisterParameter = false}));
+         container.AddRegister(x => x.FromInstance(new OSPSuite.Core.CoreRegister { RegisterParameter = false }));
 
          //Register PKSim.Core 
          container.AddScanner(scan =>
          {
             scan.AssemblyContainingType<CoreRegister>();
 
-            //Exclude type that should be register as singleton because of caching 
+            //Exclude type that should be registered as singleton because of caching 
             scan.ExcludeType<FormulationValuesRetriever>();
             scan.ExcludeType<ObjectTypeResolver>();
             scan.ExcludeType<PKSimDimensionFactory>();
@@ -41,12 +48,12 @@ namespace PKSim.Core
             scan.ExcludeType<IndividualSimulationEngine>();
             scan.ExcludeType<DefaultIndividualRetriever>();
             scan.ExcludeType<IPopulationSimulationEngine>();
-            
+
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
             scan.ExcludeType<InteractiveSimulationRunner>();
-            scan.ExcludeType<SnapshotMapper>();
 
             scan.ExcludeNamespaceContainingType<IndividualDiffBuilder>();
+            scan.ExcludeNamespaceContainingType<ExpressionProfileMapper>();
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
@@ -58,15 +65,29 @@ namespace PKSim.Core
             scan.IncludeType<ObjectTypeResolver>();
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
-            scan.IncludeType<SnapshotMapper>();
             scan.IncludeType<DefaultIndividualRetriever>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
          });
-         
+
+         // Registered to satisfy the repository of ISnapshotMapperSpecification
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<CoreRegister>();
+            scan.IncludeNamespaceContainingType<ExpressionProfileMapper>();
+            scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
+         });
+         container.Register<OSPSuite.Core.Snapshots.Mappers.TableFormulaMapper, TableFormulaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ValueOriginMapper, ValueOriginMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputIntervalMapper, OutputIntervalMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputSchemaMapper, OutputSchemaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.SolverSettingsMapper, SolverSettingsMapper>();
+
          container.Register<ICoreSimulationFactory, SimulationFactory>();
-         container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
+         container.Register<ISetParameterTask, ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
          container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
          container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);

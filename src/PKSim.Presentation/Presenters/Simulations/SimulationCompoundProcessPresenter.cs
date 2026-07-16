@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Collections;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

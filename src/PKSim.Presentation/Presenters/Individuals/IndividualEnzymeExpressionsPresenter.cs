@@ -1,6 +1,5 @@
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals

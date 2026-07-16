@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.Presenters;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation
 {

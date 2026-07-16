@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -7,8 +8,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

@@ -1,16 +1,11 @@
-using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
-using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraLayout;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using PKSim.UI.Views;
-using static OSPSuite.UI.UIConstants.Size;
 using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Extensions

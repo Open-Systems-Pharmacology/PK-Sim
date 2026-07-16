@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Reporting;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
 {
@@ -49,6 +49,7 @@ namespace PKSim.Core.Model
             if (factory.IsSatisfiedBy(distribution))
                return factory.CreateFor(distribution, parameter);
          }
+
          throw new DistributionNotFoundException(distribution);
       }
 

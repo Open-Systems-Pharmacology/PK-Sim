@@ -3,6 +3,7 @@ using Castle.MicroKernel.ComponentActivator;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
 using PKSim.CLI.Core.RunOptions;
 
 namespace PKSim.R
@@ -51,6 +52,12 @@ namespace PKSim.R
       public void can_get_population_factory()
       {
          Api.GetPopulationFactory().ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void can_get_snapshot_task()
+      {
+         Api.GetSnapshotTask().ShouldNotBeNull();
       }
 
       [Observation]

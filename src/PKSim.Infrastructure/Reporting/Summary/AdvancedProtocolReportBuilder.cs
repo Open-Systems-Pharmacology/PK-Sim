@@ -1,5 +1,5 @@
-using PKSim.Assets;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 

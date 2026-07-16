@@ -58,7 +58,6 @@ namespace PKSim.Core.Services
 
          _simulationRunOptions = new SimulationRunOptions
          {
-            CheckForNegativeValues = true,
             RaiseEvents = true, //This is always true, but still worth checking before rising an event since it can change.
             RunForAllOutputs = false,
             SimModelExportMode = SimModelExportMode.Optimized

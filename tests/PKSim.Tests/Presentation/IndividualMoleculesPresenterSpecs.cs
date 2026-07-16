@@ -1,25 +1,23 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
-using PKSim.Assets;
-using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Presenters.Individuals.Mappers;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Individuals;
-
 using OSPSuite.Core.Domain;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Views;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Presenters.Individuals.Mappers;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Individuals;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation

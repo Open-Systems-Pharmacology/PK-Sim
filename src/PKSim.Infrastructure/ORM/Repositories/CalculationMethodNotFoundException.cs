@@ -1,5 +1,5 @@
-﻿using PKSim.Assets;
-using OSPSuite.Utility.Exceptions;
+﻿using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {

@@ -272,3 +272,5 @@ paket-files/
 /src/**/licenses.licx
 /src/**/launchSettings.json
 /PKSim.v3.ncrunchsolution
+/Directory.Build.props
+/**/settings.local.json

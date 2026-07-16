@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.R.Domain;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
 using PKSim.Core.Snapshots;
@@ -158,7 +159,7 @@ namespace PKSim.R
       [Observation]
       public void should_set_a_seed_automatically()
       {
-         _result.Seed.ShouldBeGreaterThan(0);
+         _result.Seed.ShouldNotBeEqualTo(0);
       }
    }
 }

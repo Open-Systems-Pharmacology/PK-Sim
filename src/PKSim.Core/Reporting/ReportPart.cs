@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using OSPSuite.Utility.Extensions;
 
@@ -32,7 +32,10 @@ namespace PKSim.Core.Reporting
       /// <summary>
       ///    Add line to content. If line does not end with '\n', it is added at the end
       /// </summary>
-      /// <param name="lineToAdd">Line to add as a string. it can contain special format character such as {0} that should then set in the args list</param>
+      /// <param name="lineToAdd">
+      ///    Line to add as a string. it can contain special format character such as {0} that should then
+      ///    set in the args list
+      /// </param>
       /// <param name="args"></param>
       public void AddToContent(string lineToAdd, params object[] args)
       {
@@ -99,6 +102,7 @@ namespace PKSim.Core.Reporting
          _subParts.Each(x => x.addPartTo(sb));
       }
    }
+
    public static class ReportPartExtensions
    {
       public static T WithTitle<T>(this T reportPart, string title) where T : ReportPart

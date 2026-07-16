@@ -43,6 +43,7 @@ namespace PKSim.Presentation.Presenters.Charts
    {
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
+      private readonly IObservedDataInComparisonTask _observedDataInComparisonTask;
 
       public event EventHandler Closing = delegate { };
 
@@ -56,11 +57,13 @@ namespace PKSim.Presentation.Presenters.Charts
          IChartTemplatingTask chartTemplatingTask,
          IChartUpdater chartUpdater,
          IUserSettings userSettings,
-         IDialogCreator dialogCreator) :
+         IDialogCreator dialogCreator,
+         IObservedDataInComparisonTask observedDataInComparisonTask) :
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName: true, userSettings)
       {
          _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
+         _observedDataInComparisonTask = observedDataInComparisonTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
          ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
@@ -115,12 +118,6 @@ namespace PKSim.Presentation.Presenters.Charts
          return treeNodes.OfType<SimulationNode>().Select(x => x.Simulation).OfType<IndividualSimulation>();
       }
 
-      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
-      {
-         base.AddObservedData(observedData, asResultOfDragAndDrop);
-         showChartView();
-      }
-
       private void addSimulationToChart(IndividualSimulation simulation)
       {
          _lazyLoadTask.Load(simulation);
@@ -131,13 +128,24 @@ namespace PKSim.Presentation.Presenters.Charts
          ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
          _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, simulation.DataRepository.ToList(), new[] {simulation}, addCurveIfNoSourceDefined: false);
+         addObservedDataFor(simulation);
          InitializeFromTemplateIfRequired();
-         showChartView();
       }
 
-      private void showChartView()
+      protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
       {
-         _view.SetChartView(_chartPresenterContext.EditorAndDisplayPresenter.BaseView);
+         observedData.Each(Chart.AddObservedData);
+         base.AddObservedData(observedData, asResultOfDragAndDrop);
+      }
+
+      private void addObservedDataFor(IndividualSimulation simulation)
+      {
+         var observedData = _observedDataInComparisonTask.ResolveObservedDataFor(simulation);
+         if (!observedData.Any())
+            return;
+         
+         AddObservedData(observedData, asResultOfDragAndDrop: true);
+         _observedDataInComparisonTask.ApplySourceCurveOptionsTo(Chart, simulation);
       }
 
       protected override string NameForColumn(DataColumn dataColumn)
@@ -182,11 +190,6 @@ namespace PKSim.Presentation.Presenters.Charts
          Column(BrowserColumns.Used).VisibleIndex = 5;
       }
 
-      public void Handle(RenamedEvent eventToHandle)
-      {
-         //nothing to do here as renamed is handle automatically with change event
-      }
-
       public virtual void OnFormClosed()
       {
          Closing(this, EventArgs.Empty);
@@ -228,8 +231,11 @@ namespace PKSim.Presentation.Presenters.Charts
          {
             UpdateAnalysisBasedOn(s, s.DataRepository);
             //if there are no curves in the chart, we are probably just creating it programatically
-            if (isEmptyChart)
-               _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, s.DataRepository.ToList(), new[] {s}, addCurveIfNoSourceDefined: false);
+            if (!isEmptyChart)
+               return;
+
+            _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, s.DataRepository.ToList(), new[] {s}, addCurveIfNoSourceDefined: false);
+            addObservedDataFor(s);
          });
       }
 

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using PKSim.Core.Commands;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {

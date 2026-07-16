@@ -1,8 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <RuntimeIdentifiers>win-x64;win7-x64</RuntimeIdentifiers>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -10,20 +8,18 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>1591, 3246</NoWarn>
+    <NoWarn>1591;3246;WFO1000</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
     <Description>PKSim.BatchTool - Batch runner for json based PK-Sim simulations</Description>
-    <Version Condition="'$(Version)' == ''">12.3.0</Version>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -31,48 +27,30 @@
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(PkgOSPSuite_SimModel)\OSPSuite.SimModelNative\bin\native\x64\Release\OSPSuite.SimModelNative.dll" Link="OSPSuite.SimModelNative.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
     <None Include="..\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <PropertyGroup>
-    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
-    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
-    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
-    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.3.32" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.3.32" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
+    <PackageReference Include="DevExpress.Win.Design" Version="25.2.7" Condition="'$(ExcludeDesigner)' != 'true'" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="5.0.0.3" />
+    <PackageReference Include="OSPSuite.SimModel" Version="5.0.0.76" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="5.0.0.53" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
     <ProjectReference Include="..\PKSim.UI\PKSim.UI.csproj" />
   </ItemGroup>
-
 </Project>

@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Chart;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
 using PKSim.Infrastructure.Services;

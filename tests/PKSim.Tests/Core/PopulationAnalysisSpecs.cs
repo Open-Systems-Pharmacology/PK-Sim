@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core
 {

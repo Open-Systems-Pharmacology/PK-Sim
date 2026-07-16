@@ -1,15 +1,14 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

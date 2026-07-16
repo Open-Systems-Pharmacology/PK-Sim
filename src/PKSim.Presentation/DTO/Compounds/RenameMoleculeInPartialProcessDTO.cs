@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Presentation.DTO;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Presentation.DTO.Core;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Compounds
 {

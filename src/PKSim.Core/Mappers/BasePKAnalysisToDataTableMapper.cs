@@ -1,12 +1,11 @@
 ﻿using System.Data;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Mappers
 {

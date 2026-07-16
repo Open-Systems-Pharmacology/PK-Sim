@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
 
       protected override void FillUpReport(DataColumn column, ReportPart reportPart)
       {
-         if(column.DataInfo==null) return;
+         if (column.DataInfo == null) return;
          reportPart.AddPart(_reportGenerator.ReportFor(column.DataInfo.ExtendedProperties).WithTitle(column.Name));
       }
    }

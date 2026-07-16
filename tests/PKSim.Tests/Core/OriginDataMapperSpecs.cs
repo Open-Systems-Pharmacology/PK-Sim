@@ -4,14 +4,18 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
-using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
-using OriginData = PKSim.Core.Snapshots.OriginData;
-using Parameter = PKSim.Core.Snapshots.Parameter;
-using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
+using CalculationMethodCacheMapper = PKSim.Core.Snapshots.Mappers.CalculationMethodCacheMapper;
+using DiseaseState = OSPSuite.Core.Snapshots.DiseaseState;
+using OriginData = OSPSuite.Core.Snapshots.OriginData;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
+using ValueOriginMapper = PKSim.Core.Snapshots.Mappers.ValueOriginMapper;
 
 namespace PKSim.Core
 {
@@ -274,7 +278,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -291,7 +295,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]
@@ -313,7 +317,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -329,7 +333,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -345,7 +349,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -362,7 +366,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]
@@ -401,7 +405,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

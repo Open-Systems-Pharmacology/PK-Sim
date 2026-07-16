@@ -24,6 +24,7 @@ namespace PKSim.Core.Services
       private readonly ISimulationConfigurationValidator _simulationConfigurationValidator;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IContainerTask _containerTask;
+      private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
       public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
          IModelConstructor modelConstructor,
@@ -32,7 +33,8 @@ namespace PKSim.Core.Services
          ISimulationPersistableUpdater simulationPersistableUpdater,
          ISimulationConfigurationValidator simulationConfigurationValidator,
          IEntityPathResolver entityPathResolver,
-         IContainerTask containerTask)
+         IContainerTask containerTask,
+         IOverwriteParameterSetApplicationTask overwriteParameterSetApplicationTask)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _modelConstructor = modelConstructor;
@@ -42,6 +44,7 @@ namespace PKSim.Core.Services
          _simulationConfigurationValidator = simulationConfigurationValidator;
          _entityPathResolver = entityPathResolver;
          _containerTask = containerTask;
+         _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
@@ -107,6 +110,8 @@ namespace PKSim.Core.Services
          });
 
          _simulationPersistableUpdater.ResetPersistable(simulation);
+
+         _overwriteParameterSetApplicationTask.ApplyOverwriteParameterSetsTo(simulation);
       }
 
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)

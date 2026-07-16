@@ -1,16 +1,18 @@
-﻿using System.Threading.Tasks;
-using OSPSuite.Core.Services;
+﻿using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using SnapshotCompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
+using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using ModelCompoundProcess = PKSim.Core.Model.CompoundProcess;
+using SnapshotCompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class CompoundProcessMapper : ParameterContainerSnapshotMapperBase<ModelCompoundProcess, SnapshotCompoundProcess>
+   public class CompoundProcessMapper : ParameterContainerSnapshotMapperBase<ModelCompoundProcess, SnapshotCompoundProcess, SnapshotContext>
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly ICompoundProcessRepository _compoundProcessRepository;
@@ -119,5 +121,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          _compoundProcessTask.SetSpeciesForProcess(process, species);
       }
+      
+      protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
    }
 }

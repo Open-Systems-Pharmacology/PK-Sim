@@ -9,10 +9,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(ObserverSet observerSet, ReportPart reportPart)
       {
          reportPart.Title = observerSet.Name;
-         observerSet.Observers.Each(x =>
-         {
-            reportPart.AddToContent(x.Name);
-         });
+         observerSet.Observers.Each(x => { reportPart.AddToContent(x.Name); });
       }
    }
 }

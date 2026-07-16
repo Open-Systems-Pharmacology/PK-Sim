@@ -1,12 +1,11 @@
-using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
 using ICoreCalculationMethodRepository = PKSim.Core.Repositories.ICoreCalculationMethodRepository;
 
 namespace PKSim.Presentation.UICommands

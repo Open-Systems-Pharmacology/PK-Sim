@@ -9,7 +9,6 @@ using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;

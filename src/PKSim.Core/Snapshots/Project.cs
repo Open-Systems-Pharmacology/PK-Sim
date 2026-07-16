@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
+using static OSPSuite.Assets.Error;
+using Classification = OSPSuite.Core.Snapshots.Classification;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Project : IWithDescription, IWithName
+   public class Project : SnapshotBase
    {
       [Required]
       public int Version { get; set; }
 
-      public string Name { get; set; }
-      public string Description { get; set; }
       public ExpressionProfile[] ExpressionProfiles { get; set; }
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }
@@ -105,7 +105,7 @@ namespace PKSim.Core.Snapshots
          var originalBuildingBlock = BuildingBlockByTypeAndName(type, name);
 
          if (originalBuildingBlock == null)
-            throw new PKSimException(PKSimConstants.Error.CannotFindBuildingBlockInSnapshot(type.ToString(), name, Name));
+            throw new PKSimException(CannotFindBuildingBlockInSnapshot(type.ToString(), name, Name));
 
          switch (type)
          {

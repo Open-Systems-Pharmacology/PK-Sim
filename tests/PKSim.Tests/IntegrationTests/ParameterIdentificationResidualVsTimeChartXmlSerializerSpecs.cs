@@ -1,13 +1,11 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
-using PKSim.Core;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Container;
+using PKSim.Core;
 
 namespace PKSim.IntegrationTests
 {

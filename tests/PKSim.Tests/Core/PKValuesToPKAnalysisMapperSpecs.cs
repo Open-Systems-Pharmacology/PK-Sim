@@ -2,16 +2,15 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
-using OSPSuite.Core.Domain.UnitSystem;
-using IParameterFactory = PKSim.Core.Model.IParameterFactory;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core
 {

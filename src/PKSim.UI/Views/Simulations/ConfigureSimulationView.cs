@@ -1,15 +1,12 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraTab;
-using PKSim.Core;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Presentation;
-using OSPSuite.UI;
+using OSPSuite.Assets;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations

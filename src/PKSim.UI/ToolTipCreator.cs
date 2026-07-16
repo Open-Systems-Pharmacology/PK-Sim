@@ -27,7 +27,6 @@ namespace PKSim.UI
    public interface IToolTipCreator : OSPSuite.UI.Services.IToolTipCreator
    {
       SuperToolTip ToolTipFor(IParameterDTO parameterDTO);
-      SuperToolTip ToolTipFor(SystemicProcessDTO systemicProcessDTO);
       SuperToolTip ToolTipFor(TransporterExpressionParameterDTO transporterExpressionContainerDTO);
       SuperToolTip ToolTipFor(CategoryCategoryItemDTO categoryCalculationMethodDTO);
       SuperToolTip ToolTipForPKAnalysis(string parameterDisplayName, string displayValue, string warning);
@@ -65,11 +64,6 @@ namespace PKSim.UI
          addValueDescriptionToolTip(toolTip, parameterDTO);
          addFormulaToolTipTo(toolTip, parameterDTO);
          return toolTip;
-      }
-
-      public SuperToolTip ToolTipFor(SystemicProcessDTO systemicProcessDTO)
-      {
-         return CreateToolTip(systemicProcessDTO.Description);
       }
 
       public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
@@ -168,8 +162,7 @@ namespace PKSim.UI
             toolTip.Items.AddSeparator();
             toolTip.WithTitle(PKSimConstants.UI.Warning);
             var item = toolTip.Items.Add(warning);
-            item.ImageOptions.SvgImage = ApplicationIcons.Warning;
-            item.ImageOptions.SvgImageSize = IconSizes.Size16x16;
+            item.ImageOptions.SetImage(ApplicationIcons.Warning, IconSizes.Size16x16);
          }
 
          return toolTip;

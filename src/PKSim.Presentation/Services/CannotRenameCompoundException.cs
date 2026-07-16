@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Model;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Services
 {

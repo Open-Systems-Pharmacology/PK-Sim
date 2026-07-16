@@ -1,4 +1,5 @@
 ﻿using System;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -6,7 +7,6 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using PKSim.BatchTool.DTO;
 using PKSim.BatchTool.Presenters;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.Views
 {

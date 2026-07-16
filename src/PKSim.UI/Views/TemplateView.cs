@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -83,7 +84,7 @@ namespace PKSim.UI.Views
          if (!editableTemplates.Any())
             return;
 
-         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates)){SvgImage = ApplicationIcons.Delete };
+         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates)){SvgImage = ApplicationIcons.Delete.ToSvgImage() };
          gridViewMenu.Items.Insert(0, deleteSelectedMenuItem);
       }
 
@@ -190,17 +191,6 @@ namespace PKSim.UI.Views
       public void AttachPresenter(ITemplatePresenter presenter)
       {
          _presenter = presenter;
-      }
-
-    
-      public void SelectTemplate(TemplateDTO templateDTO)
-      {
-         if (templateDTO == null)
-            return;
-
-         var rowHandle = _gridViewBinder.RowHandleFor(templateDTO);
-         gridView.FocusedRowHandle = rowHandle;
-         gridView.SelectRow(rowHandle);
       }
 
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)

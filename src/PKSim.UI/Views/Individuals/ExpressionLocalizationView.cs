@@ -53,8 +53,6 @@ namespace PKSim.UI.Views.Individuals
          AdjustHeight();
       }
 
-      public void RefreshData() => _screenBinder.Update();
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
+using DiseaseState = OSPSuite.Core.Snapshots.DiseaseState;
 
 namespace PKSim.Core.Snapshots
 {
@@ -39,5 +42,8 @@ namespace PKSim.Core.Snapshots
 
       //Null if no disease state defined
       public DiseaseState Disease { get; set; }
+
+      [JsonIgnore]
+      public string ExpressionName => Constants.ContainerName.ExpressionProfileName(Molecule, Species, Category);
    }
 }

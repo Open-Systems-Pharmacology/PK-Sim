@@ -6,7 +6,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Mappers;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {

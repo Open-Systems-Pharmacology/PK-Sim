@@ -3,10 +3,12 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using QualificationPlan = PKSim.Core.Model.QualificationPlan;
+using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 
 namespace PKSim.Core
 {
@@ -34,7 +36,7 @@ namespace PKSim.Core
          A.CallTo(() => _qualificationStepMapper.MapToSnapshot(_qualificationStep)).Returns(_qualificationStepSnapshot);
 
          _project = new PKSimProject();
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          return _completed;
       }
    }

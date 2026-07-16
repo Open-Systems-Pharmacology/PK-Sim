@@ -7,7 +7,7 @@ using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class ValueOriginRepository : IValueOriginRepository
+   public class ValueOriginRepository : StartableRepository<ValueOrigin>, IValueOriginRepository
    {
       private readonly IFlatValueOriginRepository _flatValueOriginRepository;
       private readonly IFlatValueOriginToValueOriginMapper _valueOriginMapper;
@@ -26,13 +26,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _valueOriginMapper = valueOriginMapper;
       }
 
-      public IEnumerable<ValueOrigin> All()
+      public override IEnumerable<ValueOrigin> All()
       {
          Start();
          return _allValueOrigins;
       }
 
-      public void Start()
+      protected override void DoStart()
       {
          _flatValueOriginRepository.All().Each(x => { _allValueOrigins[x.Id] = _valueOriginMapper.MapFrom(x); });
       }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
 using DevExpress.Utils;
@@ -28,6 +27,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
+using Point = System.Drawing.Point;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -72,7 +72,7 @@ namespace PKSim.UI.Views.Parameters
       }
 
       private DXMenuItem copyPathMenuItem() =>
-         new DXMenuItem(PKSimConstants.MenuNames.CopyPath, (s, args) => copyPath(), ApplicationIcons.Copy);
+         new DXMenuItem(PKSimConstants.MenuNames.CopyPath, (s, args) => copyPath(), ApplicationIcons.Copy.ToImage());
 
       private void copyPath() => Clipboard.SetText(_presenter.PathFor(_gridViewBinder.FocusedElement));
 
@@ -247,11 +247,6 @@ namespace PKSim.UI.Views.Parameters
       private bool isGroupBy(IGridViewColumn gridViewColumn)
       {
          return gridViewColumn.XtraColumn.GroupIndex >= 0;
-      }
-
-      public void FixParameterColumnWidth(int parameterWidth)
-      {
-         _columnValue.WithFixedWidth(parameterWidth);
       }
 
       public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();

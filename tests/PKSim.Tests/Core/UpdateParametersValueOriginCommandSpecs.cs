@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
-using PKSim.Core.Extensions;
 
 namespace PKSim.Core
 {

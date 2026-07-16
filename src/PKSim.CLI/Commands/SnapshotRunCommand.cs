@@ -3,8 +3,8 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Logging;
-using PKSim.CLI.Core.RunOptions;
-using PKSim.CLI.Core.Services;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 
 namespace PKSim.CLI.Commands
 {
@@ -40,8 +40,8 @@ namespace PKSim.CLI.Commands
       {
          get
          {
-            yield return new Example("Create snapshot files from project files", new SnapshotRunCommand {InputFolder = "<SnapshotFolder>", OutputFolder = "<ProjectFolder>", ExportSnapshot = true});
-            yield return new Example("Create project files from snapshot files using short notation", UnParserSettings.WithGroupSwitchesOnly(),  new SnapshotRunCommand {InputFolder = "<ProjectFolder>", OutputFolder = "<SnapshotFolder>", ExportProject = true});
+            yield return new Example("Create snapshot files from project files", new SnapshotRunCommand { InputFolder = "<SnapshotFolder>", OutputFolder = "<ProjectFolder>", ExportSnapshot = true });
+            yield return new Example("Create project files from snapshot files using short notation", UnParserSettings.WithGroupSwitchesOnly(), new SnapshotRunCommand { InputFolder = "<ProjectFolder>", OutputFolder = "<SnapshotFolder>", ExportProject = true });
             yield return new Example("Create project files from snapshot files and only log errors", new SnapshotRunCommand
             {
                InputFolder = "<ProjectFolder>",

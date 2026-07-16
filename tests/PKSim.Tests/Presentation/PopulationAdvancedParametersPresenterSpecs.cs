@@ -1,26 +1,23 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Utility.Events;
-using FakeItEasy;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.AdvancedParameters;
-
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.AdvancedParameters;
-
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace PKSim.Presentation
 {

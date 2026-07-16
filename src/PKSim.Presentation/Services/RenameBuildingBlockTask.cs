@@ -11,7 +11,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants.ContainerName;
@@ -234,7 +233,7 @@ namespace PKSim.Presentation.Services
          if (formula == null)
             return null;
 
-         var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
+         var referenceIndex = formula.ObjectReferences.Select(x => x.Object).ToList().IndexOf(reference);
          return referenceIndex >= 0 ? formula.ObjectPaths[referenceIndex] : null;
       }
 

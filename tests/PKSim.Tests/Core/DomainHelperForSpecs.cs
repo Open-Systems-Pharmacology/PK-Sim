@@ -26,7 +26,8 @@ namespace PKSim.Core
       private static Dimension _fractionDimension;
 
       private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
-      private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
+      private static readonly string PATH_TO_DOCS = "..\\..\\..\\..\\..\\docs\\";
+      public static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
       private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
       public static string DataFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA);
@@ -44,6 +45,8 @@ namespace PKSim.Core
       public static string TEXTemplateFolder() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_TEMPLATES, "StandardTemplate");
 
       public static string UserTemplateDatabasePath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBUser.template");
+      
+      public static string ProjectSchemaDumpFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DOCS, "project_schema.sql");
 
       public static string SystemTemplateDatabasePath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
 
@@ -326,7 +329,7 @@ namespace PKSim.Core
          return quantityValues;
       }
 
-      public static SchemaItemDTO SchemaItemDTO(ApplicationType applicationType, Unit doseDisplayUnit = null, double? doseValue = null, double? startTimeValue = null)
+      public static SchemaItemDTO SchemaItemDTO(ApplicationType applicationType, Unit doseDisplayUnit = null, double? doseValue = null, double? startTimeValue = null, double? infusionTimeValue = null)
       {
          var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType})
          {
@@ -336,6 +339,9 @@ namespace PKSim.Core
 
          if (doseDisplayUnit != null)
             schemaItemDTO.DoseParameter.Parameter.DisplayUnit = doseDisplayUnit;
+
+         if (infusionTimeValue != null)
+            schemaItemDTO.InfusionTimeParameter = new ParameterDTO(ConstantParameterWithValue(infusionTimeValue.Value).WithName(Constants.Parameters.INFUSION_TIME));
 
          return schemaItemDTO;
       }

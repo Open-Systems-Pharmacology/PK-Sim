@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Repositories;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {

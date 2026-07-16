@@ -1,8 +1,7 @@
-﻿using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Services;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Presentation.Services
 {

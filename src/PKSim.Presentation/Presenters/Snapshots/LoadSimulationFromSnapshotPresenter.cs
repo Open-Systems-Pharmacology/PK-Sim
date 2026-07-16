@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.DTO.Snapshots;
-using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation.Presenters.Snapshots
 {
@@ -55,7 +55,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
       protected override async Task<IEnumerable<Simulation>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
          var snapshots = await _snapshotTask.LoadSnapshotsAsync<PKSim.Core.Snapshots.Simulation>(loadFromSnapshotDTO.SnapshotFile);
-         var simulationContext = new SimulationContext(run: loadFromSnapshotDTO.RunSimulations, new SnapshotContext(project: _projectRetriever.Current, version: ProjectVersions.Current));
+         var simulationContext = new SimulationContext(run: loadFromSnapshotDTO.RunSimulations, new SnapshotContext(project: _projectRetriever.Current, version: SnapshotVersions.Current));
          var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, simulationContext));
          return await Task.WhenAll(tasks);
       }

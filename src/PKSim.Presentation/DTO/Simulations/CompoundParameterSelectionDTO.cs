@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Simulations
 {

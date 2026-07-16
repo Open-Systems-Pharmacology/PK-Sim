@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

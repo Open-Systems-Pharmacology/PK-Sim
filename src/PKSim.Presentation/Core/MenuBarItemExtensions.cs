@@ -36,5 +36,13 @@ namespace PKSim.Presentation.Core
          command.UsedBuildingBlock = usedBuildingBlock;
          return menuBarItem.WithCommand(command);
       }
+
+      public static IMenuBarButton WithCommitSimulationParametersCommandFor(this IMenuBarButton menuBarItem, Simulation simulation, Compound compound)
+      {
+         var command = IoC.Resolve<CommitSimulationParametersToCompoundsUICommand>();
+         command.Subject = simulation;
+         command.CompoundFilter = compound;
+         return menuBarItem.WithCommand(command);
+      }
    }
 }

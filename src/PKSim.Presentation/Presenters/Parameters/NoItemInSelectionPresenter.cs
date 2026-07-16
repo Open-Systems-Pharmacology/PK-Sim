@@ -8,7 +8,6 @@ namespace PKSim.Presentation.Presenters.Parameters
 {
    public interface INoItemInSelectionPresenter : ICustomParametersPresenter
    {
-      INoItemInSelectionPresenter WithDescription(string description);
    }
 
    public class NoItemInSelectionPresenter : AbstractCommandCollectorPresenter<INoItemInSelectionView, INoItemInSelectionPresenter>, INoItemInSelectionPresenter
@@ -32,11 +31,5 @@ namespace PKSim.Presentation.Presenters.Parameters
       public bool AlwaysRefresh { get; } = false;
 
       public IEnumerable<IParameter> EditedParameters => Enumerable.Empty<IParameter>();
-
-      public INoItemInSelectionPresenter WithDescription(string description)
-      {
-         Description = description;
-         return this;
-      }
    }
 }

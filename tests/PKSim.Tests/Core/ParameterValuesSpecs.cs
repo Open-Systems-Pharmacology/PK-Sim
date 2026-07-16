@@ -1,7 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Populations;
-using PKSim.Core.Model;
 
 namespace PKSim.Core
 {

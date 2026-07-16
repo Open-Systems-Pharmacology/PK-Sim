@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using NHibernate;
-using PKSim.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 
 namespace PKSim.Infrastructure

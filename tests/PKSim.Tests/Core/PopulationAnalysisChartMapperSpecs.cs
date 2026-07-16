@@ -2,6 +2,8 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots.Mappers;
@@ -89,7 +91,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _context = new SimulationAnalysisContext(null, new SnapshotContext());
+         _context = new SimulationAnalysisContext(null, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
          _snapshot = await sut.MapToSnapshot(_bowWiskerChart);
          var boxWhiskerAnalysisChart = new BoxWhiskerAnalysisChart {PopulationAnalysis = new PopulationBoxWhiskerAnalysis()};
          A.CallTo(() => _populationAnalysisChartFactory.Create(PopulationAnalysisType.BoxWhisker)).Returns(boxWhiskerAnalysisChart);

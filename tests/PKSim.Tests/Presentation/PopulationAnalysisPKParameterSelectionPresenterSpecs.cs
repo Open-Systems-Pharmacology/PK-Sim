@@ -1,15 +1,11 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
-using PKSim.Core.Chart;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Services;
-
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Presentation
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using FakeItEasy;
@@ -14,7 +13,6 @@ using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 using DataColumnn = OSPSuite.Core.Domain.Data.DataColumn;
 using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;

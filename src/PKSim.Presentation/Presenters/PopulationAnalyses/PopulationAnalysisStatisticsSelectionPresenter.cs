@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
-using OSPSuite.Utility;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {

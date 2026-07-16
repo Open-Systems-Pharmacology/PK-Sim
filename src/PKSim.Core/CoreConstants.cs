@@ -53,7 +53,6 @@ namespace PKSim.Core
          public const string USER_TEMPLATE_DB_EXTENSION = ".templateDbUser";
          public const string SYSTEM_TEMPLATE_DB_EXTENSION = ".templateDbSystem";
          public const string GENE_DB_EXTENSION = ".expressionDb";
-         public static readonly string MARKDOWN_EXTENSION = ".md";
          public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
          public static readonly string SIMULATION_RESULTS_FILTER = $"*{Constants.Filter.CSV_EXTENSION}";
          public static readonly string EXPRESSION_DATABASE_FILE_FILTER = Constants.Filter.FileFilter("Gene Expression Database", GENE_DB_EXTENSION);
@@ -376,8 +375,6 @@ namespace PKSim.Core
          public static readonly string ObservedData = "ObservedData";
          public static readonly string InsolubleDrug = "InsolubleDrug";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
-         //only use for conversion of older snapshot. Do not use in code otherwise
-         public static readonly string Applications = "Applications";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {
@@ -459,16 +456,6 @@ namespace PKSim.Core
             BMI,
             InputDose
          };
-      }
-
-      public static class Distribution
-      {
-         public static readonly string Discrete = "Discrete";
-         public static readonly string Normal = "Normal";
-         public static readonly string LogNormal = "LogNormal";
-         public static readonly string LogNormalGeo = "LogNormalGeo";
-         public static readonly string Uniform = "Uniform";
-         public static readonly string Unknown = "Unknown";
       }
 
       public static class Formula
@@ -1116,16 +1103,6 @@ namespace PKSim.Core
 
       }
 
-      public static class SimulationResults
-      {
-         public const string INDIVIDUAL_ID = "IndividualId";
-         public const string TIME = "Time";
-         public const string QUANTITY_PATH = "Quantity Path";
-         public const string PARAMETER = "Parameter";
-         public const string VALUE = "Value";
-         public const string UNIT = "Unit";
-      }
-
       public static class Population
       {
          public const string ICRP = "European_ICRP_2002";
@@ -1141,6 +1118,11 @@ namespace PKSim.Core
          public static readonly string BILIARY_CLEARANCE_TO_GALL_BLADDER = "LiverActiveEffluxToGallbladder_FirstOrder";
          public static readonly string BILIARY_CLEARANCE_TO_DUODENUM = "LiverActiveEffluxToDuodenum_FirstOrder";
          public static readonly string KIDNEY_CLEARANCE = "KidneyClearance";
+
+         public static readonly string BiliaryClearance = "Biliary Clearance";
+         public static readonly string RenalClearances = Processes.RenalClearances;
+         public static readonly string TotalHepaticClearance = "Total Hepatic Clearance";
+         public static readonly string GlomerularFiltration = Processes.GlomerularFiltration;
       }
 
       public static class ProcessType

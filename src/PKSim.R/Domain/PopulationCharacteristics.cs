@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.R.Domain;
 using PKSim.Core.Snapshots;
 
 namespace PKSim.R.Domain

@@ -13,7 +13,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
-using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -271,7 +270,7 @@ namespace PKSim.Core
             }
          });
 
-         populationSimulation.Results.Each(x => x.IndividualId = populationSimulation.Results.AllIndividualResults.IndexOf(x));
+         populationSimulation.Results.Each(x => x.IndividualId = populationSimulation.Results.AllIndividualResults.ToList().IndexOf(x));
 
          populationSimulation.Settings = new SimulationSettings();
          populationSimulation.OutputSchema = new OutputSchema();

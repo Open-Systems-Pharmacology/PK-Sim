@@ -18,7 +18,6 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using EntityRules = PKSim.Core.Model.EntityRules;
 
 namespace PKSim.IntegrationTests
 {
@@ -89,7 +88,6 @@ namespace PKSim.IntegrationTests
          if (type == typeof(GlobalPKAnalysis)) return true;
          if (type == typeof(NullIndividualMolecule)) return true;
          if (type == typeof(NoInteractionProcess)) return true;
-         if (type == typeof(EntityRules)) return true;
          if (type == typeof(NullPopulationSimulationPKAnalyses)) return true;
          if (type == typeof(NotSelectedSystemicProcess)) return true;
          if (type == typeof(NotAvailableSystemicProcess)) return true;
@@ -134,7 +132,6 @@ namespace PKSim.IntegrationTests
          if (type == typeof(PKAnalysis)) return true;
          if (type == typeof(ParameterRateMetaData)) return true;
          if (type == typeof(RepresentationInfo)) return true;
-         if (type == typeof(EmptyRepresentationInfo)) return true;
          if (type == typeof(NullDataRepository)) return true;
          if (type == typeof(ParameterDistributionMetaData)) return true;
          if (type == typeof(BinInterval)) return true;

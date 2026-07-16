@@ -14,7 +14,7 @@ using OSPSuite.UI.Services;
 using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Presentation;
+using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 
@@ -25,7 +25,7 @@ namespace PKSim.UI.Views
       private readonly IImageListRetriever _imageListRetriever;
       private readonly IToolTipCreator _toolTipCreator;
       private IUserSettingsPresenter _presenter;
-      private ScreenBinder<IUserSettings> _screenBinder;
+      private ScreenBinder<UserSettingsDTO> _screenBinder;
 
       public UserSettingsView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
       {
@@ -45,7 +45,7 @@ namespace PKSim.UI.Views
 
       public override void InitializeBinding()
       {
-         _screenBinder = new ScreenBinder<IUserSettings>();
+         _screenBinder = new ScreenBinder<UserSettingsDTO>();
 
          _screenBinder.Bind(x => x.AllowsScientificNotation)
             .To(chkAllowsScientificNotation)
@@ -156,7 +156,7 @@ namespace PKSim.UI.Views
 
       private void templateDatabaseButtonClick(object sender, ButtonPressedEventArgs e)
       {
-         var editor = (ButtonEdit) sender;
+         var editor = (ButtonEdit)sender;
          var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
          if (buttonIndex == 0)
             _presenter.SelectTemplateDatabase();
@@ -164,9 +164,9 @@ namespace PKSim.UI.Views
             _presenter.CreateTemplateDatabase();
       }
 
-      public void BindTo(IUserSettings userSettings)
+      public void BindTo(UserSettingsDTO userSettingsDTO)
       {
-         _screenBinder.BindToSource(userSettings);
+         _screenBinder.BindToSource(userSettingsDTO);
       }
 
       public void RefreshAllIndividualList()
@@ -218,7 +218,7 @@ namespace PKSim.UI.Views
          tbTemplateDatabase.Properties.Buttons[1].SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.CreateTemplateDatabasePath, PKSimConstants.UI.TemplateDatabasePath, ApplicationIcons.Create);
          tbTemplateDatabase.Properties.Buttons[1].ToolTip = PKSimConstants.UI.CreateTemplateDatabasePath;
          tbTemplateDatabase.Properties.Buttons[1].Kind = ButtonPredefines.Glyph;
-         tbTemplateDatabase.Properties.Buttons[1].Image = ApplicationIcons.Create.ToImage(IconSizes.Size16x16);
+         tbTemplateDatabase.Properties.Buttons[1].SetImage(ApplicationIcons.Create, IconSizes.Size16x16);
          cbDefaultSolName.FillWith(PKSimConstants.UI.PredefinedSolubilityAlternatives());
          cbDefaultFuName.FillWith(PKSimConstants.UI.PredefinedFractionUnboundAlternatives());
          cbDefaultLipoName.FillWith(PKSimConstants.UI.PredefinedLipophilicityAlternatives());

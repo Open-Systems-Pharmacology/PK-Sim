@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -20,11 +23,13 @@ using ExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using Formulation = PKSim.Core.Model.Formulation;
 using Individual = PKSim.Core.Model.Individual;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
+using ParameterIdentificationMapper = OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationMapper;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
-using QualificationPlan = PKSim.Core.Model.QualificationPlan;
+using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 using Simulation = PKSim.Core.Snapshots.Simulation;
+using ModelSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core
 {
@@ -49,22 +54,22 @@ namespace PKSim.Core
       protected ObserverSet _observerSet;
       protected Snapshots.Population _populationSnapshot;
       protected DataRepository _observedData;
-      protected Snapshots.DataRepository _observedDataSnapshot;
+      protected OSPSuite.Core.Snapshots.DataRepository _observedDataSnapshot;
       protected SimulationMapper _simulationMapper;
       protected Simulation _simulationSnapshot;
       protected ClassificationMapper _classificationMapper;
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
-      protected Snapshots.Classification _observedDataClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _observedDataClassificationSnapshot;
       protected IClassificationSnapshotTask _classificationSnapshotTask;
       protected SimulationComparison _simulationComparisonSnapshot;
       protected ParameterIdentification _parameterIdentificationSnapshot;
       protected ISimulationComparison _simulationComparison;
       protected SimulationComparisonMapper _simulationComparisonMapper;
-      protected Snapshots.Classification _simulationClassificationSnapshot;
-      protected Snapshots.Classification _comparisonClassificationSnapshot;
-      protected Snapshots.Classification _parameterIdentificationClassificationSnapshot;
-      protected Snapshots.Classification _qualificationPlanClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _simulationClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _comparisonClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _parameterIdentificationClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _qualificationPlanClassificationSnapshot;
       protected ILazyLoadTask _lazyLoadTask;
       protected ParameterIdentificationMapper _parameterIdentificationMapper;
       protected OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification _parameterIdentification;
@@ -76,6 +81,11 @@ namespace PKSim.Core
       protected Snapshots.ObserverSet _observerSetSnapshot;
       protected ExpressionProfile _expressionProfile;
       protected Snapshots.ExpressionProfile _expressionProfileSnapshot;
+      protected ICoreUserSettings _userSettings;
+      protected ISimulationRunner _simulationRunner;
+      protected SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
+      protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+
 
       protected override Task Context()
       {
@@ -90,6 +100,10 @@ namespace PKSim.Core
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
          _creationMetaDataFactory = A.Fake<ICreationMetaDataFactory>();
          _logger = A.Fake<IOSPSuiteLogger>();
+         _userSettings = A.Fake<ICoreUserSettings>();
+         _simulationRunner = A.Fake<ISimulationRunner>();
+         _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
+         _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -100,7 +114,11 @@ namespace PKSim.Core
             _classificationSnapshotTask,
             _lazyLoadTask,
             _creationMetaDataFactory,
-            _logger);
+            _logger,
+            _userSettings,
+            _simulationRunner,
+            _simulationTimeProfileChartMapper,
+            _populationAnalysisChartMapper);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -143,14 +161,14 @@ namespace PKSim.Core
          _formulationSnapshot = new Snapshots.Formulation();
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
-         _observedDataSnapshot = new Snapshots.DataRepository();
+         _observedDataSnapshot = new OSPSuite.Core.Snapshots.DataRepository();
          _parameterIdentificationSnapshot = new ParameterIdentification();
-         _observedDataClassificationSnapshot = new Snapshots.Classification();
+         _observedDataClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
          _simulationComparisonSnapshot = new SimulationComparison();
-         _simulationClassificationSnapshot = new Snapshots.Classification();
-         _comparisonClassificationSnapshot = new Snapshots.Classification();
-         _parameterIdentificationClassificationSnapshot = new Snapshots.Classification();
-         _qualificationPlanClassificationSnapshot = new Snapshots.Classification();
+         _simulationClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _comparisonClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _parameterIdentificationClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _qualificationPlanClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
          _qualificationPlanSnapshot = new Snapshots.QualificationPlan();
          _expressionProfileSnapshot = new Snapshots.ExpressionProfile();
          _simulationSnapshot = new Simulation();
@@ -295,7 +313,7 @@ namespace PKSim.Core
 
    public class When_converting_a_project_snapshot_to_project : concern_for_ProjectMapper
    {
-      private PKSimProject _newProject;
+      protected PKSimProject _newProject;
       private Simulation _corruptedSimulationSnapshot;
       private CreationMetaData _creationMetaData;
       private ISnapshotMapper _defaultMapper;
@@ -344,7 +362,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: true));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: true));
       }
 
       [Observation]
@@ -463,7 +481,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
       }
 
       [Observation]
@@ -482,6 +500,62 @@ namespace PKSim.Core
       public void should_log_an_error_for_duplicate_entries()
       {
          A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappenedTwiceExactly();
+      }
+   }
+
+   public class When_running_parallel_simulations : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(2);
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      [Observation]
+      public void should_run_simulation_for_each_simulation()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>._, null, A<CancellationToken>._))
+            .MustHaveHappened(_simulationsWithSnapshots.Count, Times.Exactly);
+      }
+   }
+
+
+   public class When_loading_a_project_snapshot_without_running_simulations : When_converting_a_project_snapshot_to_project
+   {
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_not_run_any_simulations()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>._, A<PKSim.Core.Services.SimulationRunOptions>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_log_warnings_about_missing_quantities()
+      {
+         // Fixes #3467: when simulations are not run, CurveMapper must not warn about
+         // missing data columns since no results are expected
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._))
+            .MustNotHaveHappened();
       }
    }
 

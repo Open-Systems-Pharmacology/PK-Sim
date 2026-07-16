@@ -2,7 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
+using OSPSuite.Core.Snapshots;
+using OutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
+using OutputSchema = OSPSuite.Core.Snapshots.OutputSchema;
+using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
+using SolverSettings = OSPSuite.Core.Snapshots.SolverSettings;
 
 namespace PKSim.Core.Snapshots
 {
@@ -10,8 +14,7 @@ namespace PKSim.Core.Snapshots
    {
       public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Simulation;
 
-      [Required]
-      public string Model { get; set; }
+      [Required] public string Model { get; set; }
 
       public bool? AllowAging { get; set; }
       public string[] ObservedData { get; set; }
@@ -36,8 +39,9 @@ namespace PKSim.Core.Snapshots
       public PopulationAnalysisChart[] PopulationAnalyses { get; set; }
 
       public CompoundProcessSelection[] Interactions { get; set; }
+      public OverwriteParameterSetSelection[] OverwriteParameterSetSelections { get; set; }
 
-      public IReadOnlyList<Chart> Analyses
+      public IReadOnlyList<OSPSuite.Core.Snapshots.Chart> Analyses
       {
          get
          {
@@ -47,10 +51,9 @@ namespace PKSim.Core.Snapshots
             if (PopulationAnalyses != null)
                return PopulationAnalyses;
 
-            return new List<Chart>();
+            return new List<OSPSuite.Core.Snapshots.Chart>();
          }
       }
-
 
       public LocalizedParameter ParameterByPath(string parameterPath) =>
          Parameters?.Find(x => string.Equals(x.Path, parameterPath));

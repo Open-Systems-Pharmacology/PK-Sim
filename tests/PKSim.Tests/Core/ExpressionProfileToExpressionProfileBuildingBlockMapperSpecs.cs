@@ -30,6 +30,7 @@ namespace PKSim.Core
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected IMoleculeBuilderFactory _moleculeBuilderFactory;
       protected ICloner _cloner;
+      private IObjectIdResetter _objectIdResetter;
 
       protected override void Context()
       {
@@ -41,11 +42,12 @@ namespace PKSim.Core
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _moleculeBuilderFactory = A.Fake<IMoleculeBuilderFactory>();
          _cloner= A.Fake<ICloner>();
+         _objectIdResetter = A.Fake<IObjectIdResetter>();
 
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).ReturnsLazily(() => new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _formulaFactory, _initialConditionsCreator, _moleculeBuilderFactory, _cloner);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _formulaFactory, _initialConditionsCreator, _moleculeBuilderFactory, _cloner, _objectIdResetter);
       }
    }
 

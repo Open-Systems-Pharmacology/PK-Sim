@@ -1,9 +1,8 @@
-using OSPSuite.BDDHelper;
-using PKSim.Core.Services;
-using PKSim.Presentation.UICommands;
 using FakeItEasy;
-using PKSim.Core.Model;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Services;
+using PKSim.Core.Model;
+using PKSim.Presentation.UICommands;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 

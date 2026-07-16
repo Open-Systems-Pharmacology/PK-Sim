@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using FakeItEasy;
-using FakeItEasy.Configuration;
-
-namespace PKSim.Extensions
+﻿namespace PKSim.Extensions
 {
    public static class FakeItEasyExtensions
    {

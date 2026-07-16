@@ -1,6 +1,9 @@
 ﻿using PKSim.Core.Model;
 using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using CalculationMethodCache = OSPSuite.Core.Snapshots.CalculationMethodCache;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core.Snapshots
 {
@@ -27,6 +30,7 @@ namespace PKSim.Core.Snapshots
       public PkaType[] PkaTypes { get; set; }
       public CompoundProcess[] Processes { get; set; }
       public CalculationMethodCache CalculationMethods { get; set; }
+      public OverwriteParameterSet[] OverwriteParameterSets { get; set; }
       public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Compound;
    }
 }

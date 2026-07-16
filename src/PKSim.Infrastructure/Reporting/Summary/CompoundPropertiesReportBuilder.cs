@@ -20,9 +20,9 @@ namespace PKSim.Infrastructure.Reporting.Summary
       {
          var processes = compoundProperties.Processes;
          var compoundConfig = new TablePart(PKSimConstants.UI.Parameter, PKSimConstants.UI.AlternativeInCompound)
-            {
-               Title = PKSimConstants.UI.SimulationCompoundsConfiguration
-            };
+         {
+            Title = PKSimConstants.UI.SimulationCompoundsConfiguration
+         };
 
 
          foreach (var alternativeSelection in compoundProperties.CompoundGroupSelections)

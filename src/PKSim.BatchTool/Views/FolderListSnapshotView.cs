@@ -3,6 +3,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -13,7 +14,6 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using PKSim.BatchTool.DTO;
 using PKSim.BatchTool.Presenters;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.Views
 {
@@ -67,7 +67,7 @@ namespace PKSim.BatchTool.Views
             .WithCaption(UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _deleteRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Changed += NotifyViewChanged;
 
@@ -77,7 +77,7 @@ namespace PKSim.BatchTool.Views
 
       private void exportModeChanged()
       {
-         _snapshotFolderListDTO.ExportMode = (SnapshotExportMode) radioGroupExportMode.EditValue;
+         _snapshotFolderListDTO.ExportMode = (SnapshotExportMode)radioGroupExportMode.EditValue;
       }
 
       public override void InitializeResources()

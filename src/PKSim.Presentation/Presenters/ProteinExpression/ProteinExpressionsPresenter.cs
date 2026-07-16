@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Serialization;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Core.Serialization;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {

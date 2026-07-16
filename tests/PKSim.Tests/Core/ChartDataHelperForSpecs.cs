@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Data;
 using FakeItEasy;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using OSPSuite.Core.Chart;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Data;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {

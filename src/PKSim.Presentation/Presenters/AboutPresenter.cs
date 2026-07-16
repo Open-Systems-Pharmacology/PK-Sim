@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters
 {

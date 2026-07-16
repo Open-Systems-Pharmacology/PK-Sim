@@ -7,6 +7,5 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IExpressionLocalizationView : IView<IExpressionLocalizationPresenter>
    {
       void BindTo(IndividualProtein individualProtein);
-      void RefreshData();
    }
 }
