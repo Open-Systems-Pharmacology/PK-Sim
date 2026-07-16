@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -406,6 +407,8 @@ namespace PKSim.Core.Model
             return;
 
          Properties = sourceSimulation.Properties.Clone(cloneManager);
+         OverwriteParameterSetSelections = sourceSimulation.OverwriteParameterSetSelections.Clone();
+         ParameterChangeTracker = sourceSimulation.ParameterChangeTracker.Clone();
          sourceSimulation.UsedBuildingBlocks.Each(bb => AddUsedBuildingBlock(bb.Clone(cloneManager)));
          Model = cloneManager.Clone(sourceSimulation.Model);
 
@@ -486,6 +489,28 @@ namespace PKSim.Core.Model
       public virtual double? EndTime
       {
          get { return OutputSchema?.Intervals.Select(x => x.EndTime.Value).Max(); }
+      }
+
+      public virtual OverwriteParameterSetSelections OverwriteParameterSetSelections { get; protected set; } = new();
+
+      public virtual SimulationParameterChangeTracker ParameterChangeTracker { get; protected set; } = new();
+
+      /// <summary>
+      ///    Adds a selection of <paramref name="overwriteParameterSet"/> for the compound with <paramref name="compoundName"/>.
+      ///    Only compounds used as building blocks in the simulation are accepted.
+      ///    Compounds created by the simulation (e.g. unnamed metabolites) are ignored.
+      /// </summary>
+      public virtual void AddOverwriteParameterSetSelection(string compoundName, OverwriteParameterSet overwriteParameterSet)
+      {
+         if (!CompoundNames.Contains(compoundName))
+            return;
+
+         OverwriteParameterSetSelections.SetSelectionForCompound(compoundName, overwriteParameterSet);
+      }
+
+      public virtual void RemoveOverwriteParameterSetSelection(string compoundName)
+      {
+         OverwriteParameterSetSelections.RemoveSelectionForCompound(compoundName);
       }
 
       /// <summary>
@@ -651,6 +676,29 @@ namespace PKSim.Core.Model
       public virtual IReadOnlyList<Protocol> Protocols => AllBuildingBlocks<Protocol>().ToList();
 
       public virtual IReadOnlyList<string> CompoundNames => Compounds.AllNames().ToList();
+
+      /// <summary>
+      ///    Returns the name of the building block compound whose name appears as an element in <paramref name="parameterPath"/>,
+      ///    or <c>null</c> if no building block compound matches.
+      ///    Compounds created by the simulation but not used as building blocks (e.g. unnamed metabolites) are not matched.
+      /// </summary>
+      public virtual string CompoundNameForParameterPath(string parameterPath)
+      {
+         return string.IsNullOrEmpty(parameterPath) ? null : CompoundNameForParameterPath(parameterPath.ToPathArray());
+      }
+
+      public virtual string CompoundNameForParameterPath(string[] pathElements) => 
+         CompoundNames.FirstOrDefault(pathElements.Contains);
+
+      /// <summary>
+      ///    Returns <c>true</c> if the simulation has uncommitted compound-dependent parameter changes
+      ///    for the compound with the given <paramref name="compoundName"/>.
+      /// </summary>
+      public virtual bool HasUncommittedChangesForCompound(string compoundName)
+      {
+         return ParameterChangeTracker.ChangedPaths
+            .Any(path => CompoundNameForParameterPath(path) == compoundName);
+      }
 
       /// <summary>
       ///    Returns the compound properties used in the simulation configuration

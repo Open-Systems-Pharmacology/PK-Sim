@@ -1,5 +1,5 @@
-using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Presentation.Views;
+using PKSim.Presentation.Presenters.Simulations;
 
 namespace PKSim.Presentation.Views.Simulations
 {
@@ -7,5 +7,6 @@ namespace PKSim.Presentation.Views.Simulations
    {
       void AddParameterAlternativesView(IResizableView view);
       void AddCalculationMethodsView(IResizableView view);
+      void AddOverwriteParameterSetSelectionView(IResizableView view);
    }
 }

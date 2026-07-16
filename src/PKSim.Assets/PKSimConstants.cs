@@ -264,6 +264,27 @@ namespace PKSim.Assets
             return RemoveEntityFromContainer(ObjectTypes.ParameterGroupAlternative, alternativeName, ObjectTypes.ParameterGroup, groupName);
          }
 
+         public static string UpdateOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Update {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string SetDefaultOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Set {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' as default in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string ClearDefaultOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Clear default flag from {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string UpdateParameterValueInOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Update value of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string RemoveParameterValueFromOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Remove '{parameterPath}' from {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string AddParameterValueToOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Add '{parameterPath}' to {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string SetExtendedPropertyOnOverwriteParameterSet(string propertyName, string overwriteParameterSetName, string compoundName) =>
+            $"Set '{propertyName}' on {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
@@ -271,6 +292,12 @@ namespace PKSim.Assets
 
             return $"Add {lowerEntityType} '{entityName}' to {lowerContainerType} '{containerName}'";
          }
+
+         public static readonly string CommitSimulationParametersDescription = "Commit simulation parameters to compounds";
+         public static readonly string CreateNewParameterSet = "Create New Parameter Set";
+         public static readonly string UpdateExistingParameterSet = "Update Existing Parameter Set";
+         public static readonly string CommitOptions = "Commit Options";
+         public static readonly string ParameterSet = "Parameter Set";
 
          public static string RemoveEntityFromContainer(string entityType, string entityName, string containerType, string containerName)
          {
@@ -419,6 +446,20 @@ namespace PKSim.Assets
          public const string CannotDeleteSchema = "At least one schema needs to be defined.";
          public const string CannotDeleteDefaultParameterAlternative = "The default parameter alternative cannot be deleted.";
          public const string CannotDeleteParameterAlternative = "At least one alternative needs to be defined.";
+
+         public static string CannotDeleteOverwriteParameterSetUsedInSimulations(string overwriteParameterSetName, string compoundName, IReadOnlyList<string> simulationNameList) => 
+            $"{ObjectTypes.OverwriteParameterSet} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}' is used by{nameListFrom(simulationNameList)}and cannot be deleted.";
+
+         private static string nameListFrom(IReadOnlyList<string> simulationNameList)
+         {
+            return simulationNameList.Count > 1 ?
+               $"\n\n{string.Join("\n", simulationNameList.Select(n => $"- {n}"))}\n\n" :
+               $" {simulationNameList.ToString("", "'")} ";
+         }
+
+         public static string CannotApplyOverwriteParameterSetUnresolvedPaths(IReadOnlyList<string> unresolvedPaths) =>
+            $"The selected {ObjectTypes.OverwriteParameterSet.ToLower()} could not be applied because the following parameter path(s) could not be resolved in the simulation:{nameListFrom(unresolvedPaths)}The simulation cannot be created.";
+
          public static string CouldNotFindAdvancedParameterContainerForParameter(string parameterName) => $"Could not find advanced parameter container for parameter '{parameterName}'.";
          public static string CouldNotFindAdvancedParameterInContainerForParameter(string containerName, string parameterName) => $"Could not find advanced parameter in container '{containerName}' for parameter '{parameterName}'.";
          public static string CompoundProcessParameterMappingNotAvailable(string process, string parameter) => $"No compound process parameter mapping found for process='{process}' and parameter ='{parameter}'.";
@@ -830,6 +871,8 @@ namespace PKSim.Assets
 
          public static string SimulationTemplateBuildingBlockNotFoundInProject(string buildingBlockName, string buildingBlockType) => $"{buildingBlockType} '{buildingBlockName} not found in project.";
 
+         public static string OverWriteParameterSetNotFoundInCompound(string overWriteParameterSetName, string comnpoundName)=> $"Overwrite parameter set '{overWriteParameterSetName}' not found in compound '{comnpoundName}'";
+
          public static string ProcessNotFoundInCompound(string processName, string compound) => $"Process '{processName}' was not found in compound '{compound}'";
 
          public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
@@ -1022,6 +1065,7 @@ namespace PKSim.Assets
          public static readonly string Diff = "Show Differences...";
          public static readonly string Update = "Update from Building Block...";
          public static readonly string Commit = "Commit to Building Block...";
+         public static readonly string CommitSimulationParametersToCompounds = "Commit Simulation Parameters to Compounds...";
          public static readonly string File = "&File";
          public static readonly string RecentProjects = "&Recent Projects";
          public static readonly string EditQuery = "&Edit Database Query...";
@@ -1167,6 +1211,7 @@ namespace PKSim.Assets
          public static readonly string Parameter = "Parameter";
          public static readonly string DistributedParameter = "Distributed Parameter";
          public static readonly string Compound = "Compound";
+         public static readonly string OverwriteParameterSet = "Overwrite Parameter Set";
          public static readonly string ParameterGroupAlternative = "Alternative";
          public static readonly string ParameterGroup = "Group";
          public static readonly string SystemicProcess = "Systemic Process";
@@ -1432,6 +1477,8 @@ namespace PKSim.Assets
          public static readonly string ProcessInCompound = "Process in compound";
          public static readonly string AlternativeInCompound = "Alternative in compound";
          public static readonly string ParameterAlternatives = "Parameter Alternatives";
+         public static readonly string OverwriteParameterSetInCompound = "Overwrite parameter set in compound";
+         public static readonly string OverwriteParameterSetSelection = "Overwrite Parameter Set";
          public static readonly string PlasmaClearanceInCompound = "Plasma clearance process in compound";
          public static readonly string CreatingSimulation = "Creating...";
          public static readonly string Molecule = "Molecule";
@@ -1671,6 +1718,8 @@ namespace PKSim.Assets
          public static readonly string Halogens = "Halogens";
          public static readonly string DissociationConstants = "Dissociation Constants";
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
+         public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
+         public static readonly string Metadata = "Metadata";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;
          public static readonly string ADME = "ADME";

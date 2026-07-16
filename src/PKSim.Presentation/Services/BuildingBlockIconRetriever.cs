@@ -13,6 +13,7 @@ namespace PKSim.Presentation.Services
    {
       ApplicationIcon IconFor(Simulation simulation);
       ApplicationIcon IconFor(UsedBuildingBlock usedBuildingBlock);
+      ApplicationIcon IconFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock);
       ApplicationIcon IconFor(ISimulationComparison simulationComparison);
       ApplicationIcon IconFor(ParameterIdentification parameterIdentification);
       ApplicationIcon IconFor(SensitivityAnalysis sensitivityAnalysis);
@@ -61,6 +62,21 @@ namespace PKSim.Presentation.Services
          return retrieveIconForStatus(iconName, _buildingBlockInProjectManager.StatusFor(usedBuildingBlock));
       }
 
+      public ApplicationIcon IconFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock)
+      {
+         var baseIcon = IconFor(usedBuildingBlock);
+
+         if (usedBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Compound)
+            return baseIcon;
+
+         if (!simulation.HasUncommittedChangesForCompound(templateBuildingBlockFor(usedBuildingBlock).Name))
+            return baseIcon;
+
+         return _buildingBlockInProjectManager.StatusFor(usedBuildingBlock) == BuildingBlockStatus.Red
+            ? ApplicationIcons.CompoundRedOrange
+            : ApplicationIcons.CompoundGreenOrange;
+      }
+
       public ApplicationIcon IconFor(ISimulationComparison simulationComparison)
       {
          if(simulationComparison.IsAnImplementationOf<PopulationSimulationComparison>())
@@ -77,9 +93,12 @@ namespace PKSim.Presentation.Services
 
       private string individualIconFor(UsedBuildingBlock usedBuildingBlock)
       {
-         var individual = _buildingBlockRepository.ById(usedBuildingBlock.TemplateId) as Individual;
+         var individual = templateBuildingBlockFor(usedBuildingBlock) as Individual;
          return individual == null ? usedBuildingBlock.BuildingBlockType.ToString() : individual.Icon;
       }
+
+      private IPKSimBuildingBlock templateBuildingBlockFor(UsedBuildingBlock usedBuildingBlock) => 
+         _buildingBlockRepository.ById(usedBuildingBlock.TemplateId);
 
       private ApplicationIcon retrieveIconForStatus(string iconName, BuildingBlockStatus status) => ApplicationIcons.IconByName($"{iconName}{status}");
    }

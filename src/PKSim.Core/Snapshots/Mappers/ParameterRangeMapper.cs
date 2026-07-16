@@ -17,16 +17,16 @@ namespace PKSim.Core.Snapshots.Mappers
 
    public class ParameterRangeMapper : SnapshotMapperBase<ModelParameterRange, SnapshotParameterRange, ParameterRangeSnapshotContext>
    {
-      public override async Task<SnapshotParameterRange> MapToSnapshot(ModelParameterRange parameterRange)
+      public override Task<SnapshotParameterRange> MapToSnapshot(ModelParameterRange parameterRange)
       {
          if (parameterRange == null)
-            return null;
+            return Task.FromResult<SnapshotParameterRange>(null);
 
          //No range defined. No need to save this range
-         if (parameterRange.MaxValueInDisplayUnit == null && parameterRange.MaxValueInDisplayUnit == null)
-            return null;
+         if (parameterRange.MinValueInDisplayUnit == null && parameterRange.MaxValueInDisplayUnit == null)
+            return Task.FromResult<SnapshotParameterRange>(null);
 
-         return await SnapshotFrom(parameterRange, snapshot =>
+         return SnapshotFrom(parameterRange, snapshot =>
          {
             snapshot.Min = parameterRange.MinValueInDisplayUnit;
             snapshot.Max = parameterRange.MaxValueInDisplayUnit;

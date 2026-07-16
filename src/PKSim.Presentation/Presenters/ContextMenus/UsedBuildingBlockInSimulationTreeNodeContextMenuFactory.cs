@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IContextMenu CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock, Compound compound)
       {
-         return new UsedBuildingBlockInSimulationContextMenu<Compound>(simulation, usedBuildingBlock, compound, _container);
+         return new UsedCompoundInSimulationContextMenu(simulation, usedBuildingBlock, compound, _container);
       }
    }
 

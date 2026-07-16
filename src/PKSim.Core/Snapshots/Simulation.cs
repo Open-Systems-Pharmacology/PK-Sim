@@ -39,6 +39,7 @@ namespace PKSim.Core.Snapshots
       public PopulationAnalysisChart[] PopulationAnalyses { get; set; }
 
       public CompoundProcessSelection[] Interactions { get; set; }
+      public OverwriteParameterSetSelection[] OverwriteParameterSetSelections { get; set; }
 
       public IReadOnlyList<OSPSuite.Core.Snapshots.Chart> Analyses
       {

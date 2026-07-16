@@ -20,6 +20,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          MapEnumerable(x => x.Reactions, x => x.AddReactions);
          MapEnumerable(x => x.UsedBuildingBlocks, x => x.AddUsedBuildingBlock);
          MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
+         Map(x => x.OverwriteParameterSetSelections);
+         Map(x => x.ParameterChangeTracker);
 
          //Do not save charts that will be saved separately
       }
