@@ -155,6 +155,42 @@ namespace PKSim.Core
       }
    }
 
+   public class When_changing_the_compound_name : concern_for_OverwriteParameterSet
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Add(new ParameterValue { Path = "OLD|Lipophilicity".ToObjectPath(), Value = 1.0 });
+         sut.Add(new ParameterValue { Path = "Organism|Liver|OLD|Concentration".ToObjectPath(), Value = 2.0 });
+         sut.Add(new ParameterValue { Path = "Organism|Weight".ToObjectPath(), Value = 3.0 });
+      }
+
+      protected override void Because()
+      {
+         sut.ChangeCompoundName("OLD", "NEW");
+      }
+
+      [Observation]
+      public void should_replace_the_compound_name_in_all_parameter_value_paths()
+      {
+         sut.ParameterValueByPath("NEW|Lipophilicity").Value.ShouldBeEqualTo(1.0);
+         sut.ParameterValueByPath("Organism|Liver|NEW|Concentration").Value.ShouldBeEqualTo(2.0);
+      }
+
+      [Observation]
+      public void should_not_change_paths_that_do_not_contain_the_compound_name()
+      {
+         sut.ParameterValueByPath("Organism|Weight").Value.ShouldBeEqualTo(3.0);
+      }
+
+      [Observation]
+      public void should_no_longer_return_parameter_values_for_the_old_paths()
+      {
+         sut.ParameterValueByPath("OLD|Lipophilicity").ShouldBeNull();
+         sut.ParameterValueByPath("Organism|Liver|OLD|Concentration").ShouldBeNull();
+      }
+   }
+
    public class When_updating_properties_from_another_overwrite_parameter_set : concern_for_OverwriteParameterSet
    {
       private OverwriteParameterSet _source;

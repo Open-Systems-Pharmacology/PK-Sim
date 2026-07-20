@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Events;
@@ -327,6 +328,36 @@ namespace PKSim.Presentation
       {
          Fake.ClearRecordedCalls(_view);
          sut.Handle(new OverwriteParameterSetChangedEvent(new Compound { Name = "OtherCompound" }, _overwriteParameterSet));
+      }
+
+      [Observation]
+      public void should_not_rebind_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<OverwriteParameterSetDTO>>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_handling_a_renamed_event_for_the_edited_compound : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      protected override void Because()
+      {
+         Fake.ClearRecordedCalls(_view);
+         sut.Handle(new RenamedEvent(_compound));
+      }
+
+      [Observation]
+      public void should_rebind_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<OverwriteParameterSetDTO>>._)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_handling_a_renamed_event_for_another_object : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      protected override void Because()
+      {
+         Fake.ClearRecordedCalls(_view);
+         sut.Handle(new RenamedEvent(new Compound { Name = "OtherCompound" }));
       }
 
       [Observation]

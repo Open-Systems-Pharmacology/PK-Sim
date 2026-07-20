@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
@@ -16,7 +17,7 @@ using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds;
 
-public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, IListener<OverwriteParameterSetChangedEvent>
+public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, IListener<OverwriteParameterSetChangedEvent>, IListener<RenamedEvent>
 {
    void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValue);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
@@ -114,6 +115,14 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
    public void Handle(OverwriteParameterSetChangedEvent eventToHandle)
    {
       if (!Equals(eventToHandle.Compound, _compound))
+         return;
+
+      rebindView();
+   }
+
+   public void Handle(RenamedEvent eventToHandle)
+   {
+      if (!Equals(eventToHandle.RenamedObject, _compound))
          return;
 
       rebindView();
