@@ -120,6 +120,7 @@ namespace PKSim.Presentation.Services
          //Perform rename of molecule in expression profile first as it relies on the old name still being present
          renameMoleculeNameInExpressionProfile(templateBuildingBlock, newName);
          renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, newName);
+         _buildingBlockTask.ChangeCompoundNameInOverwriteParameterSets(templateBuildingBlock, templateBuildingBlock.Name, newName);
 
          //update the name
          templateBuildingBlock.Name = newName;

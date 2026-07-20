@@ -77,6 +77,21 @@ namespace PKSim.Core.Model
       public ParameterValue ParameterValueByPath(string parameterPath) =>
          _parameterValues[parameterPath.ToObjectPath()];
 
+      /// <summary>
+      ///    Replaces all path entries equal to <paramref name="oldCompoundName" /> with <paramref name="newCompoundName" />
+      ///    in the paths of all parameter values.
+      /// </summary>
+      public void ChangeCompoundName(string oldCompoundName, string newCompoundName)
+      {
+         var parameterValues = _parameterValues.ToList();
+         _parameterValues.Clear();
+         parameterValues.Each(parameterValue =>
+         {
+            parameterValue.Path = new ObjectPath(parameterValue.Path.Select(entry => string.Equals(entry, oldCompoundName) ? newCompoundName : entry));
+            Add(parameterValue);
+         });
+      }
+
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(source, cloneManager);
