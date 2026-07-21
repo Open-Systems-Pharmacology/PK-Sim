@@ -16,6 +16,9 @@ namespace PKSim.Core.Services
       ///    <paramref name="simulation" /> to the matching simulation parameters (matched by path). Affected parameters
       ///    become <see cref="PKSimBuildingBlockType.Compound" /> so that subsequent changes follow normal compound
       ///    parameter logic, and their value origin is set to identify the originating overwrite parameter set.
+      ///    Overwritten parameters are also flagged <see cref="IParameter.CanBeVariedInPopulation" />=false so that a
+      ///    population simulation keeps the overwritten value fixed; any advanced parameter already defined for such a
+      ///    path in a <see cref="PopulationSimulation" /> is removed so it cannot override the value at run time.
       ///    Compounds whose selection is "None" are skipped.
       ///    Throws a <see cref="CannotApplyOverwriteParameterSetException" /> if any path cannot be resolved in the
       ///    simulation, in which case no value is applied.
@@ -45,11 +48,33 @@ namespace PKSim.Core.Services
          _parameterValuesCreator = parameterValuesCreator;
       }
 
-      public void ApplyOverwriteParameterSetsTo(Simulation simulation) => resolveOverwriteValues(simulation).Each(x => applyValue(x.parameter, x.parameterValue, x.compound, x.overwriteParameterSet));
+      public void ApplyOverwriteParameterSetsTo(Simulation simulation)
+      {
+         var resolvedValues = resolveOverwriteValues(simulation);
+         applyValues(resolvedValues);
+         removeAdvancedParametersFor(simulation, resolvedValues);
+      }
+
+      private static void applyValues(IReadOnlyList<(IParameter parameter, ParameterValue parameterValue, Compound compound, OverwriteParameterSet overwriteParameterSet)> resolvedValues) =>
+         resolvedValues.Each(x => applyValue(x.parameter, x.parameterValue, x.compound, x.overwriteParameterSet));
+
+      private void removeAdvancedParametersFor(Simulation simulation,
+         IReadOnlyList<(IParameter parameter, ParameterValue parameterValue, Compound compound, OverwriteParameterSet overwriteParameterSet)> resolvedValues)
+      {
+         if (simulation is not PopulationSimulation populationSimulation)
+            return;
+
+         resolvedValues.Each(x =>
+         {
+            var advancedParameter = populationSimulation.AdvancedParameterFor(_entityPathResolver, x.parameter);
+            if (advancedParameter != null)
+               populationSimulation.RemoveAdvancedParameter(advancedParameter);
+         });
+      }
 
       public void ApplyOverwriteParameterSetsTo(ParameterValuesBuildingBlock parameterValues, Simulation simulation) => resolveOverwriteValues(simulation).Each(x => addToParameterValues(x.parameter, x.parameterValue, parameterValues));
 
-      private List<(IParameter parameter, ParameterValue parameterValue, Compound compound, OverwriteParameterSet overwriteParameterSet)> resolveOverwriteValues(Simulation simulation)
+      private IReadOnlyList<(IParameter parameter, ParameterValue parameterValue, Compound compound, OverwriteParameterSet overwriteParameterSet)> resolveOverwriteValues(Simulation simulation)
       {
          var resolvedValues = new List<(IParameter parameter, ParameterValue parameterValue, Compound compound, OverwriteParameterSet overwriteParameterSet)>();
 
@@ -98,6 +123,7 @@ namespace PKSim.Core.Services
          parameter.Origin.BuilingBlockId = compound.Id;
          parameter.ValueOrigin.Source = ValueOriginSources.Other;
          parameter.ValueOrigin.Description = $"{PKSimConstants.ObjectTypes.OverwriteParameterSet} '{overwriteParameterSet.Name}'";
+         parameter.CanBeVariedInPopulation = false;
       }
 
       private void addToParameterValues(IParameter parameter, ParameterValue overwriteValue, ParameterValuesBuildingBlock buildingBlock)

@@ -73,6 +73,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
+         _lipophilicityParam.CanBeVariedInPopulation = true;
          var set = overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0));
          _simulation.AddOverwriteParameterSetSelection("Aspirin", set);
       }
@@ -86,6 +87,12 @@ namespace PKSim.Core
       public void should_apply_the_value_from_the_set_to_the_matching_simulation_parameter()
       {
          _lipophilicityParam.Value.ShouldBeEqualTo(5.0);
+      }
+
+      [Observation]
+      public void should_lock_the_applied_parameter_against_population_variation()
+      {
+         _lipophilicityParam.CanBeVariedInPopulation.ShouldBeFalse();
       }
 
       [Observation]
@@ -207,6 +214,67 @@ namespace PKSim.Core
       {
          _lipophilicityParam.Origin.BuilingBlockId.ShouldBeEqualTo(_compound.Id);
          _secondCompoundParam.Origin.BuilingBlockId.ShouldBeEqualTo(_secondCompound.Id);
+      }
+   }
+
+   public class When_applying_an_overwrite_parameter_set_to_a_population_simulation_that_varies_the_overwritten_parameter : concern_for_OverwriteParameterSetApplicationTask
+   {
+      private PopulationSimulation _populationSimulation;
+      private IParameter _variedParameter;
+      private AdvancedParameter _advancedParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _variedParameter = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
+         _variedParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _variedParameter.CanBeVariedInPopulation = true;
+
+         var root = new Container { Name = "PopSim" };
+         root.Add(_variedParameter);
+
+         _populationSimulation = new PopulationSimulation
+         {
+            Id = "PopId",
+            Model = new OSPSuite.Core.Domain.Model { Root = root }
+         };
+         _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
+
+         var advancedParameters = new AdvancedParameterCollection();
+         _advancedParameter = new AdvancedParameter { ParameterPath = "Organism|Aspirin|Lipophilicity" };
+         advancedParameters.AddAdvancedParameter(_advancedParameter);
+         _populationSimulation.SetAdvancedParameters(advancedParameters);
+
+         var populationCache = new PathCacheForSpecs<IParameter>();
+         populationCache.Add("Organism|Aspirin|Lipophilicity", _variedParameter);
+         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(populationCache);
+         A.CallTo(() => _entityPathResolver.PathFor(_variedParameter)).Returns("Organism|Aspirin|Lipophilicity");
+
+         _populationSimulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_populationSimulation);
+      }
+
+      [Observation]
+      public void should_apply_the_overwrite_value_to_the_matching_simulation_parameter()
+      {
+         _variedParameter.Value.ShouldBeEqualTo(5.0);
+      }
+
+      [Observation]
+      public void should_lock_the_applied_parameter_against_population_variation()
+      {
+         _variedParameter.CanBeVariedInPopulation.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_remove_the_advanced_parameter_previously_defined_for_the_overwritten_path()
+      {
+         _populationSimulation.AdvancedParameters.Contains(_advancedParameter).ShouldBeFalse();
       }
    }
 
