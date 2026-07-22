@@ -111,7 +111,9 @@ namespace PKSim.Core.Services
             eventIndex += 1;
             mainSubContainer.Name = $"{pkSimEvent.Name}_{eventIndex}";
 
-            _parameterSetUpdater.UpdateValue(startTime, mainSubContainer.StartTime());
+            var eventStartTime = mainSubContainer.StartTime();
+            _parameterSetUpdater.UpdateValue(startTime, eventStartTime);
+            allowNegativeStartTime(eventStartTime);
 
             eventGroup.Add(mainSubContainer);
          }
@@ -119,6 +121,15 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
 
          _eventGroupBuildingBlock.Add(eventGroup);
+      }
+
+      //an event may be scheduled before an administration (negative protocol offset), so its start time must allow negative values
+      private static void allowNegativeStartTime(IParameter startTime)
+      {
+         if (startTime?.Info == null) return;
+
+         startTime.Info.MinValue = null;
+         startTime.Info.MinIsAllowed = true;
       }
 
       /// <summary>

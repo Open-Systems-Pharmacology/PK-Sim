@@ -75,6 +75,14 @@ namespace PKSim.Core
          templateEventGroup.Add(mainSubContainer);
          return templateEventGroup;
       }
+
+      protected static IParameter startTimeParameterWithMinimum(double minValue)
+      {
+         var startTime = new PKSimParameter().WithName(Constants.Parameters.START_TIME);
+         startTime.Info.MinValue = minValue;
+         startTime.Info.MinIsAllowed = true;
+         return startTime;
+      }
    }
 
    public class When_creating_event_building_block_with_protocol_event_schema_items : concern_for_EventBuildingBlockCreator
@@ -94,9 +102,9 @@ namespace PKSim.Core
 
          _clonedEventGroup = createTemplateEventGroup("MyEvent");
          _clonedMainSub1 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
-         _clonedMainSub1.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+         _clonedMainSub1.Add(startTimeParameterWithMinimum(0));
          _clonedMainSub2 = new EventGroupBuilder().WithName(CoreConstants.ContainerName.EventGroupMainSubContainer);
-         _clonedMainSub2.Add(new PKSimParameter().WithName(Constants.Parameters.START_TIME));
+         _clonedMainSub2.Add(startTimeParameterWithMinimum(0));
 
          var protocol = A.Fake<Protocol>();
          var protocolProperties = new ProtocolProperties { Protocol = protocol };
@@ -162,6 +170,14 @@ namespace PKSim.Core
       public void should_set_event_group_parameters_from_pksim_event()
       {
          A.CallTo(() => _parameterSetUpdater.UpdateValuesByName(_pkSimEvent, A<EventGroupBuilder>.That.Matches(x => x.Name == "MyEvent"))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_allow_a_negative_start_time_on_the_generated_event_sub_containers()
+      {
+         _clonedMainSub1.StartTime().Info.MinValue.ShouldBeNull();
+         _clonedMainSub1.StartTime().Info.MinIsAllowed.ShouldBeTrue();
+         _clonedMainSub2.StartTime().Info.MinValue.ShouldBeNull();
       }
    }
 
