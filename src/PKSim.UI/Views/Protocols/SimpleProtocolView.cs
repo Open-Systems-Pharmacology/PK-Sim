@@ -143,7 +143,7 @@ namespace PKSim.UI.Views.Protocols
          labelTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
          labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
          labelEvent.Text = "";
-         cbEvent.Properties.Caption = PKSimConstants.UI.AddEventForEveryAdministration;
+         cbEvent.Properties.Caption = PKSimConstants.UI.AddEventForEachAdministration;
          labelEventOffset.Text = PKSimConstants.UI.EventOffset.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);
