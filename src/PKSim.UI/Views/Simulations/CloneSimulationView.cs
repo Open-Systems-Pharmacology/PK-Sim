@@ -1,7 +1,6 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Simulations
 {

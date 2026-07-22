@@ -15,7 +15,6 @@ namespace PKSim.Presentation.Presenters.Simulations
 {
    public interface IPKAnalysisPresenter : IUnitsInColumnPresenter<string>, IPresenterWithSettings
    {
-      string ToolTipFor(string pkParameterName);
       void ExportToExcel();
       string DisplayNameFor(string parameterName);
    }
@@ -64,11 +63,6 @@ namespace PKSim.Presentation.Presenters.Simulations
       protected abstract void BindToPKAnalysis();
 
       protected abstract IEnumerable<PKAnalysis> AllPKAnalyses { get; }
-
-      public string ToolTipFor(string pkParameterName)
-      {
-         return _pkParameterRepository.DescriptionFor(pkParameterName);
-      }
 
       public abstract void ExportToExcel();
 

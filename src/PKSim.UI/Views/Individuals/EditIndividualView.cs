@@ -1,9 +1,8 @@
-using OSPSuite.Assets;
 using DevExpress.XtraTab;
+using OSPSuite.Assets;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Individuals
 {

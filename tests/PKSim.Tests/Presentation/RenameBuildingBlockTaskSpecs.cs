@@ -284,6 +284,29 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_renaming_a_compound_with_overwrite_parameter_sets : concern_for_RenameBuildingBlockTask
+   {
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = new Compound().WithName("OLD");
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(A.Fake<IProject>());
+      }
+
+      protected override void Because()
+      {
+         sut.RenameBuildingBlock(_compound, "NEW");
+      }
+
+      [Observation]
+      public void should_update_the_compound_name_in_the_paths_of_all_overwrite_parameter_sets_before_the_rename()
+      {
+         A.CallTo(() => _buildingBlockTask.ChangeCompoundNameInOverwriteParameterSets(_compound, "OLD", "NEW")).MustHaveHappened();
+      }
+   }
+
    public class When_renaming_an_expression_profile_molecule : concern_for_RenameBuildingBlockTask
    {
       private ExpressionProfile _expressionProfile;

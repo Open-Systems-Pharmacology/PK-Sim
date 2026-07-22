@@ -175,17 +175,82 @@ namespace PKSim.Core.Services
 
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         compoundPropertiesList.Each(addProtocol);
+         var administrations = compoundPropertiesList
+            .Where(x => x.ProtocolProperties.Protocol != null)
+            .Select(x => new AdministrationContext(x))
+            .ToList();
+
+         assignUniqueEventGroupNames(administrations);
+
+         administrations.Each(x => addProtocol(x.CompoundProperties, x.EventGroupName));
       }
 
-      private void addProtocol(CompoundProperties compoundProperties)
+
+      private static void assignUniqueEventGroupNames(IReadOnlyList<AdministrationContext> administrations)
+      {
+         var sharedProtocolNames = protocolNamesUsedByMoreThanOneCompound(administrations);
+
+         // assign event group names. For non shared, use the protocol names, for shared, use a composite name with the compound name
+         createEventGroupNamesForProtocols(administrations, sharedProtocolNames);
+         
+         // if a non-shared protocol event group has the same name as a shared composite, add the compound name to the non-shared
+         adjustNonSharedProtocolNames(administrations, sharedProtocolNames);
+
+         // there could still be name collisions. Use indexes to guarantee uniqueness
+         var usedNames = new HashSet<string>();
+         administrations.Each(x => x.EventGroupName = indexedNameFrom(x.EventGroupName, usedNames));
+      }
+
+      private static void adjustNonSharedProtocolNames(IReadOnlyList<AdministrationContext> administrations, ICollection<string> sharedProtocolNames)
+      {
+         administrations
+            .Where(x => protocolIsNotShared(sharedProtocolNames, x) && eventGroupNameIsDuplicated(administrations, x.EventGroupName))
+            .ToList()
+            .Each(x => x.EventGroupName = x.CompositeName);
+      }
+
+      private static bool protocolIsNotShared(ICollection<string> sharedProtocolNames, AdministrationContext x) => 
+         !sharedProtocolNames.Contains(x.ProtocolName);
+
+      private static void createEventGroupNamesForProtocols(IEnumerable<AdministrationContext> administrations, ICollection<string> sharedProtocolNames) =>
+         administrations.Each(x => x.EventGroupName = sharedProtocolNames.Contains(x.ProtocolName) ? x.CompositeName : x.ProtocolName);
+
+      private static ICollection<string> protocolNamesUsedByMoreThanOneCompound(IEnumerable<AdministrationContext> administrations) =>
+         new HashSet<string>(administrations.GroupBy(x => x.ProtocolName).Where(x => x.Count() > 1).Select(x => x.Key));
+
+      private static bool eventGroupNameIsDuplicated(IEnumerable<AdministrationContext> administrations, string eventGroupName) =>
+         administrations.Count(x => string.Equals(x.EventGroupName, eventGroupName)) > 1;
+
+      private static string indexedNameFrom(string name, ISet<string> usedNames)
+      {
+         var uniqueName = name;
+         var index = 2;
+         while (!usedNames.Add(uniqueName))
+            uniqueName = $"{name}_{index++}";
+
+         return uniqueName;
+      }
+
+      //Associates an administered compound with the event group name that will represent its protocol in the model.
+      private class AdministrationContext
+      {
+         public AdministrationContext(CompoundProperties compoundProperties)
+         {
+            CompoundProperties = compoundProperties;
+         }
+
+         public CompoundProperties CompoundProperties { get; }
+         public string ProtocolName => CompoundProperties.ProtocolProperties.Protocol.Name;
+         public string CompositeName => Constants.CompositeNameFor(ProtocolName, CompoundProperties.Compound.Name);
+         public string EventGroupName { get; set; }
+      }
+
+      private void addProtocol(CompoundProperties compoundProperties, string eventGroupName)
       {
          var protocol = compoundProperties.ProtocolProperties.Protocol;
-         if (protocol == null)
-            return;
 
          var eventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
-            .WithName(protocol.Name);
+            .WithName(eventGroupName);
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 

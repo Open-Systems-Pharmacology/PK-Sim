@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -10,8 +11,6 @@ using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation
 {

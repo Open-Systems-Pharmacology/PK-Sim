@@ -28,11 +28,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       void ActivateNode(ITreeNode node);
 
       /// <summary>
-      ///    Initialize the parameter group presenter with the container for which the parameter should be displayed
-      /// </summary>
-      void InitializeWith(IContainer container);
-
-      /// <summary>
       ///    Initialize the parameter group presenter with the container for which the parameter filtered with the predicate
       ///    should be displayed
       /// </summary>
@@ -188,11 +183,6 @@ namespace PKSim.Presentation.Presenters.Parameters
             return container.AllVisibleParameters();
 
          return _parameterGroupTask.ParametersIn(parameterGroupFrom(node), _allVisibleParameters);
-      }
-
-      public void InitializeWith(IContainer container)
-      {
-         InitializeWith(container, x => true);
       }
 
       public void InitializeWith(IContainer container, IEnumerable<IParameter> allParameters)

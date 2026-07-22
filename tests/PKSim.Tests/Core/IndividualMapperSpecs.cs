@@ -10,9 +10,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
 using OriginData = OSPSuite.Core.Snapshots.OriginData;
@@ -37,6 +35,7 @@ namespace PKSim.Core
       public Model.ExpressionProfile _expressionProfile1;
       public Model.ExpressionProfile _expressionProfile2;
       protected IParameter _parameterKidneyRelExp;
+      protected IParameter _parameterKidneyOntogenyFactorTable;
       protected List<IParameter> _mappedParameters;
 
       protected override Task Context()
@@ -60,6 +59,10 @@ namespace PKSim.Core
          _parameterKidneyRelExp.DefaultValue = 10;
          kidney.Add(_parameterKidneyRelExp);
 
+         _parameterKidneyOntogenyFactorTable = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_TABLE);
+         _parameterKidneyOntogenyFactorTable.DefaultValue = 1;
+         kidney.Add(_parameterKidneyOntogenyFactorTable);
+
          _parameterLiver.ValueDiffersFromDefault().ShouldBeFalse();
          _parameterKidney.ValueDiffersFromDefault().ShouldBeFalse();
 
@@ -67,6 +70,9 @@ namespace PKSim.Core
          _parameterKidney.ValueDiffersFromDefault().ShouldBeTrue();
          _parameterKidneyRelExp.Value = 50;
          _parameterKidneyRelExp.ValueDiffersFromDefault().ShouldBeTrue();
+         _parameterKidneyOntogenyFactorTable.Value = 2;
+         _parameterKidneyOntogenyFactorTable.IsDefault = false;
+         _parameterKidneyOntogenyFactorTable.ValueDiffersFromDefault().ShouldBeTrue();
 
          _expressionProfile1 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "Enz");
          _expressionProfile2 = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>(moleculeName: "Trans");
@@ -105,6 +111,12 @@ namespace PKSim.Core
       {
          _mappedParameters.ShouldContain(_parameterKidney);
          _mappedParameters.ShouldNotContain(_parameterKidneyRelExp);
+      }
+
+      [Observation]
+      public void should_not_save_ontogeny_factor_table_parameters_as_they_belong_to_the_expression_profile_building_block()
+      {
+         _mappedParameters.ShouldNotContain(_parameterKidneyOntogenyFactorTable);
       }
 
       [Observation]

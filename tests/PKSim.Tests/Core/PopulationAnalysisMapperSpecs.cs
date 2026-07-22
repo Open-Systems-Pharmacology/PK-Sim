@@ -10,7 +10,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using PopulationAnalysis = PKSim.Core.Snapshots.PopulationAnalysis;
 
 namespace PKSim.Core

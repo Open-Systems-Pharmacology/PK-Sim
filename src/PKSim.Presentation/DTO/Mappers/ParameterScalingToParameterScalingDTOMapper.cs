@@ -1,9 +1,7 @@
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using PKSim.Core.Services;
-
 using PKSim.Presentation.DTO.Parameters;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.DTO.Mappers
 {

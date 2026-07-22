@@ -14,6 +14,5 @@ namespace PKSim.Presentation.Views.ProteinExpression
       string GetSelectedUnit();
       void SetSelectedUnit(string unit);
       string GetFilterInformation();
-      string GetMappingInformation();
    }
 }

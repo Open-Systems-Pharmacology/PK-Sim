@@ -36,6 +36,9 @@ namespace PKSim.IntegrationTests
 
          _outputMapping.WeightedObservedData.Weights[1] = 10;
          _simulation.OutputMappings.Add(_outputMapping);
+
+         _simulation.ParameterChangeTracker.Track("Organism|COMP1|Lipophilicity");
+         _simulation.ParameterChangeTracker.Track("Organism|COMP1|Permeability");
       }
 
       protected override void Because()
@@ -119,6 +122,15 @@ namespace PKSim.IntegrationTests
          _deserializedSimulation.CMaxDDI["COMP1"].ShouldBeEqualTo(20);
          _deserializedSimulation.AucIV["COMP2"].ShouldBeEqualTo(30);
          _deserializedSimulation.AucDDI["COMP2"].ShouldBeEqualTo(40);
+      }
+
+      [Observation]
+      public void should_have_deserialized_the_parameter_change_tracker()
+      {
+         _deserializedSimulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
+         _deserializedSimulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(2);
+         _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Lipophilicity").ShouldBeTrue();
+         _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Permeability").ShouldBeTrue();
       }
 
       public override void GlobalCleanup()

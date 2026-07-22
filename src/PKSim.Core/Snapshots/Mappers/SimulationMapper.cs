@@ -44,6 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IContainerTask _containerTask;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IChartTask _chartTask;
+      private readonly OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -58,6 +59,7 @@ namespace PKSim.Core.Snapshots.Mappers
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ProcessMappingMapper processMappingMapper,
          OutputMappingMapper outputMappingMapper,
+         OverwriteParameterSetSelectionMapper overwriteParameterSetSelectionMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
@@ -81,6 +83,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _processMappingMapper = processMappingMapper;
          _outputMappingMapper = outputMappingMapper;
+         _overwriteParameterSetSelectionMapper = overwriteParameterSetSelectionMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
@@ -118,7 +121,31 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.PopulationAnalyses = await _populationAnalysisChartMapper.MapToSnapshots(simulation.AnalysesOfType<ModelPopulationAnalysisChart>());
          snapshot.HasResults = simulation.HasResults;
          snapshot.AlteredBuildingBlocks = alteredBuildingBlocksIn(simulation);
+         snapshot.OverwriteParameterSetSelections = await _overwriteParameterSetSelectionMapper.MapToSnapshots(simulation.OverwriteParameterSetSelections.Selections, project);
          return snapshot;
+      }
+
+      private async Task updateOverwriteParameterSetSelections(ModelSimulation simulation, OverwriteParameterSetSelection[] snapshotSelections, SnapshotContext snapshotContext)
+      {
+         var selections = await _overwriteParameterSetSelectionMapper.MapToModels(snapshotSelections, snapshotContext);
+         selections?.Each(selection => simulation.AddOverwriteParameterSetSelection(selection.CompoundName, selection.OverwriteParameterSet));
+      }
+
+      private void reconstructChangedParameterPaths(ModelSimulation simulation)
+      {
+         //After loading, the simulation model already contains all user-changed parameters.
+         //We can rebuild the change tracker by finding parameters whose building block type is Simulation
+         //and whose path matches a building block compound (the same criteria used by EditParameterCommand
+         //when tracking changes during interactive edits).
+         var changedSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(p =>
+            p.BuildingBlockType == PKSimBuildingBlockType.Simulation && p.ShouldExportToSnapshot());
+
+         foreach (var parameter in changedSimulationParameters)
+         {
+            var path = _entityPathResolver.PathFor(parameter);
+            if (simulation.CompoundNameForParameterPath(path) != null)
+               simulation.ParameterChangeTracker.Track(path);
+         }
       }
 
       private AlteredBuildingBlock[] alteredBuildingBlocksIn(ModelSimulation simulation)
@@ -287,6 +314,8 @@ namespace PKSim.Core.Snapshots.Mappers
          updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
+         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
+         reconstructChangedParameterPaths(simulation);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);

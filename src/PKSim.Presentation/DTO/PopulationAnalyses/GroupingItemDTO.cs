@@ -63,13 +63,6 @@ namespace PKSim.Presentation.DTO.PopulationAnalyses
          };
       }
 
-      public GroupingItemDTO From(GroupingItem groupingItem)
-      {
-         var dto = new GroupingItemDTO();
-         dto.UpdateFrom(groupingItem);
-         return dto;
-      }
-
       public virtual void UpdateFrom(GroupingItem groupingItem)
       {
          Color = groupingItem.Color;

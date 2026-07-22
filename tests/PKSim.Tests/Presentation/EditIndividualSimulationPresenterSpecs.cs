@@ -1,14 +1,7 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Charts;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
@@ -16,6 +9,12 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Collections;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Charts;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation
 {

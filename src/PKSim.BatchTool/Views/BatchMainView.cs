@@ -1,6 +1,5 @@
 ﻿using System.Windows.Forms;
 using OSPSuite.Assets;
-using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using PKSim.BatchTool.Presenters;
 using PKSim.Core;

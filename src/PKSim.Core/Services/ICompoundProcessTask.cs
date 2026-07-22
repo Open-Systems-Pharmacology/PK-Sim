@@ -1,5 +1,4 @@
-﻿using System;
-using PKSim.Core.Commands;
+﻿using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services

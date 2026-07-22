@@ -4,6 +4,5 @@ namespace PKSim.Core.Chart
 {
    public class SimulationTimeProfileChart : AnalysisChart
    {
-      
    }
 }

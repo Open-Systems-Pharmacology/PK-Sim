@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using PKSim.Presentation.Mappers;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Services
 {

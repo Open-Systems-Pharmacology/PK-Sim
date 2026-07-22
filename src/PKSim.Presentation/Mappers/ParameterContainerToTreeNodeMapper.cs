@@ -1,10 +1,9 @@
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.Nodes;
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Mappers

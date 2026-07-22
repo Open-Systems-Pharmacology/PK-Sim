@@ -19,7 +19,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Services;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
 {
@@ -152,6 +151,37 @@ namespace PKSim.Presentation
       {
          _clonedBuildingBlock.Creation.CreationMode.ShouldBeEqualTo(CreationMode.Clone);
          _clonedBuildingBlock.Creation.ClonedFrom.ShouldBeEqualTo(_buildingBlock.Name);
+      }
+   }
+
+   public class When_cloning_a_compound_with_overwrite_parameter_sets : concern_for_BuildingBlockTask
+   {
+      private Compound _compound;
+      private Compound _clonedCompound;
+      private OverwriteParameterSet _clonedSet;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compound = new Compound().WithName("OLD");
+         _clonedCompound = new Compound().WithName("NEW");
+         _clonedSet = new OverwriteParameterSet { Name = "Set" };
+         _clonedSet.Add(new OSPSuite.Core.Domain.Builder.ParameterValue { Path = "OLD|Lipophilicity".ToObjectPath(), Value = 1.0 });
+         _clonedCompound.AddOverwriteParameterSet(_clonedSet);
+         A.CallTo(() => _clonePresenter.CreateCloneFor(_compound)).Returns(_clonedCompound);
+      }
+
+      protected override Task Because()
+      {
+         sut.Clone(_compound);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_replace_the_original_compound_name_with_the_clone_name_in_the_paths_of_all_overwrite_parameter_sets()
+      {
+         _clonedSet.ParameterValueByPath("NEW|Lipophilicity").ShouldNotBeNull();
+         _clonedSet.ParameterValueByPath("OLD|Lipophilicity").ShouldBeNull();
       }
    }
 

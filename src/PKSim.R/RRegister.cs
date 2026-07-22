@@ -1,7 +1,13 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Core;
+using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.Serialization;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
+using PKSim.R.Mappers;
 using PKSim.R.Services;
 
 namespace PKSim.R
@@ -19,6 +25,9 @@ namespace PKSim.R
             //Register Services
             scan.IncludeNamespaceContainingType<IOntogenyFactorsRetriever>();
 
+            //Register Mappers
+            scan.IncludeNamespaceContainingType<IAgingDataMapper>();
+
             scan.WithConvention<PKSimRegistrationConvention>();
          });
          registerCLITypes(container);
@@ -27,6 +36,10 @@ namespace PKSim.R
       private static void registerCLITypes(IContainer container)
       {
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
+         container.Register<IPKSimXmlSerializerRepository, CorePKSimXmlSerializerRepository>(LifeStyle.Singleton);
+         container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
+         container.Register<IObservedDataTask, CoreObservedDataTask>();
+         container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
       }
    }
 }

@@ -1,10 +1,9 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Infrastructure.Services;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core
 {

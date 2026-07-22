@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {

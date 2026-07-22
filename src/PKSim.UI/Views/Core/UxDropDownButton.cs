@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using DevExpress.Utils;
 using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;

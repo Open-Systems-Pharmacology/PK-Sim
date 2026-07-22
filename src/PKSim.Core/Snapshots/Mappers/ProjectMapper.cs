@@ -217,30 +217,30 @@ namespace PKSim.Core.Snapshots.Mappers
       private Task<OSPSuite.Core.Domain.QualificationPlan[]> allQualificationPlansFrom(QualificationPlan[] qualificationPlans, SnapshotContext snapshotContext)
          => _qualificationPlanMapper.MapToModels(qualificationPlans, snapshotContext);
 
-      private async Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
+      private Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
       {
          if (!allSimulationComparisons.Any())
-            return null;
+            return Task.FromResult<SimulationComparison[]>(null);
 
          allSimulationComparisons.Each(load);
-         return await _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
+         return _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
       }
 
-      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<ModelSimulation> allSimulations, ModelProject project)
+      private Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<ModelSimulation> allSimulations, ModelProject project)
       {
          allSimulations.Each(loadSimulation);
-         return await _simulationMapper.MapToSnapshots(allSimulations, project);
+         return _simulationMapper.MapToSnapshots(allSimulations, project);
       }
 
-      private async Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.QualificationPlan> allQualificationPlans)
+      private Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.QualificationPlan> allQualificationPlans)
       {
-         return await _qualificationPlanMapper.MapToSnapshots(allQualificationPlans);
+         return _qualificationPlanMapper.MapToSnapshots(allQualificationPlans);
       }
 
-      protected override async Task<ParameterIdentification[]> MapParameterIdentificationToSnapshots(IReadOnlyCollection<ModelParameterIdentification> allParameterIdentifications)
+      protected override Task<ParameterIdentification[]> MapParameterIdentificationToSnapshots(IReadOnlyCollection<ModelParameterIdentification> allParameterIdentifications)
       {
          allParameterIdentifications.Each(load);
-         return await base.MapParameterIdentificationToSnapshots(allParameterIdentifications);
+         return base.MapParameterIdentificationToSnapshots(allParameterIdentifications);
       }
 
       private void load(ILazyLoadable lazyLoadable) => _lazyLoadTask.Load(lazyLoadable);

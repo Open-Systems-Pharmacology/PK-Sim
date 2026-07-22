@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Chart;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core
 {

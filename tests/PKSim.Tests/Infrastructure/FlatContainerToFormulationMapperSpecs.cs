@@ -1,11 +1,10 @@
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.ORM.FlatObjects;
-using PKSim.Infrastructure.ORM.Mappers;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core;
+using PKSim.Core.Services;
+using PKSim.Infrastructure.ORM.FlatObjects;
+using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure
 {

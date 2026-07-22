@@ -79,12 +79,22 @@ namespace PKSim.Presentation.Services
 
             clone.Creation.AsCloneOf(buildingBlockToClone);
 
+            ChangeCompoundNameInOverwriteParameterSets(clone, buildingBlockToClone.Name, clone.Name);
+
             var addCommand = new AddBuildingBlockToProjectCommand(clone, _executionContext).Run(_executionContext);
             var entityType = _entityTask.TypeFor(buildingBlockToClone);
             addCommand.Description = PKSimConstants.Command.CloneEntity(entityType, buildingBlockToClone.Name, clone.Name);
 
             AddCommandToHistory(addCommand);
          }
+      }
+
+      public void ChangeCompoundNameInOverwriteParameterSets(IPKSimBuildingBlock buildingBlock, string oldCompoundName, string newCompoundName)
+      {
+         if (!(buildingBlock is Compound compound) || string.Equals(oldCompoundName, newCompoundName))
+            return;
+
+         compound.OverwriteParameterSets.Each(x => x.ChangeCompoundName(oldCompoundName, newCompoundName));
       }
 
       private ICloneBuildingBlockPresenter getCloneBuildingBlockPresenter(IPKSimBuildingBlock buildingBlockToClone)

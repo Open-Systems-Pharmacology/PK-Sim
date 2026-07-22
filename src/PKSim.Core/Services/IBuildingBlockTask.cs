@@ -66,6 +66,12 @@ namespace PKSim.Core.Services
 
       IPKSimCommand DeleteCommand<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock;
       void RemovePresenterSettings<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock;
+
+      /// <summary>
+      ///    Replaces <paramref name="oldCompoundName" /> with <paramref name="newCompoundName" /> in the parameter paths of
+      ///    all <see cref="OverwriteParameterSet" />s of <paramref name="buildingBlock" /> if it is a <see cref="Compound" />.
+      /// </summary>
+      void ChangeCompoundNameInOverwriteParameterSets(IPKSimBuildingBlock buildingBlock, string oldCompoundName, string newCompoundName);
    }
 
    public interface IBuildingBlockTask<TBuildingBlock> where TBuildingBlock : IPKSimBuildingBlock

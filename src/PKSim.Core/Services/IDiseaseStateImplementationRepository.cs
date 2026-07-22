@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using PKSim.Core.Model;
+﻿using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {

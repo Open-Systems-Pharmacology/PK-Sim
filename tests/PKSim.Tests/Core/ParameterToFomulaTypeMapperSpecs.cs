@@ -1,10 +1,9 @@
-using OSPSuite.Core.Domain.Formulas;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using FakeItEasy;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Mappers;
 
 namespace PKSim.Core
 {

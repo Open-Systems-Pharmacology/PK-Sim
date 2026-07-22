@@ -6,6 +6,7 @@ using OSPSuite.Utility.Container;
 using PKSim.CLI.Core;
 using PKSim.Core;
 using PKSim.Infrastructure;
+using PKSim.Presentation.Infrastructure;
 using PresenterRegister = PKSim.Presentation.PresenterRegister;
 
 namespace PKSim.BatchTool
@@ -25,8 +26,9 @@ namespace PKSim.BatchTool
             container.AddRegister(x => x.FromType<BatchRegister>());
             container.AddRegister(x => x.FromType<CLIRegister>());
 
-            InfrastructureRegister.LoadSerializers(container);
-            InfrastructureRegister.RegisterWorkspace(container);
+            InfrastructureRegister.RegisterSerializationDependencies(container);
+            PresentationSerializerInitializer.AddPresentationSerializers(container);
+            InfrastructureRegister.LoadDefaultEntities(container);
             UI.BootStrapping.ApplicationStartup.RegisterCommands(container);
             container.RegisterImplementationOf(new DefaultLookAndFeel().LookAndFeel);
          }

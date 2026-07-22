@@ -9,6 +9,7 @@ using PKSim.CLI.Core.Services;
 using PKSim.R.Bootstrap;
 using PKSim.R.Services;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
+using ISnapshotTask = PKSim.R.Services.ISnapshotTask;
 
 namespace PKSim.R
 {
@@ -32,6 +33,8 @@ namespace PKSim.R
       public static IIndividualFactory GetIndividualFactory() => ResolveTask<IIndividualFactory>();
 
       public static IPopulationFactory GetPopulationFactory() => ResolveTask<IPopulationFactory>();
+
+      public static ISnapshotTask GetSnapshotTask() => ResolveTask<ISnapshotTask>();
 
       public static void RunSnapshot(SnapshotRunOptions runOptions) => ResolveTask<IBatchRunner<SnapshotRunOptions>>().RunBatchAsync(runOptions).Wait();
 

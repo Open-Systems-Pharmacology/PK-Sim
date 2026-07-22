@@ -10,7 +10,6 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Views.ExpressionProfiles;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.ExpressionProfiles
 {

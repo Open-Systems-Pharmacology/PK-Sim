@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -36,14 +36,15 @@
 
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.76" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.79" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.Utility" Version="5.0.0.10" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="5.0.0.3" />
+    <PackageReference Include="OSPSuite.SimModel" Version="5.0.0.76" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="5.0.0.53" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" GeneratePathProperty="true" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
 
   </ItemGroup>
 

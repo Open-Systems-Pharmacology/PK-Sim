@@ -2,10 +2,8 @@ using System;
 using System.Threading;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
@@ -71,8 +69,10 @@ namespace PKSim.IntegrationTests
             userSettings.NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
 
 
-            InfrastructureRegister.LoadSerializers(container);
-            InfrastructureRegister.RegisterWorkspace(container);
+            InfrastructureRegister.RegisterSerializationDependencies(container);
+            PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(container);
+            InfrastructureRegister.LoadDefaultEntities(container);
+            //Workspace registration handled by PresenterRegister now (PKSim.Presentation owns Workspace).
          }
 
          //Required for usage with nunit 3

@@ -2,7 +2,6 @@
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
-using OSPSuite.Utility;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 

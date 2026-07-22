@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
+using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.RepositoryItems;
-using DevExpress.XtraGrid.Views.Base;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using PKSim.UI.Views.Core;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {

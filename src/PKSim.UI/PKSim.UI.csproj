@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591;WFO1000</NoWarn>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <IsPackable>false</IsPackable>
@@ -46,15 +46,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.DataBinding" Version="3.0.1.4" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.1.5" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.UI" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.91" />
-    <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.DataBinding" Version="4.0.0.5" />
+    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="7.0.0.6" />
+    <PackageReference Include="OSPSuite.Utility" Version="5.0.0.10" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.134" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.134" />
+    <PackageReference Include="DevExpress.Win.Design" Version="25.2.7" Condition="'$(ExcludeDesigner)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
@@ -68,9 +67,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PKSim.Assets.Images\PKSim.Assets.Images.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
     <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Model-structure PNGs consumed by SimulationModelSelectionView via ApplicationImages. -->
+    <EmbeddedResource Include="Views\Simulations\Resources\SmallMoleculesStructure.png" />
+    <EmbeddedResource Include="Views\Simulations\Resources\TwoPoresModelStructure.png" />
   </ItemGroup>
 </Project>

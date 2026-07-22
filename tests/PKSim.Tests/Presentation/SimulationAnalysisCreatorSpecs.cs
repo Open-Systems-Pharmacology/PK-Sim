@@ -1,15 +1,14 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Events;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Services;
 using SimulationAnalysisCreator = PKSim.Core.Services.SimulationAnalysisCreator;
 
 namespace PKSim.Presentation
@@ -22,6 +21,7 @@ namespace PKSim.Presentation
       protected IPKSimChartFactory _chartFactory;
       protected ICoreUserSettings _userSettings;
       protected ICloner _cloner;
+      protected IObservedDataInComparisonTask _observedDataInComparisonTask;
 
       protected override void Context()
       {
@@ -31,9 +31,10 @@ namespace PKSim.Presentation
          _chartFactory = A.Fake<IPKSimChartFactory>();
          _userSettings = A.Fake<ICoreUserSettings>();
          _cloner = A.Fake<ICloner>();
+         _observedDataInComparisonTask = A.Fake<IObservedDataInComparisonTask>();
 
          sut = new SimulationAnalysisCreator(_populationSimulationAnalysisStarter, _executionContext,
-            _containerTask, _chartFactory, _userSettings, _cloner);
+            _containerTask, _chartFactory, _userSettings, _cloner, _observedDataInComparisonTask);
       }
    }
 
@@ -51,13 +52,12 @@ namespace PKSim.Presentation
          _simulation = new IndividualSimulation();
          _chart = new SimulationTimeProfileChart();
          A.CallTo(() => _chartFactory.CreateChartFor<SimulationTimeProfileChart>(_simulation)).Returns(_chart);
-         _chart1 = new SimulationTimeProfileChart {Name = "Results 1"};
-         _chart2 = new SimulationTimeProfileChart {Name = "My Results"};
+         _chart1 = new SimulationTimeProfileChart { Name = "Results 1" };
+         _chart2 = new SimulationTimeProfileChart { Name = "My Results" };
          _simulation.AddAnalysis(_chart1);
          _simulation.AddAnalysis(_chart2);
          A.CallTo(_containerTask).WithReturnType<string>().Returns("Results 3");
-         A.CallTo(() => _executionContext.PublishEvent(A<SimulationAnalysisCreatedEvent>.Ignored)).Invokes(
-            x => _plotEvent = x.GetArgument<SimulationAnalysisCreatedEvent>(0));
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationAnalysisCreatedEvent>.Ignored)).Invokes(x => _plotEvent = x.GetArgument<SimulationAnalysisCreatedEvent>(0));
       }
 
       protected override void Because()
@@ -105,6 +105,81 @@ namespace PKSim.Presentation
       public void should_start_the_analyses_selection()
       {
          A.CallTo(() => _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(_populationDataCollector, _userSettings.DefaultPopulationAnalysis)).MustHaveHappened();
+      }
+   }
+
+   public class When_creating_a_time_profile_analysis_for_a_population_simulation_comparison : concern_for_SimulationAnalysisCreator
+   {
+      private PopulationSimulationComparison _comparison;
+      private TimeProfileAnalysisChart _timeProfileChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _comparison = new PopulationSimulationComparison();
+         _timeProfileChart = new TimeProfileAnalysisChart();
+         A.CallTo(() => _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(_comparison, PopulationAnalysisType.TimeProfile)).Returns(_timeProfileChart);
+      }
+
+      protected override void Because()
+      {
+         sut.CreatePopulationAnalysisFor(_comparison, PopulationAnalysisType.TimeProfile);
+      }
+
+      [Observation]
+      public void should_apply_observed_data_templating_to_the_new_analysis()
+      {
+         A.CallTo(() => _observedDataInComparisonTask.AddObservedDataToTimeProfile(_comparison, _timeProfileChart)).MustHaveHappened();
+      }
+   }
+
+   public class When_creating_a_box_whisker_analysis_for_a_population_simulation_comparison : concern_for_SimulationAnalysisCreator
+   {
+      private PopulationSimulationComparison _comparison;
+      private BoxWhiskerAnalysisChart _boxWhiskerChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _comparison = new PopulationSimulationComparison();
+         _boxWhiskerChart = new BoxWhiskerAnalysisChart();
+         A.CallTo(() => _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(_comparison, PopulationAnalysisType.BoxWhisker)).Returns(_boxWhiskerChart);
+      }
+
+      protected override void Because()
+      {
+         sut.CreatePopulationAnalysisFor(_comparison, PopulationAnalysisType.BoxWhisker);
+      }
+
+      [Observation]
+      public void should_not_attempt_to_template_observed_data_on_a_non_time_profile_analysis()
+      {
+         A.CallTo(_observedDataInComparisonTask).MustNotHaveHappened();
+      }
+   }
+
+   public class When_creating_a_time_profile_analysis_for_a_standalone_population_simulation : concern_for_SimulationAnalysisCreator
+   {
+      private PopulationSimulation _populationSimulation;
+      private TimeProfileAnalysisChart _timeProfileChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _populationSimulation = new PopulationSimulation();
+         _timeProfileChart = new TimeProfileAnalysisChart();
+         A.CallTo(() => _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(_populationSimulation, PopulationAnalysisType.TimeProfile)).Returns(_timeProfileChart);
+      }
+
+      protected override void Because()
+      {
+         sut.CreatePopulationAnalysisFor(_populationSimulation, PopulationAnalysisType.TimeProfile);
+      }
+
+      [Observation]
+      public void should_not_attempt_to_template_observed_data_when_the_data_collector_is_not_a_comparison()
+      {
+         A.CallTo(_observedDataInComparisonTask).MustNotHaveHappened();
       }
    }
 

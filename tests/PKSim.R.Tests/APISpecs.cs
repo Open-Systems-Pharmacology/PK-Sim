@@ -55,6 +55,12 @@ namespace PKSim.R
       }
 
       [Observation]
+      public void can_get_snapshot_task()
+      {
+         Api.GetSnapshotTask().ShouldNotBeNull();
+      }
+
+      [Observation]
       public void can_resolve_snapshot_runner()
       {
          ActionShouldNotThrowAn<ComponentActivatorException>(() => Api.RunSnapshot(new SnapshotRunOptions()));

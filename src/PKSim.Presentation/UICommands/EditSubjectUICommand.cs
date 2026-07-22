@@ -1,5 +1,3 @@
-using PKSim.Presentation.Core;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.UICommands;
 

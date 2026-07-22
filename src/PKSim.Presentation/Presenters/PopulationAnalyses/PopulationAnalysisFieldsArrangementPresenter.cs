@@ -1,13 +1,12 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {

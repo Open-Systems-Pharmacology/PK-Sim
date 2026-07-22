@@ -11,7 +11,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants.ContainerName;
@@ -121,6 +120,7 @@ namespace PKSim.Presentation.Services
          //Perform rename of molecule in expression profile first as it relies on the old name still being present
          renameMoleculeNameInExpressionProfile(templateBuildingBlock, newName);
          renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, newName);
+         _buildingBlockTask.ChangeCompoundNameInOverwriteParameterSets(templateBuildingBlock, templateBuildingBlock.Name, newName);
 
          //update the name
          templateBuildingBlock.Name = newName;

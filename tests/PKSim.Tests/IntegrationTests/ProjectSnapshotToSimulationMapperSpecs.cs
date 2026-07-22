@@ -1,10 +1,9 @@
 using System.Linq;
-using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;

@@ -11,13 +11,15 @@ namespace PKSim.Presentation
       protected ISimulationCompoundConfigurationView _view;
       protected ISimulationCompoundParameterAlternativesSelectionPresenter _alternativesSelectionPresenter;
       protected ISimulationCompoundCalculationMethodSelectionPresenter _calculationMethodSelectionPresenter;
+      protected ISimulationCompoundOverwriteParameterSetSelectionPresenter _overwriteParameterSetSelectionPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<ISimulationCompoundConfigurationView>();
          _alternativesSelectionPresenter = A.Fake<ISimulationCompoundParameterAlternativesSelectionPresenter>();
          _calculationMethodSelectionPresenter = A.Fake<ISimulationCompoundCalculationMethodSelectionPresenter>();
-         sut = new SimulationCompoundConfigurationPresenter(_view, _alternativesSelectionPresenter, _calculationMethodSelectionPresenter);
+         _overwriteParameterSetSelectionPresenter = A.Fake<ISimulationCompoundOverwriteParameterSetSelectionPresenter>();
+         sut = new SimulationCompoundConfigurationPresenter(_view, _alternativesSelectionPresenter, _calculationMethodSelectionPresenter, _overwriteParameterSetSelectionPresenter);
       }
    }
 
@@ -38,6 +40,12 @@ namespace PKSim.Presentation
       public void should_save_the_calculation_methods_selection()
       {
          A.CallTo(() => _calculationMethodSelectionPresenter.SaveConfiguration()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_save_the_overwrite_parameter_set_selection()
+      {
+         A.CallTo(() => _overwriteParameterSetSelectionPresenter.SaveConfiguration()).MustHaveHappened();
       }
    }
 
@@ -68,6 +76,12 @@ namespace PKSim.Presentation
       public void should_edit_the_calculation_methods_selection()
       {
          A.CallTo(() => _calculationMethodSelectionPresenter.EditSimulation(_simulation, _compound)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_edit_the_overwrite_parameter_set_selection()
+      {
+         A.CallTo(() => _overwriteParameterSetSelectionPresenter.EditSimulation(_simulation, _compound)).MustHaveHappened();
       }
    }
 }

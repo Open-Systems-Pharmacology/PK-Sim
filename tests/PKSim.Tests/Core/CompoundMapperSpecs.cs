@@ -12,7 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Snapshots;
 using CalculationMethodCache = OSPSuite.Core.Snapshots.CalculationMethodCache;
-using CalculationMethodCacheMapper = PKSim.Core.Snapshots.Mappers.CalculationMethodCacheMapper;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
@@ -37,9 +36,10 @@ namespace PKSim.Core
       private ParameterAlternativeGroup _compoundIntestinalPermeabilityAlternativeGroup;
       private ParameterAlternative _calculatedAlternative;
       protected ValueOriginMapper _valueOriginMapper;
+      protected OverwriteParameterSetMapper _overwriteParameterSetMapper;
       protected ValueOrigin _snapshotValueOrigin;
       protected OSPSuite.Core.Domain.ValueOrigin _pkaValueOrigin;
-      private IParameter _molweightParameter;
+      private IParameter _molWeightParameter;
       private IParameter _halogenFParameter;
 
       protected override Task Context()
@@ -50,7 +50,8 @@ namespace PKSim.Core
          _processMapper = A.Fake<CompoundProcessMapper>();
          _compoundFactory = A.Fake<ICompoundFactory>();
          _valueOriginMapper = A.Fake<ValueOriginMapper>();
-         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper, _valueOriginMapper, _compoundFactory);
+         _overwriteParameterSetMapper = A.Fake<OverwriteParameterSetMapper>();
+         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper, _valueOriginMapper, _overwriteParameterSetMapper, _compoundFactory);
 
          _compound = new Model.Compound
          {
@@ -94,13 +95,13 @@ namespace PKSim.Core
          A.CallTo(() => _processMapper.MapToSnapshot(_partialProcess)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMapper.MapToSnapshot(_systemicProcess)).Returns(_snapshotProcess2);
 
-         _molweightParameter = DomainHelperForSpecs.ConstantParameterWithValue(400).WithName(Constants.Parameters.MOL_WEIGHT);
-         _molweightParameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVivo;
+         _molWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(400).WithName(Constants.Parameters.MOL_WEIGHT);
+         _molWeightParameter.ValueOrigin.Method = ValueOriginDeterminationMethods.InVivo;
 
          //Do not update F value origin to ensure that it's being synchronized when mapping from snapshot
          _halogenFParameter = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.F);
 
-         _compound.Add(_molweightParameter);
+         _compound.Add(_molWeightParameter);
          _compound.Add(_halogenFParameter);
          return _completed;
       }
@@ -131,6 +132,19 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_to_snapshot : concern_for_CompoundMapper
    {
+      private Model.OverwriteParameterSet _overwriteParameterSet;
+      private Snapshots.OverwriteParameterSet _snapshotOverwriteParameterSet;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _overwriteParameterSet = new Model.OverwriteParameterSet { Name = "MySet" };
+         _compound.AddOverwriteParameterSet(_overwriteParameterSet);
+
+         _snapshotOverwriteParameterSet = new Snapshots.OverwriteParameterSet { Name = "MySet" };
+         A.CallTo(() => _overwriteParameterSetMapper.MapToSnapshot(_overwriteParameterSet)).Returns(_snapshotOverwriteParameterSet);
+      }
+
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_compound);
@@ -175,6 +189,12 @@ namespace PKSim.Core
          _snapshot.Solubility.Length.ShouldBeEqualTo(1);
          _snapshot.IntestinalPermeability.Length.ShouldBeEqualTo(1);
          _snapshot.Permeability.Length.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_save_the_overwrite_parameter_sets()
+      {
+         _snapshot.OverwriteParameterSets.ShouldOnlyContain(_snapshotOverwriteParameterSet);
       }
 
       [Observation]

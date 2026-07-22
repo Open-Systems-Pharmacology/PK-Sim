@@ -329,7 +329,7 @@ namespace PKSim.Core
          return quantityValues;
       }
 
-      public static SchemaItemDTO SchemaItemDTO(ApplicationType applicationType, Unit doseDisplayUnit = null, double? doseValue = null, double? startTimeValue = null)
+      public static SchemaItemDTO SchemaItemDTO(ApplicationType applicationType, Unit doseDisplayUnit = null, double? doseValue = null, double? startTimeValue = null, double? infusionTimeValue = null)
       {
          var schemaItemDTO = new SchemaItemDTO(new SchemaItem {ApplicationType = applicationType})
          {
@@ -339,6 +339,9 @@ namespace PKSim.Core
 
          if (doseDisplayUnit != null)
             schemaItemDTO.DoseParameter.Parameter.DisplayUnit = doseDisplayUnit;
+
+         if (infusionTimeValue != null)
+            schemaItemDTO.InfusionTimeParameter = new ParameterDTO(ConstantParameterWithValue(infusionTimeValue.Value).WithName(Constants.Parameters.INFUSION_TIME));
 
          return schemaItemDTO;
       }

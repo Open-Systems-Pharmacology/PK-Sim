@@ -1,10 +1,9 @@
 ﻿using System.Linq;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {

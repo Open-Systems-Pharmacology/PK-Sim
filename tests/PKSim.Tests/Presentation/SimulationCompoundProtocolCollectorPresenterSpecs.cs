@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
-using FakeItEasy;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -104,11 +100,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_false_if_two_selected_protocols_are_the_same()
+      public void should_return_true_if_two_selected_protocols_are_the_same()
       {
          A.CallTo(() => _subPresenter2.SelectedProtocol).Returns(_subPresenter1.SelectedProtocol);
          sut.EditSimulation(_simulation, CreationMode.New);
-         sut.CanClose.ShouldBeFalse();
+         sut.CanClose.ShouldBeTrue();
       }
 
       [Observation]
@@ -132,12 +128,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_show_a_warning_if_two_protocols_are_the_same()
+      public void should_not_show_a_warning_if_two_protocols_are_the_same()
       {
          A.CallTo(() => _subPresenter2.SelectedProtocol).Returns(_subPresenter1.SelectedProtocol);
          sut.EditSimulation(_simulation, CreationMode.New);
-         _view.WarningVisible.ShouldBeTrue();
-         _view.Warning.ShouldBeEqualTo(PKSimConstants.Error.AProtocolCanOnlyBeUsedOnceInASimulation);
+         _view.WarningVisible.ShouldBeFalse();
       }
 
       [Observation]
@@ -223,7 +218,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_update_the_selected_protocol_in_the_approriate_presenter()
+      public void should_update_the_selected_protocol_in_the_appropriate_presenter()
       {
          A.CallTo(() => _subPresenter1.ProtocolSelectionChanged(_templateProtocol)).MustHaveHappened();
       }

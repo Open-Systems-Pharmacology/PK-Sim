@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Events;
-using FakeItEasy;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
+using PKSim.Core.Services;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {

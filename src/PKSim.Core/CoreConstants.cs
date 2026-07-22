@@ -1,7 +1,6 @@
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
@@ -460,16 +459,6 @@ namespace PKSim.Core
             BMI,
             InputDose
          };
-      }
-
-      public static class Distribution
-      {
-         public static readonly string Discrete = "Discrete";
-         public static readonly string Normal = "Normal";
-         public static readonly string LogNormal = "LogNormal";
-         public static readonly string LogNormalGeo = "LogNormalGeo";
-         public static readonly string Uniform = "Uniform";
-         public static readonly string Unknown = "Unknown";
       }
 
       public static class Formula
@@ -1116,16 +1105,6 @@ namespace PKSim.Core
             Constants.Distribution.PERCENTILE,
          };
 
-      }
-
-      public static class SimulationResults
-      {
-         public const string INDIVIDUAL_ID = "IndividualId";
-         public const string TIME = "Time";
-         public const string QUANTITY_PATH = "Quantity Path";
-         public const string PARAMETER = "Parameter";
-         public const string VALUE = "Value";
-         public const string UNIT = "Unit";
       }
 
       public static class Population

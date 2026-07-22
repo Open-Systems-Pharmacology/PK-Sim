@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -10,7 +9,6 @@ using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using Population = PKSim.Core.Snapshots.Population;
 

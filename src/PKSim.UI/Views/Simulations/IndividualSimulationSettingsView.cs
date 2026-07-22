@@ -1,6 +1,4 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
-using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
@@ -10,7 +8,6 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
-using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Simulations
 {

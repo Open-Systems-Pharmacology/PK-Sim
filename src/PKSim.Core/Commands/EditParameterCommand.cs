@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -11,6 +12,7 @@ namespace PKSim.Core.Commands
 
       public string ParameterId { get; }
       private bool _alteredOn;
+      private bool _trackedByThisCommand;
 
       public string SimulationId { get; protected set; }
 
@@ -39,6 +41,9 @@ namespace PKSim.Core.Commands
 
          //Command dependent implementation
          ExecuteUpdateParameter(_parameter, context);
+
+         //Track compound-dependent simulation parameter changes
+         trackCompoundParameterChange(_parameter, context);
 
          //Once values have been updated, update dependent objects
          UpdateDependenciesOnParameter(_parameter, context);
@@ -108,6 +113,60 @@ namespace PKSim.Core.Commands
          }
       }
 
+      private void trackCompoundParameterChange(IParameter parameter, IExecutionContext context)
+      {
+         if (parameter.BuildingBlockType != PKSimBuildingBlockType.Simulation)
+            return;
+
+         var simulation = context.Get<Simulation>(SimulationId);
+         if (simulation == null)
+            return;
+
+         var entityPathResolver = context.Resolve<IEntityPathResolver>();
+         var parameterPath = entityPathResolver.PathFor(parameter);
+
+         if (simulation.CompoundNameForParameterPath(parameterPath) == null)
+            return;
+
+         var tracker = simulation.ParameterChangeTracker;
+
+         //this is a direct command
+         if (!_trackedByThisCommand)
+         {
+            UpdateTrackerForParameter(tracker, parameterPath);
+         }
+         //this is an inverse command => reverse the tracking action
+         else
+         {
+            ReverseTrackerUpdateForParameter(tracker, parameterPath);
+         }
+      }
+
+      protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         Track(tracker, parameterPath);
+      }
+
+      protected void Track(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         var wasTracked = tracker.IsTracked(parameterPath);
+         tracker.Track(parameterPath);
+         //this command changed the tracker state => remember so we can reverse on undo
+         if (wasTracked != tracker.IsTracked(parameterPath))
+            _trackedByThisCommand = true;
+      }
+
+      protected virtual void ReverseTrackerUpdateForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         UnTrack(tracker, parameterPath);
+      }
+
+      protected void UnTrack(SimulationParameterChangeTracker tracker, string parameterPath)
+      {
+         tracker.Untrack(parameterPath);
+         _trackedByThisCommand = false;
+      }
+
       protected virtual void UpdateParameter(IExecutionContext context)
       {
          var bbParameter = OriginParameterFor(_parameter, context);
@@ -132,6 +191,7 @@ namespace PKSim.Core.Commands
          base.UpdateInternalFrom(originalCommand);
          var editChangeCommand = originalCommand.DowncastTo<EditParameterCommand>();
          _alteredOn = editChangeCommand._alteredOn;
+         _trackedByThisCommand = editChangeCommand._trackedByThisCommand;
       }
    }
 }

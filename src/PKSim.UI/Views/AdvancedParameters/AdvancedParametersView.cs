@@ -5,7 +5,6 @@ using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.AdvancedParameters;
 using PKSim.Presentation.Views.AdvancedParameters;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.AdvancedParameters
 {

@@ -1,11 +1,10 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Builder;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.IntegrationTests
 {

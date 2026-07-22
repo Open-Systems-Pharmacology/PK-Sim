@@ -113,11 +113,6 @@ namespace PKSim.Presentation.Presenters.Simulations
             _hasWarnings = true;
             _view.Warning = PKSimConstants.Error.AtLeastOneProtocolRequiredToCreateSimulation;
          }
-         else if (protocols.Distinct().Count() != protocols.Count)
-         {
-            _hasWarnings = true;
-            _view.Warning = PKSimConstants.Error.AProtocolCanOnlyBeUsedOnceInASimulation;
-         }
          else
          {
             _hasWarnings = false;

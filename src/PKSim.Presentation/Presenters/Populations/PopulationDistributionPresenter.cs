@@ -27,7 +27,6 @@ namespace PKSim.Presentation.Presenters.Populations
       void ResetPlot();
       void Plot(IVectorialParametersContainer vectorialParametersContainer, IParameter parameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null);
       void Plot(IPopulationDataCollector populationDataCollector, QuantityPKParameter pkParameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null);
-      void Plot(IVectorialParametersContainer vectorialParametersContainer, string covariate, DistributionSettings settings = null);
 
       /// <summary>
       ///    Plots the given <paramref name="values" />. The <paramref name="comparer" /> is used to order the values on the
@@ -84,13 +83,6 @@ namespace PKSim.Presentation.Presenters.Populations
          var settingsToUse = settings ?? new DistributionSettings();
          updatePlotOptionAction(objectToPlot, settingsToUse, displayUnit);
          _view.Plot(distributionCreator(populationDataCollector, settingsToUse, objectToPlot, dimensionToUse, displayUnit), settingsToUse);
-      }
-
-      public void Plot(IVectorialParametersContainer vectorialParametersContainer, string covariate, DistributionSettings settings = null)
-      {
-         var settingsToUse = settings ?? new DistributionSettings();
-         updatePlotOptionsDefaultsFor(covariate, settingsToUse);
-         _view.Plot(_distributionDataCreator.CreateFor(vectorialParametersContainer, settingsToUse, covariate), settingsToUse);
       }
 
       public void Plot(IVectorialParametersContainer vectorialParametersContainer, IReadOnlyList<string> values, string caption, IComparer<string> comparer, DistributionSettings settings)

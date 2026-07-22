@@ -1,4 +1,3 @@
-using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Compounds

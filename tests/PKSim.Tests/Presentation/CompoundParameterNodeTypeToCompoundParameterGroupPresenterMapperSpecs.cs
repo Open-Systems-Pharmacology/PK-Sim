@@ -1,11 +1,10 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
-using FakeItEasy;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Compounds;
-using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation
 {

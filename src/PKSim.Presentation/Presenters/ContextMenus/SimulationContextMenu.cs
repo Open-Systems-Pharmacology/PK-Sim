@@ -9,7 +9,6 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.UICommands;
 
@@ -84,7 +83,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RenameBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
             .WithIcon(ApplicationIcons.Rename);
-      
+
          yield return DescriptionMenuFor(simulation)
             .AsGroupStarter();
 
@@ -99,7 +98,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithEnabled(simulation.IsIdle(_container))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
-         
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
             .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RunSimulationCommand, Simulation>(simulation, _container)

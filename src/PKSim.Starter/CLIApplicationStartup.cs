@@ -11,6 +11,9 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Serialization;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using System;
 using System.Threading;
@@ -57,10 +60,12 @@ public class CLIApplicationStartup : ApplicationStartup
          pkSimContainer.AddRegister(x => x.FromType<CLI.Core.CLIRegister>());
 
          pkSimContainer.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
-         InfrastructureRegister.LoadSerializers(pkSimContainer);
+         pkSimContainer.Register<IPKSimXmlSerializerRepository, CorePKSimXmlSerializerRepository>(LifeStyle.Singleton);
+         InfrastructureRegister.RegisterSerializationDependencies(pkSimContainer);
+         PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(pkSimContainer);
+         InfrastructureRegister.LoadDefaultEntities(pkSimContainer);
          pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
-         InfrastructureRegister.RegisterWorkspace(pkSimContainer);
-         
+
          pkSimContainer.Register<IMRUProvider, MRUProvider>();
 
          registerCLITypes(pkSimContainer);
@@ -76,5 +81,8 @@ public class CLIApplicationStartup : ApplicationStartup
       container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
       container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, CLIStarterUserSettings>(LifeStyle.Singleton);
       container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
+      container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
+      container.Register<IObservedDataTask, CoreObservedDataTask>();
+      container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
    }
 }

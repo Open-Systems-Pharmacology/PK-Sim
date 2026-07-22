@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   cover:
-    runs-on: windows-latest
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -24,9 +24,8 @@ jobs:
           nuget restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=13.0.9999
+        run: dotnet build PKSim.sln /p:Version=13.0.9999 -p:ExcludeDesigner=true
 
-        
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main
         with:

@@ -1,17 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
 using OSPSuite.Utility;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Presentation.DTO;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -65,7 +67,6 @@ namespace PKSim.Presentation.Presenters
 
       IReadOnlyList<ViewLayout> AllViewLayouts();
       IReadOnlyList<Scalings> AllScalings();
-      
    }
 
    public class UserSettingsPresenter : AbstractSubPresenter<IUserSettingsView, IUserSettingsPresenter>, IUserSettingsPresenter
@@ -76,10 +77,13 @@ namespace PKSim.Presentation.Presenters
       private readonly IDialogCreator _dialogCreator;
       private readonly IPKSimConfiguration _configuration;
       private readonly ISpeciesRepository _speciesRepository;
+      private readonly IUserSettingsToUserSettingsDTOMapper _mapper;
+      private UserSettingsDTO _userSettingsDTO;
 
       public UserSettingsPresenter(IUserSettingsView view, IUserSettings userSettings,
          ISkinManager skinManager, IUserSettingsPersistor userSettingsPersistor,
-         IDialogCreator dialogCreator, IPKSimConfiguration configuration, ISpeciesRepository speciesRepository) : base(view)
+         IDialogCreator dialogCreator, IPKSimConfiguration configuration, ISpeciesRepository speciesRepository,
+         IUserSettingsToUserSettingsDTOMapper mapper) : base(view)
       {
          _userSettings = userSettings;
          _skinManager = skinManager;
@@ -87,11 +91,13 @@ namespace PKSim.Presentation.Presenters
          _dialogCreator = dialogCreator;
          _configuration = configuration;
          _speciesRepository = speciesRepository;
+         _mapper = mapper;
       }
 
       public void EditSettings()
       {
-         _view.BindTo(_userSettings);
+         _userSettingsDTO = _mapper.MapFrom(_userSettings);
+         _view.BindTo(_userSettingsDTO);
       }
 
       public IEnumerable<string> AvailableSkins => _skinManager.All();
@@ -102,9 +108,9 @@ namespace PKSim.Presentation.Presenters
       {
          var dataBaseFile = _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectTemplateDatabasePath, CoreConstants.Filter.TEMPLATE_DATABASE_FILE_FILTER, CoreConstants.DirectoryKey.DATABASE);
          if (string.IsNullOrEmpty(dataBaseFile)) return;
-         if (string.Equals(_userSettings.TemplateDatabasePath, dataBaseFile))
+         if (string.Equals(_userSettingsDTO.TemplateDatabasePath, dataBaseFile))
             return;
-         _userSettings.TemplateDatabasePath = dataBaseFile;
+         _userSettingsDTO.TemplateDatabasePath = dataBaseFile;
       }
 
       public void CreateTemplateDatabase()
@@ -112,7 +118,7 @@ namespace PKSim.Presentation.Presenters
          var dataBaseFile = _dialogCreator.AskForFileToSave(PKSimConstants.UI.CreateTemplateDatabasePath, CoreConstants.Filter.TEMPLATE_DATABASE_FILE_FILTER, CoreConstants.DirectoryKey.DATABASE);
          if (string.IsNullOrEmpty(dataBaseFile)) return;
          FileHelper.Copy(_configuration.TemplateUserDatabaseTemplatePath, dataBaseFile);
-         _userSettings.TemplateDatabasePath = dataBaseFile;
+         _userSettingsDTO.TemplateDatabasePath = dataBaseFile;
       }
 
       public IEnumerable<string> AllSpecies()
@@ -127,7 +133,7 @@ namespace PKSim.Presentation.Presenters
 
       public void SpeciesChanged()
       {
-         _userSettings.DefaultPopulation = defaultPopulationFor(_userSettings.DefaultSpecies);
+         _userSettingsDTO.DefaultPopulation = defaultPopulationFor(_userSettingsDTO.DefaultSpecies);
          _view.RefreshAllIndividualList();
       }
 
@@ -206,6 +212,7 @@ namespace PKSim.Presentation.Presenters
 
       public void SaveSettings()
       {
+         _mapper.UpdateUserSettingsFrom(_userSettingsDTO, _userSettings);
          _userSettingsPersistor.Save(_userSettings);
       }
    }

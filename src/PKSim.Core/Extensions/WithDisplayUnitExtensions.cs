@@ -1,6 +1,5 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using PKSim.Core.Chart;
 
 namespace PKSim.Core.Extensions
 {

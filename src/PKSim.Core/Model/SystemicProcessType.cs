@@ -1,6 +1,5 @@
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
-using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {

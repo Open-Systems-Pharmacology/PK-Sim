@@ -80,11 +80,6 @@ namespace PKSim.Presentation.Presenters.Compounds
          AddCommand(_entityTask.UpdateDescription(_compoundProcess, description));
       }
 
-      public string DisplayNameFor(Species species)
-      {
-         return _representationInfoRepository.DisplayNameFor(species);
-      }
-
       public IEnumerable<Species> AllSpecies()
       {
          return _speciesRepository.All();

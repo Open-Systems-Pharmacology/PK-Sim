@@ -2,12 +2,11 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Container;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.IntegrationTests

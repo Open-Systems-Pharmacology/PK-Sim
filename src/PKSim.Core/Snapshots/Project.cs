@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using static OSPSuite.Assets.Error;
 using Classification = OSPSuite.Core.Snapshots.Classification;
 

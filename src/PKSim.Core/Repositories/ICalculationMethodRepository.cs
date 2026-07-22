@@ -1,6 +1,5 @@
-﻿using OSPSuite.Utility.Collections;
-using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Repositories
 {

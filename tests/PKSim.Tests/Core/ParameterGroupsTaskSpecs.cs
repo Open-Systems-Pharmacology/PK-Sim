@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using FakeItEasy;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {

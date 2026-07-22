@@ -1,7 +1,5 @@
-﻿using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+﻿using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.Xml;
 using PKSim.CLI.Core.Services;
 using PKSim.Core.Services;
@@ -15,7 +13,6 @@ public static class SnapshotExchange
    {
       var container = CLIApplicationStartup.Initialize();
       var mapper = container.Resolve<IIndividualSnapshotToIndividualBuildingBlockMapper>();
-
       var individualBuildingBlock = mapper.MapFrom(individualSnapshot);
       individualBuildingBlock.Snapshot = individualSnapshot;
       return serialize(individualBuildingBlock, container);
@@ -25,6 +22,7 @@ public static class SnapshotExchange
    {
       var container = CLIApplicationStartup.Initialize();
       var mapper = container.Resolve<IExpressionProfileSnapshotToExpressionProfileBuildingBlockMapper>();
+      
       var expressionProfileBuildingBlock = mapper.MapFrom(expressionProfileSnapshot);
       expressionProfileBuildingBlock.Snapshot = expressionProfileSnapshot;
       return serialize(expressionProfileBuildingBlock, container);
@@ -46,7 +44,7 @@ public static class SnapshotExchange
       var container = CLIApplicationStartup.Initialize();
       var projectSnapshotToSimulationTransferMapper = container.Resolve<IProjectSnapshotToModuleMapper>();
       var qualificationInputTask = container.Resolve<IQualificationInputTask>();
-      
+
       var (module, project) = projectSnapshotToSimulationTransferMapper.MapFrom(projectSnapshot);
       var objectIdResetter = container.Resolve<IObjectIdResetter>();
       objectIdResetter.ResetIdFor(module);

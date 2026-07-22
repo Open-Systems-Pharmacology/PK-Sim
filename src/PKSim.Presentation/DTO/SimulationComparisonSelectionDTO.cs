@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.PopulationAnalyses;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO
 {

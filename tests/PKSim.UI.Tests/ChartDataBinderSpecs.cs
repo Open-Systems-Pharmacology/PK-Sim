@@ -1,5 +1,4 @@
-﻿using DevExpress.Utils;
-using FakeItEasy;
+﻿using FakeItEasy;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

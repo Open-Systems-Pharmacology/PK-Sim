@@ -1,6 +1,5 @@
-using PKSim.Core;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Model;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation.DTO.Protocols
@@ -11,6 +10,11 @@ namespace PKSim.Presentation.DTO.Protocols
       public SchemaDTO ParentSchema { get; set; }
       public IParameterDTO StartTimeParameter { get; set; }
       public IParameterDTO DoseParameter { get; set; }
+
+      /// <summary>
+      ///    Infusion duration of the administration. <c>null</c> for application types that are not an infusion.
+      /// </summary>
+      public IParameterDTO InfusionTimeParameter { get; set; }
 
       public SchemaItemDTO(SchemaItem schemaItem) : base(schemaItem)
       {

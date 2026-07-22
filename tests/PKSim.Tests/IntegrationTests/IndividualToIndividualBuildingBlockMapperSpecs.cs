@@ -58,6 +58,41 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_mapping_an_individual_with_an_overwritten_distributed_parameter_to_building_block : concern_for_IndividualToIndividualBuildingBlockMapper
+   {
+      private IDistributedParameter _individualLiverVolume;
+      private double _overwrittenValue;
+      private IndividualParameter _mappedLiverVolume;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _individualLiverVolume = _individual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(Constants.Parameters.VOLUME) as IDistributedParameter;
+         _individualLiverVolume.ShouldNotBeNull();
+
+         _overwrittenValue = _individualLiverVolume.Value * 1.5;
+         _individualLiverVolume.Value = _overwrittenValue;
+      }
+
+      protected override void Because()
+      {
+         base.Because();
+         _mappedLiverVolume = _individualBuildingBlock.Single(x => x.Name == Constants.Parameters.VOLUME && x.ContainerPath.Contains(CoreConstants.Organ.LIVER));
+      }
+
+      [Observation]
+      public void should_have_exported_the_overwritten_value()
+      {
+         _mappedLiverVolume.Value.ShouldBeEqualTo(_overwrittenValue);
+      }
+
+      [Observation]
+      public void should_have_preserved_the_distribution_type()
+      {
+         _mappedLiverVolume.DistributionType.ShouldBeEqualTo(_individualLiverVolume.Formula.DistributionType);
+      }
+   }
+
    public class When_mapping_an_individual_with_expression_to_individual : concern_for_IndividualToIndividualBuildingBlockMapper
    {
       public override void GlobalContext()
@@ -79,6 +114,22 @@ namespace PKSim.IntegrationTests
       {
          var allOntogenyFactors = _individualBuildingBlock.Where(x => x.Name.IsOneOf(AllPlasmaProteinOntogenyFactors.ToArray()));
          allOntogenyFactors.Count().ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_mapping_a_building_block_from_an_individual_with_gestational_age_in_weeks : concern_for_IndividualToIndividualBuildingBlockMapper
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         //value stored in base unit of "Age in weeks" dimension i.e. weeks
+         _individual.OriginData.GestationalAge = new OriginDataParameter(40, "week(s)");
+      }
+
+      [Observation]
+      public void should_format_gestational_age_using_the_age_in_weeks_dimension()
+      {
+         _individualBuildingBlock.OriginData["Gestational age"].ValueAsObject.ShouldBeEqualTo("40.00 week(s)");
       }
    }
 }

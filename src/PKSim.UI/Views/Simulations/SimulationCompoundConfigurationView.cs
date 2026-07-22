@@ -39,6 +39,12 @@ namespace PKSim.UI.Views.Simulations
          AddViewTo(layoutMainGroup, layoutSimulationCompound, view);
       }
 
+      public void AddOverwriteParameterSetSelectionView(IResizableView view)
+      {
+         _subViews.Add(view);
+         AddViewTo(layoutMainGroup, layoutSimulationCompound, view);
+      }
+
       protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, LayoutControl layoutControl, IResizableView view, int height)
       {
          base.AdjustLayoutItemSize(layoutControlItem, layoutControl, view, height);

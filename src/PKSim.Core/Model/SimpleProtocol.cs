@@ -70,6 +70,8 @@ namespace PKSim.Core.Model
 
       public virtual IParameter Dose => this.Parameter(CoreConstants.Parameters.INPUT_DOSE);
 
+      public virtual IParameter InfusionTime => this.Parameter(Constants.Parameters.INFUSION_TIME);
+
       public virtual IParameter EndTimeParameter => this.Parameter(Constants.Parameters.END_TIME);
 
       public virtual bool IsSingleDosing => DosingInterval == DosingIntervals.Single;

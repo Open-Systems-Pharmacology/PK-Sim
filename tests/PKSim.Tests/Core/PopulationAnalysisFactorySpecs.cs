@@ -1,13 +1,12 @@
 ﻿using System.Linq;
-using OSPSuite.Utility;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core
 {

@@ -1,13 +1,10 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.Individuals;
-using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
 {

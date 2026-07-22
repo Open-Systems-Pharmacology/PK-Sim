@@ -63,8 +63,4 @@ namespace PKSim.Core.Model
             pathElementDTO.IconName = IconName;
       }
    }
-
-   public class EmptyRepresentationInfo : RepresentationInfo
-   {
-   }
 }

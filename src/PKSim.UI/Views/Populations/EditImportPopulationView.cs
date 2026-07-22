@@ -1,9 +1,8 @@
-﻿using OSPSuite.Assets;
-using DevExpress.XtraTab;
+﻿using DevExpress.XtraTab;
+using OSPSuite.Assets;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Populations
 {
