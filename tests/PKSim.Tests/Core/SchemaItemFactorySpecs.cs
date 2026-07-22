@@ -112,7 +112,9 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _startTimeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
+         _startTimeParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME);
+         _startTimeParameter.Info.MinValue = 0;
+         _startTimeParameter.Info.MinIsAllowed = true;
          A.CallTo(() => _schemaItemParameterRetriever.AllParametersFor(ApplicationTypes.Event)).Returns(new[] { _startTimeParameter });
       }
 
@@ -137,6 +139,13 @@ namespace PKSim.Core
       public void should_be_identified_as_event()
       {
          _schemaItem.IsEvent.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_allow_a_negative_start_time_for_the_event()
+      {
+         _schemaItem.StartTime.Info.MinValue.ShouldBeNull();
+         _schemaItem.StartTime.Info.MinIsAllowed.ShouldBeTrue();
       }
    }
 }

@@ -82,6 +82,40 @@ namespace PKSim.Core
       }
    }
 
+   public class When_setting_the_application_type_of_a_schema_item_to_event : concern_for_SchemaItem
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.StartTime.Info.MinValue = 0;
+         sut.StartTime.Info.MinIsAllowed = true;
+         sut.ApplicationType = ApplicationTypes.Event;
+      }
+
+      [Observation]
+      public void should_allow_a_negative_start_time()
+      {
+         sut.StartTime.Info.MinValue.ShouldBeNull();
+         sut.StartTime.Info.MinIsAllowed.ShouldBeTrue();
+      }
+   }
+
+   public class When_setting_the_application_type_of_a_schema_item_to_an_administration : concern_for_SchemaItem
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.StartTime.Info.MinValue = 0;
+         sut.ApplicationType = ApplicationTypes.Intravenous;
+      }
+
+      [Observation]
+      public void should_not_relax_the_start_time_lower_bound()
+      {
+         sut.StartTime.Info.MinValue.ShouldNotBeNull();
+      }
+   }
+
    public class When_validating_an_event_schema_item_with_placeholder : concern_for_SchemaItem
    {
       protected override void Context()

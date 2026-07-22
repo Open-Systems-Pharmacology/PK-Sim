@@ -39,7 +39,6 @@ namespace PKSim.Core.Model
       public SchemaItem Create(ApplicationType applicationType, IContainer container = null)
       {
          var schemaItem = createSchemaItem(container);
-         schemaItem.ApplicationType = applicationType;
          schemaItem.FormulationKey = string.Empty;
          schemaItem.EventKey = string.Empty;
 
@@ -47,6 +46,9 @@ namespace PKSim.Core.Model
          {
             schemaItem.Add(parameter);
          }
+
+         //set the application type once the parameters exist so the start-time bounds are adjusted for events
+         schemaItem.ApplicationType = applicationType;
 
          return schemaItem;
       }

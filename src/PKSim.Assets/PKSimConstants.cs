@@ -1828,6 +1828,7 @@ namespace PKSim.Assets
          public static readonly string TargetCompartment = "Target compartment";
          public static readonly string EventSelection = "Event";
          public static readonly string AdministerWithEvent = "Administer with event";
+         public static readonly string AddEventForEveryAdministration = "Add an event for every administration (e.g. meal)";
          public static readonly string EventOffset = "Event offset";
          public static readonly string NoEvent = "<None>";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";

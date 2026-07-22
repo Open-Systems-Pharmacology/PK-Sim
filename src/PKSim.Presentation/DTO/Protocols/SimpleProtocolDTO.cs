@@ -53,11 +53,5 @@ namespace PKSim.Presentation.DTO.Protocols
          get => _simpleProtocol.HasEvent;
          set { /*nothing to do here*/ }
       }
-
-      public string EventKey
-      {
-         get => _simpleProtocol.EventKey;
-         set { /*nothing to do here*/ }
-      }
    }
 }

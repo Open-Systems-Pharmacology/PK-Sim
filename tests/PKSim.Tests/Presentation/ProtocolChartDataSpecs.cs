@@ -214,6 +214,44 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_creating_the_chart_data_with_an_event_offset_before_the_first_administration : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
+         var adminDTO = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, startTimeValue: 0);
+         var eventDTO = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1", startTimeValue: -120); //event 2h before the administration
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] { adminDTO, eventDTO });
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, -120.0)).Returns(-120);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_extend_the_x_axis_minimum_to_the_negative_event_time()
+      {
+         sut.XMin.ShouldBeEqualTo(-120);
+      }
+   }
+
+   public class When_creating_the_chart_data_with_only_positive_event_times : concern_for_ProtocolChartData
+   {
+      protected override void Context()
+      {
+         _allSchemaItemsDTOForCompoundCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
+         var adminDTO = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, _doseUnit, startTimeValue: 0);
+         var eventDTO = DomainHelperForSpecs.EventSchemaItemDTO("EVENT_1", startTimeValue: 30);
+         _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] { adminDTO, eventDTO });
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 30.0)).Returns(30);
+         base.Context();
+      }
+
+      [Observation]
+      public void should_keep_the_x_axis_minimum_at_zero()
+      {
+         sut.XMin.ShouldBeEqualTo(0);
+      }
+   }
+
    public class When_retrieving_schema_item_from_a_tag_that_is_a_schema_item_dto_directly : concern_for_ProtocolChartData
    {
       private SchemaItemDTO _eventDTO;

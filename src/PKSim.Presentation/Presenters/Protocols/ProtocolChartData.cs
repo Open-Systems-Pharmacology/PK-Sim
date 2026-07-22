@@ -106,7 +106,9 @@ namespace PKSim.Presentation.Presenters.Protocols
 
       public string SchemaItemName => SCHEMA_ITEM;
 
-      public double XMin => 0;
+      //events may be offset (possibly negatively) from their administration, so the axis has to extend
+      //left of 0 to keep a negative-time event (e.g. a meal before the first dose) visible
+      public double XMin => _eventPoints.Count == 0 ? 0 : Math.Min(0, _eventPoints.Min(p => p.Time));
 
       public double XMax => Math.Max(timeValueInDisplayUnit(_endTimeInMin), _maxEndTimeInDisplayUnit);
 
