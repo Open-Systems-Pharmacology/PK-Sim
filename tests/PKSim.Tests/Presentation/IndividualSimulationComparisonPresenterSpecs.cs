@@ -161,7 +161,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_create_curves_for_the_observation_columns_of_the_observed_data()
       {
-         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<bool>._)).MustHaveHappened();
+         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<string>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -205,7 +205,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_create_curves_for_the_observation_columns_of_the_observed_data()
       {
-         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<bool>._)).MustHaveHappened();
+         A.CallTo(() => _chartPresenter.EditorPresenter.AddCurveForColumn(A<DataColumn>.That.Matches(c => _observedData.ObservationColumns().Contains(c)), A<CurveOptions>._, A<string>._)).MustHaveHappened();
       }
 
       [Observation]

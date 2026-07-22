@@ -167,7 +167,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_add_the_new_curve_to_the_chart_with_the_settings_from_the_simulation_as_defaults()
       {
-         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions, false)).MustHaveHappened();
+         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions)).MustHaveHappened();
       }
    }
 
@@ -212,7 +212,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_add_the_new_curve_to_the_chart_with_the_settings_from_the_simulation_as_defaults()
       {
-         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions, false)).MustHaveHappened();
+         A.CallTo(() => _chartEditorPresenter.AddCurveForColumn(_column, _curve.CurveOptions)).MustHaveHappened();
       }
    }
 }
