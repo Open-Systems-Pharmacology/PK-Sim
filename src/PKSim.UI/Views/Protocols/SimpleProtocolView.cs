@@ -37,8 +37,6 @@ namespace PKSim.UI.Views.Protocols
 
       public void BindTo(SimpleProtocolDTO simpleProtocolDTO)
       {
-         cbEventKey.Properties.Items.Clear();
-         _presenter.AllEventKeys().Each(key => cbEventKey.Properties.Items.Add(key));
          _screenBinder.BindToSource(simpleProtocolDTO);
          NotifyViewChanged();
       }
@@ -68,11 +66,10 @@ namespace PKSim.UI.Views.Protocols
       {
          set
          {
-            tablePanel.RowFor(cbEventKey).Visible = value;
             tablePanel.RowFor(uxEventOffset).Visible = value;
             AdjustLayout();
          }
-         get => tablePanel.RowFor(cbEventKey).Visible;
+         get => tablePanel.RowFor(uxEventOffset).Visible;
       }
 
       public void AddDynamicParameterView(IView view)
@@ -129,10 +126,6 @@ namespace PKSim.UI.Views.Protocols
             .To(cbEvent)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetEvent(e.NewValue));
 
-         _screenBinder.Bind(x => x.EventKey)
-            .To(cbEventKey)
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSimpleProtocolEventKey(e.NewValue));
-
          _screenBinder.Bind(x => x.EventOffset).To(uxEventOffset);
          uxEventOffset.RegisterEditParameterEvents(_presenter);
 
@@ -150,8 +143,7 @@ namespace PKSim.UI.Views.Protocols
          labelTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
          labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
          labelEvent.Text = "";
-         cbEvent.Properties.Caption = PKSimConstants.UI.AdministerWithEvent;
-         labelEventKey.Text = PKSimConstants.UI.Placeholder.FormatForLabel();
+         cbEvent.Properties.Caption = PKSimConstants.UI.AddEventForEveryAdministration;
          labelEventOffset.Text = PKSimConstants.UI.EventOffset.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);

@@ -22,7 +22,6 @@ namespace PKSim.Presentation.Presenters.Protocols
       void SetTargetOrgan(string organName);
       void SetTargetCompartment(string compartmentName);
       void SetEvent(bool hasEvent);
-      void SetSimpleProtocolEventKey(string eventKey);
    }
 
    public class SimpleProtocolPresenter : ProtocolItemPresenter<ISimpleProtocolView, ISimpleProtocolPresenter>, ISimpleProtocolPresenter
@@ -78,11 +77,6 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
          _view.BindTo(_simpleProtocolDTOMapper.MapFrom(_protocol));
          bindToDynamicParameters();
-      }
-
-      public void SetSimpleProtocolEventKey(string eventKey)
-      {
-         AddCommand(_protocolTask.SetEventKey(_protocol, eventKey));
       }
 
       public void SetApplicationType(ApplicationType applicationType)
