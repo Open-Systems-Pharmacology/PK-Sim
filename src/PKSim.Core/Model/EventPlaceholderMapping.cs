@@ -3,7 +3,7 @@ namespace PKSim.Core.Model
    public class EventPlaceholderMapping
    {
       /// <summary>
-      ///    Key used in the protocol for which a mapping is required (e.g. "EVENT_1")
+      ///    Key used in the protocol for which a mapping is required (e.g. "Event")
       /// </summary>
       public string EventKey { get; set; }
 

@@ -33,9 +33,7 @@ namespace PKSim.Core
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public const string DEFAULT_TEMPLATE_VERSION = "1.0";
       public const string DEFAULT_FORMULATION_KEY = "Formulation";
-      public const string DEFAULT_EVENT_KEY = "EVENT_1";
-      //the simple protocol allows a single event, so it uses an unnumbered placeholder key
-      public const string SIMPLE_PROTOCOL_EVENT_KEY = "Event";
+      public const string DEFAULT_EVENT_KEY = "Event";
       public const string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const string DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME = "<MOLECULE>";
       public const TransportType DEFAULT_TRANSPORTER_TYPE = TransportType.Efflux;

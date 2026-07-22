@@ -160,7 +160,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.ApplicationType = ApplicationTypes.IntravenousBolus;
          _setEventKeyCommand = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, CoreConstants.SIMPLE_PROTOCOL_EVENT_KEY)).Returns(_setEventKeyCommand);
+         A.CallTo(() => _protocolTask.SetEventKey(_simpleProtocol, CoreConstants.DEFAULT_EVENT_KEY)).Returns(_setEventKeyCommand);
          sut.EditProtocol(_simpleProtocol);
       }
 

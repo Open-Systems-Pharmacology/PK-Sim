@@ -10,7 +10,7 @@ namespace PKSim.Core.Model
       string TargetOrgan { get; set; }
       string TargetCompartment { get; set; }
       /// <summary>
-      ///    Identifier for the event placeholder (e.g. "EVENT_1") used to map this entry
+      ///    Identifier for the event placeholder (e.g. "Event") used to map this entry
       ///    to an actual PKSimEvent building block during simulation configuration.
       ///    Only applicable when ApplicationType is Event.
       /// </summary>
