@@ -10,5 +10,6 @@ namespace PKSim.Presentation.Views.Simulations
       void AddFormulationMappingView(IView view);
       void AddEventMappingView(IView view);
       bool AllowEmptyProtocolSelection { get;set; }
+      bool EventDescriptionVisible { get; set; }
    }
 }

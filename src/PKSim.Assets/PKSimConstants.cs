@@ -1915,6 +1915,8 @@ namespace PKSim.Assets
          public static readonly string Soluble = "Soluble";
          public static readonly string Insoluble = "Insoluble";
          public static readonly string AddEvent = "Add Event";
+         public static readonly string SimulationEventsConfigurationDescription = "Administration-related events (e.g. meal events) are best defined directly in the administration protocol. Use this tab for events that are not related to an administration (e.g. gallbladder or urinary bladder emptying).";
+         public static readonly string SimulationProtocolEventDescription = "These events are defined by the administration protocol. Select the event to use for each placeholder.";
          public static readonly string AddObserverSet = "Add Observers";
          public static readonly string ExportLogToFile = "Export project conversion log to file...";
          public static readonly string SaveLog = "Save Log...";
