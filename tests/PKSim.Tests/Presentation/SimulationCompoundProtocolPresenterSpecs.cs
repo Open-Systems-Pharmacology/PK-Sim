@@ -112,6 +112,56 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_editing_a_simulation_whose_protocol_defines_event_placeholders : concern_for_SimulationCompoundProtocolPresenter
+   {
+      private Simulation _simulation;
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         _compound = A.Fake<Compound>();
+         A.CallTo(() => _simulationCompoundProtocolEventPresenter.EventVisible).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_show_the_event_description_in_the_view()
+      {
+         A.CallToSet(() => _view.EventDescriptionVisible).To(true).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_whose_protocol_does_not_define_event_placeholders : concern_for_SimulationCompoundProtocolPresenter
+   {
+      private Simulation _simulation;
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         _compound = A.Fake<Compound>();
+         A.CallTo(() => _simulationCompoundProtocolEventPresenter.EventVisible).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_hide_the_event_description_in_the_view()
+      {
+         A.CallToSet(() => _view.EventDescriptionVisible).To(false).MustHaveHappened();
+      }
+   }
+
    public class When_the_simulation_application_presenter_is_asked_to_create_the_application_for_the_simulation : concern_for_SimulationCompoundProtocolPresenter
    {
       private Simulation _simulation;

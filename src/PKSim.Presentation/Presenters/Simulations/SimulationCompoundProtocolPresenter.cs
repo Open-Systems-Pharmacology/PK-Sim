@@ -80,6 +80,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _protocolProperties.Protocol = SelectedProtocol;
          _simulationCompoundProtocolFormulationPresenter.EditSimulation(_simulation, Compound);
          _simulationCompoundProtocolEventPresenter.EditSimulation(_simulation, Compound);
+         _view.EventDescriptionVisible = _simulationCompoundProtocolEventPresenter.EventVisible;
       }
 
       public void UpdateSelectedFormulation(Formulation templateFormulation)
