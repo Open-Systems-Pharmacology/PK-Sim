@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageParams>
   <TargetArguments>
-    tests\PKSim.R.Tests\bin\Debug\net8\PKSim.R.Tests.dll
-    tests\PKSim.Tests\bin\Debug\net8.0-windows\PKSim.Tests.dll
-    tests\PKSim.UI.Tests\bin\Debug\net8.0-windows\PKSim.UI.Tests.dll
+    tests\PKSim.R.Tests\bin\Debug\net10.0\PKSim.R.Tests.dll
+    tests\PKSim.Tests\bin\Debug\net10.0-windows\PKSim.Tests.dll
+    tests\PKSim.UI.Tests\bin\Debug\net10.0-windows\PKSim.UI.Tests.dll
   </TargetArguments>
   <TargetWorkingDir>./</TargetWorkingDir>
  
