@@ -55,6 +55,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       ///    Applications of a protocol that does not require a formulation (e.g. IV Bolus) used to be added directly under the
       ///    protocol container, while applications with a formulation were nested one level deeper. They are now always nested
       ///    under a formulation container named "No formulation" so that the protocol hierarchy has a consistent depth.
+      ///    <para />
+      ///    An IV protocol is converted (the oral protocol below is already nested and stays as it is):
+      ///    <code>
+      ///    Sim|Applications|IV                          Sim|Applications|IV
+      ///                     └─ Application_1     =>                      └─ No formulation
+      ///                                                                     └─ Application_1
+      ///
+      ///    Sim|Applications|Oral                        Sim|Applications|Oral
+      ///                     └─ Tablet            =>                      └─ Tablet
+      ///                        └─ Application_1                             └─ Application_1
+      ///    </code>
       /// </summary>
       private void nestApplicationsUnderFormulationContainer(Simulation simulation)
       {
@@ -79,6 +90,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          _converted = true;
       }
 
+      /// <summary>
+      ///    Moves all given applications of a protocol under a new "No formulation" container and remembers where each one
+      ///    used to live, e.g. for the single application of an IV protocol in a simulation named "Human":
+      ///    <code>
+      ///    old path: Human|Applications|IV|Application_1
+      ///    new path: Human|Applications|IV|No formulation|Application_1
+      ///    </code>
+      /// </summary>
       private void nestApplicationsOf(IContainer protocolContainer, IReadOnlyList<IContainer> applications)
       {
          var noFormulationContainer = _objectBaseFactory.Create<IContainer>()
@@ -128,8 +147,22 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
 
       /// <summary>
       ///    Replaces the path of an application that was moved with its new path, for any path pointing at that application or
-      ///    at one of its children. A path that was already converted does not start with the old path anymore, so applying
-      ///    this twice is a no-op.
+      ///    at one of its children. Only a path starting with the path of a moved application is converted, so a path merely
+      ///    using the same names somewhere else is left alone. A path that was already converted does not start with the old
+      ///    path anymore, so applying this twice is a no-op.
+      ///    <para />
+      ///    Assuming <c>Human|Applications|IV|Application_1</c> was moved:
+      ///    <code>
+      ///    Human|Applications|IV|Application_1|ProtocolSchemaItem|DrugMass    converted (child of the application)
+      ///    => Human|Applications|IV|No formulation|Application_1|ProtocolSchemaItem|DrugMass
+      ///
+      ///    Human|Applications|IV|Application_1                                converted (the application itself)
+      ///    => Human|Applications|IV|No formulation|Application_1
+      ///
+      ///    Human|Applications|IV|No formulation|Application_1|...             untouched (already converted)
+      ///    Human|Organism|IV|Application_1|...                                untouched (same names, other container)
+      ///    Human|Applications|Oral|Tablet|Application_1|...                   untouched (was already nested)
+      ///    </code>
       /// </summary>
       private void insertNoFormulationIn(ObjectPath objectPath)
       {
