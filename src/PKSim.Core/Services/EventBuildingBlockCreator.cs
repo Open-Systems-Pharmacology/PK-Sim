@@ -291,25 +291,41 @@ namespace PKSim.Core.Services
             if (formulation == null)
                throw new NoFormulationFoundForRouteException(protocol, schemaItem.ApplicationType);
 
-            //check if used formulation container is already created and create if needed
-            if (protocolGroupBuilder.ContainsName(formulation.Name))
-               applicationParentContainer = protocolGroupBuilder.GetSingleChildByName<EventGroupBuilder>(formulation.Name);
-            else
-               applicationParentContainer = createFormulationAsEventGroupBuilderFrom(formulation);
-
-            protocolGroupBuilder.Add(applicationParentContainer);
+            applicationParentContainer = formulationContainerFor(protocolGroupBuilder, formulation.Name, () => createFormulationAsEventGroupBuilderFrom(formulation));
             formulationType = formulation.FormulationType;
             formulationParameters = applicationParentContainer.GetChildren<IParameter>();
          }
          else
          {
-            applicationParentContainer = protocolGroupBuilder;
+            //applications that do not require a formulation are nested under a dedicated formulation container so that the
+            //protocol hierarchy always has the same depth
+            applicationParentContainer = formulationContainerFor(protocolGroupBuilder, CoreConstants.ContainerName.NoFormulation, createNoFormulationEventGroupBuilder);
             formulationType = CoreConstants.Formulation.EMPTY_FORMULATION;
             formulationParameters = new List<IParameter>();
          }
 
          applicationParentContainer.Add(
             _applicationFactory.CreateFor(schemaItem, formulationType, applicationName, compoundProperties.Compound.Name, formulationParameters, _eventGroupBuildingBlock.FormulaCache));
+      }
+
+      //returns the formulation container with the given name, creating and adding it to the protocol event group if it does not exist yet
+      private IContainer formulationContainerFor(EventGroupBuilder protocolGroupBuilder, string formulationContainerName, Func<EventGroupBuilder> createFormulationContainer)
+      {
+         if (protocolGroupBuilder.ContainsName(formulationContainerName))
+            return protocolGroupBuilder.GetSingleChildByName<EventGroupBuilder>(formulationContainerName);
+
+         var formulationContainer = createFormulationContainer();
+         protocolGroupBuilder.Add(formulationContainer);
+         return formulationContainer;
+      }
+
+      private EventGroupBuilder createNoFormulationEventGroupBuilder()
+      {
+         var noFormulationBuilder = _objectBaseFactory.Create<EventGroupBuilder>()
+            .WithName(CoreConstants.ContainerName.NoFormulation);
+
+         noFormulationBuilder.ContainerType = ContainerType.Formulation;
+         return noFormulationBuilder;
       }
 
       private EventGroupBuilder createFormulationAsEventGroupBuilderFrom(Formulation formulation)
