@@ -94,7 +94,12 @@ namespace PKSim.ProjectConverter.v11
       [Observation]
       public void pregnant_individual_volume_parameters_are_updated_to_IsChangedByCreateIndividual()
       {
-         _allIndividuals.All(ind => _containerTask.CacheAllChildrenSatisfying<IParameter>(ind, x => x.Name.Equals("Volume")).All(x => x.IsChangedByCreateIndividual)).ShouldBeTrue();
+         //Restricted to the organ volumes, which is what this conversion is about. The new oral absorption model moved
+         //the lumen volumes into the individual as well, and those are computed by a formula rather than varied per individual
+         _allIndividuals.All(ind => _containerTask
+               .CacheAllChildrenSatisfying<IParameter>(ind, x => x.Name.Equals("Volume") && x.GroupName == "ORGAN_VOLUMES")
+               .All(x => x.IsChangedByCreateIndividual))
+            .ShouldBeTrue();
       }
 
       [Observation]
