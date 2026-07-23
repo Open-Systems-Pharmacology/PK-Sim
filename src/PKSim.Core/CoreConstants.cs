@@ -379,9 +379,6 @@ namespace PKSim.Core
          public static readonly string InsolubleDrug = "InsolubleDrug";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
 
-         //name of the formulation container created for applications that do not require a formulation (e.g. IV Bolus)
-         public static readonly string NoFormulation = "No formulation";
-
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {
             return $"{buildingBlockName} [{simulationName}]";
