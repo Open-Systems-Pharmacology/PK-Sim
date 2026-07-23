@@ -33,6 +33,7 @@ namespace PKSim.UI.Views.Protocols
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
          chart.ObjectHotTracked += chartObjectHotTracked;
+         chart.CustomDrawSeries += chartCustomDrawSeries;
          chart.Images = _imageListRetriever.AllImages16x16;
          chart.CrosshairEnabled = DefaultBoolean.False;
          _toolTipController.Initialize(imageListRetriever);
@@ -175,6 +176,26 @@ namespace PKSim.UI.Views.Protocols
       private static double endTimeFor(DataRow row, IProtocolChartData dataToPlot) => (double)row[dataToPlot.XValue2];
       private static double doseFor(DataRow row, IProtocolChartData dataToPlot) => (double)row[dataToPlot.YValue];
       private static object tagFor(DataRow row, IProtocolChartData dataToPlot) => row[dataToPlot.SchemaItemName];
+
+      /// <summary>
+      ///    The default legend glyph for an area series is a triangle shaped miniature of the area; draw a square
+      ///    filled with the series color instead.
+      /// </summary>
+      private void chartCustomDrawSeries(object sender, CustomDrawSeriesEventArgs e)
+      {
+         if (!(e.Series.View is AreaSeriesView areaView))
+            return;
+
+         var marker = new Bitmap(e.LegendMarkerSize.Width, e.LegendMarkerSize.Height);
+         using (var g = Graphics.FromImage(marker))
+         using (var brush = new SolidBrush(Color.FromArgb(byte.MaxValue - areaView.Transparency, areaView.Color)))
+         {
+            g.FillRectangle(brush, 0, 0, marker.Width, marker.Height);
+         }
+
+         e.LegendMarkerImage = marker;
+         e.DisposeLegendMarkerImage = true;
+      }
 
       private void chartObjectHotTracked(object sender, HotTrackEventArgs e)
       {

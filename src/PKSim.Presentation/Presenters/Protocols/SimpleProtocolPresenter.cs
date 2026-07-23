@@ -40,6 +40,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          _dynamicParameterPresenter.IsSimpleEditor = true;
          _dynamicParameterPresenter.ValueOriginVisible = false;
          _dynamicParameterPresenter.HeaderVisible = false;
+         _dynamicParameterPresenter.ParameterChanged += _ => OnStatusChanged();
          _view.AddDynamicParameterView(_dynamicParameterPresenter.View);
       }
 
