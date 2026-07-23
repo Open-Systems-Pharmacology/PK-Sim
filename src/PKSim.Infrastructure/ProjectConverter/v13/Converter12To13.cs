@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
@@ -21,8 +22,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       private readonly IObjectBaseFactory _objectBaseFactory;
       private bool _converted;
 
-      //name of the protocol container and name of the application container that was moved under a "No formulation" container
-      private readonly HashSet<(string protocolName, string applicationName)> _movedApplications = new HashSet<(string, string)>();
+      //path of each application that was moved under a "No formulation" container, before and after the move
+      private readonly List<(IReadOnlyList<string> oldPath, IReadOnlyList<string> newPath)> _movedApplications = new List<(IReadOnlyList<string>, IReadOnlyList<string>)>();
 
       public Converter12To13(CoreConverter121To130 coreConverter, IObjectBaseFactory objectBaseFactory)
       {
@@ -89,10 +90,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          {
             protocolContainer.RemoveChild(application);
             noFormulationContainer.Add(application);
-            _movedApplications.Add((protocolContainer.Name, application.Name));
          });
 
          protocolContainer.Add(noFormulationContainer);
+
+         //the path can only be resolved once the application is nested under its new parent
+         applications.Each(application =>
+         {
+            var newPath = application.EntityPath().ToPathArray().ToList();
+            //the old path is the new one without the formulation container that was just inserted
+            var oldPath = newPath.Where((_, index) => index != newPath.Count - 2).ToList();
+            _movedApplications.Add((oldPath, newPath));
+         });
       }
 
       public void Visit(IUsingFormula entityUsingFormula) => insertNoFormulationInPathsOf(entityUsingFormula.Formula);
@@ -118,8 +127,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       }
 
       /// <summary>
-      ///    Inserts the "No formulation" container between the protocol and the application whenever the given path goes
-      ///    through an application that was moved. Applying this twice on the same path is a no-op.
+      ///    Replaces the path of an application that was moved with its new path, for any path pointing at that application or
+      ///    at one of its children. A path that was already converted does not start with the old path anymore, so applying
+      ///    this twice is a no-op.
       /// </summary>
       private void insertNoFormulationIn(ObjectPath objectPath)
       {
@@ -127,17 +137,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
             return;
 
          var path = objectPath.ToList();
-         var convertedPath = new List<string>();
 
-         for (var i = 0; i < path.Count; i++)
+         foreach (var (oldPath, newPath) in _movedApplications)
          {
-            convertedPath.Add(path[i]);
-            if (i + 1 < path.Count && _movedApplications.Contains((path[i], path[i + 1])))
-               convertedPath.Add(CoreConstants.ContainerName.NoFormulation);
-         }
+            if (!startsWith(path, oldPath))
+               continue;
 
-         if (convertedPath.Count != path.Count)
-            objectPath.ReplaceWith(convertedPath);
+            objectPath.ReplaceWith(newPath.Concat(path.Skip(oldPath.Count)).ToList());
+            return;
+         }
       }
+
+      private static bool startsWith(IReadOnlyList<string> path, IReadOnlyList<string> prefix) =>
+         path.Count > prefix.Count && !prefix.Where((entry, index) => !string.Equals(entry, path[index])).Any();
    }
 }
