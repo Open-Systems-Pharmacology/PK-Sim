@@ -114,6 +114,28 @@ namespace PKSim.Presentation
    }
 
 
+   public class When_a_dynamic_parameter_of_the_simple_protocol_was_changed : concern_for_SimpleProtocolPresenter
+   {
+      private bool _statusChangedRaised;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.StatusChanged += (o, e) => _statusChangedRaised = true;
+      }
+
+      protected override void Because()
+      {
+         _dynamicParameterPresenter.ParameterChanged += Raise.FreeForm.With(A.Fake<IParameter>());
+      }
+
+      [Observation]
+      public void should_notify_a_status_change_so_that_the_protocol_chart_is_refreshed()
+      {
+         _statusChangedRaised.ShouldBeTrue();
+      }
+   }
+
    public class When_retrieving_all_possible_organs_available_for_a_user_defined_application : concern_for_SimpleProtocolPresenter
    {
       private IEnumerable<string> _organs;
