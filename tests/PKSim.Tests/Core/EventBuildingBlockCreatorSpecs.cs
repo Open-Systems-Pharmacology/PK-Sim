@@ -432,7 +432,9 @@ namespace PKSim.Core
    {
       protected const string _protocolName = "MyProtocol";
       protected const string _formulationName = "MyFormulation";
+      protected const string _formulationKey = "FORMULATION_1";
       protected Formulation _formulation;
+      protected FormulationMapping _formulationMapping;
 
       protected override void Context()
       {
@@ -446,10 +448,14 @@ namespace PKSim.Core
          var protocol = A.Fake<Protocol>();
          protocol.Name = _protocolName;
          var protocolProperties = new ProtocolProperties { Protocol = protocol };
+         _formulationMapping = new FormulationMapping { FormulationKey = _formulationKey, Formulation = _formulation };
+         protocolProperties.AddFormulationMapping(_formulationMapping);
+
          var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties, Compound = new Compound().WithName("MyCompound") };
          _simulation.Properties.AddCompoundProperties(compoundProperties);
 
-         A.CallTo(() => _formulationFromMappingRetriever.FormulationUsedBy(_simulation, A<FormulationMapping>.Ignored)).Returns(_formulation);
+         //only the mapping defined for the formulation key of the schema item resolves a formulation
+         A.CallTo(() => _formulationFromMappingRetriever.FormulationUsedBy(_simulation, _formulationMapping)).Returns(_formulation);
          A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(SchemaItems());
 
          A.CallTo(() => _applicationFactory.CreateFor(A<ISchemaItem>.Ignored, A<string>.Ignored, A<string>.Ignored, A<string>.Ignored, A<IEnumerable<IParameter>>.Ignored, A<IFormulaCache>.Ignored))
@@ -517,9 +523,15 @@ namespace PKSim.Core
       protected override List<SchemaItem> SchemaItems() => new List<SchemaItem>
       {
          createApplicationSchemaItem(ApplicationTypes.IntravenousBolus),
-         createApplicationSchemaItem(ApplicationTypes.Oral, "FORMULATION_1"),
+         createApplicationSchemaItem(ApplicationTypes.Oral, _formulationKey),
          createApplicationSchemaItem(ApplicationTypes.IntravenousBolus)
       };
+
+      [Observation]
+      public void should_resolve_the_formulation_with_the_mapping_defined_for_the_formulation_key_of_the_schema_item()
+      {
+         A.CallTo(() => _formulationFromMappingRetriever.FormulationUsedBy(_simulation, _formulationMapping)).MustHaveHappened();
+      }
 
       [Observation]
       public void should_create_one_no_formulation_container_and_one_container_for_the_mapped_formulation()

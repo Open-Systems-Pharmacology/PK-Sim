@@ -181,7 +181,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          }
       }
 
+      //a path referencing the application itself is as long as the prefix and must be converted as well
       private static bool startsWith(IReadOnlyList<string> path, IReadOnlyList<string> prefix) =>
-         path.Count > prefix.Count && !prefix.Where((entry, index) => !string.Equals(entry, path[index])).Any();
+         path.Count >= prefix.Count && !prefix.Where((entry, index) => !string.Equals(entry, path[index])).Any();
    }
 }
