@@ -14,17 +14,18 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         LoadProject("Mucosa_MultipleTransportDirections");
+         //a project saved before applications were nested under a formulation container, containing an IV protocol
+         LoadProject("SimpleSimulationIV_710");
       }
 
       protected override void Context()
       {
          base.Context();
-         _simulation = FindByName<Simulation>("S1");
+         _simulation = FindByName<Simulation>("Human");
       }
 
-      protected IContainer ApplicationContainerIn(IContainer protocolEventGroup) =>
-         protocolEventGroup.GetAllChildren<IContainer>(x => x.ContainerType == ContainerType.Application).Single();
+      protected IContainer ApplicationContainerIn(Simulation simulation) =>
+         simulation.Model.Root.GetAllChildren<IContainer>(x => x.ContainerType == ContainerType.Application).Single();
    }
 
    public class When_loading_a_project_saved_before_applications_were_nested_under_a_formulation_container : concern_for_converted_simulation_event_structure
@@ -32,12 +33,18 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_application_of_a_protocol_without_formulation_should_be_nested_under_a_formulation_container()
       {
-         var protocolEventGroup = _simulation.Model.Root.EntityAt<IContainer>(Constants.EVENTS, "IV");
-         var application = ApplicationContainerIn(protocolEventGroup);
+         var application = ApplicationContainerIn(_simulation);
 
          application.ParentContainer.Name.ShouldBeEqualTo(CoreConstants.ContainerName.NoFormulation);
          application.ParentContainer.ContainerType.ShouldBeEqualTo(ContainerType.Formulation);
-         application.ParentContainer.ParentContainer.ShouldBeEqualTo(protocolEventGroup);
+      }
+
+      [Observation]
+      public void the_formulation_container_should_be_nested_under_the_protocol_container()
+      {
+         var formulationContainer = ApplicationContainerIn(_simulation).ParentContainer;
+
+         formulationContainer.ParentContainer.Name.ShouldBeEqualTo("IV");
       }
    }
 }

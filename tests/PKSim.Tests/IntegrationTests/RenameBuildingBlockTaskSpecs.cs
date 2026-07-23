@@ -41,8 +41,8 @@ namespace PKSim.IntegrationTests
 
       public override void GlobalContext()
       {
-         var converter = new Converter12To13(new CoreConverter121To130(A.Fake<OSPSuite.Core.Domain.ISolverSettingsFactory>()));
          base.GlobalContext();
+         var converter = new Converter12To13(new CoreConverter121To130(A.Fake<OSPSuite.Core.Domain.ISolverSettingsFactory>()), IoC.Resolve<OSPSuite.Core.Domain.IObjectBaseFactory>());
          LoadProject("RenameApplication_V8");
          _iv = FindByName<Protocol>("aa");
          _s1 = FindByName<IndividualSimulation>("aa");
