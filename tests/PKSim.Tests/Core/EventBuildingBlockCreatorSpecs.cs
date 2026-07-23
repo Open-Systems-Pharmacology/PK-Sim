@@ -446,7 +446,7 @@ namespace PKSim.Core
          var protocol = A.Fake<Protocol>();
          protocol.Name = _protocolName;
          var protocolProperties = new ProtocolProperties { Protocol = protocol };
-         var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
+         var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties, Compound = new Compound().WithName("MyCompound") };
          _simulation.Properties.AddCompoundProperties(compoundProperties);
 
          A.CallTo(() => _formulationFromMappingRetriever.FormulationUsedBy(_simulation, A<FormulationMapping>.Ignored)).Returns(_formulation);
