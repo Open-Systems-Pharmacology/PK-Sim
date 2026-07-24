@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class ObserverSetTreeNodeContextMenuFactory : NodeContextMenuFactory<ObserverSet>
+   public class ObserverSetTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<ObserverSet>
    {
       private readonly IContainer _container;
 

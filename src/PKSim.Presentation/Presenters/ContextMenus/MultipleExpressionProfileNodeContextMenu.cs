@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class MultipleExpressionProfileNodeContextMenuFactory : MultipleNodeContextMenuFactory<ExpressionProfile>
+   public class MultipleExpressionProfileNodeContextMenuFactory : MultipleBuildingBlockNodeContextMenuFactory<ExpressionProfile>
    {
       private readonly IExecutionContext _executionContext;
       private readonly IContainer _container;

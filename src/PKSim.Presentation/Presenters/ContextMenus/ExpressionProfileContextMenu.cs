@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class ExpressionProfileTreeNodeContextMenuFactory : NodeContextMenuFactory<ExpressionProfile>
+   public class ExpressionProfileTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<ExpressionProfile>
    {
       private readonly IContainer _container;
 

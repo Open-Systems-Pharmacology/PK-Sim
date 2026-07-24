@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class EventTreeNodeContextMenuFactory : NodeContextMenuFactory<PKSimEvent>
+   public class EventTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<PKSimEvent>
    {
       private readonly IContainer _container;
 
