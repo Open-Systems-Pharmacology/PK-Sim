@@ -12,12 +12,13 @@
               <Exclude>
                 <ModulePath>.*FakeItEasy.*</ModulePath>
                 <ModulePath>.*\.Tests\.dll$</ModulePath>
+                <!-- The UI layer cannot be exercised by the test infrastructure -->
+                <ModulePath>.*[\\/]PKSim\.UI\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
             <Sources>
               <Exclude>
                 <Source>.*\.Designer\.cs$</Source>
-                <Source>.*[\\/]PKSim\.UI[\\/]Views[\\/].*</Source>
               </Exclude>
             </Sources>
           </CodeCoverage>
