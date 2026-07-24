@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class FormulationTreeNodeContextMenuFactory : NodeContextMenuFactory<Formulation>
+   public class FormulationTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<Formulation>
    {
       private readonly IContainer _container;
 

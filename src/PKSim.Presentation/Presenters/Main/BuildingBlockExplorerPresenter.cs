@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -17,6 +18,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -89,6 +91,15 @@ namespace PKSim.Presentation.Presenters.Main
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserverSetFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
+            addClassifications(project, ClassificationType.ExpressionProfile);
+            addClassifications(project, ClassificationType.Individual);
+            addClassifications(project, ClassificationType.Population);
+            addClassifications(project, ClassificationType.Compound);
+            addClassifications(project, ClassificationType.Formulation);
+            addClassifications(project, ClassificationType.Protocol);
+            addClassifications(project, ClassificationType.Event);
+            addClassifications(project, ClassificationType.ObserverSet);
+
             var pksimProject = project.DowncastTo<PKSimProject>();
             pksimProject.All<IPKSimBuildingBlock>().Each(x => AddBuildingBlockToTree(x));
 
@@ -96,44 +107,99 @@ namespace PKSim.Presentation.Presenters.Main
          }
       }
 
-      private ITreeNode addEventToTree(PKSimEvent pkSimEvent) => addBuildingBlockToTree(pkSimEvent, PKSimRootNodeTypes.EventFolder, ApplicationIcons.Event);
+      private ITreeNode addEventToTree(PKSimEvent pkSimEvent) => addBuildingBlockToTree<PKSimEvent, ClassifiableEvent>(pkSimEvent, PKSimRootNodeTypes.EventFolder, ApplicationIcons.Event);
 
-      private ITreeNode addPopulationToTree(Population population) => addBuildingBlockToTree(population, PKSimRootNodeTypes.PopulationFolder, ApplicationIcons.Population);
+      private ITreeNode addPopulationToTree(Population population) => addBuildingBlockToTree<Population, ClassifiablePopulation>(population, PKSimRootNodeTypes.PopulationFolder, ApplicationIcons.Population);
 
-      private ITreeNode addIndividualToTree(Individual individual) => addBuildingBlockToTree(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Icon));
+      private ITreeNode addIndividualToTree(Individual individual) => addBuildingBlockToTree<Individual, ClassifiableIndividual>(individual, PKSimRootNodeTypes.IndividualFolder, ApplicationIcons.IconByName(individual.Icon));
 
-      private ITreeNode addCompoundToTree(Compound compound) => addBuildingBlockToTree(compound, PKSimRootNodeTypes.CompoundFolder, ApplicationIcons.Compound);
+      private ITreeNode addCompoundToTree(Compound compound) => addBuildingBlockToTree<Compound, ClassifiableCompound>(compound, PKSimRootNodeTypes.CompoundFolder, ApplicationIcons.Compound);
 
-      private ITreeNode addFormulationToTree(Formulation formulation) => addBuildingBlockToTree(formulation, PKSimRootNodeTypes.FormulationFolder, ApplicationIcons.Formulation);
+      private ITreeNode addFormulationToTree(Formulation formulation) => addBuildingBlockToTree<Formulation, ClassifiableFormulation>(formulation, PKSimRootNodeTypes.FormulationFolder, ApplicationIcons.Formulation);
 
-      private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
+      private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree<Protocol, ClassifiableProtocol>(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
 
-      private ITreeNode addObserverSetToTree(ObserverSet observerSet) => addBuildingBlockToTree(observerSet, PKSimRootNodeTypes.ObserverSetFolder, ApplicationIcons.Observer);
+      private ITreeNode addObserverSetToTree(ObserverSet observerSet) => addBuildingBlockToTree<ObserverSet, ClassifiableObserverSet>(observerSet, PKSimRootNodeTypes.ObserverSetFolder, ApplicationIcons.Observer);
 
-      private ITreeNode addExpressionProfileToTree(ExpressionProfile expressionProfile) => addBuildingBlockToTree(expressionProfile, PKSimRootNodeTypes.ExpressionProfileFolder, ApplicationIcons.IconByName(expressionProfile.Icon));
+      private ITreeNode addExpressionProfileToTree(ExpressionProfile expressionProfile) => addBuildingBlockToTree<ExpressionProfile, ClassifiableExpressionProfile>(expressionProfile, PKSimRootNodeTypes.ExpressionProfileFolder, ApplicationIcons.IconByName(expressionProfile.Icon));
 
-      private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
+      private ITreeNode addBuildingBlockToTree<TBuildingBlock, TClassifiable>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
+         where TClassifiable : Classifiable<TBuildingBlock>, new()
       {
-         var buildingBockFolderNode = _view.NodeByType(buildingBlockFolderType);
-
-         return _view.AddNode(_treeNodeFactory.CreateFor(buildingBlock)
-            .WithIcon(icon)
-            .Under(buildingBockFolderNode));
+         return AddSubjectToClassifyToTree<TBuildingBlock, TClassifiable>(buildingBlock,
+            classifiable => AddClassifiableToTree(classifiable, buildingBlockFolderType,
+               (classificationNode, classifiableToAdd) =>
+               {
+                  var node = _treeNodeFactory.CreateForClassifiableBuildingBlock(classifiableToAdd).WithIcon(icon);
+                  AddClassifiableNodeToView(node, classificationNode);
+                  return node;
+               }));
       }
+
+      private void addClassifications(IProject project, ClassificationType classificationType) =>
+         _classificationPresenter.AddClassificationsToTree(project.AllClassificationsByType(classificationType));
+
 
       public override void AddToClassificationTree(ITreeNode<IClassification> parentNode, string category)
       {
-         _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
+         switch (parentNode.Tag.ClassificationType)
+         {
+            case ClassificationType.ObservedData:
+               _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
+               break;
+            case ClassificationType.Individual:
+               _classificationPresenter.GroupClassificationsByCategory<ClassifiableIndividual>(parentNode, category, x => categoryValueForIndividual(x, category));
+               break;
+            case ClassificationType.ExpressionProfile:
+               _classificationPresenter.GroupClassificationsByCategory<ClassifiableExpressionProfile>(parentNode, category, x => categoryValueForExpressionProfile(x, category));
+               break;
+         }
+      }
+
+      private string categoryValueForIndividual(ClassifiableIndividual classifiable, string category)
+      {
+         if (string.Equals(category, PKSimConstants.Classifications.Species))
+            return classifiable.Individual.Species?.DisplayName;
+
+         return string.Empty;
+      }
+
+      private string categoryValueForExpressionProfile(ClassifiableExpressionProfile classifiable, string category)
+      {
+         if (string.Equals(category, PKSimConstants.Classifications.Molecule))
+            return classifiable.ExpressionProfile.MoleculeName;
+
+         return string.Empty;
       }
 
       public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
       {
-         return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+         if (classificationNode.Tag.ClassificationType == ClassificationType.ObservedData)
+            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+
+         var buildingBlocks = classificationNode.AllLeafNodes
+            .Select(x => x.TagAsObject)
+            .OfType<IClassifiableWrapper>()
+            .Select(x => x.WrappedObject)
+            .OfType<IPKSimBuildingBlock>()
+            .ToList();
+
+         return _buildingBlockTask.Delete(buildingBlocks);
       }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
-         return _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
+         switch (parentClassificationNode.Tag.ClassificationType)
+         {
+            case ClassificationType.ObservedData:
+               return _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
+            case ClassificationType.Individual:
+               return new[] {new ClassificationTemplate(PKSimConstants.Classifications.Species, ApplicationIcons.Individual)};
+            case ClassificationType.ExpressionProfile:
+               return new[] {new ClassificationTemplate(PKSimConstants.Classifications.Molecule)};
+            default:
+               return Enumerable.Empty<ClassificationTemplate>();
+         }
       }
 
       public override bool CanDrag(ITreeNode node)
@@ -144,10 +210,24 @@ namespace PKSim.Presentation.Presenters.Main
          if (node.IsAnImplementationOf<ClassificationNode>())
             return true;
 
+         if (node.TagAsObject is IClassifiableWrapper wrapper && wrapper.WrappedObject is IPKSimBuildingBlock)
+            return true;
+
          return _observedDataInExplorerPresenter.CanDrag(node);
       }
 
       public override bool CopyAllowed() => false;
+
+      public override void NodeDoubleClicked(ITreeNode node)
+      {
+         if (node.TagAsObject is IClassifiableWrapper wrapper && wrapper.WrappedObject is IPKSimBuildingBlock buildingBlock)
+         {
+            EditBuildingBlock(buildingBlock);
+            return;
+         }
+
+         base.NodeDoubleClicked(node);
+      }
 
       public void Handle(SwapBuildingBlockEvent eventToHandle)
       {

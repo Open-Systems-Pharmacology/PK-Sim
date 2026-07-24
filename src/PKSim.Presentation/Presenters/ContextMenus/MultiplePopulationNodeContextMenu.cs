@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class MultiplePopulationNodeContextMenuFactory : MultipleNodeContextMenuFactory<Population>
+   public class MultiplePopulationNodeContextMenuFactory : MultipleBuildingBlockNodeContextMenuFactory<Population>
    {
       private readonly IExecutionContext _executionContext;
       private readonly IContainer _container;

@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class MultipleObserverSetNodeContextMenuFactory : MultipleNodeContextMenuFactory<ObserverSet>
+   public class MultipleObserverSetNodeContextMenuFactory : MultipleBuildingBlockNodeContextMenuFactory<ObserverSet>
    {
       private readonly IExecutionContext _executionContext;
       private readonly IContainer _container;

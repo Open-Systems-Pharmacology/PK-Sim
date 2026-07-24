@@ -13,7 +13,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class RandomPopulationTreeNodeContextMenuFactory : NodeContextMenuFactory<RandomPopulation>
+   public class RandomPopulationTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<RandomPopulation>
    {
       private readonly IContainer _container;
 

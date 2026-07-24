@@ -32,6 +32,14 @@ namespace PKSim.Core.Snapshots
       public Classification[] SimulationClassifications { get; set; }
       public Classification[] ParameterIdentificationClassifications { get; set; }
       public Classification[] QualificationPlanClassifications { get; set; }
+      public Classification[] CompoundClassifications { get; set; }
+      public Classification[] FormulationClassifications { get; set; }
+      public Classification[] IndividualClassifications { get; set; }
+      public Classification[] PopulationClassifications { get; set; }
+      public Classification[] ProtocolClassifications { get; set; }
+      public Classification[] EventClassifications { get; set; }
+      public Classification[] ObserverSetClassifications { get; set; }
+      public Classification[] ExpressionProfileClassifications { get; set; }
 
       public IReadOnlyList<IBuildingBlockSnapshot> BuildingBlocksByType(PKSimBuildingBlockType buildingBlockType)
       {
