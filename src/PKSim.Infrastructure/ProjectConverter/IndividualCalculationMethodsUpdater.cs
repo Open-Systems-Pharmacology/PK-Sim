@@ -41,7 +41,11 @@ namespace PKSim.Infrastructure.ProjectConverter
          addRenalAgingCalculationMethodTo(withCalculationMethods, isHuman);
          addDynamicFormulaCalculationMethodTo(withCalculationMethods);
          addBSACalculationMethodTo(withCalculationMethods, isHuman);
+         addLumenSegmentVolumeCalculationMethodTo(withCalculationMethods);
       }
+
+      private void addLumenSegmentVolumeCalculationMethodTo(IWithCalculationMethods withCalculationMethods) =>
+         addMissingCalculationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.LumenSegmentVolume);
 
       private void addBSACalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
