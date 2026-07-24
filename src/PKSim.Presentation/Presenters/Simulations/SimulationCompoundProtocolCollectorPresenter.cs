@@ -47,6 +47,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          _simulationBuildingBlockUpdater.UpdateProtocolsInSimulation(_simulation);
          _simulationBuildingBlockUpdater.UpdateFormulationsInSimulation(_simulation);
+         _simulationBuildingBlockUpdater.UpdateEventsInSimulation(_simulation);
       }
 
       public void UpdateSelectedProtocol(Protocol templateProtocol)

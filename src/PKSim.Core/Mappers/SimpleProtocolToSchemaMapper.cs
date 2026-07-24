@@ -36,6 +36,7 @@ namespace PKSim.Core.Mappers
          {
             schema.NumberOfRepetitions.Value = 1;
             schema.AddSchemaItem(createSchemaItem(simpleProtocol.StartTime.Value, simpleProtocol, schema));
+            addEventSchemaItemsIfNeeded(schema, simpleProtocol);
             return container.GetChildren<Schema>();
          }
 
@@ -43,12 +44,13 @@ namespace PKSim.Core.Mappers
          int numberOfRepetition = (int) Math.Floor(protocolDuration / simpleProtocol.DosingInterval.IntervalLength);
          schema.NumberOfRepetitions.Value = numberOfRepetition;
 
-         addDosingIntevalSchemaItemTo(schema, simpleProtocol);
+         addDosingIntervalSchemaItemTo(schema, simpleProtocol);
+         addEventSchemaItemsIfNeeded(schema, simpleProtocol);
 
          if (schema.Duration == protocolDuration)
             return container.GetChildren<Schema>();
 
-         //now we might need to add another schema if the time specified could not fit an entire repetition, or just add 
+         //now we might need to add another schema if the time specified could not fit an entire repetition, or just add
          //another repetition if the created schema has the same length as the default schema
 
          var schemaSingular = _schemaFactory.Create(container);
@@ -57,8 +59,12 @@ namespace PKSim.Core.Mappers
          addSingularSchemaItemTo(schemaSingular, simpleProtocol);
          if (schemaSingular.SchemaItems.Any())
          {
-            if (schema.SchemaItems.Count() != schemaSingular.SchemaItems.Count())
+            //compare administration items only: the default schema also holds the event items added above
+            if (schema.SchemaItems.Count(x => !x.IsEvent) != schemaSingular.SchemaItems.Count())
+            {
+               addEventSchemaItemsIfNeeded(schemaSingular, simpleProtocol);
                container.Add(schemaSingular);
+            }
             else
                schema.NumberOfRepetitions.Value++;
          }
@@ -80,7 +86,7 @@ namespace PKSim.Core.Mappers
          schema.AddSchemaItem(createSchemaItem(720, simpleProtocol, schema));
       }
 
-      private void addDosingIntevalSchemaItemTo(Schema schema, SimpleProtocol simpleProtocol)
+      private void addDosingIntervalSchemaItemTo(Schema schema, SimpleProtocol simpleProtocol)
       {
          //always add a first interval
          schema.AddSchemaItem(createSchemaItem(0, simpleProtocol, schema));
@@ -98,6 +104,24 @@ namespace PKSim.Core.Mappers
                break;
             default:
                throw new ArgumentOutOfRangeException();
+         }
+      }
+
+      private void addEventSchemaItemsIfNeeded(Schema schema, SimpleProtocol simpleProtocol)
+      {
+         if (!simpleProtocol.HasEvent)
+            return;
+
+         var offset = simpleProtocol.EventOffsetParameter?.Value ?? 0;
+         //snapshot the administration items before adding events so that we add exactly one event per administration,
+         //each offset (possibly negative) from its own administration time
+         var administrationItems = schema.SchemaItems.Where(x => !x.IsEvent).ToList();
+         foreach (var administrationItem in administrationItems)
+         {
+            var eventItem = _schemaItemFactory.Create(ApplicationTypes.Event, schema);
+            eventItem.StartTime.Value = administrationItem.StartTime.Value + offset;
+            eventItem.EventKey = simpleProtocol.EventKey;
+            schema.AddSchemaItem(eventItem);
          }
       }
 

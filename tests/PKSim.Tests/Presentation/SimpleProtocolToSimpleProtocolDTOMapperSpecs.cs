@@ -37,6 +37,7 @@ namespace PKSim.Presentation
          _simpleProtocol = new SimpleProtocol();
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
          _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
          _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
          A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(_doseParameterDTO);
@@ -60,6 +61,67 @@ namespace PKSim.Presentation
       {
          _result.Dose.ShouldBeEqualTo(_doseParameterDTO);
          _result.EndTime.ShouldBeEqualTo(_endTimeParameterDTO);
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_with_event_to_dto : concern_for_SimpleProtocolToSimpleProtocolDTOMapper
+   {
+      private SimpleProtocolDTO _result;
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(60).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+         _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
+         _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
+         _simpleProtocol.EventKey = CoreConstants.DEFAULT_EVENT_KEY;
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EndTimeParameter)).Returns(A.Fake<ParameterDTO>());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void has_event_should_be_true()
+      {
+         _result.HasEvent.ShouldBeTrue();
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_without_event_to_dto : concern_for_SimpleProtocolToSimpleProtocolDTOMapper
+   {
+      private SimpleProtocolDTO _result;
+      private SimpleProtocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol();
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+         _simpleProtocol.DosingInterval = DosingIntervals.DI_24;
+         _simpleProtocol.ApplicationType = ApplicationTypes.Oral;
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.Dose)).Returns(A.Fake<ParameterDTO>());
+         A.CallTo(() => _parameterDTOMapper.MapFrom(_simpleProtocol.EndTimeParameter)).Returns(A.Fake<ParameterDTO>());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void has_event_should_be_false()
+      {
+         _result.HasEvent.ShouldBeFalse();
       }
    }
 }

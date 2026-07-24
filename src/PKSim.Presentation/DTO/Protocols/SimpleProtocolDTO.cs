@@ -8,6 +8,7 @@ namespace PKSim.Presentation.DTO.Protocols
       private readonly SimpleProtocol _simpleProtocol;
       public IParameterDTO Dose { get; set; }
       public IParameterDTO EndTime { get; set; }
+      public IParameterDTO EventOffset { get; set; }
 
       public SimpleProtocolDTO(SimpleProtocol simpleProtocol) : base(simpleProtocol)
       {
@@ -45,6 +46,12 @@ namespace PKSim.Presentation.DTO.Protocols
          {
             /*nothing to do here*/
          }
+      }
+
+      public bool HasEvent
+      {
+         get => _simpleProtocol.HasEvent;
+         set { /*nothing to do here*/ }
       }
    }
 }

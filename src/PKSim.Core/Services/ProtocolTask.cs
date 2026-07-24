@@ -12,6 +12,7 @@ namespace PKSim.Core.Services
    {
       IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem);
       IEnumerable<string> AllFormulationKey();
+      IEnumerable<string> AllEventKeys();
       IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType);
       IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType);
       IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval);
@@ -21,68 +22,54 @@ namespace PKSim.Core.Services
       IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema);
       IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment);
       IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment);
+      IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey);
    }
 
    public class ProtocolTask : IProtocolTask
    {
       private readonly IFormulationKeyRepository _formulationKeyRepository;
+      private readonly IEventKeyRepository _eventKeyRepository;
       private readonly ISchemaTask _schemaTask;
       private readonly ISchemaItemParameterRetriever _schemaItemParameterRetriever;
       private readonly IExecutionContext _executionContext;
 
-      public ProtocolTask(IFormulationKeyRepository formulationKeyRepository,
+      public ProtocolTask(IFormulationKeyRepository formulationKeyRepository, IEventKeyRepository eventKeyRepository,
                           ISchemaTask schemaTask, ISchemaItemParameterRetriever schemaItemParameterRetriever, IExecutionContext executionContext)
       {
          _formulationKeyRepository = formulationKeyRepository;
+         _eventKeyRepository = eventKeyRepository;
          _schemaTask = schemaTask;
          _schemaItemParameterRetriever = schemaItemParameterRetriever;
          _executionContext = executionContext;
       }
 
-      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem)
-      {
-         return _schemaItemParameterRetriever.AllDynamicParametersFor(schemaItem).Where(p => p.Visible);
-      }
+      public IEnumerable<IParameter> AllDynamicParametersFor(ISchemaItem schemaItem) =>
+         _schemaItemParameterRetriever.AllDynamicParametersFor(schemaItem).Where(p => p.Visible);
 
-      public IEnumerable<string> AllFormulationKey()
-      {
-         return _formulationKeyRepository.All();
-      }
+      public IEnumerable<string> AllFormulationKey() => _formulationKeyRepository.All();
 
-      public IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType)
-      {
-         return new SetSchemaItemApplicationTypeCommand(schemaItem, applicationType).Run(_executionContext);
-      }
+      public IEnumerable<string> AllEventKeys() => _eventKeyRepository.All();
 
-      public IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType)
-      {
-         return new SetSchemaItemFormulationKeyCommand(schemaItem, formulationType, _executionContext).Run(_executionContext);
-      }
+      public IPKSimCommand SetApplicationType(ISchemaItem schemaItem, ApplicationType applicationType) =>
+         new SetSchemaItemApplicationTypeCommand(schemaItem, applicationType).Run(_executionContext);
 
-      public IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval)
-      {
-         return _schemaTask.SetDosingInterval(protocol, dosingInterval);
-      }
+      public IPKSimCommand SetFormulationType(ISchemaItem schemaItem, string formulationType) =>
+         new SetSchemaItemFormulationKeyCommand(schemaItem, formulationType, _executionContext).Run(_executionContext);
 
-      public IPKSimCommand AddSchemaTo(AdvancedProtocol protocol)
-      {
-         return _schemaTask.AddSchemaTo(protocol);
-      }
+      public IPKSimCommand SetDosingInterval(SimpleProtocol protocol, DosingInterval dosingInterval) =>
+         _schemaTask.SetDosingInterval(protocol, dosingInterval);
 
-      public IPKSimCommand RemoveSchemaFrom(Schema schemaToDelete, AdvancedProtocol protocol)
-      {
-         return _schemaTask.RemoveSchemaFrom(schemaToDelete, protocol);
-      }
+      public IPKSimCommand AddSchemaTo(AdvancedProtocol protocol) =>
+         _schemaTask.AddSchemaTo(protocol);
 
-      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate)
-      {
-         return _schemaTask.AddSchemaItemTo(schema, schemaItemToDupicate);
-      }
+      public IPKSimCommand RemoveSchemaFrom(Schema schemaToDelete, AdvancedProtocol protocol) =>
+         _schemaTask.RemoveSchemaFrom(schemaToDelete, protocol);
 
-      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema)
-      {
-         return _schemaTask.RemoveSchemaItemFrom(schemaItemToDelete, schema);
-      }
+      public IPKSimCommand AddSchemaItemTo(Schema schema, SchemaItem schemaItemToDupicate) =>
+         _schemaTask.AddSchemaItemTo(schema, schemaItemToDupicate);
+
+      public IPKSimCommand RemoveSchemaItemFrom(SchemaItem schemaItemToDelete, Schema schema) =>
+         _schemaTask.RemoveSchemaItemFrom(schemaItemToDelete, schema);
 
       public IPKSimCommand SetTargetOrgan(ISchemaItem schemaItem, string targetOrgan, string targetCompartment)
       {
@@ -98,9 +85,10 @@ namespace PKSim.Core.Services
          return macroCommand.Run(_executionContext);
       }
 
-      public IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment)
-      {
-         return new SetSchemaItemTargetCompartmentCommand(schemaItem, targetCompartment, _executionContext).Run(_executionContext);
-      }
+      public IPKSimCommand SetTargetCompartment(ISchemaItem schemaItem, string targetCompartment) =>
+         new SetSchemaItemTargetCompartmentCommand(schemaItem, targetCompartment, _executionContext).Run(_executionContext);
+
+      public IPKSimCommand SetEventKey(ISchemaItem schemaItem, string eventKey) =>
+         new SetSchemaItemEventKeyCommand(schemaItem, eventKey, _executionContext).Run(_executionContext);
    }
 }

@@ -209,6 +209,17 @@ namespace PKSim.Assets
             return $"Formulation name changed from '{oldFormulaKey}' to '{newFormulaKey}'";
          }
 
+         public static string SetApplicationSchemaItemEventKeyDescription(string oldEventKey, string newEventKey)
+         {
+            if (string.IsNullOrEmpty(newEventKey))
+               return $"Removing event {oldEventKey}";
+
+            if (string.IsNullOrEmpty(oldEventKey))
+               return $"Setting event to {newEventKey}";
+
+            return $"Event name changed from '{oldEventKey}' to '{newEventKey}'";
+         }
+
          public static string SetApplicationSchemaItemTargetCompartment(string oldTargetCompartment, string newTargetCompartment)
          {
             return $"Target compartment changed from '{oldTargetCompartment}' to '{newTargetCompartment}'";
@@ -543,6 +554,9 @@ namespace PKSim.Assets
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
+
+         public static readonly string EventKeyRequired = "Event key is required for event entries.";
+         public static readonly string EventPlaceholderRequired = "A placeholder is required when 'Administer with event' is selected.";
 
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
@@ -1812,7 +1826,14 @@ namespace PKSim.Assets
          public static readonly string ApplicationType = "Administration type";
          public static readonly string TargetOrgan = "Target organ";
          public static readonly string TargetCompartment = "Target compartment";
+         public static readonly string EventSelection = "Event";
+         public static readonly string AdministerWithEvent = "Administer with event";
+         public static readonly string AddEventForEveryAdministration = "Add an event for every administration (e.g. meal)";
+         public static readonly string EventOffset = "Event offset";
+         public static readonly string NoEvent = "<None>";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
+         public static readonly string PlaceholderEvent = "Placeholder for event";
+         public static readonly string Placeholder = "Placeholder";
          public static readonly string ProtocolProperties = "Protocol Properties";
          public static readonly string Dermal = "Dermal";
          public static readonly string Subcutaneous = "Subcutaneous";
@@ -1895,6 +1916,8 @@ namespace PKSim.Assets
          public static readonly string Soluble = "Soluble";
          public static readonly string Insoluble = "Insoluble";
          public static readonly string AddEvent = "Add Event";
+         public static readonly string SimulationEventsConfigurationDescription = "Administration-related events (e.g. meal events) are best defined directly in the administration protocol. Use this tab for events that are not related to an administration (e.g. gallbladder or urinary bladder emptying).";
+         public static readonly string SimulationProtocolEventDescription = "These events are defined by the administration protocol. Select the event to use for each placeholder.";
          public static readonly string AddObserverSet = "Add Observers";
          public static readonly string ExportLogToFile = "Export project conversion log to file...";
          public static readonly string SaveLog = "Save Log...";
@@ -1943,6 +1966,7 @@ namespace PKSim.Assets
          public static readonly string ReallySwitchProtocolMode = "Do you really want to switch between advanced and simple? This action will reset the administration protocol.";
          public static readonly string UsedBuildingBlocks = "Used building blocks";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string EventType = "Event";
          public static readonly string MolWeight = "Molecular weight [g/mol]";
          public static readonly string CalculateBioavailability = "Calculate Bioavailability";
          public static readonly string CalculateDDIRatio = "Calculate DDI Ratio";
@@ -2408,6 +2432,14 @@ namespace PKSim.Assets
                sb.AppendLine($"{ObjectTypes.Formulation}= {formulation}");
 
             sb.AppendLine($"{Dose}= {dose}");
+            sb.AppendLine($"{StartTime}= {startTime}");
+            return sb.ToString();
+         }
+
+         public static string EventSchemaItemDescription(string eventKey, string startTime)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{ObjectTypes.Event}= {eventKey}");
             sb.AppendLine($"{StartTime}= {startTime}");
             return sb.ToString();
          }

@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -12,11 +15,16 @@ namespace PKSim.Core.Model
       private DosingInterval _dosingInterval;
       private string _targetCompartment;
       private string _targetOrgan;
-
       public SimpleProtocol()
       {
          Rules.AddRange(SchemaItemRules.All());
+         Rules.Add(eventPlaceholderValid);
       }
+
+      private static IBusinessRule eventPlaceholderValid { get; } = CreateRule.For<SimpleProtocol>()
+         .Property(x => x.EventKey)
+         .WithRule((protocol, eventKey) => !protocol.HasEvent || !string.IsNullOrEmpty(eventKey))
+         .WithError(PKSimConstants.Error.EventPlaceholderRequired);
 
       public virtual ApplicationType ApplicationType
       {
@@ -48,7 +56,15 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _targetOrgan, value);
       }
 
+      public virtual string EventKey { get; set; }
+
+      public virtual IParameter EventOffsetParameter => this.Parameter(CoreConstants.Parameters.EVENT_OFFSET);
+
+      public virtual bool HasEvent => !string.IsNullOrEmpty(EventKey);
+
       public virtual bool NeedsFormulation => ApplicationType.NeedsFormulation;
+
+      public virtual bool IsEvent => false;
 
       public virtual IParameter StartTime => this.Parameter(Constants.Parameters.START_TIME);
 
@@ -75,10 +91,10 @@ namespace PKSim.Core.Model
 
       public override IEnumerable<string> UsedFormulationKeys => new[] {_formulationKey};
 
-      public override ApplicationType ApplicationTypeUsing(string formulationKey)
-      {
-         return _applicationType;
-      }
+      public override IEnumerable<string> UsedEventKeys =>
+         string.IsNullOrEmpty(EventKey) ? Enumerable.Empty<string>() : new[] { EventKey };
+
+      public override ApplicationType ApplicationTypeUsing(string formulationKey) => _applicationType;
 
       public override double EndTime => EndTimeParameter.Value;
 
@@ -92,6 +108,7 @@ namespace PKSim.Core.Model
          DosingInterval = simpleProtocol.DosingInterval;
          TargetOrgan = simpleProtocol.TargetOrgan;
          TargetCompartment = simpleProtocol.TargetCompartment;
+         EventKey = simpleProtocol.EventKey;
       }
    }
 }

@@ -33,6 +33,7 @@ namespace PKSim.Core
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public const string DEFAULT_TEMPLATE_VERSION = "1.0";
       public const string DEFAULT_FORMULATION_KEY = "Formulation";
+      public const string DEFAULT_EVENT_KEY = "Event";
       public const string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const string DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME = "<MOLECULE>";
       public const TransportType DEFAULT_TRANSPORTER_TYPE = TransportType.Efflux;
@@ -225,6 +226,7 @@ namespace PKSim.Core
             public static readonly string Intravenous = "Intravenous";
             public static readonly string IntravenousBolus = "IntravenousBolus";
             public static readonly string UserDefined = "UserDefined";
+            public static readonly string Event = "Event";
          }
 
          public static class Route
@@ -232,6 +234,7 @@ namespace PKSim.Core
             public static readonly string Oral = "Oral";
             public static readonly string UserDefined = "UserDefined";
             public static readonly string Intravenous = "Intravenous";
+            public static readonly string Event = "Event";
          }
       }
 
@@ -375,6 +378,9 @@ namespace PKSim.Core
          public static readonly string ObservedData = "ObservedData";
          public static readonly string InsolubleDrug = "InsolubleDrug";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
+
+         //name of the formulation container created for applications that do not require a formulation (e.g. IV Bolus)
+         public static readonly string NoFormulation = "No formulation";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {
@@ -897,6 +903,7 @@ namespace PKSim.Core
          public static readonly string PARAMETER_PKA2 = ParameterPKa(1);
          public static readonly string PARAMETER_PKA3 = ParameterPKa(NUMBER_OF_PKA_PARAMETERS - 1);
 
+         public const string EVENT_OFFSET = "Event offset";
          public const string APPLICATION_RATE = "Application rate";
          public const string PERMEABILITY = "Permeability";
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";

@@ -117,6 +117,8 @@ namespace PKSim.Presentation.Presenters.Protocols
          activeProtocolPresenter.EditProtocol(Protocol);
          _view.UpdateEditControl(activeProtocolView);
          updateControls();
+         //the protocol was swapped: the chart still shows the previous protocol and has to be plotted again
+         refreshPlot();
       }
 
       public override void ViewChanged()
