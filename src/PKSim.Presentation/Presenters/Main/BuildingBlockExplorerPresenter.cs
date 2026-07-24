@@ -194,7 +194,7 @@ namespace PKSim.Presentation.Presenters.Main
             case ClassificationType.ObservedData:
                return _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
             case ClassificationType.Individual:
-               return new[] {new ClassificationTemplate(PKSimConstants.Classifications.Species, ApplicationIcons.Individual)};
+               return new[] {new ClassificationTemplate(PKSimConstants.Classifications.Species)};
             case ClassificationType.ExpressionProfile:
                return new[] {new ClassificationTemplate(PKSimConstants.Classifications.Molecule)};
             default:

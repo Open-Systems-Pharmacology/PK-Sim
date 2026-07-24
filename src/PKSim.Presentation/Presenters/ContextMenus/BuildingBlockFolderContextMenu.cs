@@ -37,7 +37,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          presenter.AvailableClassificationCategories(treeNode)
             .Each(classification => groupMenu.AddItem(
                CreateMenuButton.WithCaption(classification.ClassificationName)
-                  .WithIcon(classification.Icon)
                   .WithActionCommand(() => presenter.AddToClassificationTree(treeNode, classification.ClassificationName))));
 
          return groupMenu;
