@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using NUnit.Framework;
@@ -157,49 +158,66 @@ namespace PKSim.ProjectConverter.v13
    public class When_running_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
       private ISimulationRunner _simulationRunner;
+      private ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _simulationRunner = OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>();
+         _modelCoreSimulationMapper = OSPSuite.Utility.Container.IoC.Resolve<ISimulationToModelCoreSimulationMapper>();
          _allSimulations = All<Simulation>();
          _allSimulations.Each(Load);
       }
 
       [Observation]
-      public void should_run_every_converted_simulation_and_produce_results()
+      public void should_run_every_converted_simulation_without_error()
       {
          _allSimulations.Any().ShouldBeTrue();
 
          var errors = new List<string>();
          foreach (var simulation in _allSimulations)
          {
-            discardResultsOf(simulation);
-            try
-            {
-               _simulationRunner.RunSimulation(simulation).Wait();
-               if (!simulation.HasResults)
-                  errors.Add($"{simulation.Name}: produced no results");
-            }
-            catch (System.Exception e)
-            {
-               errors.Add($"{simulation.Name}: {(e.InnerException ?? e).Message}");
-            }
+            var error = runErrorFor(simulation);
+            if (error != null)
+               errors.Add($"{simulation.Name}: {error}");
          }
 
          Assert.IsTrue(errors.Count == 0, errors.ToString("\n"));
       }
 
-      //The project ships with stored results. Discarding them first makes HasResults report the fresh run only, so a
-      //simulation that fails validation and is silently skipped cannot pass on the results it was saved with. An
-      //individual simulation reports HasResults from its DataRepository, which ClearResults does not reset, so it is
-      //nulled explicitly.
-      private static void discardResultsOf(Simulation simulation)
+      //Returns the error a run reported, or null when it succeeded. An individual simulation is run through the SimModel
+      //manager so the returned SimulationRunResults can be inspected directly: a solver failure sets Success to false and
+      //carries the error, which the higher level engine swallows. A population run raises an exception on failure, so it
+      //is run through the runner and the exception is captured.
+      private string runErrorFor(Simulation simulation)
       {
-         simulation.ClearResults();
-         if (simulation is IndividualSimulation individualSimulation)
-            individualSimulation.DataRepository = null;
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(individualSimulation, shouldCloneModel: false);
+               var runResults = OSPSuite.Utility.Container.IoC.Resolve<ISimModelManager>().RunSimulation(modelCoreSimulation);
+               return runResults.Success ? null : errorFrom(runResults);
+
+            case PopulationSimulation populationSimulation:
+               try
+               {
+                  _simulationRunner.RunSimulation(populationSimulation).Wait();
+                  return populationSimulation.HasResults ? null : "produced no results";
+               }
+               catch (System.Exception e)
+               {
+                  return (e.InnerException ?? e).Message;
+               }
+
+            default:
+               return null;
+         }
       }
+
+      private static string errorFrom(SimulationRunResults runResults) =>
+         string.IsNullOrEmpty(runResults.Error)
+            ? $"solver failed with {runResults.Warnings.Count()} warning(s)"
+            : runResults.Error;
    }
 }
