@@ -9,7 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
-namespace PKSim.Infrastructure.ProjectConverter
+namespace PKSim.Infrastructure.ProjectConverter.v13
 {
    /// <summary>
    ///    A population saved by an older version carries one value per individual only for the parameters that existed when

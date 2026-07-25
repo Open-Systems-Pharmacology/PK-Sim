@@ -97,15 +97,6 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string LumenSegmentVolume = "LumenSegmentVolume";
       }
 
-      public static class Containers
-      {
-         /// <summary>
-         ///    Sub container of every meal event up to v12. The new oral absorption model replaced it by the dedicated
-         ///    reset events, so it no longer exists in the database and has to be dropped from converted events.
-         /// </summary>
-         public static readonly string MEAL_STOP_EVENT = "Meal_StopEvent";
-      }
-
       public static class Category
       {
          public static readonly string BSA = "BSA";

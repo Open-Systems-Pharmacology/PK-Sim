@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.ProjectConverter;
+using PKSim.Infrastructure.ProjectConverter.v13;
 
 namespace PKSim.Infrastructure
 {
@@ -157,36 +157,6 @@ namespace PKSim.Infrastructure
       {
          A.CallTo(() => _cloner.Clone(A<IParameter>.Ignored)).MustHaveHappened();
          A.CallTo(() => _cloner.Clone(A<IContainer>.Ignored)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_adding_only_the_parameters_missing_from_a_container : concern_for_TemplateStructureUpdater
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _templateContainer.Add(ParameterNamed("Use Hintz-Johnson"));
-
-         var templateSubContainer = new Container().WithName("Solubility at pH 7");
-         templateSubContainer.Add(ParameterNamed("Solubility table"));
-         _templateContainer.Add(templateSubContainer);
-      }
-
-      protected override void Because()
-      {
-         sut.AddMissingParametersTo(_containerToUpdate, _templateContainer);
-      }
-
-      [Observation]
-      public void should_have_added_the_parameter_defined_directly_in_the_template()
-      {
-         _containerToUpdate.Parameter("Use Hintz-Johnson").ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void should_not_have_added_the_sub_container_named_by_the_user()
-      {
-         _containerToUpdate.GetSingleChildByName<IContainer>("Solubility at pH 7").ShouldBeNull();
       }
    }
 

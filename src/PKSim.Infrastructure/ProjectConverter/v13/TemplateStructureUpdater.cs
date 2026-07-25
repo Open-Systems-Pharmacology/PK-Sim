@@ -2,7 +2,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
-namespace PKSim.Infrastructure.ProjectConverter
+namespace PKSim.Infrastructure.ProjectConverter.v13
 {
    /// <summary>
    ///    Brings a building block saved by an older version back in line with the structure currently defined in the PK-Sim
@@ -17,14 +17,6 @@ namespace PKSim.Infrastructure.ProjectConverter
       ///    was added.
       /// </summary>
       bool AddMissingStructureTo(IContainer containerToUpdate, IContainer templateContainer);
-
-      /// <summary>
-      ///    Adds the parameters defined directly in <paramref name="templateContainer" /> that are missing from
-      ///    <paramref name="containerToUpdate" />, without descending into sub containers. Use this where the sub
-      ///    containers are named by the user rather than by the database, as they are for the alternatives of a compound.
-      ///    Returns <c>true</c> if anything was added.
-      /// </summary>
-      bool AddMissingParametersTo(IContainer containerToUpdate, IContainer templateContainer);
 
       /// <summary>
       ///    Replaces the definition (formula, distribution, dimension, min/max, display settings) of every parameter of
@@ -81,25 +73,6 @@ namespace PKSim.Infrastructure.ProjectConverter
          }
 
          return structureAdded;
-      }
-
-      public bool AddMissingParametersTo(IContainer containerToUpdate, IContainer templateContainer)
-      {
-         if (containerToUpdate == null || templateContainer == null)
-            return false;
-
-         var parametersAdded = false;
-
-         foreach (var templateParameter in templateContainer.GetChildren<IParameter>())
-         {
-            if (containerToUpdate.Parameter(templateParameter.Name) != null)
-               continue;
-
-            containerToUpdate.Add(cloneOf(templateParameter));
-            parametersAdded = true;
-         }
-
-         return parametersAdded;
       }
 
       public bool RefreshParameterDefinitionsIn(IContainer containerToUpdate, IContainer templateContainer)
