@@ -133,6 +133,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_set_the_merge_behavior_to_extend()
+      {
+         _module.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
+      }
+
+      [Observation]
       public void should_create_the_default_parameter_values_for_the_available_parameters()
       {
          A.CallTo(() => _parameterValueCreator.CreateFor(_simulation)).MustHaveHappened();
