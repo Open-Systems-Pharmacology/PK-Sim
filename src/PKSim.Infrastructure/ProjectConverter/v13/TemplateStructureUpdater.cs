@@ -19,6 +19,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       bool AddMissingStructureTo(IContainer containerToUpdate, IContainer templateContainer);
 
       /// <summary>
+      ///    Adds the parameters defined directly in <paramref name="templateContainer" /> that are missing from
+      ///    <paramref name="containerToUpdate" />, without descending into sub containers. Use this where the sub
+      ///    containers are named by the user rather than by the database, as they are for the alternatives of a compound.
+      ///    Returns <c>true</c> if anything was added.
+      /// </summary>
+      bool AddMissingParametersTo(IContainer containerToUpdate, IContainer templateContainer);
+
+      /// <summary>
       ///    Replaces the definition (formula, distribution, dimension, min/max, display settings) of every parameter of
       ///    <paramref name="containerToUpdate" /> that also exists in <paramref name="templateContainer" /> with the
       ///    definition from the template, while keeping any value the user had defined. Parameters missing from the object
@@ -73,6 +81,25 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          }
 
          return structureAdded;
+      }
+
+      public bool AddMissingParametersTo(IContainer containerToUpdate, IContainer templateContainer)
+      {
+         if (containerToUpdate == null || templateContainer == null)
+            return false;
+
+         var parametersAdded = false;
+
+         foreach (var templateParameter in templateContainer.GetChildren<IParameter>())
+         {
+            if (containerToUpdate.Parameter(templateParameter.Name) != null)
+               continue;
+
+            containerToUpdate.Add(cloneOf(templateParameter));
+            parametersAdded = true;
+         }
+
+         return parametersAdded;
       }
 
       public bool RefreshParameterDefinitionsIn(IContainer containerToUpdate, IContainer templateContainer)

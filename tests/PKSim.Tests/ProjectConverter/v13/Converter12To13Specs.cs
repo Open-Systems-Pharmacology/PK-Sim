@@ -3,13 +3,17 @@ using System.Linq;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using System;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v13;
@@ -79,6 +83,7 @@ namespace PKSim.ProjectConverter.v13
    {
       private List<Individual> _allIndividuals;
       private List<Population> _allPopulations;
+      private List<PKSimEvent> _allEvents;
 
       public override void GlobalContext()
       {
@@ -87,9 +92,11 @@ namespace PKSim.ProjectConverter.v13
 
          LoadAll<Individual>();
          LoadAll<Population>();
+         LoadAll<PKSimEvent>();
 
          _allIndividuals = All<Individual>();
          _allPopulations = All<Population>();
+         _allEvents = All<PKSimEvent>();
       }
 
       [Observation]
@@ -137,6 +144,14 @@ namespace PKSim.ProjectConverter.v13
       }
 
       [Observation]
+      public void should_no_longer_contain_the_obsolete_meal_stop_event_container()
+      {
+         _allEvents.Each(x =>
+            x.GetAllChildren<IContainer>(c => c.IsNamed(ConverterConstants.Containers.MEAL_STOP_EVENT))
+               .ShouldBeEmpty());
+      }
+
+      [Observation]
       public void should_not_have_created_any_duplicated_parameter()
       {
          _allIndividuals.Each(individual =>
@@ -175,6 +190,117 @@ namespace PKSim.ProjectConverter.v13
       public void should_have_added_the_new_calculation_method_to_all_individuals()
       {
          _allIndividuals.Each(ShouldReferenceTheLumenSegmentVolumeCalculationMethod);
+      }
+   }
+
+   /// <summary>
+   ///    An individual that uses the Du Bois body-surface-area option rather than the default Mosteller must not end up
+   ///    with a second method in the same category, which would crash when the individual is mapped to a building block
+   ///    (as happens when a simulation is created or configured).
+   /// </summary>
+   public class When_converting_a_human_individual_that_uses_the_du_bois_body_surface_area_method : ContextForIntegration<Converter12To13>
+   {
+      private Individual _individual;
+      private const string _bsaCategory = "BSA";
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var calculationMethodRepository = OSPSuite.Utility.Container.IoC.Resolve<ICalculationMethodRepository>();
+         _individual = OSPSuite.Utility.Container.IoC.Resolve<ICloner>()
+            .Clone(OSPSuite.Utility.Container.IoC.Resolve<IDefaultIndividualRetriever>().DefaultHuman());
+
+         var calculationMethodCache = _individual.OriginData.CalculationMethodCache;
+         var currentBodySurfaceArea = calculationMethodCache.CalculationMethodFor(_bsaCategory);
+         if (currentBodySurfaceArea != null)
+            calculationMethodCache.RemoveCalculationMethod(currentBodySurfaceArea);
+         calculationMethodCache.AddCalculationMethod(calculationMethodRepository.FindBy("Body surface area - Du Bois"));
+      }
+
+      protected override void Because()
+      {
+         sut.Convert(_individual, ProjectVersions.V12);
+      }
+
+      [Observation]
+      public void should_not_have_added_a_second_body_surface_area_method()
+      {
+         _individual.OriginData.AllCalculationMethods().Count(x => x.Category == _bsaCategory).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_still_be_mappable_to_an_individual_building_block()
+      {
+         var mapper = OSPSuite.Utility.Container.IoC.Resolve<IIndividualToIndividualBuildingBlockMapper>();
+         mapper.MapFrom(_individual).ShouldNotBeNull();
+      }
+   }
+
+   /// <summary>
+   ///    No saved project fixture in the repository carries a meal event, so the event branch of the converter is
+   ///    exercised here against the real database template instead. A <see cref="PKSimEvent" /> is rebuilt from a clone of
+   ///    that template and then degraded to look like a project saved before v13, so the conversion has real work to do.
+   /// </summary>
+   public abstract class concern_for_Converter12To13_events : ContextForIntegration<Converter12To13>
+   {
+      protected PKSimEvent _oldEvent;
+      protected string _resetEventName;
+      protected ICloner _cloner;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _cloner = OSPSuite.Utility.Container.IoC.Resolve<ICloner>();
+         var eventGroupRepository = OSPSuite.Utility.Container.IoC.Resolve<IEventGroupRepository>();
+
+         //Any meal that gained the new reset events works. Picking it from the repository keeps the test independent of a
+         //specific meal name
+         var mealTemplate = eventGroupRepository.All()
+            .First(x => x.GetAllChildren<IContainer>(isResetEvent).Any());
+
+         _resetEventName = mealTemplate.GetAllChildren<IContainer>(isResetEvent).First().Name;
+         _oldEvent = oldEventFrom(mealTemplate);
+      }
+
+      protected override void Because()
+      {
+         sut.Convert(_oldEvent, ProjectVersions.V12);
+      }
+
+      /// <summary>
+      ///    Rebuilds a <see cref="PKSimEvent" /> from a clone of the template, then strips one reset event and adds back the
+      ///    obsolete stop event so that the state matches a meal saved before the new oral absorption model.
+      /// </summary>
+      private PKSimEvent oldEventFrom(EventGroupBuilder template)
+      {
+         var oldEvent = new PKSimEvent {TemplateName = template.Name}.WithName(template.Name);
+         template.Children.Each(x => oldEvent.Add(_cloner.Clone(x)));
+
+         var resetEventToDrop = oldEvent.GetAllChildren<IContainer>(isResetEvent).First(x => x.IsNamed(_resetEventName));
+         resetEventToDrop.ParentContainer.RemoveChild(resetEventToDrop);
+
+         var subContainer = oldEvent.GetAllChildren<IContainer>()
+            .First(x => x.IsNamed(CoreConstants.ContainerName.EventGroupMainSubContainer));
+         subContainer.Add(new Container().WithName(ConverterConstants.Containers.MEAL_STOP_EVENT));
+
+         return oldEvent;
+      }
+
+      private static bool isResetEvent(IContainer container) => container.Name.StartsWith("Reset ");
+   }
+
+   public class When_converting_a_meal_event_saved_before_the_new_oral_absorption_model : concern_for_Converter12To13_events
+   {
+      [Observation]
+      public void should_have_added_back_the_reset_event_that_was_missing()
+      {
+         _oldEvent.GetAllChildren<IContainer>(x => x.IsNamed(_resetEventName)).Any().ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_removed_the_obsolete_meal_stop_event()
+      {
+         _oldEvent.GetAllChildren<IContainer>(x => x.IsNamed(ConverterConstants.Containers.MEAL_STOP_EVENT)).ShouldBeEmpty();
       }
    }
 
@@ -307,6 +433,31 @@ namespace PKSim.ProjectConverter.v13
          }
 
          Assert.IsTrue(errors.Count == 0, errors.ToString("\n"));
+      }
+   }
+
+   public class When_converting_the_compounds_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   {
+      private List<Compound> _allCompounds;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _allCompounds = All<Compound>();
+         _allCompounds.Each(Load);
+      }
+
+      [Observation]
+      public void should_have_added_the_new_compound_parameters()
+      {
+         //These particle-dissolution parameters are new in v13 and were absent from the saved compounds. They are needed
+         //so that a value edited in a simulation can be committed back to the compound building block.
+         var newCompoundParameterNames = new[] {"Surface integration factor", "Diffusion layer thickness exponent"};
+
+         _allCompounds.Any().ShouldBeTrue();
+         _allCompounds.Each(compound =>
+            newCompoundParameterNames.Each(name =>
+               (compound.Parameter(name) != null).ShouldBeTrue($"'{name}' was not added to compound '{compound.Name}'")));
       }
    }
 

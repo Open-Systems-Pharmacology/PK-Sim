@@ -8,6 +8,16 @@ namespace PKSim.Infrastructure.ProjectConverter
    {
       void AddMissingCalculationMethodsTo(Individual individual);
       void AddMissingCalculationMethodsTo(Simulation simulation);
+
+      /// <summary>
+      ///    Adds a single calculation method by name if the individual does not reference it yet. Unlike
+      ///    <see cref="AddMissingCalculationMethodsTo(Individual)" /> this does not touch the legacy body-surface-area,
+      ///    renal-aging and dynamic-formula methods, so it will not add a second method into a category the individual
+      ///    already fills with a different option.
+      /// </summary>
+      void AddCalculationMethodTo(Individual individual, string calculationMethodName);
+
+      void AddCalculationMethodTo(Simulation simulation, string calculationMethodName);
    }
 
    public class IndividualCalculationMethodsUpdater : IIndividualCalculationMethodsUpdater
@@ -36,16 +46,28 @@ namespace PKSim.Infrastructure.ProjectConverter
          addMissingCalculationMethods(simulation.ModelProperties, individual.IsHuman);
       }
 
+      public void AddCalculationMethodTo(Individual individual, string calculationMethodName)
+      {
+         if (individual == null)
+            return;
+
+         addMissingCalculationMethodTo(individual.OriginData, calculationMethodName);
+      }
+
+      public void AddCalculationMethodTo(Simulation simulation, string calculationMethodName)
+      {
+         if (simulation?.BuildingBlock<Individual>() == null)
+            return;
+
+         addMissingCalculationMethodTo(simulation.ModelProperties, calculationMethodName);
+      }
+
       private void addMissingCalculationMethods(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
          addRenalAgingCalculationMethodTo(withCalculationMethods, isHuman);
          addDynamicFormulaCalculationMethodTo(withCalculationMethods);
          addBSACalculationMethodTo(withCalculationMethods, isHuman);
-         addLumenSegmentVolumeCalculationMethodTo(withCalculationMethods);
       }
-
-      private void addLumenSegmentVolumeCalculationMethodTo(IWithCalculationMethods withCalculationMethods) =>
-         addMissingCalculationMethodTo(withCalculationMethods, ConverterConstants.CalculationMethod.LumenSegmentVolume);
 
       private void addBSACalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
