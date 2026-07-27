@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          _templateStructureUpdater = templateStructureUpdater;
          _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _populationParameterValuesUpdater = populationParameterValuesUpdater;
-         //Building a compound from the database is expensive and the template never varies, so it is built at most once
+         //The compound template is the same for every compound, so it is built once and reused
          _templateCompound = new Lazy<Compound>(compoundFactory.Create);
       }
 
