@@ -18,6 +18,7 @@ namespace PKSim.Presentation.Nodes
       ITreeNode CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock);
       ITreeNode CreateFor(UsedObservedData usedObservedData);
       ITreeNode CreateFor(ClassifiableSimulation simulation);
+      ITreeNode CreateForClassifiableBuildingBlock<TClassifiable>(TClassifiable classifiable) where TClassifiable : class, IClassifiableWrapper;
       ITreeNode CreateFor(PartialProcess partialProcess);
       ITreeNode CreateFor(SystemicProcess systemicProcess);
       ITreeNode CreateFor(ModelProperties modelProperties);
@@ -54,6 +55,9 @@ namespace PKSim.Presentation.Nodes
       public ITreeNode CreateFor(ClassifiableComparison classifiableComparison) => new ComparisonNode(classifiableComparison);
 
       public ITreeNode CreateFor(ClassifiableSimulation simulation) => new SimulationNode(simulation);
+
+      public ITreeNode CreateForClassifiableBuildingBlock<TClassifiable>(TClassifiable classifiable) where TClassifiable : class, IClassifiableWrapper
+         => new ObjectWithIdAndNameNode<TClassifiable>(classifiable);
 
       public ITreeNode CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock)
       {

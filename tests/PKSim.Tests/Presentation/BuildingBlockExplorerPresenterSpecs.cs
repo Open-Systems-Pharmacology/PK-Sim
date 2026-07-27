@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,6 +15,7 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -64,7 +66,9 @@ namespace PKSim.Presentation
          A.CallTo(() => _regionResolver.RegionWithName(RegionNames.BuildingBlockExplorer)).Returns(_region);
          _project = new PKSimProject();
          var compound = new Compound().WithName("compound");
+         compound.Id = "compoundId";
          _individual = new Individual().WithName("individual");
+         _individual.Id = "individualId";
          _individual.OriginData = new OriginData { Species = new Species() };
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(compound);
@@ -99,8 +103,9 @@ namespace PKSim.Presentation
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.PopulationFolder)).Returns(_populationFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder)).Returns(_observationRootNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.EventFolder)).Returns(_eventRootNode);
-         A.CallTo(() => _treeNodeFactory.CreateFor(_individual)).Returns(_individualNode);
-         A.CallTo(() => _treeNodeFactory.CreateFor(compound)).Returns(_compoundNode);
+         A.CallTo(() => _treeNodeFactory.CreateForClassifiableBuildingBlock(A<ClassifiableIndividual>._)).Returns(_individualNode);
+         A.CallTo(() => _treeNodeFactory.CreateForClassifiableBuildingBlock(A<ClassifiableCompound>._)).Returns(_compoundNode);
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
 
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.CompoundFolder.Id)).Returns(_compoundFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualFolder.Id)).Returns(_individualFolderNode);
@@ -288,6 +293,37 @@ namespace PKSim.Presentation
       public void should_return_false_otherwise()
       {
          sut.AllowMultiSelectFor(new ITreeNode[] { A.Fake<ClassificationNode>(), A.Fake<ObservedDataNode>() }).ShouldBeFalse();
+      }
+   }
+
+   public class When_retrieving_the_available_classification_categories_for_a_building_block_folder : concern_for_BuildingBlockExplorerPresenter
+   {
+      [Observation]
+      public void should_offer_grouping_by_species_for_the_individual_folder()
+      {
+         sut.AvailableClassificationCategories(_individualFolderNode).Select(x => x.ClassificationName)
+            .ShouldContain(PKSimConstants.Classifications.Species);
+      }
+
+      [Observation]
+      public void should_not_offer_any_grouping_for_the_compound_folder()
+      {
+         sut.AvailableClassificationCategories(_compoundFolderNode).ShouldBeEmpty();
+      }
+   }
+
+   public class When_grouping_the_individuals_by_species : concern_for_BuildingBlockExplorerPresenter
+   {
+      protected override void Because()
+      {
+         sut.AddToClassificationTree(_individualFolderNode, PKSimConstants.Classifications.Species);
+      }
+
+      [Observation]
+      public void should_group_the_classifiable_individuals_by_the_species_category()
+      {
+         A.CallTo(() => _classificationPresenter.GroupClassificationsByCategory<ClassifiableIndividual>(_individualFolderNode, PKSimConstants.Classifications.Species, A<Func<ClassifiableIndividual, string>>._))
+            .MustHaveHappened();
       }
    }
 }

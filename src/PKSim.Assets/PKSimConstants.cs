@@ -2571,6 +2571,7 @@ namespace PKSim.Assets
       public static class Classifications
       {
          public static readonly string Species = ObjectTypes.Species;
+         public static readonly string Molecule = ObjectTypes.Molecule;
          public static readonly string Compound = ObjectTypes.Compound;
          public static readonly string AdministrationProtocol = ObjectTypes.AdministrationProtocol;
          public static readonly string Individual = ObjectTypes.Individual;

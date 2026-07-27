@@ -18,7 +18,9 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using OSPSuite.Presentation.Mappers;
 using PKSim.Presentation;
+using PKSim.Presentation.Mappers;
 using System;
 using System.Threading;
 using PKSim.UI;
@@ -75,6 +77,7 @@ namespace PKSim.Starter
             pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, IUserSettings, UserSettings>(LifeStyle.Singleton);
+            pkSimContainer.Register<IClassificationTypeToRootNodeTypeMapper, PKSimClassificationTypeToRootNodeTypeMapper>();
 
             // Full registration of OSPSuite Core UI and Presentation
             pkSimContainer.AddRegister(x => x.FromType<UIRegister>());

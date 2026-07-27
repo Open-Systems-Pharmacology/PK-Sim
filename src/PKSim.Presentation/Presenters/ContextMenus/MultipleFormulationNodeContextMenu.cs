@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class MultipleFormulationNodeContextMenuFactory : MultipleNodeContextMenuFactory<Formulation>
+   public class MultipleFormulationNodeContextMenuFactory : MultipleBuildingBlockNodeContextMenuFactory<Formulation>
    {
       private readonly IExecutionContext _executionContext;
       private readonly IContainer _container;

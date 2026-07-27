@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class CompoundTreeNodeContextMenuFactory : NodeContextMenuFactory<Compound>
+   public class CompoundTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<Compound>
    {
       private readonly IContainer _container;
 

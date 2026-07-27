@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class MultipleProtocolNodeContextMenuFactory : MultipleNodeContextMenuFactory<Protocol>
+   public class MultipleProtocolNodeContextMenuFactory : MultipleBuildingBlockNodeContextMenuFactory<Protocol>
    {
       private readonly IExecutionContext _executionContext;
       private readonly IContainer _container;

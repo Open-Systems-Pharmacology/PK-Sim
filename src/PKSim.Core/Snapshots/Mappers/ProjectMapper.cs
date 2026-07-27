@@ -89,6 +89,14 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.SimulationClassifications = await MapClassifications<ClassifiableSimulation>(project);
          snapshot.ParameterIdentificationClassifications = await MapClassifications<ClassifiableParameterIdentification>(project);
          snapshot.QualificationPlanClassifications = await MapClassifications<ClassifiableQualificationPlan>(project);
+         snapshot.CompoundClassifications = await MapClassifications<ClassifiableCompound>(project);
+         snapshot.FormulationClassifications = await MapClassifications<ClassifiableFormulation>(project);
+         snapshot.IndividualClassifications = await MapClassifications<ClassifiableIndividual>(project);
+         snapshot.PopulationClassifications = await MapClassifications<ClassifiablePopulation>(project);
+         snapshot.ProtocolClassifications = await MapClassifications<ClassifiableProtocol>(project);
+         snapshot.EventClassifications = await MapClassifications<ClassifiableEvent>(project);
+         snapshot.ObserverSetClassifications = await MapClassifications<ClassifiableObserverSet>(project);
+         snapshot.ExpressionProfileClassifications = await MapClassifications<ClassifiableExpressionProfile>(project);
          return snapshot;
       }
 
@@ -277,6 +285,22 @@ namespace PKSim.Core.Snapshots.Mappers
                snapshot.ParameterIdentificationClassifications, snapshotContext, project.AllParameterIdentifications),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, OSPSuite.Core.Domain.QualificationPlan>(
                snapshot.QualificationPlanClassifications, snapshotContext, project.AllQualificationPlans),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableCompound, Model.Compound>(
+               snapshot.CompoundClassifications, snapshotContext, project.All<Model.Compound>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableFormulation, Model.Formulation>(
+               snapshot.FormulationClassifications, snapshotContext, project.All<Model.Formulation>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableIndividual, Model.Individual>(
+               snapshot.IndividualClassifications, snapshotContext, project.All<Model.Individual>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiablePopulation, Model.Population>(
+               snapshot.PopulationClassifications, snapshotContext, project.All<Model.Population>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableProtocol, Model.Protocol>(
+               snapshot.ProtocolClassifications, snapshotContext, project.All<Model.Protocol>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableEvent, PKSimEvent>(
+               snapshot.EventClassifications, snapshotContext, project.All<PKSimEvent>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObserverSet, Model.ObserverSet>(
+               snapshot.ObserverSetClassifications, snapshotContext, project.All<Model.ObserverSet>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableExpressionProfile, Model.ExpressionProfile>(
+               snapshot.ExpressionProfileClassifications, snapshotContext, project.All<Model.ExpressionProfile>()),
          };
 
          return Task.WhenAll(tasks);

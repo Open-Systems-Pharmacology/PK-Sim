@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Commands;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Services;
@@ -26,6 +27,7 @@ using PKSim.Infrastructure;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Infrastructure.Services;
+using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
@@ -67,6 +69,7 @@ namespace PKSim.UI.BootStrapping
          container.Register<IProgressUpdater, PKSimProgressUpdater>();
          container.RegisterImplementationOf(NumericFormatterOptions.Instance);
          container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
+         container.Register<IClassificationTypeToRootNodeTypeMapper, PKSimClassificationTypeToRootNodeTypeMapper>();
 
          container.AddRegister(x => x.FromType<UIRegister>());
          container.AddRegister(x => x.FromType<PresenterRegister>());

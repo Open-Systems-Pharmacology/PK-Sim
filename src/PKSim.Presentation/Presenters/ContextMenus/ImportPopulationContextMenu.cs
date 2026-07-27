@@ -14,7 +14,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class ImportPopulationTreeNodeContextMenuFactory : NodeContextMenuFactory<ImportPopulation>
+   public class ImportPopulationTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<ImportPopulation>
    {
       private readonly IContainer _container;
 

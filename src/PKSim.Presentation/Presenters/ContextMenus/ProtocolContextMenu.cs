@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
-   public class ProtocolTreeNodeContextMenuFactory : NodeContextMenuFactory<Protocol>
+   public class ProtocolTreeNodeContextMenuFactory : BuildingBlockNodeContextMenuFactory<Protocol>
    {
       private readonly IContainer _container;
 
