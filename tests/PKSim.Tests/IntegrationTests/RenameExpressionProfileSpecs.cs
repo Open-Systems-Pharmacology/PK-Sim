@@ -197,6 +197,24 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_undoing_the_rename_of_the_molecule_reference_in_a_simulation_on_its_own :
+      concern_for_renaming_an_expression_profile_mapped_to_a_process
+   {
+      protected override void Because()
+      {
+         //the command is reversible on its own, independently of the macro command it is normally part of
+         var context = IoC.Resolve<IExecutionContext>();
+         new RenameMoleculeReferenceInSimulationCommand(_simulation, "Tr1", "Tr2", context)
+            .ExecuteAndInvokeInverse(context);
+      }
+
+      [Observation]
+      public void should_have_restored_the_molecule_referenced_by_the_process_selection()
+      {
+         TransportSelectionOf(_simulation).MoleculeName.ShouldBeEqualTo("Tr1");
+      }
+   }
+
    public class When_reconfiguring_a_simulation_after_the_molecule_of_an_expression_profile_was_renamed :
       concern_for_renaming_an_expression_profile_mapped_to_a_process
    {

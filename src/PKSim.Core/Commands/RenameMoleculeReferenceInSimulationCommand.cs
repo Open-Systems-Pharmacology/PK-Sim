@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -11,7 +12,7 @@ namespace PKSim.Core.Commands
    ///    required when the molecule of an expression profile used in the simulation was renamed. Without it, the simulation
    ///    could not be created from its building blocks anymore since the referenced molecule would not exist
    /// </summary>
-   public class RenameMoleculeReferenceInSimulationCommand : BuildingBlockIrreversibleStructureChangeCommand
+   public class RenameMoleculeReferenceInSimulationCommand : BuildingBlockStructureChangeCommand
    {
       private Simulation _simulation;
       private readonly string _oldMoleculeName;
@@ -41,6 +42,17 @@ namespace PKSim.Core.Commands
       private IEnumerable<IProcessMapping> allMoleculeReferences() =>
          _simulation.CompoundPropertiesList.SelectMany(x => x.Processes.AllProcesses())
             .Concat<IProcessMapping>(_simulation.InteractionProperties.Interactions);
+
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      {
+         return new RenameMoleculeReferenceInSimulationCommand(_simulation, _newMoleculeName, _oldMoleculeName, context).AsInverseFor(this);
+      }
+
+      public override void RestoreExecutionData(IExecutionContext context)
+      {
+         base.RestoreExecutionData(context);
+         _simulation = context.Get<Simulation>(BuildingBlockId);
+      }
 
       protected override void ClearReferences()
       {
