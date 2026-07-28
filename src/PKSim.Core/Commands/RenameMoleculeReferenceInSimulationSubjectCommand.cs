@@ -18,6 +18,7 @@ namespace PKSim.Core.Commands
          _simulationSubject = simulationSubject;
          _oldMoleculeName = oldMoleculeName;
          _newMoleculeName = newMoleculeName;
+         BuildingBlockId = context.BuildingBlockIdContaining(simulationSubject);
          ObjectType = context.TypeFor(simulationSubject);
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = PKSimConstants.Command.RenameEntityCommandDescripiton(ObjectType, _oldMoleculeName, _newMoleculeName);
