@@ -202,7 +202,6 @@ namespace PKSim.IntegrationTests
    {
       protected override void Because()
       {
-         //the command is reversible on its own, independently of the macro command it is normally part of
          var context = IoC.Resolve<IExecutionContext>();
          new RenameMoleculeReferenceInSimulationCommand(_simulation, "Tr1", "Tr2", context)
             .ExecuteAndInvokeInverse(context);
