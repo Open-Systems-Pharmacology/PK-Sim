@@ -127,6 +127,18 @@ namespace PKSim.Core.Services
             command.Add(renameMoleculeReferences(x, oldMoleculeName, newMoleculeName));
          });
 
+         allSimulationsUsing(expressionProfile).Each(x =>
+         {
+            _lazyLoadTask.Load(x);
+
+            //A simulation holds its own copy of the simulation subject. It has to be renamed as well: it is the copy
+            //offered when reconfiguring the simulation, and the process selections below are resolved against it
+            command.Add(renameMoleculeReferences(x.BuildingBlock<ISimulationSubject>(), oldMoleculeName, newMoleculeName));
+
+            //The simulations also reference the molecule by name in their compound process and interaction selections.
+            //These references must follow the rename, otherwise the simulation cannot be created anymore from its building blocks
+            command.Add(new RenameMoleculeReferenceInSimulationCommand(x, oldMoleculeName, newMoleculeName, _executionContext).Run(_executionContext));
+         });
 
          return command;
       }
@@ -217,6 +229,13 @@ namespace PKSim.Core.Services
          return _projectRetriever.Current?.All<ISimulationSubject>()
             .Where(x => x.Uses(expressionProfile))
             .ToArray() ?? Array.Empty<ISimulationSubject>();
+      }
+
+      private IReadOnlyList<Simulation> allSimulationsUsing(ExpressionProfile expressionProfile)
+      {
+         return _projectRetriever.Current?.All<Simulation>()
+            .Where(x => x.UsedBuildingBlockByTemplateId(expressionProfile.Id) != null)
+            .ToArray() ?? Array.Empty<Simulation>();
       }
 
       public void SynchronizeAllSimulationSubjectsWithExpressionProfile(ISimulationSubject internalSimulationSubject)
