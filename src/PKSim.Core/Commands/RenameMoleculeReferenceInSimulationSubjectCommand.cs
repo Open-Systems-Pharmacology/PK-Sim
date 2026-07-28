@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Extensions;
@@ -39,7 +40,30 @@ namespace PKSim.Core.Commands
 
          //We also need to update all object path
          allMoleculeContainers.SelectMany(x => x.GetAllChildren<IUsingFormula>()).Each(x => x.Formula.ReplaceKeywordInObjectPaths(_oldMoleculeName, _newMoleculeName));
+
+         renameMoleculeInParameterPathsOf(_simulationSubject as Population);
       }
+
+      private void renameMoleculeInParameterPathsOf(Population population)
+      {
+         if (population == null)
+            return;
+
+         var individualValues = population.IndividualValuesCache;
+         foreach (var oldPath in individualValues.AllParameterPaths())
+         {
+            var newPath = renameMoleculeIn(oldPath);
+            if (!string.Equals(newPath, oldPath))
+               individualValues.RenamePath(oldPath, newPath);
+         }
+
+         population.AdvancedParameters.Each(x => x.ParameterPath = renameMoleculeIn(x.ParameterPath));
+      }
+
+      private string renameMoleculeIn(string parameterPath) =>
+         parameterPath.ToPathArray()
+            .Select(x => string.Equals(x, _oldMoleculeName) ? _newMoleculeName : x)
+            .ToPathString();
 
       protected override void ClearReferences()
       {
