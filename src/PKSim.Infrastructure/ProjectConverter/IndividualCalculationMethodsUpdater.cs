@@ -1,6 +1,9 @@
-﻿using PKSim.Core;
+﻿using System.Linq;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
@@ -9,24 +12,37 @@ namespace PKSim.Infrastructure.ProjectConverter
       void AddMissingCalculationMethodsTo(Individual individual);
       void AddMissingCalculationMethodsTo(Simulation simulation);
 
-      /// <summary>
-      ///    Adds a single calculation method by name if the individual does not reference it yet. Unlike
-      ///    <see cref="AddMissingCalculationMethodsTo(Individual)" /> this does not touch the legacy body-surface-area,
-      ///    renal-aging and dynamic-formula methods, so it will not add a second method into a category the individual
-      ///    already fills with a different option.
-      /// </summary>
+      //Adds one calculation method by name, without touching the legacy methods, so it cannot fill a category twice.
       void AddCalculationMethodTo(Individual individual, string calculationMethodName);
 
-      void AddCalculationMethodTo(Simulation simulation, string calculationMethodName);
+      //Adds the model calculation methods the current default defines but the saved simulation is missing.
+      void AddMissingModelCalculationMethodsTo(Simulation simulation);
    }
 
    public class IndividualCalculationMethodsUpdater : IIndividualCalculationMethodsUpdater
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
+      private readonly IModelPropertiesTask _modelPropertiesTask;
 
-      public IndividualCalculationMethodsUpdater(ICalculationMethodRepository calculationMethodRepository)
+      public IndividualCalculationMethodsUpdater(ICalculationMethodRepository calculationMethodRepository, IModelPropertiesTask modelPropertiesTask)
       {
          _calculationMethodRepository = calculationMethodRepository;
+         _modelPropertiesTask = modelPropertiesTask;
+      }
+
+      public void AddMissingModelCalculationMethodsTo(Simulation simulation)
+      {
+         var individual = simulation?.Individual;
+         var modelConfiguration = simulation?.ModelProperties?.ModelConfiguration;
+         if (individual?.OriginData == null || modelConfiguration == null)
+            return;
+
+         var defaultModelProperties = _modelPropertiesTask.DefaultFor(individual.OriginData, modelConfiguration.ModelName);
+         var calculationMethodCache = simulation.ModelProperties.CalculationMethodCache;
+
+         defaultModelProperties.AllCalculationMethods()
+            .Where(x => calculationMethodCache.CalculationMethodFor(x.Category) == null)
+            .Each(calculationMethodCache.AddCalculationMethod);
       }
 
       public void AddMissingCalculationMethodsTo(Individual individual)
@@ -52,14 +68,6 @@ namespace PKSim.Infrastructure.ProjectConverter
             return;
 
          addMissingCalculationMethodTo(individual.OriginData, calculationMethodName);
-      }
-
-      public void AddCalculationMethodTo(Simulation simulation, string calculationMethodName)
-      {
-         if (simulation?.BuildingBlock<Individual>() == null)
-            return;
-
-         addMissingCalculationMethodTo(simulation.ModelProperties, calculationMethodName);
       }
 
       private void addMissingCalculationMethods(IWithCalculationMethods withCalculationMethods, bool isHuman)
