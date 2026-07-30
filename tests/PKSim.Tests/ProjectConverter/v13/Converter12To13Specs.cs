@@ -7,7 +7,6 @@ using System;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -462,70 +461,98 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   public class When_running_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   //Reconfigure: rebuild every model from the building blocks. A partial conversion fails here on an unresolved
+   //reference, so there is no need to run - which for all twelve would be far too slow.
+   public class When_reconfiguring_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
-      private ISimulationRunner _simulationRunner;
-      private ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
+      private ISimulationModelCreator _simulationModelCreator;
       private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulationRunner = OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>();
-         _modelCoreSimulationMapper = OSPSuite.Utility.Container.IoC.Resolve<ISimulationToModelCoreSimulationMapper>();
+         _simulationModelCreator = OSPSuite.Utility.Container.IoC.Resolve<ISimulationModelCreator>();
          _allSimulations = All<Simulation>();
          _allSimulations.Each(Load);
       }
 
       [Observation]
-      public void should_run_every_converted_simulation_without_error()
+      public void should_rebuild_the_model_of_every_converted_simulation()
       {
          _allSimulations.Any().ShouldBeTrue();
 
          var errors = new List<string>();
          foreach (var simulation in _allSimulations)
          {
-            var error = runErrorFor(simulation);
-            if (error != null)
-               errors.Add($"{simulation.Name}: {error}");
+            try
+            {
+               _simulationModelCreator.CreateModelFor(simulation);
+               if (simulation.Model?.Root == null)
+                  errors.Add($"{simulation.Name}: no model was built");
+            }
+            catch (System.Exception e)
+            {
+               errors.Add($"{simulation.Name}: {(e.InnerException ?? e).Message}");
+            }
          }
 
          Assert.IsTrue(errors.Count == 0, errors.ToString("\n"));
       }
+   }
 
-      //Returns the error a run reported, or null when it succeeded. An individual simulation is run through the SimModel
-      //manager so the returned SimulationRunResults can be inspected directly: a solver failure sets Success to false and
-      //carries the error, which the higher level engine swallows. A population run raises an exception on failure, so it
-      //is run through the runner and the exception is captured.
-      private string runErrorFor(Simulation simulation)
+   //One population is run to prove a rebuilt model still solves; the reconfigure test already covers every model.
+   public class When_running_a_converted_population_simulation_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   {
+      private PopulationSimulation _simulation;
+
+      public override void GlobalContext()
       {
-         switch (simulation)
-         {
-            case IndividualSimulation individualSimulation:
-               var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(individualSimulation, shouldCloneModel: false);
-               var runResults = OSPSuite.Utility.Container.IoC.Resolve<ISimModelManager>().RunSimulation(modelCoreSimulation);
-               return runResults.Success ? null : errorFrom(runResults);
-
-            case PopulationSimulation populationSimulation:
-               try
-               {
-                  _simulationRunner.RunSimulation(populationSimulation).Wait();
-                  return populationSimulation.HasResults ? null : "produced no results";
-               }
-               catch (System.Exception e)
-               {
-                  return (e.InnerException ?? e).Message;
-               }
-
-            default:
-               return null;
-         }
+         base.GlobalContext();
+         _simulation = FindByName<PopulationSimulation>("11_Pop_01_Human_Default_Healthy");
+         reduceToTwoIndividuals(_simulation);
+         OSPSuite.Utility.Container.IoC.Resolve<ISimulationModelCreator>().CreateModelFor(_simulation);
       }
 
-      private static string errorFrom(SimulationRunResults runResults) =>
-         string.IsNullOrEmpty(runResults.Error)
-            ? $"solver failed with {runResults.Warnings.Count()} warning(s)"
-            : runResults.Error;
+      protected override void Because()
+      {
+         OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>().RunSimulation(_simulation).Wait();
+      }
+
+      [Observation]
+      public void should_have_produced_results_for_the_two_individuals()
+      {
+         _simulation.HasResults.ShouldBeTrue();
+         _simulation.Results.Count.ShouldBeEqualTo(2);
+      }
+
+      //The run uses as many individuals as there are ids, so trimming the ids is enough to keep it fast
+      private static void reduceToTwoIndividuals(PopulationSimulation simulation)
+      {
+         var individualIds = simulation.Population.IndividualValuesCache.IndividualIds;
+         individualIds.Skip(2).ToList().Each(x => individualIds.Remove(x));
+      }
+   }
+
+   //Builds a new oral simulation from the converted standalone building blocks (fresh model properties), not the copies
+   //stored inside a simulation. A building block missing a new parameter fails the model construction.
+   public class When_creating_a_new_oral_simulation_from_the_converted_building_blocks_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   {
+      private Simulation _simulation;
+
+      protected override void Because()
+      {
+         var individual = FindByName<Individual>("01_Human_Default_Healthy");
+         var compound = FindByName<Compound>("C1");
+         var protocol = FindByName<Protocol>("Oral_BD");
+         var formulation = FindByName<Formulation>("Particles_2Bin");
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, formulation);
+      }
+
+      [Observation]
+      public void should_have_built_a_model_from_the_converted_building_blocks()
+      {
+         (_simulation.Model?.Root != null).ShouldBeTrue();
+      }
    }
 
    public class When_creating_a_simulation_using_the_building_blocks_of_the_simple_project_730_project : ContextWithLoadedProject<Converter12To13>

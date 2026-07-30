@@ -90,14 +90,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          if (simulation == null)
             return;
 
-         //A simulation keeps its own copy of the building blocks it was created from, so they are converted as well
-         addLumenSegmentVolumeCalculationMethodTo(simulation);
-
+         //A simulation carries its own copies of the building blocks, so they are converted too
          convertIndividual(simulation.BuildingBlock<Individual>());
          convertPopulation(simulation.BuildingBlock<Population>());
          simulation.Compounds.Each(convertCompound);
          simulation.AllBuildingBlocks<Formulation>().Each(convertFormulation);
          simulation.AllBuildingBlocks<PKSimEvent>().Each(convertEvent);
+
+         //Last, once the converted individual's calculation methods have flowed into the model properties
+         _individualCalculationMethodsUpdater.AddMissingModelCalculationMethodsTo(simulation);
       }
 
       private void convertPopulation(Population population)
@@ -130,14 +131,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
             _converted = true;
       }
 
-      //The individual already carries the legacy calculation methods from its earlier conversions, so only the one new to
-      //v13 is added. Re-running the whole set would add a second body-surface-area method to an individual that uses the
-      //Du Bois option, which then breaks when the individual is mapped to a building block.
+      //Only the v13 method: re-running the whole set can add a second BSA method (Du Bois vs Mosteller) and later crash the mapping
       private void addLumenSegmentVolumeCalculationMethodTo(Individual individual) =>
          _individualCalculationMethodsUpdater.AddCalculationMethodTo(individual, ConverterConstants.CalculationMethod.LumenSegmentVolume);
-
-      private void addLumenSegmentVolumeCalculationMethodTo(Simulation simulation) =>
-         _individualCalculationMethodsUpdater.AddCalculationMethodTo(simulation, ConverterConstants.CalculationMethod.LumenSegmentVolume);
 
       /// <summary>
       ///    The lumen is where the new absorption model redefined existing parameters, turning constants into formulas and
