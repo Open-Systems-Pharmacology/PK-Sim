@@ -719,12 +719,22 @@ namespace PKSim.Core.Model
       ///    Returns all distinct PKSimEvent building blocks referenced by event placeholder mappings across all compounds
       /// </summary>
       public virtual IReadOnlyList<PKSimEvent> AllEventsFromProtocolPlaceholderMappings() =>
-         CompoundPropertiesList
-            .SelectMany(x => x.ProtocolProperties.EventPlaceholderMappings)
+         allEventPlaceholderMappings()
             .Select(x => x.Event)
             .Where(x => x != null)
             .Distinct()
             .ToList();
+
+      /// <summary>
+      ///    Returns true if the simulation references the template event with the given <paramref name="templateEventId" />,
+      ///    either via a protocol event placeholder mapping or via an event mapping defined in the Events tab, otherwise false
+      /// </summary>
+      public virtual bool UsesEventTemplate(string templateEventId) =>
+         allEventPlaceholderMappings().Any(x => string.Equals(x.TemplateEventId, templateEventId)) ||
+         EventProperties.EventMappings.Any(x => string.Equals(x.TemplateEventId, templateEventId));
+
+      private IEnumerable<EventPlaceholderMapping> allEventPlaceholderMappings() =>
+         CompoundPropertiesList.SelectMany(x => x.ProtocolProperties.EventPlaceholderMappings);
 
       /// <summary>
       ///    Returns the model used in the simulation

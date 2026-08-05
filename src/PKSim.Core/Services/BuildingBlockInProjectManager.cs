@@ -130,6 +130,8 @@ namespace PKSim.Core.Services
          {
             case ExpressionProfile expressionProfile:
                return simulations.Union(allSimulationSubjectsUsing(expressionProfile)).ToList();
+            case PKSimEvent pkSimEvent:
+               return simulations.Union(allSimulationsUsingEventTemplate(pkSimEvent)).ToList();
             default:
                return simulations;
          }
@@ -137,6 +139,9 @@ namespace PKSim.Core.Services
 
       private IEnumerable<IPKSimBuildingBlock> allSimulationSubjectsUsing(ExpressionProfile expressionProfile)
          => _buildingBlockRepository.All<ISimulationSubject>(x => x.Uses(expressionProfile));
+
+      private IEnumerable<IPKSimBuildingBlock> allSimulationsUsingEventTemplate(PKSimEvent pkSimEvent)
+         => _buildingBlockRepository.All<Simulation>(x => x.UsesEventTemplate(pkSimEvent.Id));
 
       private IEnumerable<Simulation> allSimulationUsingBuildingBlockWithId(string buildingBlockId)
       {
