@@ -7,7 +7,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          MapReference(x => x.Protocol);
-         MapEnumerable(x => x.FormulationMappings,x => x.AddFormulationMapping);
+         MapEnumerable(x => x.FormulationMappings, x => x.AddFormulationMapping);
+         MapEnumerable(x => x.EventPlaceholderMappings, x => x.AddEventPlaceholderMapping);
       }
    }
 }

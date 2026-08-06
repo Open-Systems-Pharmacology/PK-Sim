@@ -5,6 +5,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -30,6 +31,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       void RemoveSchema(SchemaDTO schemaToRemove);
       void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType);
       void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType);
+      void SetPlaceholderKey(SchemaItemDTO schemaItemDTO, string newPlaceholderKey);
       void AddSchemaItemTo(SchemaDTO schemaDTO, SchemaItemDTO schemaItemDTOToDuplicate);
       void RemoveSchemaItem(SchemaItemDTO schemaItemDTO);
       IList DynamicContentFor(SchemaItemDTO schemaItemDTO);
@@ -91,11 +93,22 @@ namespace PKSim.Presentation.Presenters.Protocols
       public void SetApplicationType(SchemaItemDTO schemaItemDTO, ApplicationType newApplicationType)
       {
          SetApplicationType(newApplicationType, SchemaItemFrom(schemaItemDTO));
+
+         if (newApplicationType == ApplicationTypes.Event)
+            schemaItemDTO.DoseParameter = new NullParameterDTO();
       }
 
       public void SetFormulationType(SchemaItemDTO schemaItemDTO, string newFormulationType)
       {
          AddCommand(_protocolTask.SetFormulationType(SchemaItemFrom(schemaItemDTO), newFormulationType));
+      }
+
+      public void SetPlaceholderKey(SchemaItemDTO schemaItemDTO, string newPlaceholderKey)
+      {
+         if (schemaItemDTO.IsEvent)
+            AddCommand(_protocolTask.SetEventKey(SchemaItemFrom(schemaItemDTO), newPlaceholderKey));
+         else
+            SetFormulationType(schemaItemDTO, newPlaceholderKey);
       }
 
       protected SchemaItem SchemaItemFrom(SchemaItemDTO schemaItemDTO) => schemaItemDTO.SchemaItem;

@@ -54,6 +54,7 @@ namespace PKSim.Core
       private EnzymaticProcessSelection _noEnzymaticPartialProcessSelection;
       private EnzymaticProcess _anotherEnzymaticProcess;
       protected SnapshotContext _baseSnapshotContext;
+      protected PKSimEvent _pkSimEvent;
 
       protected override Task Context()
       {
@@ -132,14 +133,23 @@ namespace PKSim.Core
          {
             Id = "123456"
          };
+         _pkSimEvent = new PKSimEvent { Id = "event123", Name = "MyEvent" };
+
          _compoundProperties.ProtocolProperties.Protocol = _protocol;
          _compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping
          {
             FormulationKey = "F1",
             TemplateFormulationId = _formulation.Id
          });
+         _compoundProperties.ProtocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping
+         {
+            EventKey = "EVENT_1",
+            TemplateEventId = _pkSimEvent.Id,
+            Event = _pkSimEvent
+         });
 
          _project.AddBuildingBlock(_formulation);
+         _project.AddBuildingBlock(_pkSimEvent);
          A.CallTo(() => _calculationMethodCacheMapper.MapToSnapshot(_compoundProperties.CalculationMethodCache)).Returns(_calculationMethodSnapshot);
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_enzymaticPartialProcessSelection)).Returns(_snapshotProcess1);
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_specificBindingPartialProcessSelection)).Returns(_snapshotProcess2);
@@ -183,6 +193,14 @@ namespace PKSim.Core
          _snapshot.Protocol.Formulations.Length.ShouldBeEqualTo(1);
          _snapshot.Protocol.Formulations[0].Key.ShouldBeEqualTo("F1");
          _snapshot.Protocol.Formulations[0].Name.ShouldBeEqualTo(_formulation.Name);
+      }
+
+      [Observation]
+      public void should_save_the_event_placeholder_mapping_to_snapshot()
+      {
+         _snapshot.Protocol.Events.Length.ShouldBeEqualTo(1);
+         _snapshot.Protocol.Events[0].Key.ShouldBeEqualTo("EVENT_1");
+         _snapshot.Protocol.Events[0].Name.ShouldBeEqualTo(_pkSimEvent.Name);
       }
 
       [Observation]
@@ -238,6 +256,14 @@ namespace PKSim.Core
       {
          A.CallTo(() => _calculationMethodCacheMapper.MapToModel(_snapshot.CalculationMethods,
             A<CalculationMethodCacheSnapshotContext>.That.Matches(x => x.CalculationMethodCache == _mappedCompoundProperties.CalculationMethodCache))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_map_event_placeholder_mappings_from_snapshot()
+      {
+         _mappedCompoundProperties.ProtocolProperties.EventPlaceholderMappings.Count.ShouldBeEqualTo(1);
+         _mappedCompoundProperties.ProtocolProperties.EventPlaceholderMappings[0].EventKey.ShouldBeEqualTo("EVENT_1");
+         _mappedCompoundProperties.ProtocolProperties.EventPlaceholderMappings[0].TemplateEventId.ShouldBeEqualTo(_pkSimEvent.Id);
       }
    }
 

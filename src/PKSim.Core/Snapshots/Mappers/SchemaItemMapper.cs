@@ -25,6 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.FormulationKey = SnapshotValueFor(modelSchemaItem.FormulationKey);
             snapshot.TargetOrgan = SnapshotValueFor(modelSchemaItem.TargetOrgan);
             snapshot.TargetCompartment = SnapshotValueFor(modelSchemaItem.TargetCompartment);
+            snapshot.EventKey = SnapshotValueFor(modelSchemaItem.EventKey);
          });
       }
 
@@ -37,6 +38,7 @@ namespace PKSim.Core.Snapshots.Mappers
          schemaItem.FormulationKey = snapshot.FormulationKey;
          schemaItem.TargetOrgan = snapshot.TargetOrgan;
          schemaItem.TargetCompartment = snapshot.TargetCompartment;
+         schemaItem.EventKey = snapshot.EventKey;
          return schemaItem;
       }
 

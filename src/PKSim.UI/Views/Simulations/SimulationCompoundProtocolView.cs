@@ -1,9 +1,12 @@
 using System;
 using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
@@ -35,6 +38,13 @@ namespace PKSim.UI.Views.Simulations
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         lblEventDescription.AsDescription();
+         lblEventDescription.Text = PKSimConstants.UI.SimulationProtocolEventDescription.FormatForDescription();
+      }
+
       public override bool HasError => _screenBinder.HasError;
 
       public void AttachPresenter(ISimulationCompoundProtocolPresenter presenter)
@@ -51,13 +61,24 @@ namespace PKSim.UI.Views.Simulations
       public void AddFormulationMappingView(IView view)
       {
          _resizableView = view as IResizableView;
-         AddViewTo(layoutItemFormulation,layoutControl,  view);
+         AddViewTo(layoutItemFormulation, layoutControl, view);
+      }
+
+      public void AddEventMappingView(IView view)
+      {
+         AddViewTo(layoutItemEvent, layoutControl, view);
       }
 
       public bool AllowEmptyProtocolSelection
       {
          set => _uxProtocolSelection.AllowEmptySelection = value;
          get => _uxProtocolSelection.AllowEmptySelection;
+      }
+
+      public bool EventDescriptionVisible
+      {
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemEventDescription.Visibility);
+         set => layoutItemEventDescription.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, LayoutControl layoutControl, IResizableView view, int height)

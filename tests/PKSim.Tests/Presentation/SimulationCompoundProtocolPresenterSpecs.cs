@@ -14,16 +14,18 @@ namespace PKSim.Presentation
       protected ISimulationCompoundProtocolView _view;
       protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationCompoundProtocolFormulationPresenter _simulationCompoundProtocolFormulationPresenter;
+      protected ISimulationCompoundProtocolEventPresenter _simulationCompoundProtocolEventPresenter;
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
          _view = A.Fake<ISimulationCompoundProtocolView>();
          _simulationCompoundProtocolFormulationPresenter = A.Fake<ISimulationCompoundProtocolFormulationPresenter>();
+         _simulationCompoundProtocolEventPresenter = A.Fake<ISimulationCompoundProtocolEventPresenter>();
          _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
 
-         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _lazyLoadTask, _buildingBlockInProjectManager);
+         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _simulationCompoundProtocolEventPresenter, _lazyLoadTask, _buildingBlockInProjectManager);
       }
    }
 
@@ -107,6 +109,56 @@ namespace PKSim.Presentation
       public void should_update_the_formulation_mapping_for_the_selected_protocol()
       {
          A.CallTo(() => _simulationCompoundProtocolFormulationPresenter.EditSimulation(_simulation, _compound)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_whose_protocol_defines_event_placeholders : concern_for_SimulationCompoundProtocolPresenter
+   {
+      private Simulation _simulation;
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         _compound = A.Fake<Compound>();
+         A.CallTo(() => _simulationCompoundProtocolEventPresenter.EventVisible).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_show_the_event_description_in_the_view()
+      {
+         A.CallToSet(() => _view.EventDescriptionVisible).To(true).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_whose_protocol_does_not_define_event_placeholders : concern_for_SimulationCompoundProtocolPresenter
+   {
+      private Simulation _simulation;
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         _compound = A.Fake<Compound>();
+         A.CallTo(() => _simulationCompoundProtocolEventPresenter.EventVisible).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_hide_the_event_description_in_the_view()
+      {
+         A.CallToSet(() => _view.EventDescriptionVisible).To(false).MustHaveHappened();
       }
    }
 

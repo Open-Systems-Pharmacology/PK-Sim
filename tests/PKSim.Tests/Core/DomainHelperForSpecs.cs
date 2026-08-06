@@ -346,6 +346,15 @@ namespace PKSim.Core
          return schemaItemDTO;
       }
 
+      public static SchemaItemDTO EventSchemaItemDTO(string eventKey = "EVENT_1", double? startTimeValue = null)
+      {
+         return new SchemaItemDTO(new SchemaItem {ApplicationType = ApplicationTypes.Event, EventKey = eventKey})
+         {
+            DoseParameter = new NullParameterDTO(),
+            StartTimeParameter = new ParameterDTO(ConstantParameterWithValue(startTimeValue.GetValueOrDefault(0)).WithName(Constants.Parameters.START_TIME))
+         };
+      }
+
       public static IndividualMolecule DefaultIndividualMolecule()
       {
          return new IndividualEnzyme

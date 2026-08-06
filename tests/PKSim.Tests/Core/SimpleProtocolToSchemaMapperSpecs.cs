@@ -188,4 +188,132 @@ namespace PKSim.Core
          schemaSingular.StartTime.Value.ShouldBeEqualTo(2880);
       }
    }
+
+   public class When_mapping_a_simple_protocol_with_event_and_single_dosing : concern_for_SimpleProtocolToSchemaMapper
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IEnumerable<Schema> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol
+         {
+            ApplicationType = ApplicationTypes.Intravenous,
+            DosingInterval = DosingIntervals.Single,
+            EventKey = CoreConstants.DEFAULT_EVENT_KEY
+         };
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_create_a_schema_with_dosing_item_and_event_item()
+      {
+         _result.Count().ShouldBeEqualTo(1);
+         var schema = _result.ElementAt(0);
+         schema.SchemaItems.Count().ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_have_an_event_schema_item_with_the_correct_event_key()
+      {
+         var schema = _result.ElementAt(0);
+         var eventItem = schema.SchemaItems.First(si => si.IsEvent);
+         eventItem.EventKey.ShouldBeEqualTo(CoreConstants.DEFAULT_EVENT_KEY);
+         eventItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Event);
+      }
+
+      [Observation]
+      public void should_have_the_dosing_schema_item()
+      {
+         var schema = _result.ElementAt(0);
+         var dosingItem = schema.SchemaItems.First(si => !si.IsEvent);
+         dosingItem.ApplicationType.ShouldBeEqualTo(ApplicationTypes.Intravenous);
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_with_event_and_non_zero_offset : concern_for_SimpleProtocolToSchemaMapper
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IEnumerable<Schema> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol
+         {
+            ApplicationType = ApplicationTypes.Intravenous,
+            DosingInterval = DosingIntervals.Single,
+            EventKey = CoreConstants.DEFAULT_EVENT_KEY
+         };
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(120).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_set_event_start_time_to_the_administration_time_plus_the_event_offset()
+      {
+         var schema = _result.ElementAt(0);
+         var administrationItem = schema.SchemaItems.First(si => !si.IsEvent);
+         var eventItem = schema.SchemaItems.First(si => si.IsEvent);
+         eventItem.StartTime.Value.ShouldBeEqualTo(administrationItem.StartTime.Value + 120);
+      }
+   }
+
+   public class When_mapping_a_simple_protocol_with_several_administrations_and_an_event : concern_for_SimpleProtocolToSchemaMapper
+   {
+      private SimpleProtocol _simpleProtocol;
+      private IEnumerable<Schema> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simpleProtocol = new SimpleProtocol
+         {
+            ApplicationType = ApplicationTypes.Intravenous,
+            DosingInterval = DosingIntervals.DI_6_6_12,
+            EventKey = CoreConstants.DEFAULT_EVENT_KEY
+         };
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.INPUT_DOSE));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(1440).WithName(Constants.Parameters.END_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.START_TIME));
+         _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(30).WithName(CoreConstants.Parameters.EVENT_OFFSET));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simpleProtocol);
+      }
+
+      [Observation]
+      public void should_add_one_event_for_each_administration()
+      {
+         var schema = _result.ElementAt(0);
+         schema.SchemaItems.Count(si => !si.IsEvent).ShouldBeEqualTo(3);
+         schema.SchemaItems.Count(si => si.IsEvent).ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_offset_each_event_from_its_own_administration_time()
+      {
+         var schema = _result.ElementAt(0);
+         var eventStartTimes = schema.SchemaItems.Where(si => si.IsEvent).Select(si => si.StartTime.Value).OrderBy(x => x);
+         eventStartTimes.ShouldOnlyContainInOrder(30d, 390d, 750d);
+      }
+   }
 }

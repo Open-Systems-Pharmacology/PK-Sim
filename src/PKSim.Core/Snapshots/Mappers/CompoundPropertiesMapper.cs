@@ -49,7 +49,8 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
       return new ProtocolSelection
       {
          Name = protocolProperties.Protocol.Name,
-         Formulations = formulationMappingFrom(protocolProperties.FormulationMappings, project)
+         Formulations = formulationMappingFrom(protocolProperties.FormulationMappings, project),
+         Events = eventPlaceholderMappingFrom(protocolProperties.EventPlaceholderMappings, project)
       };
    }
 
@@ -87,6 +88,22 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
       return new FormulationSelection { Name = formulation.Name, Key = formulationMapping.FormulationKey };
    }
 
+   private EventPlaceholderSelection[] eventPlaceholderMappingFrom(IReadOnlyList<EventPlaceholderMapping> eventPlaceholderMappings, PKSimProject project)
+   {
+      if (!eventPlaceholderMappings.Any())
+         return null;
+
+      return eventPlaceholderMappings
+         .Select(x => eventPlaceholderSelectionFrom(x, project))
+         .ToArray();
+   }
+
+   private EventPlaceholderSelection eventPlaceholderSelectionFrom(EventPlaceholderMapping eventPlaceholderMapping, PKSimProject project)
+   {
+      var pkSimEvent = project.BuildingBlockById(eventPlaceholderMapping.TemplateEventId) ?? eventPlaceholderMapping.Event;
+      return new EventPlaceholderSelection { Name = pkSimEvent.Name, Key = eventPlaceholderMapping.EventKey };
+   }
+
    public override async Task<ModelCompoundProperties> MapToModel(SnapshotCompoundProperties snapshot, SnapshotContextWithSimulation snapshotContext)
    {
       var simulation = snapshotContext.Simulation as Model.Simulation;
@@ -110,6 +127,7 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
       var protocol = project.BuildingBlockByName<Model.Protocol>(snapshotProtocol.Name);
       protocolProperties.Protocol = protocol;
       updateFormulationMapping(protocolProperties, snapshotProtocol.Formulations, project);
+      updateEventPlaceholderMapping(protocolProperties, snapshotProtocol.Events, project);
       return protocolProperties;
    }
 
@@ -125,6 +143,21 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
             TemplateFormulationId = formulation.Id
          };
          protocolProperties.AddFormulationMapping(formulationMapping);
+      });
+   }
+
+   private void updateEventPlaceholderMapping(ProtocolProperties protocolProperties, EventPlaceholderSelection[] snapshotProtocolEvents, PKSimProject project)
+   {
+      snapshotProtocolEvents?.Each(x =>
+      {
+         var pkSimEvent = project.BuildingBlockByName<PKSimEvent>(x.Name);
+         var eventPlaceholderMapping = new EventPlaceholderMapping
+         {
+            Event = pkSimEvent,
+            EventKey = x.Key,
+            TemplateEventId = pkSimEvent.Id
+         };
+         protocolProperties.AddEventPlaceholderMapping(eventPlaceholderMapping);
       });
    }
 

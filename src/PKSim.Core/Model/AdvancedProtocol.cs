@@ -24,8 +24,15 @@ namespace PKSim.Core.Model
 
       public virtual void RemoveSchema(Schema schema) => RemoveChild(schema);
 
-      public override IEnumerable<string> UsedFormulationKeys => 
+      public override IEnumerable<string> UsedFormulationKeys =>
          AllSchemas.SelectMany(x => x.SchemaItems, (schema, item) => item.FormulationKey).Distinct();
+
+      public override IEnumerable<string> UsedEventKeys =>
+         AllSchemas.SelectMany(x => x.SchemaItems)
+            .Where(item => item.IsEvent)
+            .Select(item => item.EventKey)
+            .Where(key => !string.IsNullOrEmpty(key))
+            .Distinct();
 
       public override ApplicationType ApplicationTypeUsing(string formulationKey)
       {

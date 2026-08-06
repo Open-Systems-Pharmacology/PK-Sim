@@ -2,14 +2,14 @@ using PKSim.UI.Views.Parameters;
 
 namespace PKSim.UI.Views.Protocols
 {
-   partial class SimpleProtocolView 
+   partial class SimpleProtocolView
    {
-      /// <summary> 
+      /// <summary>
       /// Required designer variable.
       /// </summary>
       private System.ComponentModel.IContainer components = null;
 
-      /// <summary> 
+      /// <summary>
       /// Clean up any resources being used.
       /// </summary>
       /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -25,8 +25,8 @@ namespace PKSim.UI.Views.Protocols
 
       #region Component Designer generated code
 
-      /// <summary> 
-      /// Required method for Designer support - do not modify 
+      /// <summary>
+      /// Required method for Designer support - do not modify
       /// the contents of this method with the code editor.
       /// </summary>
       private void InitializeComponent()
@@ -39,12 +39,16 @@ namespace PKSim.UI.Views.Protocols
          this.labelDosingInterval = new DevExpress.XtraEditors.LabelControl();
          this.labelDose = new DevExpress.XtraEditors.LabelControl();
          this.labelApplicationType = new DevExpress.XtraEditors.LabelControl();
+         this.labelEvent = new DevExpress.XtraEditors.LabelControl();
+         this.labelEventOffset = new DevExpress.XtraEditors.LabelControl();
+         this.uxEventOffset = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.cbTargetCompartment = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.cbTargetOrgan = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.uxEndTime = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.cbDosingType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.uxDose = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.cbApplicationType = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
+         this.cbEvent = new DevExpress.XtraEditors.CheckEdit();
          this.panelDynamicParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupProperties = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -59,15 +63,17 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.cbTargetOrgan.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbDosingType.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbApplicationType.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbEvent.Properties)).BeginInit();
+
          ((System.ComponentModel.ISupportInitialize)(this.panelDynamicParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDynamicParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
-         // 
+         //
          // layoutSimpleProtocol
-         // 
+         //
          this.layoutSimpleProtocol.AllowCustomization = false;
          this.layoutSimpleProtocol.Controls.Add(this.tablePanel);
          this.layoutSimpleProtocol.Controls.Add(this.panelDynamicParameters);
@@ -76,12 +82,12 @@ namespace PKSim.UI.Views.Protocols
          this.layoutSimpleProtocol.Name = "layoutSimpleProtocol";
          this.layoutSimpleProtocol.OptionsView.UseSkinIndents = false;
          this.layoutSimpleProtocol.Root = this.layoutControlGroup1;
-         this.layoutSimpleProtocol.Size = new System.Drawing.Size(486, 393);
+         this.layoutSimpleProtocol.Size = new System.Drawing.Size(486, 443);
          this.layoutSimpleProtocol.TabIndex = 0;
          this.layoutSimpleProtocol.Text = "uxLayoutControl1";
-         // 
+         //
          // tablePanel
-         // 
+         //
          this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
             new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 5F),
             new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 55F)});
@@ -91,12 +97,16 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.Controls.Add(this.labelDosingInterval);
          this.tablePanel.Controls.Add(this.labelDose);
          this.tablePanel.Controls.Add(this.labelApplicationType);
+         this.tablePanel.Controls.Add(this.labelEvent);
          this.tablePanel.Controls.Add(this.cbTargetCompartment);
          this.tablePanel.Controls.Add(this.cbTargetOrgan);
          this.tablePanel.Controls.Add(this.uxEndTime);
          this.tablePanel.Controls.Add(this.cbDosingType);
          this.tablePanel.Controls.Add(this.uxDose);
          this.tablePanel.Controls.Add(this.cbApplicationType);
+         this.tablePanel.Controls.Add(this.cbEvent);
+         this.tablePanel.Controls.Add(this.labelEventOffset);
+         this.tablePanel.Controls.Add(this.uxEventOffset);
          this.tablePanel.Location = new System.Drawing.Point(8, 29);
          this.tablePanel.Name = "tablePanel";
          this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
@@ -106,12 +116,13 @@ namespace PKSim.UI.Views.Protocols
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 30F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 28F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
-         this.tablePanel.Size = new System.Drawing.Size(470, 183);
+         this.tablePanel.Size = new System.Drawing.Size(470, 240);
          this.tablePanel.TabIndex = 17;
-         // 
+         //
          // labelTargetCompartment
-         // 
+         //
          this.tablePanel.SetColumn(this.labelTargetCompartment, 0);
          this.labelTargetCompartment.Location = new System.Drawing.Point(3, 141);
          this.labelTargetCompartment.Name = "labelTargetCompartment";
@@ -119,9 +130,9 @@ namespace PKSim.UI.Views.Protocols
          this.labelTargetCompartment.Size = new System.Drawing.Size(119, 13);
          this.labelTargetCompartment.TabIndex = 22;
          this.labelTargetCompartment.Text = "labelTargetCompartment";
-         // 
+         //
          // labelTargetOrgan
-         // 
+         //
          this.tablePanel.SetColumn(this.labelTargetOrgan, 0);
          this.labelTargetOrgan.Location = new System.Drawing.Point(3, 112);
          this.labelTargetOrgan.Name = "labelTargetOrgan";
@@ -129,9 +140,9 @@ namespace PKSim.UI.Views.Protocols
          this.labelTargetOrgan.Size = new System.Drawing.Size(84, 13);
          this.labelTargetOrgan.TabIndex = 21;
          this.labelTargetOrgan.Text = "labelTargetOrgan";
-         // 
+         //
          // labelEndTime
-         // 
+         //
          this.tablePanel.SetColumn(this.labelEndTime, 0);
          this.labelEndTime.Location = new System.Drawing.Point(3, 84);
          this.labelEndTime.Name = "labelEndTime";
@@ -139,9 +150,9 @@ namespace PKSim.UI.Views.Protocols
          this.labelEndTime.Size = new System.Drawing.Size(62, 13);
          this.labelEndTime.TabIndex = 20;
          this.labelEndTime.Text = "labelEndTime";
-         // 
+         //
          // labelDosingInterval
-         // 
+         //
          this.tablePanel.SetColumn(this.labelDosingInterval, 0);
          this.labelDosingInterval.Location = new System.Drawing.Point(3, 58);
          this.labelDosingInterval.Name = "labelDosingInterval";
@@ -149,9 +160,9 @@ namespace PKSim.UI.Views.Protocols
          this.labelDosingInterval.Size = new System.Drawing.Size(78, 13);
          this.labelDosingInterval.TabIndex = 19;
          this.labelDosingInterval.Text = "labelDosingType";
-         // 
+         //
          // labelDose
-         // 
+         //
          this.tablePanel.SetColumn(this.labelDose, 0);
          this.labelDose.Location = new System.Drawing.Point(3, 32);
          this.labelDose.Name = "labelDose";
@@ -159,9 +170,9 @@ namespace PKSim.UI.Views.Protocols
          this.labelDose.Size = new System.Drawing.Size(46, 13);
          this.labelDose.TabIndex = 18;
          this.labelDose.Text = "labelDose";
-         // 
+         //
          // labelApplicationType
-         // 
+         //
          this.tablePanel.SetColumn(this.labelApplicationType, 0);
          this.labelApplicationType.Location = new System.Drawing.Point(3, 6);
          this.labelApplicationType.Name = "labelApplicationType";
@@ -169,9 +180,19 @@ namespace PKSim.UI.Views.Protocols
          this.labelApplicationType.Size = new System.Drawing.Size(98, 13);
          this.labelApplicationType.TabIndex = 17;
          this.labelApplicationType.Text = "labelApplicationType";
-         // 
+         //
+         // labelEvent
+         //
+         this.tablePanel.SetColumn(this.labelEvent, 0);
+         this.labelEvent.Location = new System.Drawing.Point(3, 193);
+         this.labelEvent.Name = "labelEvent";
+         this.tablePanel.SetRow(this.labelEvent, 6);
+         this.labelEvent.Size = new System.Drawing.Size(46, 13);
+         this.labelEvent.TabIndex = 23;
+         this.labelEvent.Text = "";
+         //
          // cbTargetCompartment
-         // 
+         //
          this.tablePanel.SetColumn(this.cbTargetCompartment, 1);
          this.cbTargetCompartment.Location = new System.Drawing.Point(128, 138);
          this.cbTargetCompartment.Name = "cbTargetCompartment";
@@ -180,9 +201,9 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.SetRow(this.cbTargetCompartment, 5);
          this.cbTargetCompartment.Size = new System.Drawing.Size(339, 20);
          this.cbTargetCompartment.TabIndex = 16;
-         // 
+         //
          // cbTargetOrgan
-         // 
+         //
          this.tablePanel.SetColumn(this.cbTargetOrgan, 1);
          this.cbTargetOrgan.Location = new System.Drawing.Point(128, 109);
          this.cbTargetOrgan.Name = "cbTargetOrgan";
@@ -191,9 +212,9 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.SetRow(this.cbTargetOrgan, 4);
          this.cbTargetOrgan.Size = new System.Drawing.Size(339, 20);
          this.cbTargetOrgan.TabIndex = 15;
-         // 
+         //
          // uxEndTime
-         // 
+         //
          this.uxEndTime.Caption = "";
          this.tablePanel.SetColumn(this.uxEndTime, 1);
          this.uxEndTime.Location = new System.Drawing.Point(128, 81);
@@ -204,9 +225,9 @@ namespace PKSim.UI.Views.Protocols
          this.uxEndTime.Size = new System.Drawing.Size(339, 22);
          this.uxEndTime.TabIndex = 10;
          this.uxEndTime.ToolTip = "";
-         // 
+         //
          // cbDosingType
-         // 
+         //
          this.tablePanel.SetColumn(this.cbDosingType, 1);
          this.cbDosingType.Location = new System.Drawing.Point(128, 55);
          this.cbDosingType.Name = "cbDosingType";
@@ -215,9 +236,9 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.SetRow(this.cbDosingType, 2);
          this.cbDosingType.Size = new System.Drawing.Size(339, 20);
          this.cbDosingType.TabIndex = 10;
-         // 
+         //
          // uxDose
-         // 
+         //
          this.uxDose.Caption = "";
          this.tablePanel.SetColumn(this.uxDose, 1);
          this.uxDose.Location = new System.Drawing.Point(128, 29);
@@ -228,9 +249,9 @@ namespace PKSim.UI.Views.Protocols
          this.uxDose.Size = new System.Drawing.Size(339, 22);
          this.uxDose.TabIndex = 9;
          this.uxDose.ToolTip = "";
-         // 
+         //
          // cbApplicationType
-         // 
+         //
          this.tablePanel.SetColumn(this.cbApplicationType, 1);
          this.cbApplicationType.Location = new System.Drawing.Point(128, 3);
          this.cbApplicationType.Name = "cbApplicationType";
@@ -239,17 +260,49 @@ namespace PKSim.UI.Views.Protocols
          this.tablePanel.SetRow(this.cbApplicationType, 0);
          this.cbApplicationType.Size = new System.Drawing.Size(339, 20);
          this.cbApplicationType.TabIndex = 13;
-         // 
+         //
+         // cbEvent
+         //
+         this.tablePanel.SetColumn(this.cbEvent, 1);
+         this.cbEvent.Location = new System.Drawing.Point(128, 190);
+         this.cbEvent.Name = "cbEvent";
+         this.tablePanel.SetRow(this.cbEvent, 6);
+         this.cbEvent.Size = new System.Drawing.Size(339, 20);
+         this.cbEvent.TabIndex = 25;
+         //
+         // labelEventOffset
+         //
+         this.tablePanel.SetColumn(this.labelEventOffset, 0);
+         this.labelEventOffset.Location = new System.Drawing.Point(3, 219);
+         this.labelEventOffset.Name = "labelEventOffset";
+         this.tablePanel.SetRow(this.labelEventOffset, 7);
+         this.labelEventOffset.Size = new System.Drawing.Size(80, 13);
+         this.labelEventOffset.TabIndex = 29;
+         this.labelEventOffset.Text = "labelEventOffset";
+         //
+         // uxEventOffset
+         //
+         this.uxEventOffset.Caption = "";
+         this.tablePanel.SetColumn(this.uxEventOffset, 1);
+         this.uxEventOffset.Location = new System.Drawing.Point(128, 216);
+         this.uxEventOffset.MaximumSize = new System.Drawing.Size(10000, 22);
+         this.uxEventOffset.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxEventOffset.Name = "uxEventOffset";
+         this.tablePanel.SetRow(this.uxEventOffset, 7);
+         this.uxEventOffset.Size = new System.Drawing.Size(339, 22);
+         this.uxEventOffset.TabIndex = 30;
+         this.uxEventOffset.ToolTip = "";
+         //
          // panelDynamicParameters
-         // 
-         this.panelDynamicParameters.Location = new System.Drawing.Point(8, 222);
+         //
+         this.panelDynamicParameters.Location = new System.Drawing.Point(8, 274);
          this.panelDynamicParameters.MinimumSize = new System.Drawing.Size(0, 50);
          this.panelDynamicParameters.Name = "panelDynamicParameters";
-         this.panelDynamicParameters.Size = new System.Drawing.Size(470, 163);
+         this.panelDynamicParameters.Size = new System.Drawing.Size(470, 161);
          this.panelDynamicParameters.TabIndex = 12;
-         // 
+         //
          // layoutControlGroup1
-         // 
+         //
          this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
@@ -257,11 +310,11 @@ namespace PKSim.UI.Views.Protocols
             this.layoutGroupProperties});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.OptionsItemText.TextToControlDistance = 5;
-         this.layoutControlGroup1.Size = new System.Drawing.Size(486, 393);
+         this.layoutControlGroup1.Size = new System.Drawing.Size(486, 443);
          this.layoutControlGroup1.TextVisible = false;
-         // 
+         //
          // layoutGroupProperties
-         // 
+         //
          this.layoutGroupProperties.CustomizationFormText = "layoutGroupProperties";
          this.layoutGroupProperties.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemDynamicParameters,
@@ -269,34 +322,34 @@ namespace PKSim.UI.Views.Protocols
          this.layoutGroupProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupProperties.Name = "layoutGroupProperties";
          this.layoutGroupProperties.OptionsItemText.TextToControlDistance = 5;
-         this.layoutGroupProperties.Size = new System.Drawing.Size(486, 393);
-         // 
+         this.layoutGroupProperties.Size = new System.Drawing.Size(486, 443);
+         //
          // layoutItemDynamicParameters
-         // 
+         //
          this.layoutItemDynamicParameters.Control = this.panelDynamicParameters;
          this.layoutItemDynamicParameters.CustomizationFormText = "layoutItemDynamicParameters";
-         this.layoutItemDynamicParameters.Location = new System.Drawing.Point(0, 193);
+         this.layoutItemDynamicParameters.Location = new System.Drawing.Point(0, 245);
          this.layoutItemDynamicParameters.Name = "layoutItemDynamicParameters";
-         this.layoutItemDynamicParameters.Size = new System.Drawing.Size(480, 173);
+         this.layoutItemDynamicParameters.Size = new System.Drawing.Size(480, 171);
          this.layoutItemDynamicParameters.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemDynamicParameters.TextVisible = false;
-         // 
+         //
          // layoutControlItem1
-         // 
+         //
          this.layoutControlItem1.Control = this.tablePanel;
          this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(480, 193);
+         this.layoutControlItem1.Size = new System.Drawing.Size(480, 245);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
-         // 
+         //
          // SimpleProtocolView
-         // 
+         //
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutSimpleProtocol);
          this.Name = "SimpleProtocolView";
-         this.Size = new System.Drawing.Size(486, 393);
+         this.Size = new System.Drawing.Size(486, 443);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutSimpleProtocol)).EndInit();
          this.layoutSimpleProtocol.ResumeLayout(false);
@@ -307,6 +360,7 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.cbTargetOrgan.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbDosingType.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbApplicationType.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbEvent.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelDynamicParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupProperties)).EndInit();
@@ -337,7 +391,9 @@ namespace PKSim.UI.Views.Protocols
       private DevExpress.XtraEditors.LabelControl labelDosingInterval;
       private DevExpress.XtraEditors.LabelControl labelDose;
       private DevExpress.XtraEditors.LabelControl labelApplicationType;
+      private DevExpress.XtraEditors.LabelControl labelEvent;
+      private DevExpress.XtraEditors.LabelControl labelEventOffset;
+      private DevExpress.XtraEditors.CheckEdit cbEvent;
+      private UxParameterDTOEdit uxEventOffset;
    }
 }
-
-

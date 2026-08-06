@@ -314,4 +314,36 @@ namespace PKSim.Core
          _compoundProperties.ProtocolProperties.Protocol.ShouldBeEqualTo(_protocolUsedInSimulation);
       }
    }
+
+   public class When_updating_the_events_defined_in_a_simulation_from_protocol_event_placeholder_mappings : concern_for_SimulationBuildingBlockUpdater
+   {
+      private Simulation _simulation;
+      private PKSimEvent _event;
+      private UsedBuildingBlock _usedBuildingBlockEvent;
+      private IPKSimBuildingBlock _eventUsedInSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _event = new PKSimEvent();
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+         _eventUsedInSimulation = new PKSimEvent();
+         _usedBuildingBlockEvent = new UsedBuildingBlock("template", PKSimBuildingBlockType.Event) { BuildingBlock = _eventUsedInSimulation };
+         var compoundProperties = new CompoundProperties();
+         compoundProperties.ProtocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping { Event = _event });
+         _simulation.Properties.AddCompoundProperties(compoundProperties);
+         A.CallTo(() => _buildingBlockMapper.MapFrom(_event, null)).Returns(_usedBuildingBlockEvent);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateEventsInSimulation(_simulation);
+      }
+
+      [Observation]
+      public void should_add_the_event_to_the_simulation_used_building_blocks()
+      {
+         _simulation.AllBuildingBlocks<PKSimEvent>().ShouldOnlyContain(_eventUsedInSimulation);
+      }
+   }
 }

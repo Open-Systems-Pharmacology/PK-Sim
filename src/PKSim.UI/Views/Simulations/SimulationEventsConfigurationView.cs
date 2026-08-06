@@ -13,6 +13,7 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
@@ -133,6 +134,8 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          btnAddEvent.InitWithImage(ApplicationIcons.Add, PKSimConstants.UI.AddEvent);
          layoutItemAddEvent.AdjustButtonSize(layoutControl);
+         lblDescription.AsDescription();
+         lblDescription.Text = PKSimConstants.UI.SimulationEventsConfigurationDescription.FormatForDescription();
       }
 
       public void AttachPresenter(ISimulationEventsConfigurationPresenter presenter)

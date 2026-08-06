@@ -16,12 +16,12 @@ namespace PKSim.Presentation
    {
       private ICreateProtocolView _view;
       private IBuildingBlockPropertiesMapper _propertiesMapper;
-      private IProtocolFactory _protocolFactory;
+      protected IProtocolFactory _protocolFactory;
       private ISimpleProtocolPresenter _simpleProtocolPresenter;
       private IProtocolToProtocolPropertiesDTOMapper _propertiesDTOMapper;
       private IAdvancedProtocolPresenter _advancedProtocolPresenter;
       protected IProtocolUpdater _protocolUpdater;
-      private IProtocolChartPresenter _protocolChartPresenter;
+      protected IProtocolChartPresenter _protocolChartPresenter;
       private ISubPresenterItemManager<IProtocolItemPresenter> _subPresenterManager;
       protected IDialogCreator _dialogCreator;
 
@@ -102,6 +102,54 @@ namespace PKSim.Presentation
       public void should_return_true()
       {
          sut.SwitchModeConfirm(ProtocolMode.Advanced).ShouldBeTrue();
+      }
+   }
+
+   public class When_the_create_protocol_presenter_is_switching_the_protocol_mode_to_advanced : concern_for_CreateProtocolPresenter
+   {
+      private Protocol _advancedProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         _advancedProtocol = new AdvancedProtocol();
+         A.CallTo(() => _protocolFactory.Create(ProtocolMode.Advanced)).Returns(_advancedProtocol);
+      }
+
+      protected override void Because()
+      {
+         sut.ProtocolMode = ProtocolMode.Advanced;
+      }
+
+      [Observation]
+      public void should_plot_the_newly_created_protocol()
+      {
+         A.CallTo(() => _protocolChartPresenter.PlotProtocol(_advancedProtocol)).MustHaveHappened();
+      }
+   }
+
+   public class When_the_create_protocol_presenter_is_switching_the_protocol_mode_back_to_simple : concern_for_CreateProtocolPresenter
+   {
+      private Protocol _simpleProtocol;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _protocolFactory.Create(ProtocolMode.Advanced)).Returns(new AdvancedProtocol());
+         _simpleProtocol = new SimpleProtocol();
+         A.CallTo(() => _protocolFactory.Create(ProtocolMode.Simple)).Returns(_simpleProtocol);
+         sut.ProtocolMode = ProtocolMode.Advanced;
+      }
+
+      protected override void Because()
+      {
+         sut.ProtocolMode = ProtocolMode.Simple;
+      }
+
+      [Observation]
+      public void should_plot_the_newly_created_protocol()
+      {
+         A.CallTo(() => _protocolChartPresenter.PlotProtocol(_simpleProtocol)).MustHaveHappened();
       }
    }
 }

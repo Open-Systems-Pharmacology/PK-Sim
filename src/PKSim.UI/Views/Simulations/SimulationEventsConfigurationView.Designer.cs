@@ -33,9 +33,11 @@
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.btnAddEvent = new DevExpress.XtraEditors.SimpleButton();
+         this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemAddEvent = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemGrid = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
@@ -45,12 +47,14 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddEvent)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGrid)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.lblDescription);
          this.layoutControl.Controls.Add(this.gridControl);
          this.layoutControl.Controls.Add(this.btnAddEvent);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -88,13 +92,23 @@
          this.btnAddEvent.StyleController = this.layoutControl;
          this.btnAddEvent.TabIndex = 4;
          this.btnAddEvent.Text = "btnCreateEvent";
-         // 
+         //
+         // lblDescription
+         //
+         this.lblDescription.Location = new System.Drawing.Point(12, 12);
+         this.lblDescription.Name = "lblDescription";
+         this.lblDescription.Size = new System.Drawing.Size(63, 13);
+         this.lblDescription.StyleController = this.layoutControl;
+         this.lblDescription.TabIndex = 6;
+         this.lblDescription.Text = "lblDescription";
+         //
          // layoutControlGroup1
-         // 
+         //
          this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemDescription,
             this.layoutItemAddEvent,
             this.layoutItemGrid,
             this.emptySpaceItem1});
@@ -105,38 +119,50 @@
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemAddEvent
-         // 
+         //
          this.layoutItemAddEvent.Control = this.btnAddEvent;
          this.layoutItemAddEvent.CustomizationFormText = "layoutItemAddEvent";
-         this.layoutItemAddEvent.Location = new System.Drawing.Point(10, 0);
+         this.layoutItemAddEvent.Location = new System.Drawing.Point(10, 34);
          this.layoutItemAddEvent.Name = "layoutItemAddEvent";
          this.layoutItemAddEvent.Size = new System.Drawing.Size(401, 26);
          this.layoutItemAddEvent.Text = "layoutItemAddEvent";
          this.layoutItemAddEvent.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemAddEvent.TextToControlDistance = 0;
          this.layoutItemAddEvent.TextVisible = false;
-         // 
+         //
          // layoutItemGrid
-         // 
+         //
          this.layoutItemGrid.Control = this.gridControl;
          this.layoutItemGrid.CustomizationFormText = "layoutItemGrid";
-         this.layoutItemGrid.Location = new System.Drawing.Point(0, 26);
+         this.layoutItemGrid.Location = new System.Drawing.Point(0, 60);
          this.layoutItemGrid.Name = "layoutItemGrid";
-         this.layoutItemGrid.Size = new System.Drawing.Size(411, 400);
+         this.layoutItemGrid.Size = new System.Drawing.Size(411, 366);
          this.layoutItemGrid.Text = "layoutItemGrid";
          this.layoutItemGrid.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemGrid.TextToControlDistance = 0;
          this.layoutItemGrid.TextVisible = false;
-         // 
+         //
+         // layoutItemDescription
+         //
+         this.layoutItemDescription.Control = this.lblDescription;
+         this.layoutItemDescription.CustomizationFormText = "layoutItemDescription";
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemDescription.Name = "layoutItemDescription";
+         this.layoutItemDescription.Size = new System.Drawing.Size(411, 34);
+         this.layoutItemDescription.Text = "layoutItemDescription";
+         this.layoutItemDescription.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemDescription.TextToControlDistance = 0;
+         this.layoutItemDescription.TextVisible = false;
+         //
          // emptySpaceItem1
-         // 
+         //
          this.emptySpaceItem1.CustomizationFormText = "emptySpaceItem1";
-         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 0);
+         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 34);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
          this.emptySpaceItem1.Size = new System.Drawing.Size(10, 26);
          this.emptySpaceItem1.Text = "emptySpaceItem1";
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
-         // 
+         //
          // SimulationEventsConfigurationView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -152,6 +178,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddEvent)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGrid)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
          this.ResumeLayout(false);
 
@@ -167,5 +194,7 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGrid;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private DevExpress.XtraEditors.LabelControl lblDescription;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
    }
 }

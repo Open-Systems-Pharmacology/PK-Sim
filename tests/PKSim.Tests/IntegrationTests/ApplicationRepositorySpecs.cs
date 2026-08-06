@@ -38,10 +38,13 @@ namespace PKSim.IntegrationTests
          _result.Each(x => x.ProtocolSchemaItemContainer().ShouldNotBeNull());
       }
 
+      //an event is not a drug administration: it has neither an application rate nor any application event
+      private IEnumerable<ApplicationBuilder> administrations => _result.Where(x => !x.IsNamed(CoreConstants.Application.Name.Event));
+
       [Observation]
       public void every_application_except_oral_and_bolus_should_have_application_rate_parameter()
       {
-         foreach (var applicationBuilder in _result)
+         foreach (var applicationBuilder in administrations)
          {
             if (applicationBuilder.Name.StartsWith("Oral") || applicationBuilder.IsNamed(CoreConstants.Application.Name.IntravenousBolus))
                continue;
@@ -72,9 +75,9 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void application_should_have_at_least_one_event()
+      public void administration_should_have_at_least_one_event()
       {
-         _result.Each(app => app.Events.Count().ShouldBeGreaterThan(0));
+         administrations.Each(app => app.Events.Count().ShouldBeGreaterThan(0));
       }
    }
 }

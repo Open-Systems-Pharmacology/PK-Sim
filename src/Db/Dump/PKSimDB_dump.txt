@@ -93,6 +93,7 @@ INSERT INTO tab_application_types VALUES('IntravenousBolus',0);
 INSERT INTO tab_application_types VALUES('Oral',1);
 INSERT INTO tab_application_types VALUES('Subcutaneous',1);
 INSERT INTO tab_application_types VALUES('UserDefined',1);
+INSERT INTO tab_application_types VALUES('Event',0);
 CREATE TABLE tab_rates (
 	formula_rate text NOT NULL,
 	display_name text NOT NULL,
@@ -2233,6 +2234,7 @@ INSERT INTO tab_applications VALUES('UserDefined_Dissolved','APPLICATION','UserD
 INSERT INTO tab_applications VALUES('UserDefined_FirstOrder','APPLICATION','UserDefined');
 INSERT INTO tab_applications VALUES('UserDefined_Table','APPLICATION','UserDefined');
 INSERT INTO tab_applications VALUES('UserDefined_ZeroOrder','APPLICATION','UserDefined');
+INSERT INTO tab_applications VALUES('Event','APPLICATION','Event');
 CREATE TABLE [tab_calculation_methods](
   [calculation_method] text PRIMARY KEY NOT NULL, 
   [display_name] text NOT NULL, 
@@ -5882,6 +5884,8 @@ INSERT INTO tab_containers VALUES(7024,'EVENT','Reset Bile Salt Concentration (U
 INSERT INTO tab_containers VALUES(7025,'EVENT','Reset Bile Salt Concentration (Upper Jejunum) Event',5308,'EVENTGROUP','EventGroupSubContainer',1,1);
 INSERT INTO tab_containers VALUES(7026,'EVENT','Reset Bile Salt Concentration (Upper Jejunum) Event',5314,'EVENTGROUP','EventGroupSubContainer',1,1);
 INSERT INTO tab_containers VALUES(7027,'EVENT','Reset Bile Salt Concentration (Upper Jejunum) Event',5320,'EVENTGROUP','EventGroupSubContainer',1,1);
+INSERT INTO tab_containers VALUES(7029,'GENERAL','ProtocolSchemaItem',7028,'APPLICATION','Event',1,1);
+INSERT INTO tab_containers VALUES(7028,'APPLICATION','Event',1718,'FORMULATION','Formulation_Empty',1,1);
 CREATE TABLE [tab_container_molecules](
   [container_id] bigint NOT NULL, 
   [container_type] text NOT NULL REFERENCES [tab_container_types]([container_type]) ON UPDATE CASCADE, 
@@ -7002,6 +7006,7 @@ INSERT INTO tab_container_names VALUES('EVENT','Reset Intestinal Transit Rate (S
 INSERT INTO tab_container_names VALUES('EVENT','Reset pH (Duodenum) Event','Reset pH (Duodenum) Event','Reset to the fasted state: pH in the Duodenum','_evt',3,NULL);
 INSERT INTO tab_container_names VALUES('EVENT','Reset pH (Stomach) Event','Reset pH (Stomach) Event','Reset to the fasted state: pH in the Stomach','_evt',7,NULL);
 INSERT INTO tab_container_names VALUES('EVENT','Reset pH (Upper Jejunum) Event','Reset pH (Upper Jejunum) Event','Reset to the fasted state: pH in the Upper Jejunum','_evt',5,NULL);
+INSERT INTO tab_container_names VALUES('APPLICATION','Event','Event','Event',NULL,500,NULL);
 CREATE TABLE [tab_container_parameters](
   [container_id] bigint NOT NULL, 
   [container_type] text NOT NULL REFERENCES [tab_container_types]([container_type]) ON UPDATE CASCADE, 
@@ -12333,6 +12338,7 @@ INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwic
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 2 (Upper Jejunum)',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH exponent',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','pH after meal',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(7029,'GENERAL','ProtocolSchemaItem','Start time',1,0,1,0,'PROTOCOL',1,'LOCAL','PROTOCOL',1,0);
 CREATE TABLE [tab_container_parameter_curves](
   [parameter_value_version] text NOT NULL, 
   [species] text NOT NULL, 
@@ -55477,6 +55483,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sa
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 1 (Upper Jejunum)','Events','PARAM_Meal_pH_c1_Jejunum',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 2 (Duodenum)','Events','PARAM_Meal_pH_c2_Duodenum',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 2 (Upper Jejunum)','Events','PARAM_Meal_pH_c2_Jejunum',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(7029,'GENERAL','ProtocolSchemaItem','Start time','SchemaItemParameter','PARAM_Application_StartTime',0.0,1,NULL,1,NULL);
 CREATE TABLE [tab_container_parameter_rhs](
   [container_id] bigint NOT NULL, 
   [container_type] text NOT NULL, 
@@ -90181,10 +90188,6 @@ CREATE VIEW VIEW_PROTEIN_SYNONYMS AS SELECT TAB_PROTEIN_SYNONYMS.PROTEIN_NAME AS
 FROM TAB_PROTEIN_SYNONYMS;
 CREATE VIEW VIEW_REACTION_PARTNERS AS SELECT TAB_PROCESS_MOLECULES.PROCESS AS Reaction, TAB_PROCESS_MOLECULES.MOLECULE AS Molecule, TAB_PROCESS_MOLECULES.DIRECTION AS Direction, TAB_PROCESS_MOLECULES.STOICHIOMETRY AS StoichCoeff
 FROM TAB_PROCESS_MOLECULES;
-CREATE VIEW VIEW_SCHEMA_ITEM_CONTAINERS AS SELECT  TAB_APPLICATION_TYPES.APPLICATION_TYPE AS ApplicationType, min(TAB_CONTAINERS.CONTAINER_ID) AS Id, TAB_CONTAINERS.CONTAINER_TYPE AS Type, TAB_CONTAINERS.CONTAINER_NAME AS Name
-FROM  (TAB_CONTAINERS JOIN TAB_APPLICATIONS ON TAB_APPLICATIONS.APPLICATION_NAME = TAB_CONTAINERS.PARENT_CONTAINER_NAME) JOIN TAB_APPLICATION_TYPES ON TAB_APPLICATION_TYPES.APPLICATION_TYPE = TAB_APPLICATIONS.APPLICATION_TYPE
-GROUP BY TAB_APPLICATION_TYPES.APPLICATION_TYPE
-HAVING (TAB_CONTAINERS.CONTAINER_NAME='ProtocolSchemaItem');
 CREATE VIEW VIEW_SPECIES AS SELECT TAB_SPECIES.SPECIES AS Id, TAB_SPECIES.USER_DEFINED AS IsUserDefined, TAB_SPECIES.SEQUENCE AS Sequence, TAB_SPECIES.ICON_NAME AS IconName, TAB_SPECIES.IS_HUMAN AS IsHuman
 FROM TAB_SPECIES
 ORDER BY TAB_SPECIES.SEQUENCE;
@@ -91189,4 +91192,8 @@ ON [tab_event_changed_generic_molecules](
   [event_container_type], 
   [event_name], 
   [calculation_method]);
+CREATE VIEW VIEW_SCHEMA_ITEM_CONTAINERS AS SELECT  TAB_APPLICATION_TYPES.APPLICATION_TYPE AS ApplicationType, min(TAB_CONTAINERS.CONTAINER_ID) AS Id, TAB_CONTAINERS.CONTAINER_TYPE AS Type, TAB_CONTAINERS.CONTAINER_NAME AS Name
+FROM  (TAB_CONTAINERS JOIN TAB_APPLICATIONS ON TAB_APPLICATIONS.APPLICATION_NAME = TAB_CONTAINERS.PARENT_CONTAINER_NAME) JOIN TAB_APPLICATION_TYPES ON TAB_APPLICATION_TYPES.APPLICATION_TYPE = TAB_APPLICATIONS.APPLICATION_TYPE
+GROUP BY TAB_APPLICATION_TYPES.APPLICATION_TYPE, TAB_CONTAINERS.CONTAINER_TYPE, TAB_CONTAINERS.CONTAINER_NAME
+HAVING (TAB_CONTAINERS.CONTAINER_NAME='ProtocolSchemaItem');
 COMMIT;

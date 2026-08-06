@@ -12,6 +12,7 @@ namespace PKSim.Core.Model
       public static ApplicationType Intravenous = create(CoreConstants.Application.Name.Intravenous, CoreConstants.Application.Route.Intravenous, PKSimConstants.UI.Intravenous);
       public static ApplicationType Oral = create(CoreConstants.Application.Name.Oral, CoreConstants.Application.Route.Oral, PKSimConstants.UI.Oral, needsFormulation:true);
       public static ApplicationType UserDefined = create(CoreConstants.Application.Name.UserDefined, CoreConstants.Application.Route.UserDefined, PKSimConstants.UI.UserDefined, needsFormulation: true, userDefined:true);
+      public static ApplicationType Event = create(CoreConstants.Application.Name.Event, CoreConstants.Application.Route.Event, PKSimConstants.UI.EventType);
 
       public static ApplicationType ByName(string applicationTypeName)
       {

@@ -11,7 +11,9 @@ namespace PKSim.Presentation.Views.Protocols
       bool EndTimeVisible { set; }
       bool DynamicParameterVisible { get; set; }
       bool TargetDefinitionVisible { get; set; }
+      bool EventVisible { get; set; }
       void AddDynamicParameterView(IView view);
       void RefreshCompartmentList();
+      void AdjustLayout();
    }
 }

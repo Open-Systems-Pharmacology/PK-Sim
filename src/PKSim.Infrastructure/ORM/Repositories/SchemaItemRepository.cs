@@ -22,7 +22,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _schemaItemRepo = schemaItemRepo;
          _flatContainerRepo = flatContainerRepo;
          _parameterContainerTask = parameterContainerTask;
-         _schemaItems = new Cache<string, ISchemaItem>(si => si.ApplicationType.Name);
+         _schemaItems = new Cache<string, ISchemaItem>(x => x.ApplicationType.Name);
       }
 
       public override IEnumerable<ISchemaItem> All()

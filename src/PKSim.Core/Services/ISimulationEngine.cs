@@ -16,6 +16,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="simulation">simulation to run</param>
       /// <param name="simulationRunOptions">Run options for this simulation run</param>
+      /// <param name="cancellationToken">Cancellation token</param>
       Task RunAsync(TSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default);
    }
 

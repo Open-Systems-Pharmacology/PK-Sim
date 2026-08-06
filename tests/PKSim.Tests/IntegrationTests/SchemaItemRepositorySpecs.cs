@@ -37,10 +37,19 @@ namespace PKSim.IntegrationTests
          _schemaItems.ShouldContainParameter(Constants.Parameters.START_TIME);
       }
 
+      //an event is not a drug administration: it has no dose
+      private IEnumerable<ISchemaItem> administrationSchemaItems => _schemaItems.Where(si => !si.IsEvent);
+
       [Observation]
-      public void schema_item_should_contain_dose_parameter()
+      public void administration_schema_item_should_contain_dose_parameter()
       {
-         _schemaItems.ShouldContainParameter(CoreConstants.Parameters.INPUT_DOSE);
+         administrationSchemaItems.ShouldContainParameter(CoreConstants.Parameters.INPUT_DOSE);
+      }
+
+      [Observation]
+      public void event_schema_item_should_not_contain_dose_parameter()
+      {
+         _schemaItems.Where(si => si.IsEvent).ShouldNotContainParameter(CoreConstants.Parameters.INPUT_DOSE);
       }
 
       [Observation]
@@ -66,13 +75,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void parameters_should_have_the_accurate_building_block_type()
       {
-         _schemaItems.Each(si=>
-                              {
-                                 si.Parameter(Constants.Parameters.START_TIME).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol);
-                                 si.Parameter(CoreConstants.Parameters.INPUT_DOSE).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol);
-                              }
-
-            );
+         _schemaItems.Each(si => si.Parameter(Constants.Parameters.START_TIME).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol));
+         administrationSchemaItems.Each(si => si.Parameter(CoreConstants.Parameters.INPUT_DOSE).BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Protocol));
       }
 
       [Observation]

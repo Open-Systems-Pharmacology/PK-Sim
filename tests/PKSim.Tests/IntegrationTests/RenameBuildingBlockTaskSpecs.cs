@@ -39,6 +39,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
+         //loading the project converts it, no need to run any converter by hand
          LoadProject("RenameApplication_V8");
          _iv = FindByName<Protocol>("aa");
          _s1 = FindByName<IndividualSimulation>("aa");

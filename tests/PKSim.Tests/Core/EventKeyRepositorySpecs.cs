@@ -1,0 +1,64 @@
+using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+
+namespace PKSim.Core
+{
+   public abstract class concern_for_EventKeyRepository : ContextSpecification<IEventKeyRepository>
+   {
+      protected IPKSimProjectRetriever _projectRetriever;
+
+      protected override void Context()
+      {
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         sut = new EventKeyRepository(_projectRetriever);
+      }
+   }
+
+   public class When_retrieving_the_available_event_keys : concern_for_EventKeyRepository
+   {
+      private string _key1;
+      private string _key2;
+      private string _key3;
+
+      protected override void Context()
+      {
+         base.Context();
+         _key1 = "EVENT_1";
+         _key2 = "EVENT_2";
+         _key3 = "EVENT_3";
+
+         var loadedProtocol1 = A.Fake<Protocol>().WithName("P1");
+         loadedProtocol1.IsLoaded = true;
+         A.CallTo(() => loadedProtocol1.UsedEventKeys).Returns(new[] {_key1, _key2});
+         var notLoadedProtocol = A.Fake<Protocol>().WithName("P2");
+         A.CallTo(() => notLoadedProtocol.UsedEventKeys).Returns(new[] {"SHOULD_NOT_APPEAR"});
+
+         var loadedProtocol2 = A.Fake<Protocol>().WithName("P3");
+         loadedProtocol2.IsLoaded = true;
+         A.CallTo(() => loadedProtocol2.UsedEventKeys).Returns(new[] {_key2, _key3});
+
+         var project = new PKSimProject();
+         project.AddBuildingBlock(loadedProtocol1);
+         project.AddBuildingBlock(loadedProtocol2);
+         project.AddBuildingBlock(notLoadedProtocol);
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(project);
+      }
+
+      [Observation]
+      public void should_return_the_keys_used_in_all_loaded_protocols_of_the_active_project()
+      {
+         sut.All().ShouldOnlyContain(_key1, _key2, _key3);
+      }
+
+      [Observation]
+      public void should_return_keys_sorted()
+      {
+         sut.All().ShouldOnlyContainInOrder(_key1, _key2, _key3);
+      }
+   }
+}
