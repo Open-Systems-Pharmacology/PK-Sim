@@ -190,6 +190,8 @@ namespace PKSim.Presentation.Presenters.Compounds
          var absorptionNode = _treeNodeFactory.CreateFor(PKSimRootNodeTypes.Absorption);
          _treeNodeFactory.CreateFor(CompoundParameterNodeType.SpecificIntestinalPermeability)
             .Under(absorptionNode);
+         _treeNodeFactory.CreateFor(CompoundParameterNodeType.AdvancedSolubility)
+            .Under(absorptionNode);
          return absorptionNode;
       }
 

@@ -221,6 +221,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_3
          {
             var templateAlternative = templateAlternativeGroup.AllAlternatives.First();
             var compoundGroup = compound.ParameterAlternativeGroup(templateAlternativeGroup.Name);
+            //groups introduced after 7.3.0 are not in the project being converted. A later converter adds them
+            if (compoundGroup == null)
+               continue;
+
             foreach (var alternative in compoundGroup.AllAlternatives)
             {
                updateIsInputStateByNameAndValue(alternative, templateAlternative);

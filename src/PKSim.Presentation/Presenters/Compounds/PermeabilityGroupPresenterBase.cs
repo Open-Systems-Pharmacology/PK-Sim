@@ -18,6 +18,11 @@ namespace PKSim.Presentation.Presenters.Compounds
    {
       void SetPermeabilityValue(PermeabilityAlternativeDTO permeabilityAlternativeDTO, double newValue);
       void SetPermeabilityUnit(IParameterDTO permeabilityParameter, Unit newUnit);
+
+      /// <summary>
+      ///    Caption of the grid column showing the value of the parameter bound by this presenter
+      /// </summary>
+      string ValueColumnCaption { get; }
    }
 
    public abstract class PermeabilityGroupPresenterBase : CompoundParameterGroupWithAlternativePresenter<IPermeabilityGroupView>, IPermeabilityGroupPresenter
@@ -38,10 +43,14 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          _permeabilityAlternativeDTOMapper = permeabilityAlternativeDTOMapper;
          _calculatedParameterValuePresenter = calculatedParameterValuePresenter;
-         _calculatedParameterValuePresenter.Description = PKSimConstants.UI.PermeabilityCalculatedFromLipoAndMolWeight;
+         _calculatedParameterValuePresenter.Description = CalculatedValueDescription;
          view.SetDynamicParameterView(_calculatedParameterValuePresenter.View);
          AddSubPresenters(_calculatedParameterValuePresenter);
       }
+
+      public virtual string ValueColumnCaption => PKSimConstants.UI.Permeability;
+
+      protected virtual string CalculatedValueDescription => PKSimConstants.UI.PermeabilityCalculatedFromLipoAndMolWeight;
 
       public abstract void UpdateCalculatedValue();
 

@@ -34,6 +34,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       private readonly ITemplateStructureUpdater _templateStructureUpdater;
       private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private readonly IPopulationParameterValuesUpdater _populationParameterValuesUpdater;
+      private readonly ICloner _cloner;
       private readonly Lazy<Compound> _templateCompound;
       private bool _converted;
 
@@ -45,7 +46,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          IEventGroupRepository eventGroupRepository,
          ITemplateStructureUpdater templateStructureUpdater,
          IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater,
-         IPopulationParameterValuesUpdater populationParameterValuesUpdater)
+         IPopulationParameterValuesUpdater populationParameterValuesUpdater,
+         ICloner cloner)
       {
          _coreConverter = coreConverter;
          _defaultIndividualRetriever = defaultIndividualRetriever;
@@ -54,6 +56,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          _templateStructureUpdater = templateStructureUpdater;
          _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _populationParameterValuesUpdater = populationParameterValuesUpdater;
+         _cloner = cloner;
          //The compound template is the same for every compound, so it is built once and reused
          _templateCompound = new Lazy<Compound>(compoundFactory.Create);
       }
@@ -170,16 +173,24 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       /// <summary>
       ///    Some of the new compound parameters belong to a group the user can define alternatives for, solubility among
       ///    them. Every alternative carries its own copy of the parameters of its group, so each of them is brought up to
-      ///    date against the template alternative.
+      ///    date against the template alternative. A group that did not exist at all before v13 is cloned over as a whole,
+      ///    bringing its calculated default alternative with it.
       /// </summary>
       private void convertCompoundAlternatives(Compound compound, Compound templateCompound)
       {
          foreach (var templateGroup in templateCompound.AllParameterAlternativeGroups())
          {
             var templateAlternative = templateGroup.AllAlternatives.FirstOrDefault();
-            var compoundGroup = compound.ParameterAlternativeGroup(templateGroup.Name);
-            if (templateAlternative == null || compoundGroup == null)
+            if (templateAlternative == null)
                continue;
+
+            var compoundGroup = compound.ParameterAlternativeGroup(templateGroup.Name);
+            if (compoundGroup == null)
+            {
+               compound.AddParameterAlternativeGroup(_cloner.Clone(templateGroup));
+               _converted = true;
+               continue;
+            }
 
             foreach (var alternative in compoundGroup.AllAlternatives)
             {

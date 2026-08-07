@@ -29,6 +29,10 @@ namespace PKSim.Presentation.Mappers
          {
             return _container.Resolve<IIntestinalPermeabilityWithCalculationMethodPresenter>();
          }
+         if (compoundParameterNodeType == CompoundParameterNodeType.AdvancedSolubility)
+         {
+            return _container.Resolve<IAdvancedSolubilityPresenter>();
+         }
          if (compoundParameterNodeType == CompoundParameterNodeType.DistributionCalculation)
          {
             return _container.Resolve<IDistributionWithCalculationMethodGroupPresenter>();

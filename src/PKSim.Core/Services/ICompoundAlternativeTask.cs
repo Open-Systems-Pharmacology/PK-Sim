@@ -57,6 +57,12 @@ namespace PKSim.Core.Services
       IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound);
 
       /// <summary>
+      ///    Returns the possible parameters for the neutral bile salt micelle/water partition coefficient depending on the
+      ///    different alternatives defined for Lipophilicity
+      /// </summary>
+      IEnumerable<IParameter> BileSaltPartitionCoefficientValuesFor(Compound compound);
+
+      /// <summary>
       ///    Sets the given parameter alternative as default alternative in the parameter group
       /// </summary>
       /// <param name="parameterGroup">Parameter group containing the alternative</param>

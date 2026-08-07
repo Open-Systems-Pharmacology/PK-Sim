@@ -7,7 +7,6 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
-using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
@@ -27,7 +26,7 @@ namespace PKSim.UI.Views.Compounds
       public override void InitializeBinding()
       {
          var colValue = _gridViewBinder.AutoBind(x => x.Permeability)
-            .WithCaption(PKSimConstants.UI.Permeability);
+            .WithCaption(permeabilityGroupPresenter.ValueColumnCaption);
 
          AddValueBinding(colValue);
          colValue.WithFormat(formatForAlternative);

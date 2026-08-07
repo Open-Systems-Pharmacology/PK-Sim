@@ -48,6 +48,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       snapshot.Solubility = await mapAlternatives(compound, COMPOUND_SOLUBILITY);
       snapshot.IntestinalPermeability = await mapAlternatives(compound, COMPOUND_INTESTINAL_PERMEABILITY);
       snapshot.Permeability = await mapAlternatives(compound, COMPOUND_PERMEABILITY);
+      snapshot.BileSaltPartitionCoefficient = await mapAlternatives(compound, COMPOUND_BILE_SALT_PARTITION_COEFFICIENT);
       snapshot.PkaTypes = await mapPkaTypes(compound);
       snapshot.Processes = await mapProcesses(compound);
       snapshot.OverwriteParameterSets = await _overwriteParameterSetMapper.MapToSnapshots(compound.OverwriteParameterSets);
@@ -67,6 +68,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       await updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY, snapshotContext);
       await updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY, snapshotContext);
       await updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY, snapshotContext);
+      await updateAlternatives(compound, snapshot.BileSaltPartitionCoefficient, COMPOUND_BILE_SALT_PARTITION_COEFFICIENT, snapshotContext);
 
       updatePkaTypes(compound, snapshot);
 
@@ -202,6 +204,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       //advanced parameters
       parameters.AddRange(changedGroupParameters(compound, COMPOUND_TWO_PORE));
       parameters.AddRange(changedGroupParameters(compound, COMPOUND_DISSOLUTION));
+      parameters.AddRange(changedGroupParameters(compound, COMPOUND_ADVANCED_SOLUBILITY));
 
       return parameters;
    }

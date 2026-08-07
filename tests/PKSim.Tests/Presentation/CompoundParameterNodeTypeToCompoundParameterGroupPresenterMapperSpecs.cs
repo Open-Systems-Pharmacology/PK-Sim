@@ -51,6 +51,22 @@ namespace PKSim.Presentation
       }
    }
 
+   public class when_node_type_is_advanced_solubility : concern_for_CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper
+   {
+      private ICompoundParameterGroupPresenter _result;
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(CompoundParameterNodeType.AdvancedSolubility);
+      }
+
+      [Observation]
+      public void presenter_should_be_of_type_advanced_solubility()
+      {
+         _result.ShouldBeAnInstanceOf<IAdvancedSolubilityPresenter>();
+      }
+   }
+
    public class when_node_type_is_not_recognized : concern_for_CompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper
    {
       private ICompoundParameterGroupPresenter _result;

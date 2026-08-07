@@ -62,7 +62,21 @@ namespace PKSim.Presentation
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.LIPOPHILICITY));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(8).WithName(CoreConstants.Parameters.PERMEABILITY));
             compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.IS_SMALL_MOLECULE));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(0.74).WithName(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_1));
+            compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(2.29).WithName(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_2));
+            compound.Add(neutralPartitionCoefficient());
             return compound;
+         }
+
+         //K_n = c1 * LogP + c2, as defined by the PARAM_K_n rate in the database
+         private static IParameter neutralPartitionCoefficient()
+         {
+            var parameter = new PKSimParameter().WithName(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL);
+            parameter.Formula = new ExplicitFormula("c1 * LogP + c2");
+            parameter.Formula.AddObjectPath(new FormulaUsablePath(ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_1).WithAlias("c1"));
+            parameter.Formula.AddObjectPath(new FormulaUsablePath(ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_2).WithAlias("c2"));
+            parameter.Formula.AddObjectPath(new FormulaUsablePath(ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.LIPOPHILICITY).WithAlias("LogP"));
+            return parameter;
          }
       }
    }
@@ -141,6 +155,48 @@ namespace PKSim.Presentation
       public void should_return_one_parameter_for_each_defined_lipophilcity_alternative()
       {
          _results.Count().ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_calculating_the_possible_values_for_the_neutral_bile_salt_partition_coefficient_based_on_the_lipophilicty_values : concern_for_CompoundAlternativeTask
+   {
+      private Compound _compound;
+      private IReadOnlyList<IParameter> _results;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = new CompoundFactoryForSpecs().Create();
+         var lipoGroup = new ParameterAlternativeGroup().WithName(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
+
+         var alternative1 = new ParameterAlternative().WithName("ALT1");
+         alternative1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.LIPOPHILICITY));
+         lipoGroup.AddAlternative(alternative1);
+
+         var alternative2 = new ParameterAlternative().WithName("ALT2");
+         alternative2.Add(DomainHelperForSpecs.ConstantParameterWithValue(2).WithName(CoreConstants.Parameters.LIPOPHILICITY));
+         lipoGroup.AddAlternative(alternative2);
+
+         _compound.AddParameterAlternativeGroup(lipoGroup);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.BileSaltPartitionCoefficientValuesFor(_compound).ToList();
+      }
+
+      [Observation]
+      public void should_return_one_read_only_parameter_named_after_each_defined_lipophilicity_alternative()
+      {
+         _results.Select(x => x.Name).ShouldOnlyContainInOrder("ALT1", "ALT2");
+         _results.Each(x => x.Editable.ShouldBeFalse());
+      }
+
+      [Observation]
+      public void should_evaluate_the_partition_coefficient_using_the_lipophilicity_of_the_alternative_and_the_constants_of_the_compound()
+      {
+         _results[0].Value.ShouldBeEqualTo(0.74 * 1 + 2.29, 1e-10);
+         _results[1].Value.ShouldBeEqualTo(0.74 * 2 + 2.29, 1e-10);
       }
    }
 

@@ -2,6 +2,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -47,6 +48,44 @@ namespace PKSim.IntegrationTests
       public void should_be_able_to_deserialize_the_compound()
       {
          _deserializedCompound.ShouldNotBeNull();
+      }
+   }
+
+   public class When_serializing_a_compound_with_alternatives_defined_for_the_neutral_bile_salt_partition_coefficient : ContextForSerialization<Compound>
+   {
+      private Compound _compound;
+      private Compound _deserializedCompound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         var parameterAlternativeFactory = IoC.Resolve<IParameterAlternativeFactory>();
+         var bileSaltGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_BILE_SALT_PARTITION_COEFFICIENT);
+
+         var measured = parameterAlternativeFactory.CreateAlternativeFor(bileSaltGroup).WithName("Measured");
+         measured.Parameter(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL).Value = 4.5;
+         measured.IsDefault = true;
+         bileSaltGroup.DefaultAlternative.IsDefault = false;
+         bileSaltGroup.AddAlternative(measured);
+
+         var predicted = parameterAlternativeFactory.CreateAlternativeFor(bileSaltGroup).WithName("Predicted");
+         predicted.Parameter(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL).Value = 6.5;
+         bileSaltGroup.AddAlternative(predicted);
+      }
+
+      protected override void Because()
+      {
+         _deserializedCompound = SerializeAndDeserialize(_compound);
+      }
+
+      [Observation]
+      public void should_have_saved_all_alternatives_with_their_values_and_the_default_flag()
+      {
+         var bileSaltGroup = _deserializedCompound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_BILE_SALT_PARTITION_COEFFICIENT);
+         bileSaltGroup.AllAlternatives.Select(x => x.Name).ShouldOnlyContain(PKSimConstants.UI.CalculatedAlernative, "Measured", "Predicted");
+         bileSaltGroup.DefaultAlternative.Name.ShouldBeEqualTo("Measured");
+         bileSaltGroup.AlternativeByName("Predicted").Parameter(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL).Value.ShouldBeEqualTo(6.5);
       }
    }
 }

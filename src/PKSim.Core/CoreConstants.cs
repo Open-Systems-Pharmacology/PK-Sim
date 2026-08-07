@@ -518,6 +518,8 @@ namespace PKSim.Core
          public static readonly string COMPOUND_FRACTION_UNBOUND = "COMPOUND_FRACTION_UNBOUND";
          public static readonly string COMPOUND_SOLUBILITY = "COMPOUND_SOLUBILITY";
          public static readonly string COMPOUND_DISSOLUTION = "COMPOUND_PARTICLE_DISSOLUTION";
+         public static readonly string COMPOUND_ADVANCED_SOLUBILITY = "COMPOUND_ADVANCED_SOLUBILITY";
+         public static readonly string COMPOUND_BILE_SALT_PARTITION_COEFFICIENT = "COMPOUND_BILE_SALT_PARTITION_COEFFICIENT";
          public static readonly string COMPOUND_TWO_PORE = "COMPOUND_TWO_PORE";
          public static readonly string COMPOUND_PROCESS_ITEM = "COMPOUND_PROCESS_ITEM";
          public static readonly string COMPOUND_ITEM = "COMPOUND_ITEM";
@@ -572,7 +574,8 @@ namespace PKSim.Core
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {
             COMPOUND_INTESTINAL_PERMEABILITY,
-            COMPOUND_PERMEABILITY
+            COMPOUND_PERMEABILITY,
+            COMPOUND_BILE_SALT_PARTITION_COEFFICIENT
          };
 
          public static readonly IReadOnlyList<string> GroupsWithAlternative = new List<string>(GroupsWithCalculatedAlternative)
@@ -907,6 +910,11 @@ namespace PKSim.Core
          public const string APPLICATION_RATE = "Application rate";
          public const string PERMEABILITY = "Permeability";
          public const string SPECIFIC_INTESTINAL_PERMEABILITY = "Specific intestinal permeability (transcellular)";
+         public const string CRITICAL_MICELLAR_CONCENTRATION = "Critical Micellar concentration";
+         public const string BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_1 = "Partition coefficient (bile salt micelle/water) constant 1";
+         public const string BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_2 = "Partition coefficient (bile salt micelle/water) constant 2";
+         public const string BILE_SALT_PARTITION_COEFFICIENT_IONIZED = "Partition coefficient (bile salt micelle/water) ionized";
+         public const string BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL = "Partition coefficient (bile salt micelle/water) neutral";
          public const string FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE = "Fraction unbound (plasma, reference value)";
          public const string SOLUBILITY_AT_REFERENCE_PH = "Solubility at reference pH";
          public const string SOLUBILITY = "Solubility";

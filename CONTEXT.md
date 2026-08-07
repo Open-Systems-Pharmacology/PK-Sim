@@ -26,7 +26,6 @@ The compound parameters describing how bile salt micelles raise a drug's solubil
 
 **Critical micellar concentration (CMC)**:
 The bile salt concentration above which micelles form. Below it, lumen solubility falls back to the aqueous value.
-_Note_: misspelled `Crititical Micellar concentration` in the database.
 
 **Bile salt micelle/water partition coefficient**:
 How strongly a drug partitions from lumen water into bile salt micelles, held separately for the neutral and ionized species. The neutral coefficient is derived from lipophilicity via two regression constants; the ionized one is derived in turn from the neutral one, discounted by a micelle affinity penalty that depends on the compound's ionization.

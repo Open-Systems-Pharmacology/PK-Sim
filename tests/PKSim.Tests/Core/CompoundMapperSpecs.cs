@@ -70,6 +70,7 @@ namespace PKSim.Core
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_SOLUBILITY));
          _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_PERMEABILITY));
+         _compound.AddParameterAlternativeGroup(createParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_BILE_SALT_PARTITION_COEFFICIENT));
          _compound.AddParameterAlternativeGroup(_compoundIntestinalPermeabilityAlternativeGroup);
 
          _compoundIntestinalPermeabilityAlternativeGroup.DefaultAlternative.IsDefault = true;
@@ -189,6 +190,7 @@ namespace PKSim.Core
          _snapshot.Solubility.Length.ShouldBeEqualTo(1);
          _snapshot.IntestinalPermeability.Length.ShouldBeEqualTo(1);
          _snapshot.Permeability.Length.ShouldBeEqualTo(1);
+         _snapshot.BileSaltPartitionCoefficient.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
