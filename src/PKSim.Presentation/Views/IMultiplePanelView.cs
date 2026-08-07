@@ -17,5 +17,10 @@ namespace PKSim.Presentation.Views
       void HideView(IView view);
 
       void AddEmptyPlaceHolder();
+
+      /// <summary>
+      ///    Explanatory text shown above all panels. Hidden when not set
+      /// </summary>
+      string Note { set; }
    }
 }

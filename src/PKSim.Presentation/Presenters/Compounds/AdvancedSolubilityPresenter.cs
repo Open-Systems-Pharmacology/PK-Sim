@@ -1,3 +1,4 @@
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Views;
 
@@ -20,6 +21,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       {
          _constantsGroupPresenter = constantsGroupPresenter;
          _bileSaltPartitionCoefficientGroupPresenter = bileSaltPartitionCoefficientGroupPresenter;
+         _view.Note = PKSimConstants.UI.CompoundAdvancedSolubilityParametersNote;
          _view.AddEmptyPlaceHolder();
       }
 

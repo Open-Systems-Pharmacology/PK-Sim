@@ -1,4 +1,3 @@
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -20,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          IMultiParameterEditPresenter parameterEditPresenter, IParameterGroupTask parameterGroupTask)
          : base(view, representationInfoRepository, parameterEditPresenter, parameterGroupTask, CoreConstants.Groups.COMPOUND_ADVANCED_SOLUBILITY)
       {
-         view.Hint = PKSimConstants.UI.CompoundAdvancedSolubilityParametersNote;
+         //the note belongs to the whole Advanced solubility panel and is shown by AdvancedSolubilityPresenter
          _parameterEditPresenter.ParameterNameColumnWeight = NAME_COLUMN_WEIGHT;
       }
    }
