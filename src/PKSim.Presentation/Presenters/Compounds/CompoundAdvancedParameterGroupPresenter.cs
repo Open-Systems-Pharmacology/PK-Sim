@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public abstract class CompoundAdvancedParameterGroupPresenter<TView> : AbstractSubPresenter<TView, ICompoundAdvancedParameterGroupPresenter>, ICompoundAdvancedParameterGroupPresenter where TView : ICompoundAdvancedParameterGroupView
    {
-      private readonly IMultiParameterEditPresenter _parameterEditPresenter;
+      protected readonly IMultiParameterEditPresenter _parameterEditPresenter;
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly string _groupName;
 

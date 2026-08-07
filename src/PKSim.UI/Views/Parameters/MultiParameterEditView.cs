@@ -190,6 +190,12 @@ namespace PKSim.UI.Views.Parameters
          get => _pathElementsBinder.ColumnAt(PathElementId.Name).Visible;
       }
 
+      //the grid distributes its width over the visible columns proportionally to their Width, so this acts as a weight
+      public int ParameterNameColumnWeight
+      {
+         set => _pathElementsBinder.ColumnAt(PathElementId.Name).XtraColumn.Width = value;
+      }
+
       public bool DistributionVisible
       {
          get => _columnPercentile.Visible;
