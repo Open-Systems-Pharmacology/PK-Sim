@@ -62,7 +62,8 @@ namespace PKSim.UI.Views.Compounds
       private int calculateHeight()
       {
          var noteHeight = layoutItemNote.Visibility == LayoutVisibility.Never ? 0 : layoutItemNote.Height;
-         return _parameterView.OptimalHeight + noteHeight + layoutItemParameters.Padding.Height;
+         //the layout margin has to be accounted for as well, otherwise the parameter grid is a few pixels short and scrolls
+         return _parameterView.OptimalHeight + noteHeight + layoutItemParameters.Padding.Height + layoutControl1.Margin.Vertical;
       }
 
       public void Repaint()
