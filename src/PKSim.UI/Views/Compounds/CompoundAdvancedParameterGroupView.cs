@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Compounds
          panelParameters.FillWith(view);
          //without this the layout splits the available height between the note and the parameters instead of giving the
          //parameter grid the height it asks for, and the grid ends up scrolling
-         view.HeightChanged += (o, e) => OnEvent(() => layoutItemParameters.AdjustControlHeight(e.Height, layoutControl1));
+         view.HeightChanged += (o, e) => OnEvent(() => layoutItemParameters.AdjustControlHeight(e.Height + panelBorderHeight, layoutControl1));
       }
 
       public string Hint
@@ -65,8 +65,14 @@ namespace PKSim.UI.Views.Compounds
       private int calculateHeight()
       {
          var noteHeight = layoutItemNote.Visibility == LayoutVisibility.Never ? 0 : layoutItemNote.Height;
-         return _parameterView.OptimalHeight + noteHeight + layoutItemParameters.Padding.Height;
+         return _parameterView.OptimalHeight + panelBorderHeight + noteHeight + layoutItemParameters.Padding.Height;
       }
+
+      /// <summary>
+      ///    The panel hosting the parameter view draws a border, so the grid only gets its client area. Measured rather than
+      ///    assumed so that it stays right whatever border style the panel uses
+      /// </summary>
+      private int panelBorderHeight => panelParameters.Height - panelParameters.ClientSize.Height;
 
       public void Repaint()
       {
