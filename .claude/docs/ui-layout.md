@@ -17,10 +17,13 @@ When working with DevExpress TablePanel layouts in PK-Sim views:
 Heights are always derived from content, never from hardcoded margin or padding constants.
 
 - A resizable view exposes `OptimalHeight` and raises `HeightChanged` when its content changes.
-- A view that **hosts** another view must subscribe to the hosted view's `HeightChanged` and push the new height into the layout:
+- **A grid whose host sizes itself dynamically must not scroll.** Turn the scrollbar off in the presenter:
+  `_parameterEditPresenter.View.AllowVerticalScrolling = false;`
+  The height calculation is what decides how much is shown; a scrollbar means the two mechanisms are fighting. See `IndividualMoleculePropertiesPresenter` and `CompoundAdvancedParameterGroupPresenter`.
+- A view that **hosts** another view subscribes to the hosted view's `HeightChanged` and pushes the new height into the layout:
   `view.HeightChanged += (o, e) => OnEvent(() => layoutItem.AdjustControlHeight(e.Height, layoutControl));`
-- `BaseContainerUserControl.AddViewTo` already does this for you. If you host a view with `panel.FillWith(view)` instead, you own the subscription — forgetting it means the layout free-splits the available height and the hosted grid grows a scrollbar.
-- If a grid is a few pixels short, the missing subscription is the cause. Do not paper over it by adding `Margin.Vertical` or `Padding.Height` to the total.
+  `BaseContainerUserControl.AddViewTo` does this for you; `panel.FillWith(view)` does not, so you own the subscription.
+- Never add a fudge (`Margin.Vertical`, `Padding.Height`, a pixel constant) to make a scrollbar go away.
 
 ## Hiding a layout item
 - Default a layout item to `LayoutVisibility.Never` in the Designer and let its setter turn it on, rather than defaulting to visible and hiding it later — a setter that is never called leaves an empty control on screen.

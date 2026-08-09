@@ -16,9 +16,6 @@ namespace PKSim.UI.Views.Compounds
       private const int HINT_HEIGHT = 60;
       private const int LARGE_HINT_HEIGHT = 80;
 
-      //the parameter view asks for one pixel less than it needs and the grid scrolls
-      private const int EXTRA_GRID_HEIGHT = 1;
-
       private IMultiParameterEditView _parameterView;
       public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
 
@@ -37,7 +34,7 @@ namespace PKSim.UI.Views.Compounds
          panelParameters.FillWith(view);
          //without this the layout splits the available height between the note and the parameters instead of giving the
          //parameter grid the height it asks for, and the grid ends up scrolling
-         view.HeightChanged += (o, e) => OnEvent(() => layoutItemParameters.AdjustControlHeight(e.Height + EXTRA_GRID_HEIGHT, layoutControl1));
+         view.HeightChanged += (o, e) => OnEvent(() => layoutItemParameters.AdjustControlHeight(e.Height, layoutControl1));
       }
 
       public string Hint
@@ -68,7 +65,7 @@ namespace PKSim.UI.Views.Compounds
       private int calculateHeight()
       {
          var noteHeight = layoutItemNote.Visibility == LayoutVisibility.Never ? 0 : layoutItemNote.Height;
-         return _parameterView.OptimalHeight + EXTRA_GRID_HEIGHT + noteHeight + layoutItemParameters.Padding.Height;
+         return _parameterView.OptimalHeight + noteHeight + layoutItemParameters.Padding.Height;
       }
 
       public void Repaint()
