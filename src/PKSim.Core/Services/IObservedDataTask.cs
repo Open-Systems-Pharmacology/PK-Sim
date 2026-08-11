@@ -1,22 +1,10 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 
 namespace PKSim.Core.Services
 {
    public interface IObservedDataTask : OSPSuite.Core.Domain.Services.IObservedDataTask
    {
-      /// <summary>
-      ///    Add the given observed data repository to the analysable. Curves will not be shown
-      /// </summary>
-      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable);
-
-      /// <summary>
-      ///    Add the given observed data repository to the simulation. Curves be shown if the showData flat is set to true
-      /// </summary>
-      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData);
-
       /// <summary>
       ///    Loads observed data from the template database
       /// </summary>
