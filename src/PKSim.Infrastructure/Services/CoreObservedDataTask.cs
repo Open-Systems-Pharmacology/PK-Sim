@@ -24,7 +24,6 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
-      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       public CoreObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -39,14 +38,13 @@ namespace PKSim.Infrastructure.Services
          IOutputMappingMatchingTask outputMappingMatchingTask,
          IConfirmationManager confirmationManager)
          : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
-            objectTypeResolver, confirmationManager)
+            objectTypeResolver, confirmationManager, outputMappingMatchingTask)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
-         _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
       // Rename requires IApplicationController + IRenameObservedDataPresenter (Presentation-only).
@@ -77,28 +75,6 @@ namespace PKSim.Infrastructure.Services
       // LoadFromSnapshot lives in the Presentation-aware derived class (needs IApplicationController).
       public virtual void LoadFromSnapshot()
       {
-      }
-
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable)
-      {
-         AddObservedDataToAnalysable(observedDataList, analysable, showData: false);
-      }
-
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData)
-      {
-         var simulation = analysable as Simulation;
-         if (simulation == null)
-            return;
-
-         var observedDataToAdd = observedDataList.Where(x => !simulation.UsesObservedData(x)).ToList();
-         if (!observedDataToAdd.Any())
-            return;
-
-         observedDataToAdd.Each(simulation.AddUsedObservedData);
-         observedDataList.Each(observedData => _outputMappingMatchingTask.AddMatchingOutputMapping(observedData, simulation));
-
-         _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
-         _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
       private IEnumerable<ParameterIdentification> findParameterIdentificationsUsing(UsedObservedData usedObservedData)

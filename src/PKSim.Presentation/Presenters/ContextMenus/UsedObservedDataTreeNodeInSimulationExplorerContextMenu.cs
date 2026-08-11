@@ -8,8 +8,8 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Presentation.UICommands;
 using PKSim.Presentation.Presenters.Main;
-using PKSim.Presentation.UICommands;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(UsedObservedData usedObservedData)
       {
          yield return CreateMenuButton.WithCaption(MenuNames.Remove)
-            .WithCommand(IoC.Resolve<DeleteUsedObservedDataUICommand>().For(usedObservedData))
+            .WithCommand(IoC.Resolve<RemoveUsedObservedDataUICommand>().For(usedObservedData))
             .WithIcon(ApplicationIcons.Remove)
             .AsGroupStarter();
       }

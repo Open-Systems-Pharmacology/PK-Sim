@@ -16,7 +16,6 @@ namespace PKSim.Presentation.Nodes
    {
       ITreeNode<TObjectBase> CreateFor<TObjectBase>(TObjectBase entity, RepresentationInfo representationInfo) where TObjectBase : class, IObjectBase;
       ITreeNode CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock);
-      ITreeNode CreateFor(UsedObservedData usedObservedData);
       ITreeNode CreateFor(ClassifiableSimulation simulation);
       ITreeNode CreateForClassifiableBuildingBlock<TClassifiable>(TClassifiable classifiable) where TClassifiable : class, IClassifiableWrapper;
       ITreeNode CreateFor(PartialProcess partialProcess);
