@@ -22,7 +22,6 @@ namespace PKSim.Presentation.Presenters.Charts
    public interface ISimulationTimeProfileChartPresenter : IChartPresenter<SimulationTimeProfileChart>,
       ISimulationAnalysisPresenter,
       IPKAnalysisWithChartPresenter,
-      IListener<RenamedEvent>,
       IListener<ObservedDataAddedToAnalysableEvent>,
       IListener<ObservedDataRemovedFromAnalysableEvent>,
       IListener<SimulationResultsUpdatedEvent>
@@ -160,14 +159,6 @@ namespace PKSim.Presentation.Presenters.Charts
          Column(BrowserColumns.Used).VisibleIndex = 5;
 
          configureEditor();
-      }
-
-      public void Handle(RenamedEvent eventToHandle)
-      {
-         if (!Equals(eventToHandle.RenamedObject, Chart))
-            return;
-
-         ChartChanged();
       }
    }
 }
