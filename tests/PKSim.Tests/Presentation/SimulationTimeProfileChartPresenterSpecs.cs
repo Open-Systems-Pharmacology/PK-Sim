@@ -457,7 +457,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notified_that_the_time_profile_chart_was_renamed_but_simulation_results_were_not_added : concern_for_SimulationTimeProfileChartPresenter
+   public class When_the_time_profile_chart_is_renamed_but_simulation_results_were_not_added : concern_for_SimulationTimeProfileChartPresenter
    {
       private SimulationTimeProfileChart _chart;
       private DataRepository _observedData;
@@ -470,12 +470,11 @@ namespace PKSim.Presentation
          _chart = new SimulationTimeProfileChart();
          _chart.AddObservedData(_observedData);
          sut.InitializeAnalysis(_chart);
-         _chart.Name = _newName;
       }
 
       protected override void Because()
       {
-         sut.Handle(new RenamedEvent(_chart));
+         _chart.Name = _newName;
       }
 
       [Observation]
@@ -485,7 +484,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_notified_that_the_time_profile_chart_was_renamed : concern_for_SimulationTimeProfileChartPresenter
+   public class When_the_time_profile_chart_is_renamed : concern_for_SimulationTimeProfileChartPresenter
    {
       private SimulationTimeProfileChart _chart;
       private DataRepository _observedData;
@@ -506,7 +505,6 @@ namespace PKSim.Presentation
       protected override void Because()
       {
          _chart.Name = _newName;
-         sut.Handle(new RenamedEvent(_chart));
       }
 
       [Observation]
@@ -519,37 +517,6 @@ namespace PKSim.Presentation
       public void the_simulation_should_be_marked_as_changed()
       {
          _simulation.HasChanged.ShouldBeTrue();
-      }
-   }
-
-   public class When_notified_that_a_time_profile_chart_was_renamed_that_is_not_the_one_being_edited : concern_for_SimulationTimeProfileChartPresenter
-   {
-      private SimulationTimeProfileChart _chart;
-      private DataRepository _observedData;
-      private IndividualSimulation _simulation;
-      private readonly string _newName = "NEW NAME";
-
-      protected override void Context()
-      {
-         base.Context();
-         _simulation = A.Fake<IndividualSimulation>();
-         _observedData = A.Fake<DataRepository>();
-         _chart = new SimulationTimeProfileChart();
-         _chart.AddObservedData(_observedData);
-         sut.InitializeAnalysis(_chart);
-         sut.UpdateAnalysisBasedOn(_simulation);
-         _view.Caption = "OLD_NAME";
-      }
-
-      protected override void Because()
-      {
-         sut.Handle(new RenamedEvent(new SimulationTimeProfileChart {Name = _newName}));
-      }
-
-      [Observation]
-      public void should_not_update_the_view_caption()
-      {
-         _view.Caption.ShouldNotBeEqualTo(_newName);
       }
    }
 
