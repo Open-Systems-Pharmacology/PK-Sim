@@ -727,7 +727,7 @@ namespace PKSim.Core.Model
 
       /// <summary>
       ///    Returns true if the simulation references the template event with the given <paramref name="templateEventId" />,
-      ///    either via a protocol event placeholder mapping or via an event mapping defined in the Events tab, otherwise false
+      ///    either from a protocol event placeholder or from the Events tab, otherwise false
       /// </summary>
       public virtual bool UsesEventTemplate(string templateEventId) =>
          allEventPlaceholderMappings().Any(x => string.Equals(x.TemplateEventId, templateEventId)) ||

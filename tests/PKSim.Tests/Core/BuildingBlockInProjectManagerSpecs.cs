@@ -457,10 +457,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         //simulation1 references the event via a protocol event placeholder mapping only
          addEventPlaceholderMappingTo(_simulation1);
-
-         //simulation2 uses the event as used building block (registered when the configuration was saved)
          _simulation2.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event));
       }
 

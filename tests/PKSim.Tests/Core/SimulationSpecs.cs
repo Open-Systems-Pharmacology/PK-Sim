@@ -4,7 +4,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SimulationUsesEventTemplate : ContextSpecification<Simulation>
+   public abstract class concern_for_Simulation : ContextSpecification<Simulation>
    {
       protected override void Context()
       {
@@ -12,7 +12,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_checking_if_a_simulation_uses_an_event_template_referenced_by_an_event_placeholder_mapping : concern_for_SimulationUsesEventTemplate
+   public class When_checking_if_a_simulation_uses_an_event_template_referenced_by_an_event_placeholder_mapping : concern_for_Simulation
    {
       protected override void Context()
       {
@@ -35,7 +35,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_checking_if_a_simulation_uses_an_event_template_referenced_by_an_event_mapping_from_the_events_tab : concern_for_SimulationUsesEventTemplate
+   public class When_checking_if_a_simulation_uses_an_event_template_referenced_by_an_event_mapping_from_the_events_tab : concern_for_Simulation
    {
       protected override void Context()
       {
@@ -56,7 +56,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_checking_if_a_simulation_without_any_event_mapping_uses_an_event_template : concern_for_SimulationUsesEventTemplate
+   public class When_checking_if_a_simulation_without_any_event_mapping_uses_an_event_template : concern_for_Simulation
    {
       protected override void Context()
       {
