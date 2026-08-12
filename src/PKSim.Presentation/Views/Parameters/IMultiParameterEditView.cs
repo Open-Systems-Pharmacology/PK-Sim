@@ -12,6 +12,7 @@ namespace PKSim.Presentation.Views.Parameters
       bool DistributionVisible { get; set; }
       bool ValueOriginVisible { get; set; }
       bool ParameterNameVisible { get; set; }
+      int ParameterNameColumnWeight { set; }
       void SetVisibility(PathElementId pathElement, bool visible);
       void SetCaption(PathElementId pathElement, string caption);
       bool CategoryVisible { get; set; }

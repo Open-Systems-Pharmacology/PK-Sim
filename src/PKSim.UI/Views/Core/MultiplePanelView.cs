@@ -21,6 +21,16 @@ namespace PKSim.UI.Views.Core
          AddViewTo(layoutControlGroup,layoutControl,  view);
       }
 
+      //declared first in the layout so that it reads as an introduction to every panel and not just the first one
+      public string Note
+      {
+         set
+         {
+            panelNote.NoteText = value;
+            layoutItemNote.Visibility = LayoutVisibilityConvertor.FromBoolean(!string.IsNullOrEmpty(value));
+         }
+      }
+
 
       public void HideView(IView view)
       {

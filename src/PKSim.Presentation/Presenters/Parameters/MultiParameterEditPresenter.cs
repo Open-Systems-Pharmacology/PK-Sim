@@ -77,6 +77,13 @@ namespace PKSim.Presentation.Presenters.Parameters
       bool ParameterNameVisible { set; }
 
       /// <summary>
+      ///    Relative width of the name column. The grid shares its width between the visible columns in proportion to this
+      ///    value, so raising it gives long parameter names more room at the expense of the other columns. Default is the
+      ///    same weight as every other column
+      /// </summary>
+      int ParameterNameColumnWeight { set; }
+
+      /// <summary>
       ///    Configure the editor to display the most simple view possible
       ///    Grouping, scaling, favorite will be hidden
       ///    Default is <c>false</c>
@@ -313,6 +320,11 @@ namespace PKSim.Presentation.Presenters.Parameters
       public bool ParameterNameVisible
       {
          set => _view.ParameterNameVisible = value;
+      }
+
+      public int ParameterNameColumnWeight
+      {
+         set => _view.ParameterNameColumnWeight = value;
       }
 
       public bool IsSimpleEditor

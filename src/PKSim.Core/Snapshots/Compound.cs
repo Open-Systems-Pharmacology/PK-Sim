@@ -27,6 +27,7 @@ namespace PKSim.Core.Snapshots
       public Alternative[] Solubility { get; set; }
       public Alternative[] IntestinalPermeability { get; set; }
       public Alternative[] Permeability { get; set; }
+      public Alternative[] BileSaltPartitionCoefficient { get; set; }
       public PkaType[] PkaTypes { get; set; }
       public CompoundProcess[] Processes { get; set; }
       public CalculationMethodCache CalculationMethods { get; set; }

@@ -1715,6 +1715,8 @@ namespace PKSim.Assets
          public static readonly string ShowSolubilityPhChart = "Show Graph";
          public static readonly string CalculatedValue = "Calculated";
          public static readonly string PermeabilityCalculatedFromLipoAndMolWeight = "Permeability values calculated using liphophilicity";
+         public static readonly string BileSaltPartitionCoefficientNeutral = "Partition coefficient (bile salt micelle/water) neutral";
+         public static readonly string BileSaltPartitionCoefficientCalculatedFromLipo = "Partition coefficient values calculated using lipophilicity";
          public static readonly string IsDefault = "Default";
          public static readonly string DefaultAlternative = "Measurement";
          public static readonly string CalculatedAlernative = "Calculated";
@@ -1892,6 +1894,7 @@ namespace PKSim.Assets
          public static readonly string SaveProjectAsDescription = "Save the project to a new file...";
          public static readonly string CompoundTwoPoreParametersNote = "These parameters are only used in a simulation where the model for proteins and large molecules was selected. Their values are irrelevant otherwise and can be left as is.";
          public static readonly string CompoundParticleDissolutionParametersNote = "These parameters are only used in a simulation where the particle dissolution function was selected. Their values are irrelevant otherwise and can be left as is.";
+         public static readonly string CompoundAdvancedSolubilityParametersNote = "These parameters describe how bile salt micelles increase the solubility of the compound in the fluid of the intestinal lumen.";
          public static readonly string ResetAllVisibleButtonToolTip = "Reset all visible parameters to default.";
          public static readonly string ResetParameterToolTip = "Reset parameter to default";
          public static readonly string ScaleButtonToolTip = "Scale all visible parameters with the given factor";
@@ -2146,6 +2149,7 @@ namespace PKSim.Assets
          public static readonly string InhibitionAndInduction = "Inhibition / Induction";
          public static readonly string DistributionCalculation = "Distribution Calculation";
          public static readonly string SpecificIntestinalPermeability = "Specific Intestinal Permeability";
+         public static readonly string AdvancedSolubility = "Advanced Intestinal Solubility";
          public static readonly string Absorption = "Absorption";
          public static readonly string Sink = "Sink";
          public static readonly string AddInhibitionProcess = "Add Inhibition Process...";

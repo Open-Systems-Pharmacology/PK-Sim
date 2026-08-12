@@ -32,6 +32,18 @@ namespace PKSim.Core.Services
       private readonly IDataImporter _dataImporter;
       private readonly IDialogCreator _dialogCreator;
 
+      private static readonly IReadOnlyList<string> _permeabilityInputParameters = new[]
+      {
+         Constants.Parameters.IS_SMALL_MOLECULE,
+         CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT
+      };
+
+      private static readonly IReadOnlyList<string> _bileSaltPartitionCoefficientInputParameters = new[]
+      {
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_1,
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_2
+      };
+
       public CompoundAlternativeTask(
          IParameterAlternativeFactory parameterAlternativeFactory,
          IExecutionContext executionContext,
@@ -157,15 +169,14 @@ namespace PKSim.Core.Services
          return updateValueOriginCommand.Run(_executionContext);
       }
 
-      public IEnumerable<IParameter> PermeabilityValuesFor(Compound compound)
-      {
-         return permeabilityParametersFor(compound, CoreConstants.Parameters.PERMEABILITY);
-      }
+      public IEnumerable<IParameter> PermeabilityValuesFor(Compound compound) =>
+         valuePerLipophilicityAlternativeFor(compound, CoreConstants.Parameters.PERMEABILITY, _permeabilityInputParameters);
 
-      public IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound)
-      {
-         return permeabilityParametersFor(compound, CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY);
-      }
+      public IEnumerable<IParameter> IntestinalPermeabilityValuesFor(Compound compound) =>
+         valuePerLipophilicityAlternativeFor(compound, CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY, _permeabilityInputParameters);
+
+      public IEnumerable<IParameter> BileSaltPartitionCoefficientValuesFor(Compound compound) =>
+         valuePerLipophilicityAlternativeFor(compound, CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL, _bileSaltPartitionCoefficientInputParameters);
 
       public ICommand SetDefaultAlternativeFor(ParameterAlternativeGroup parameterGroup, ParameterAlternative parameterAlternative)
       {
@@ -290,21 +301,23 @@ namespace PKSim.Core.Services
             .InitializedWith(PKSimConstants.UI.pH, PKSimConstants.UI.Solubility, xDimension, yDimension);
       }
 
-      private IEnumerable<IParameter> permeabilityParametersFor(Compound compound, string permeabilityParameterName)
+      /// <summary>
+      ///    Evaluates <paramref name="parameterName" /> once per lipophilicity alternative defined in
+      ///    <paramref name="compound" />, using a throwaway compound seeded with the alternative lipophilicity and the
+      ///    <paramref name="inputParameterNames" /> taken from <paramref name="compound" />
+      /// </summary>
+      private IEnumerable<IParameter> valuePerLipophilicityAlternativeFor(Compound compound, string parameterName, IReadOnlyList<string> inputParameterNames)
       {
-         //create a temp compound from the compound factory
-         //retrieve the lipophilicity alternatives
          var lipophilicityGroup = compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          foreach (var alternative in lipophilicityGroup.AllAlternatives)
          {
             var tempCompound = _compoundFactory.Create();
-            tempCompound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value;
-            tempCompound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value = compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT).Value;
+            inputParameterNames.Each(x => tempCompound.Parameter(x).Value = compound.Parameter(x).Value);
             tempCompound.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = alternative.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value;
-            var permParameter = tempCompound.Parameter(permeabilityParameterName);
-            permParameter.Editable = false;
-            permParameter.Name = alternative.Name;
-            yield return permParameter;
+            var parameter = tempCompound.Parameter(parameterName);
+            parameter.Editable = false;
+            parameter.Name = alternative.Name;
+            yield return parameter;
          }
       }
    }

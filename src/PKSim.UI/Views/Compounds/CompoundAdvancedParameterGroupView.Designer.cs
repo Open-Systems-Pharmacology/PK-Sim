@@ -109,7 +109,8 @@ namespace PKSim.UI.Views.Compounds
          this.layoutItemNote.Size = new System.Drawing.Size(397, 58);
          this.layoutItemNote.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemNote.TextVisible = false;
-         // 
+         this.layoutItemNote.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+         //
          // CompoundAdvancedParameterGroupView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

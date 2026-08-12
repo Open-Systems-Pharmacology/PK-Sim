@@ -103,7 +103,9 @@ namespace PKSim.Presentation.Presenters.Compounds
       private bool parameterIsAdvancedParameter(IParameter parameter)
       {
          return parameter.GroupName.Equals(CoreConstants.Groups.COMPOUND_TWO_PORE) ||
-                parameter.GroupName.Equals(CoreConstants.Groups.COMPOUND_DISSOLUTION);
+                parameter.GroupName.Equals(CoreConstants.Groups.COMPOUND_DISSOLUTION) ||
+                parameter.GroupName.Equals(CoreConstants.Groups.COMPOUND_ADVANCED_SOLUBILITY) ||
+                parameter.GroupName.Equals(CoreConstants.Groups.COMPOUND_BILE_SALT_PARTITION_COEFFICIENT);
       }
 
       private bool parameterIsSimpleParameter(IParameter parameter)

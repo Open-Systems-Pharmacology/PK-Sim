@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public abstract class CompoundAdvancedParameterGroupPresenter<TView> : AbstractSubPresenter<TView, ICompoundAdvancedParameterGroupPresenter>, ICompoundAdvancedParameterGroupPresenter where TView : ICompoundAdvancedParameterGroupView
    {
-      private readonly IMultiParameterEditPresenter _parameterEditPresenter;
+      protected readonly IMultiParameterEditPresenter _parameterEditPresenter;
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly string _groupName;
 
@@ -36,6 +36,8 @@ namespace PKSim.Presentation.Presenters.Compounds
          _parameterEditPresenter = parameterEditPresenter;
          _parameterGroupTask = parameterGroupTask;
          _parameterEditPresenter.IsSimpleEditor = true;
+         //do not allow scrolling as we will adjust height dynamically
+         _parameterEditPresenter.View.AllowVerticalScrolling = false;
          _groupName = groupName;
          View.Caption = representationInfoRepository.DisplayNameFor(RepresentationObjectType.GROUP, _groupName);
          View.SetParameterView(_parameterEditPresenter.View);

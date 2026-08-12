@@ -12063,14 +12063,14 @@ INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Mars
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 2',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 3',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 4',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Crititical Micellar concentration',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',17,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Critical Micellar concentration',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',17,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Diffusion layer thickness exponent',0,1,0,0,'COMPOUND_SOLUBILITY',10,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty basic compounds',0,1,0,0,'COMPOUND_SOLUBILITY',15,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty other ionizable compounds',0,1,0,0,'COMPOUND_SOLUBILITY',16,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 1',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',12,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 2',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',13,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',14,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) neutral',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 1',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',12,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 2',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',13,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',14,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) neutral',1,0,1,0,'COMPOUND_BILE_SALT_PARTITION_COEFFICIENT',11,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use bidirectional surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(4482,'COMPARTMENT','Stomach','Average fluid velocity',1,0,1,1,'GI_PHYSIOLOGY',3,'LOCAL','INDIVIDUAL',0,0);
@@ -55224,7 +55224,7 @@ INSERT INTO tab_container_parameter_rates VALUES(146,'ORGANISM','Organism','Ranz
 INSERT INTO tab_container_parameter_rates VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 2','FundamentalConstants','PARAM_RMC_c2',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 3','FundamentalConstants','PARAM_RMC_c3',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 4','FundamentalConstants','PARAM_RMC_c4',0.0,1,NULL,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Crititical Micellar concentration','CompoundCommon','PARAM_CMC',0.0,1,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Critical Micellar concentration','CompoundCommon','PARAM_CMC',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Diffusion layer thickness exponent','CompoundCommon','PARAM_h_c',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty basic compounds','CompoundCommon','PARAM_AffinityPenaltyBases',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty other ionizable compounds','CompoundCommon','PARAM_AffinityPenaltyOthers',0.0,1,NULL,1,NULL);
@@ -67150,6 +67150,8 @@ INSERT INTO tab_groups VALUES('PERMEABILITY_CALIBRATION','Intestinal permeabilit
 INSERT INTO tab_groups VALUES('DISEASE_STATES','Disease states','Disease states parameters',NULL,NULL,1,1,0,153,NULL,'Disease States');
 INSERT INTO tab_groups VALUES('FRACTION_OF_BLOOD_SAMPLING','Fraction of blood','Fraction of blood for sampling','SAMPLING_PROCEDURE',NULL,1,1,1,154,NULL,'Sampling - Fraction of blood');
 INSERT INTO tab_groups VALUES('DISEASE_STATE_FACTORS','Disease factors','Disease factor parameters','DISEASE_STATES',NULL,1,1,1,155,NULL,'Disease factor parameters');
+INSERT INTO tab_groups VALUES('COMPOUND_ADVANCED_SOLUBILITY','Advanced Intestinal Solubility','Advanced intestinal solubility parameters','COMPOUND',NULL,0,3,0,156,NULL,'Compound - Advanced Intestinal Solubility');
+INSERT INTO tab_groups VALUES('COMPOUND_BILE_SALT_PARTITION_COEFFICIENT','Bile Salt Micelle Partitioning','Partition coefficient between bile salt micelles and water for the neutral species','COMPOUND',NULL,0,4,0,157,NULL,'Compound - Bile Salt Micelle Partitioning');
 CREATE TABLE [tab_model_calculation_methods](
   [model] text NOT NULL REFERENCES [tab_models]([model]) ON DELETE CASCADE ON UPDATE CASCADE, 
   [calculation_method] text NOT NULL REFERENCES [tab_calculation_methods]([calculation_method]) ON UPDATE CASCADE, 
@@ -71203,7 +71205,7 @@ INSERT INTO tab_parameters VALUES('Basal pH in fasted state','Basal pH in fasted
 INSERT INTO tab_parameters VALUES('Bile Salt concentration','Bile Salt concentration','Bile Salt concentration','Concentration (molar)',NULL);
 INSERT INTO tab_parameters VALUES('Bile Salt concentration after meal','Bile Salt concentration after meal','Bile Salt concentration after meal','Concentration (molar)',NULL);
 INSERT INTO tab_parameters VALUES('Bile Salt concentration in fasted state','Bile Salt concentration in fasted state','Bile Salt concentration in fasted state','Concentration (molar)',NULL);
-INSERT INTO tab_parameters VALUES('Crititical Micellar concentration','Crititical Micellar concentration','Crititical Micellar concentration','Concentration (molar)',NULL);
+INSERT INTO tab_parameters VALUES('Critical Micellar concentration','Critical Micellar concentration','Critical Micellar concentration','Concentration (molar)',NULL);
 INSERT INTO tab_parameters VALUES('Diffusion layer gradient','Diffusion layer gradient','Diffusion layer gradient','Amount per area per time',NULL);
 INSERT INTO tab_parameters VALUES('Diffusion layer thickness (bound)','Diffusion layer thickness (bound)','Diffusion layer thickness (bound)','Length',NULL);
 INSERT INTO tab_parameters VALUES('Diffusion layer thickness (unbound)','Diffusion layer thickness (unbound)','Diffusion layer thickness (unbound)','Length',NULL);
@@ -86770,7 +86772,7 @@ INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Deff_uje',24
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',139,'Solubility (aqueous)','Saq');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',139,'Solubility increase from ionization','Si');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',140,'Bile Salt concentration','BS_C');
-INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Crititical Micellar concentration','CMC');
+INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Critical Micellar concentration','CMC');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Partition coefficient (bile salt micelle/water) ionized','K_i');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Partition coefficient (bile salt micelle/water) neutral','K_n');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous',139,'Solubility_pKa_pH_Factor','Solubility_pKa_pH_Factor');
