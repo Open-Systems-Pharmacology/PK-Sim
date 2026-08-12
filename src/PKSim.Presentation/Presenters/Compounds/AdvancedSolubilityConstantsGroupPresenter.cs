@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          IMultiParameterEditPresenter parameterEditPresenter, IParameterGroupTask parameterGroupTask)
          : base(view, representationInfoRepository, parameterEditPresenter, parameterGroupTask, CoreConstants.Groups.COMPOUND_ADVANCED_SOLUBILITY)
       {
-         //the note belongs to the whole Advanced solubility panel and is shown by AdvancedSolubilityPresenter
+         //the note belongs to the whole Advanced Intestinal Solubility panel and is shown by AdvancedSolubilityPresenter
          _parameterEditPresenter.ParameterNameColumnWeight = NAME_COLUMN_WEIGHT;
       }
    }

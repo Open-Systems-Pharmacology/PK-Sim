@@ -67150,8 +67150,8 @@ INSERT INTO tab_groups VALUES('PERMEABILITY_CALIBRATION','Intestinal permeabilit
 INSERT INTO tab_groups VALUES('DISEASE_STATES','Disease states','Disease states parameters',NULL,NULL,1,1,0,153,NULL,'Disease States');
 INSERT INTO tab_groups VALUES('FRACTION_OF_BLOOD_SAMPLING','Fraction of blood','Fraction of blood for sampling','SAMPLING_PROCEDURE',NULL,1,1,1,154,NULL,'Sampling - Fraction of blood');
 INSERT INTO tab_groups VALUES('DISEASE_STATE_FACTORS','Disease factors','Disease factor parameters','DISEASE_STATES',NULL,1,1,1,155,NULL,'Disease factor parameters');
-INSERT INTO tab_groups VALUES('COMPOUND_ADVANCED_SOLUBILITY','Advanced solubility','Advanced solubility parameters','COMPOUND',NULL,0,3,0,156,NULL,'Compound - Advanced Solubility');
-INSERT INTO tab_groups VALUES('COMPOUND_BILE_SALT_PARTITION_COEFFICIENT','Partition coefficient (bile salt micelle/water) neutral','Partition coefficient between bile salt micelles and water for the neutral species','COMPOUND',NULL,0,4,0,157,NULL,'Compound - Partition coefficient (bile salt micelle/water) neutral');
+INSERT INTO tab_groups VALUES('COMPOUND_ADVANCED_SOLUBILITY','Advanced Intestinal Solubility','Advanced intestinal solubility parameters','COMPOUND',NULL,0,3,0,156,NULL,'Compound - Advanced Intestinal Solubility');
+INSERT INTO tab_groups VALUES('COMPOUND_BILE_SALT_PARTITION_COEFFICIENT','Bile Salt Micelle Partitioning','Partition coefficient between bile salt micelles and water for the neutral species','COMPOUND',NULL,0,4,0,157,NULL,'Compound - Bile Salt Micelle Partitioning');
 CREATE TABLE [tab_model_calculation_methods](
   [model] text NOT NULL REFERENCES [tab_models]([model]) ON DELETE CASCADE ON UPDATE CASCADE, 
   [calculation_method] text NOT NULL REFERENCES [tab_calculation_methods]([calculation_method]) ON UPDATE CASCADE, 

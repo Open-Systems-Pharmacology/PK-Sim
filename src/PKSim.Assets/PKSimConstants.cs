@@ -2149,7 +2149,7 @@ namespace PKSim.Assets
          public static readonly string InhibitionAndInduction = "Inhibition / Induction";
          public static readonly string DistributionCalculation = "Distribution Calculation";
          public static readonly string SpecificIntestinalPermeability = "Specific Intestinal Permeability";
-         public static readonly string AdvancedSolubility = "Advanced Solubility";
+         public static readonly string AdvancedSolubility = "Advanced Intestinal Solubility";
          public static readonly string Absorption = "Absorption";
          public static readonly string Sink = "Sink";
          public static readonly string AddInhibitionProcess = "Add Inhibition Process...";
