@@ -12069,7 +12069,7 @@ INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affi
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty other ionizable compounds',0,1,0,0,'COMPOUND_SOLUBILITY',16,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 1',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',12,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 2',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',13,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',1,0,1,0,'COMPOUND_BILE_SALT_PARTITION_COEFFICIENT',14,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',14,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) neutral',1,0,1,0,'COMPOUND_BILE_SALT_PARTITION_COEFFICIENT',11,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use bidirectional surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
