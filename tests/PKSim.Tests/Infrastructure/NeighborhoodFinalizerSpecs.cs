@@ -45,6 +45,8 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _flatNeighborhoodRepository.NeighborhoodFrom(_neighborhood.Name)).Returns(flatNeighborhood);
          var containerPath1 = A.Fake<ObjectPath>();
          var containerPath2 = A.Fake<ObjectPath>();
+         A.CallTo(() => containerPath1.PathAsString).Returns("Organism|FirstNeighbor");
+         A.CallTo(() => containerPath2.PathAsString).Returns("Organism|SecondNeighbor");
          A.CallTo(() => _flatContainerRepository.ContainerPathFrom(flatNeighborhood.FirstNeighborId)).Returns(containerPath1);
          A.CallTo(() => _flatContainerRepository.ContainerPathFrom(flatNeighborhood.SecondNeighborId)).Returns(containerPath2);
          A.CallTo(() => containerPath1.Resolve<IContainer>(_organism)).Returns(_firstNeighbor);
