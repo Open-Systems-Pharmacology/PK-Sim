@@ -47,6 +47,31 @@ namespace PKSim.IntegrationTests
          formula.ShouldBeEqualTo("DiffusionLayerGradient < 0 ? (r+SIF > 0 ? r/(r+SIF) : 1) : 1");
       }
 
+      [Observation]
+      public void should_adjust_the_neutral_bile_salt_micelle_water_partition_coefficient_formula()
+      {
+         var formula = formulaFor("PARAM_K_n");
+         formula.ShouldBeEqualTo("max(0; c1*LogP+c2)");
+      }
+
+      [Observation]
+      public void should_adjust_the_ionized_bile_salt_micelle_water_partition_coefficient_formula()
+      {
+         var formula = formulaFor("PARAM_K_i");
+         formula.ShouldBeEqualTo("pKa_Acids_Count = 0 ? (pKa_Bases_Count != 0 ? max(0; K_n - PenaltyBases) : 0) : max(0; K_n-PenaltyOthers)");
+      }
+
+      [Observation]
+      public void should_rename_the_local_kd_fcrn_parameter_of_the_molecule_properties()
+      {
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         var allMoleculePropertiesParameters = parameterRateRepository.All()
+            .Where(p => p.ContainerName.Equals("MoleculeProperties")).ToList();
+
+         allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) in endosomal space of container")).ShouldBeFalse();
+         allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) of container")).ShouldBeTrue();
+      }
+
       private string formulaFor(string rate)
       {
          var rateFormulas = _rateFormulaRepository.All().Where(r => r.Rate.Equals(rate)).ToList();
