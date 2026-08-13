@@ -1772,7 +1772,7 @@ namespace PKSim.Assets
          public static readonly string ImportPopulation = "Import Population";
          public static readonly string PopulationSettings = "Settings";
          public static readonly string PopulationParameterRanges = "Population Parameters Ranges";
-         public static readonly string IndividualIsMeanOfPopulation = "<I>This individual will represent the mean individual of the created population</I>";
+         public static readonly string IndividualIsMeanOfPopulation = "<I>Individuals are sampled from a population with this individual as its mean, then filtered by the ranges below</I>";
          public static readonly string GenderRatio = "Gender Ratio";
          public static readonly string AddButtonText = "Add";
          public static readonly string RemoveButtonText = "Remove";
