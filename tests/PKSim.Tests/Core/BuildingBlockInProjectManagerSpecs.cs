@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Events;
@@ -414,6 +415,94 @@ namespace PKSim.Core
       public void should_return_the_building_block_using_the_building_block()
       {
          _result.ShouldContain(_individual);
+      }
+   }
+
+   public abstract class concern_for_BuildingBlockUsingPKSimEvent : concern_for_BuildingBlockInProjectManager
+   {
+      protected PKSimEvent _pkSimEvent;
+      protected IReadOnlyList<IPKSimBuildingBlock> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _pkSimEvent = new PKSimEvent().WithId("eventId");
+         _simulation1.Properties = new SimulationProperties();
+         _simulation2.Properties = new SimulationProperties();
+         _simulation3.Properties = new SimulationProperties();
+
+         A.CallTo(() => _buildingBlockRepository.All(A<Func<Simulation, bool>>._))
+            .ReturnsLazily(x =>
+            {
+               var predicate = x.GetArgument<Func<Simulation, bool>>(0);
+               return new[] {_simulation1, _simulation2, _simulation3}.Where(predicate).ToList();
+            });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.BuildingBlockUsing(_pkSimEvent);
+      }
+
+      protected void addEventPlaceholderMappingTo(Simulation simulation)
+      {
+         var compoundProperties = new CompoundProperties();
+         compoundProperties.ProtocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping {EventKey = "EVENT_1", TemplateEventId = _pkSimEvent.Id});
+         simulation.Properties.AddCompoundProperties(compoundProperties);
+      }
+   }
+
+   public class When_retrieving_all_building_blocks_using_a_mapped_pksim_event : concern_for_BuildingBlockUsingPKSimEvent
+   {
+      protected override void Context()
+      {
+         base.Context();
+         addEventPlaceholderMappingTo(_simulation1);
+         _simulation2.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event));
+      }
+
+      [Observation]
+      public void should_return_the_simulation_referencing_the_event_via_an_event_placeholder_mapping()
+      {
+         _result.ShouldContain(_simulation1);
+      }
+
+      [Observation]
+      public void should_return_the_simulation_using_the_event_as_used_building_block()
+      {
+         _result.ShouldContain(_simulation2);
+      }
+
+      [Observation]
+      public void should_not_return_a_simulation_not_using_the_event()
+      {
+         _result.ShouldNotContain(_simulation3);
+      }
+   }
+
+   public class When_retrieving_all_building_blocks_using_a_pksim_event_mapped_and_used_in_the_same_simulation : concern_for_BuildingBlockUsingPKSimEvent
+   {
+      protected override void Context()
+      {
+         base.Context();
+         addEventPlaceholderMappingTo(_simulation1);
+         _simulation1.AddUsedBuildingBlock(new UsedBuildingBlock(_pkSimEvent.Id, PKSimBuildingBlockType.Event));
+      }
+
+      [Observation]
+      public void should_return_the_simulation_only_once()
+      {
+         _result.Count.ShouldBeEqualTo(1);
+         _result.ShouldContain(_simulation1);
+      }
+   }
+
+   public class When_retrieving_all_building_blocks_using_a_pksim_event_not_used_anywhere : concern_for_BuildingBlockUsingPKSimEvent
+   {
+      [Observation]
+      public void should_return_an_empty_list()
+      {
+         _result.ShouldBeEmpty();
       }
    }
 }
