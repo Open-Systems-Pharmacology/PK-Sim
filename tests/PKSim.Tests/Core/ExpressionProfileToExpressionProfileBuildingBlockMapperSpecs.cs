@@ -153,6 +153,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void the_molecule_builder_should_not_be_created_in_the_formula_cache_of_the_building_block()
+      {
+         A.CallTo(() => _moleculeBuilderFactory.Create(A<QuantityType>._, A<IFormulaCache>.That.IsSameAs(_result.FormulaCache))).MustNotHaveHappened();
+      }
+
+      [Observation]
       public void resulting_expression_parameter_should_have_formula_or_value()
       {
          _result.ExpressionParameters.Count(x => x.Formula == null).ShouldBeEqualTo(1);

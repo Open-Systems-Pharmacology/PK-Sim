@@ -58,7 +58,9 @@ namespace PKSim.Core.Mappers
 
       private void addInitialConditions(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         var builder = _moleculeBuilderFactory.Create(expressionProfile.Molecule.MoleculeType, expressionProfileBuildingBlock.FormulaCache)
+         //the builder is discarded once the initial conditions are created. Its formulas are created with template ids
+         //that would be identical in every expression profile, so they are kept out of the building block formula cache
+         var builder = _moleculeBuilderFactory.Create(expressionProfile.Molecule.MoleculeType, new BuildingBlockFormulaCache())
             .WithName(expressionProfile.Molecule.Name);
 
          _initialConditionsCreator.AddToExpressionProfile(expressionProfileBuildingBlock, expressionProfile.Individual.AllPhysicalContainersWithMoleculeFor(expressionProfile.Molecule), builder);
