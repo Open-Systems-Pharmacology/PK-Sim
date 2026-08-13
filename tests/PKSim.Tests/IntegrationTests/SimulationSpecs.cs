@@ -365,8 +365,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationExporter = IoC.Resolve<IMoBiExportTask>();
-         await simulationExporter.ExportSimulationToPkmlFileAsync(_simulation, "C:\\temp\\bug.pkml");
+         //var simulationExporter = IoC.Resolve<IMoBiExportTask>();
+         //await simulationExporter.ExportSimulationToPkmlFileAsync(_simulation, "C:\\temp\\bug.pkml");
 
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -381,6 +381,42 @@ namespace PKSim.IntegrationTests
          allParameters.Count().ShouldBeEqualTo(0);
       }
    }
+
+   public class When_creating_an_individual_simulation_2pores_with_nearly_zero_lymph_flow : concern_for_IndividualSimulation
+   {
+      private SimulationConfiguration _simulationConfiguration;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _workspace.Project.AddBuildingBlock(_individual);
+         _workspace.Project.AddBuildingBlock(_protocol);
+         _workspace.Project.AddBuildingBlock(_compound);
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
+         var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _simulation.Model.Root
+            .EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, CoreConstants.Parameters.LYMPH_FLOW)
+            .Value = 1E-20;
+      }
+
+      [Observation]
+      public void all_simulation_parameters_should_be_not_nan_and_finite()
+      {
+         var invalidParameters = _simulation.All<IParameter>().Where(x => !x.Value.IsFinite()).ToList();
+         invalidParameters.Count.ShouldBeEqualTo(0, $"The following parameters are NaN or Infinity: {string.Join(", ", invalidParameters.Select(x => x.EntityPath()))}");
+      }
+
+      [Observation]
+      public async Task should_be_able_to_simulate_the_simulation()
+      {
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
+         _simulation.HasResults.ShouldBeTrue();
+      }
+   }
+
 
    public class When_creating_a_simulation_for_a_subject_allowing_aging : concern_for_IndividualSimulation
    {
