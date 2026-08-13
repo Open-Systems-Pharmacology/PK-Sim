@@ -23,6 +23,38 @@ namespace PKSim.IntegrationTests
    {
    }
 
+   public class When_checking_the_changes_in_the_database_for_version_13_0 : concern_for_DatabaseUpdate
+   {
+      private IRateFormulaRepository _rateFormulaRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+      }
+
+      [Observation]
+      public void should_adjust_the_diffusion_layer_gradient_formula()
+      {
+         var formula = formulaFor("PARAM_Diffusion_layer_gradient");
+         formula.StartsWith("hu>0 AND hb>0 AND Liquid>0 ?").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_adjust_the_absolute_surface_integration_factor_formula()
+      {
+         var formula = formulaFor("PARAM_Surface_integration_factor_absolute");
+         formula.ShouldBeEqualTo("DiffusionLayerGradient < 0 ? (r+SIF > 0 ? r/(r+SIF) : 1) : 1");
+      }
+
+      private string formulaFor(string rate)
+      {
+         var rateFormulas = _rateFormulaRepository.All().Where(r => r.Rate.Equals(rate)).ToList();
+         rateFormulas.Count.ShouldBeEqualTo(1);
+         return rateFormulas[0].Formula;
+      }
+   }
+
    public class When_checking_the_changes_in_the_database_for_version_12_0 : concern_for_DatabaseUpdate
    {
       [Observation]
