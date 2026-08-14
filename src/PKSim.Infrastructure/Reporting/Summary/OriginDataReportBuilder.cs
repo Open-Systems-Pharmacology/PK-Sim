@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
@@ -50,21 +51,21 @@ namespace PKSim.Infrastructure.Reporting.Summary
          if (originData.Population.IsAgeDependent)
          {
             if (originData.Age != null)
-               individualProperties.AddIs(PKSimConstants.UI.Age, displayValueFor(originData.Age), originData.Age.Unit);
+               individualProperties.AddIs(PKSimConstants.UI.Age, displayValueFor(originData.Age, _dimensionRepository.AgeInYears), originData.Age.Unit);
 
             if (originData.Population.IsPreterm && originData.GestationalAge != null)
-               individualProperties.AddIs(PKSimConstants.UI.GestationalAge, displayValueFor(originData.GestationalAge), originData.GestationalAge.Unit);
+               individualProperties.AddIs(PKSimConstants.UI.GestationalAge, displayValueFor(originData.GestationalAge, _dimensionRepository.AgeInWeeks), originData.GestationalAge.Unit);
          }
 
-         individualProperties.AddIs(PKSimConstants.UI.Weight, displayValueFor(originData.Weight), originData.Weight.Unit);
+         individualProperties.AddIs(PKSimConstants.UI.Weight, displayValueFor(originData.Weight, _dimensionRepository.Mass), originData.Weight.Unit);
 
          if (originData.Population.IsHeightDependent)
          {
             if (originData.Height != null)
-               individualProperties.AddIs(PKSimConstants.UI.Height, displayValueFor(originData.Height), originData.Height.Unit);
+               individualProperties.AddIs(PKSimConstants.UI.Height, displayValueFor(originData.Height, _dimensionRepository.Length), originData.Height.Unit);
 
             if (originData.BMI != null)
-               individualProperties.AddIs(PKSimConstants.UI.BMI, displayValueFor(originData.BMI), originData.BMI.Unit);
+               individualProperties.AddIs(PKSimConstants.UI.BMI, displayValueFor(originData.BMI, _dimensionRepository.BMI), originData.BMI.Unit);
          }
 
          reportPart.AddPart(populationProperties);
@@ -86,9 +87,13 @@ namespace PKSim.Infrastructure.Reporting.Summary
          reportPart.AddPart(_reportGenerator.ReportFor(originData.AllCalculationMethods()));
       }
 
-      private string displayValueFor(OriginDataParameter originDataParameter)
+      //Fallback for disease state parameters where the dimension is not statically known.
+      //DimensionForUnit can return an incorrect dimension when the unit name is defined in multiple dimensions.
+      private string displayValueFor(OriginDataParameter originDataParameter) =>
+         displayValueFor(originDataParameter, _dimensionRepository.DimensionForUnit(originDataParameter.Unit));
+
+      private string displayValueFor(OriginDataParameter originDataParameter, IDimension dimension)
       {
-         var dimension = _dimensionRepository.DimensionForUnit(originDataParameter.Unit);
          if (dimension != null)
          {
             var displayUnit = dimension.UnitOrDefault(originDataParameter.Unit);
