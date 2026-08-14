@@ -87,13 +87,13 @@ namespace PKSim.Infrastructure.Reporting.Summary
          reportPart.AddPart(_reportGenerator.ReportFor(originData.AllCalculationMethods()));
       }
 
-      //Fallback for disease state parameters where the dimension is not statically known.
-      //DimensionForUnit can return an incorrect dimension when the unit name is defined in multiple dimensions.
-      private string displayValueFor(OriginDataParameter originDataParameter) =>
-         displayValueFor(originDataParameter, _dimensionRepository.DimensionForUnit(originDataParameter.Unit));
-
-      private string displayValueFor(OriginDataParameter originDataParameter, IDimension dimension)
+      //When the dimension is not known statically (disease state parameters), it is resolved from the unit
+      //name. DimensionForUnit can return an incorrect dimension when the unit name is defined in multiple
+      //dimensions, so callers pass the dimension explicitly whenever they know it.
+      private string displayValueFor(OriginDataParameter originDataParameter, IDimension dimension = null)
       {
+         dimension ??= _dimensionRepository.DimensionForUnit(originDataParameter.Unit);
+
          if (dimension != null)
          {
             var displayUnit = dimension.UnitOrDefault(originDataParameter.Unit);
