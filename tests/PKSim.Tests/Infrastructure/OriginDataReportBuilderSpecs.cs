@@ -60,7 +60,8 @@ namespace PKSim.Infrastructure
             Age = new OriginDataParameter(0.1, "year(s)"),
             GestationalAge = new OriginDataParameter(30, "week(s)"),
             Weight = new OriginDataParameter(1.5, "kg"),
-            Height = new OriginDataParameter(4.454, "dm")
+            Height = new OriginDataParameter(4.454, "dm"),
+            BMI = new OriginDataParameter(0.0756, "kg/m²")
          };
       }
 
@@ -88,6 +89,7 @@ namespace PKSim.Infrastructure
          valuesFor(PKSimConstants.UI.Age).ShouldOnlyContainInOrder("0.10", "year(s)");
          valuesFor(PKSimConstants.UI.Weight).ShouldOnlyContainInOrder("1.50", "kg");
          valuesFor(PKSimConstants.UI.Height).ShouldOnlyContainInOrder("4.45", "dm");
+         valuesFor(PKSimConstants.UI.BMI).ShouldOnlyContainInOrder("7.56", "kg/m²");
       }
    }
 }
