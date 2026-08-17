@@ -34,9 +34,6 @@
     <Content Include="$(PkgOSPSuite_Presentation)\OSPSuite.Presentation\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(PkgOSPSuite_TeXReporting)\OSPSuite.TeXReporting\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\templates\templates.json" Link="templates.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -71,7 +68,6 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
     <PackageReference Include="OSPSuite.Presentation" Version="13.0.149" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>

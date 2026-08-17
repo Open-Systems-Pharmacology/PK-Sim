@@ -1150,12 +1150,8 @@ namespace PKSim.Assets
          public static readonly string HistoryView = UI.History;
          public static readonly string ComparisonView = UI.Comparison;
          public static readonly string ExportToExcelMenu = $"Export to {UI.Excel}";
-         public static readonly string ExportToPDFMenu = "Export to PDF";
          public static readonly string ExportToPKML = "Export to pkml...";
          public static readonly string ReloadAllRelated = "Reload all under same settings";
-         public static readonly string ExportSimulationToPDFMenu = "PDF";
-         public static readonly string ProjectReport = "Project Report";
-         public static readonly string Report = "Report";
          public static readonly string ExportSimulationResultsToExcel = $"Export Results to {UI.Excel}...";
          public static readonly string ExportSimulationResultsToExcelMenu = $"Results to {UI.Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export Results to {"CSV"}...";
@@ -1888,8 +1884,6 @@ namespace PKSim.Assets
          public static readonly string UndoDescription = "Undo the last action";
          public static readonly string AddObservedDataDescription = "Add observed data (concentration, amount, fraction) to the project...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";
-         public static readonly string ExportHistoryToPDFDescription = "Export history to PDF file...";
-         public static readonly string ProjectReportDescription = "Export project to a pdf file...";
          public static readonly string SaveProjectDescription = "Save the project...";
          public static readonly string SaveProjectAsDescription = "Save the project to a new file...";
          public static readonly string CompoundTwoPoreParametersNote = "These parameters are only used in a simulation where the model for proteins and large molecules was selected. Their values are irrelevant otherwise and can be left as is.";
@@ -2023,8 +2017,6 @@ namespace PKSim.Assets
          public static readonly string PopulationFilePath = "Population File Path";
          public static readonly string LoadingApplication = "Loading Application...";
          public static readonly string UpdateAvailable = "Update available...";
-         public static readonly string ReportCreationStarted = "Report creation started...";
-         public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string CheckForUpdate = "Check for Update";
          public static readonly string Template = "Template";
          public static readonly string OnlyShowQualifiedTemplates = "Only show OSP library released templates";
@@ -2525,10 +2517,6 @@ namespace PKSim.Assets
          {
             return $"{buildingBlockNames.ToString(", ", "'")} \nsuccessfully saved in the template database.";
          }
-
-         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
-
-         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
          public static string CreateGroupingForField(string fieldName) => $"Create Grouping for '{fieldName}'";
 

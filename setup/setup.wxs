@@ -109,14 +109,6 @@
                 </Component>
               </Directory>
 
-              <Directory Id="TeXTemplatesFolder" Name="TeXTemplates">
-                <Component Id="TeXTemplatesFolder" Guid="1EB74549-916C-42E1-B40B-199B43DF2ECC">
-                  <CreateFolder Directory="TeXTemplatesFolder">
-                    <Permission User="Everyone" GenericAll="yes" />
-                  </CreateFolder>
-                </Component>
-              </Directory>
-
               <Directory Id="ExamplesFolder" Name="Examples">
                 <Component Id="ExamplesFolder" Guid="4CCE3113-8250-40AF-A9ED-7A9AC0CFED1B">
                   <CreateFolder Directory="ExamplesFolder">
@@ -166,7 +158,6 @@
     <Feature Id="Main" Title="$(var.ProductName)" Level="1" Absent="disallow" AllowAdvertise="no">
       <ComponentGroupRef Id="App" />
       <ComponentGroupRef Id="ChartLayouts" />
-      <ComponentGroupRef Id="OSPSuite.TeXReporting" />
 
       <ComponentRef Id="PKSim.exe" />
       <ComponentRef Id="OSPSuiteMenuDir" />
@@ -178,7 +169,6 @@
       <ComponentRef Id="OSPSuiteLicense" />
       <ComponentRef Id="PKSimTemplateDBSystem" />
       <ComponentRef Id="ChartLayoutsFolder" />
-      <ComponentRef Id="TeXTemplatesFolder" />
       <ComponentRef Id="ExamplesFolder" />
       <ComponentRef Id="ExampleFolderShortCut" />
       <ComponentRef Id="ExamplesReadMe" />

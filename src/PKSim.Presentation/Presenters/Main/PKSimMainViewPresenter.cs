@@ -2,7 +2,6 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.UICommands;
-using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -17,10 +16,7 @@ using PKSim.Presentation.Views.Main;
 namespace PKSim.Presentation.Presenters.Main
 {
    public interface IPKSimMainViewPresenter : IMainViewPresenter,
-      IListener<ShowNotificationEvent>,
-      IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>
-
+      IListener<ShowNotificationEvent>
    {
       StartOptions StartOptions { get; set; }
    }
@@ -104,18 +100,6 @@ namespace PKSim.Presentation.Presenters.Main
          _projectTask.OpenProjectFrom(fileName);
       }
 
-      public void Handle(ReportCreationStartedEvent reportStartedEvent)
-      {
-         _view.DisplayNotification(PKSimConstants.UI.ReportCreationStarted,
-            PKSimConstants.UI.ReportCreationStartedMessage(reportStartedEvent.ReportFullPath), string.Empty);
-      }
-
-      public void Handle(ReportCreationFinishedEvent reportFinishedEvent)
-      {
-         _view.DisplayNotification(PKSimConstants.UI.ReportCreationFinished,
-            PKSimConstants.UI.ReportCreationFinishedMessage(reportFinishedEvent.ReportFullPath), reportFinishedEvent.ReportFullPath);
-      }
-      
       public void Handle(ShowNotificationEvent eventToHandle)
       {
          showNotification(eventToHandle.Caption, eventToHandle.Notification, eventToHandle.Url);

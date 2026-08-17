@@ -28,7 +28,6 @@ namespace PKSim.Core
       private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
       private static readonly string PATH_TO_DOCS = "..\\..\\..\\..\\..\\docs\\";
       public static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
-      private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
       public static string DataFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA);
 
@@ -41,8 +40,6 @@ namespace PKSim.Core
       public static string SimulationResultsFilePathFor(string fileNameWithoutExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "SimulationResultsFiles", fileNameWithoutExtension + ".csv");
 
       public static string PKAnalysesFilePathFor(string fileNameWithoutExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PKAnalysesFiles", fileNameWithoutExtension + ".csv");
-
-      public static string TEXTemplateFolder() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_TEMPLATES, "StandardTemplate");
 
       public static string UserTemplateDatabasePath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBUser.template");
       
