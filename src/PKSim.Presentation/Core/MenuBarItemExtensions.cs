@@ -39,7 +39,7 @@ namespace PKSim.Presentation.Core
 
       public static IMenuBarButton WithCommitSimulationParametersCommandFor(this IMenuBarButton menuBarItem, Simulation simulation, Compound compound)
       {
-         var command = IoC.Resolve<CommitSimulationParametersToCompoundsUICommand>();
+         var command = IoC.Resolve<CommitSimulationParametersToCompoundUICommand>();
          command.Subject = simulation;
          command.CompoundFilter = compound;
          return menuBarItem.WithCommand(command);

@@ -8,7 +8,7 @@ using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class CommitSimulationParametersToCompoundsUICommand : ObjectUICommand<Simulation>
+   public class CommitSimulationParametersToCompoundUICommand : ObjectUICommand<Simulation>
    {
       private readonly IApplicationController _applicationController;
       private readonly ICommitSimulationParametersTask _commitTask;
@@ -20,7 +20,7 @@ namespace PKSim.Presentation.UICommands
       /// </summary>
       public Compound CompoundFilter { get; set; }
 
-      public CommitSimulationParametersToCompoundsUICommand(
+      public CommitSimulationParametersToCompoundUICommand(
          IApplicationController applicationController,
          ICommitSimulationParametersTask commitTask,
          IBuildingBlockTask buildingBlockTask,

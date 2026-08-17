@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          }
 
          if (_simulation is IndividualSimulation && _simulation.HasUncommittedChangesForCompound(templateBuildingBlock.Name))
-            yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CommitSimulationParametersToCompounds)
+            yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CommitSimulationParametersToCompound)
                .WithCommitSimulationParametersCommandFor(_simulation, templateBuildingBlock)
                .WithIcon(ApplicationIcons.Commit);
       }
