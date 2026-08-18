@@ -8,7 +8,6 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -33,8 +32,6 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<ApplicationInitializedEvent>,
       IListener<JournalLoadedEvent>,
       IListener<JournalClosedEvent>,
-      IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>,
       IListener<SimulationRunStartedEvent>,
       IListener<SimulationRunFinishedEvent>,
       IListener<ProgressDoneWithMessageEvent>,
@@ -46,7 +43,6 @@ namespace PKSim.Presentation.Presenters.Main
    {
       private readonly IStatusBarView _view;
       private readonly IApplicationConfiguration _applicationConfiguration;
-      private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
       private readonly IEventPublisher _eventPublisher;
       private readonly IInteractiveSimulationRunner _interactiveSimulationRunner;
@@ -252,19 +248,6 @@ namespace PKSim.Presentation.Presenters.Main
             .WithCaption($"{message}");
       }
 
-      private void updateReportInfo()
-      {
-         string caption = "";
-         if (_numberOfReportsBeingCreated == 1)
-            caption = "1 report is being created...";
-
-         else if (_numberOfReportsBeingCreated > 1)
-            caption = $"{_numberOfReportsBeingCreated} reports are being created...";
-
-         update(StatusBarElements.Report)
-            .WithCaption(caption);
-      }
-
       private void setProgressBarVisibility()
       {
          var activeSimulationsCount = _interactiveSimulationRunner.ActiveSimulationsCount;
@@ -305,18 +288,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void ReleaseFrom(IEventPublisher eventPublisher)
       {
          eventPublisher.RemoveListener(this);
-      }
-
-      public void Handle(ReportCreationStartedEvent eventToHandle)
-      {
-         _numberOfReportsBeingCreated++;
-         updateReportInfo();
-      }
-
-      public void Handle(ReportCreationFinishedEvent eventToHandle)
-      {
-         _numberOfReportsBeingCreated--;
-         updateReportInfo();
       }
    }
 }

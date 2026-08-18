@@ -41,7 +41,6 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
-		"#{relative_src_dir}/TeXTemplates/**/*.*",
 		'examples/*.txt',
 		'src/PKSim.UI/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
@@ -73,7 +72,6 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	
 	# Copy folder structure so that the portable setups works as expected
 	FileUtils.mkdir_p setup_temp_dir
-	FileUtils.copy_entry File.join(src_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
 	FileUtils.copy_entry File.join(src_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
 
 	dst_dir = File.join(setup_temp_dir, 'runtimes', 'win-x64', 'native')
@@ -139,10 +137,6 @@ task :postclean do |t, args|
 
 	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
 		copy_files 'ChartLayouts', 'xml'
-	end
-
-	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
-		copy_files 'StandardTemplate', '*'
 	end
 end
 
