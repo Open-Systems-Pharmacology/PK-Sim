@@ -72,11 +72,23 @@ namespace PKSim.Core.Services
          var synchronizeCommand = synchronizeBuildingBlocks(templateBuildingBlock, updateTemplateParametersCommand, simulation);
          updateCommands.Add(synchronizeCommand);
 
+         //then bring over the overwrite parameter sets defined in the template so that both compounds are in sync
+         updateCommands.Add(updateOverwriteParameterSets(templateBuildingBlock, usedBuildingBlock));
+
          //now make sure that the used building block is updated with the template building block info
          updateCommands.Add(new UpdateUsedBuildingBlockInfoCommand(simulation, usedBuildingBlock, templateBuildingBlock, _executionContext).Run(_executionContext));
 
          _executionContext.PublishEvent(new BuildingBlockUpdatedEvent(templateBuildingBlock));
          return updateCommands;
+      }
+
+      private ICommand updateOverwriteParameterSets(IPKSimBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock)
+      {
+         if (templateBuildingBlock is not Compound templateCompound)
+            return new PKSimEmptyCommand();
+
+         var simulationCompound = usedBuildingBlock.BuildingBlock.DowncastTo<Compound>();
+         return new ReplaceOverwriteParameterSetsInCompoundCommand(simulationCompound, templateCompound.OverwriteParameterSets).Run(_executionContext);
       }
 
       private ICommand synchronizeBuildingBlocks(IPKSimBuildingBlock templateBuildingBlock, IPKSimMacroCommand updateTemplateParametersCommand, Simulation simulation)
