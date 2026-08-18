@@ -4,8 +4,8 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using IBuildingBlockRepository = PKSim.Core.Repositories.IBuildingBlockRepository;
@@ -53,12 +53,14 @@ namespace PKSim.Core.Services
       private readonly IExecutionContext _executionContext;
       private readonly IContainerTask _containerTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IObjectBaseFactory _objectBaseFactory;
 
-      public CommitSimulationParametersTask(IExecutionContext executionContext, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository)
+      public CommitSimulationParametersTask(IExecutionContext executionContext, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository, IObjectBaseFactory objectBaseFactory)
       {
          _executionContext = executionContext;
          _containerTask = containerTask;
          _buildingBlockRepository = buildingBlockRepository;
+         _objectBaseFactory = objectBaseFactory;
       }
 
       public ICommand CommitParametersToCompound(Simulation simulation, CompoundCommitInfo commitInfo)
@@ -73,24 +75,29 @@ namespace PKSim.Core.Services
             ? createNewSetsCommand(simulationCompound, templateCompound, commitInfo.OverwriteParameterSetName, parameterValues)
             : updateExistingSetsCommand(simulationCompound, templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, simulation, commitInfo.ParameterPaths, parameterCache);
 
+         //Only untrack paths that were actually resolved to parameter values
+         command.Add(new SetSimulationParameterTrackingCommand(simulation, parameterValues.Select(pv => pv.Path.PathAsString).ToList(), tracked: false));
+
          command.Run(_executionContext);
 
-         command.All().Each(subCommand => _executionContext.UpdateBuildingBlockPropertiesInCommand(subCommand, simulationCompound));
          _executionContext.UpdateBuildingBlockPropertiesInCommand(command, simulationCompound);
 
-         //Only untrack paths that were actually resolved to parameter values
-         parameterValues.Each(pv => simulation.ParameterChangeTracker.Untrack(pv.Path));
-
-         _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
-         
          return command;
       }
 
       private PKSimMacroCommand createNewSetsCommand(Compound simulationCompound, Compound templateCompound, string setName, List<ParameterValue> parameterValues)
       {
-         var command = new PKSimMacroCommand();
+         var command = new PKSimMacroCommand
+         {
+            ObjectType = PKSimConstants.ObjectTypes.OverwriteParameterSet,
+            CommandType = PKSimConstants.Command.CommandTypeAdd,
+            Description = PKSimConstants.Command.CommitSimulationParametersToCompound(setName, templateCompound.Name)
+         };
 
-         command.Add(addOverwriteParameterSetCommand(simulationCompound, setName, parameterValues));
+         var simulationCompoundCommand = addOverwriteParameterSetCommand(simulationCompound, setName, parameterValues);
+         simulationCompoundCommand.Visible = false;
+
+         command.Add(simulationCompoundCommand);
          command.Add(addOverwriteParameterSetCommand(templateCompound, setName, parameterValues));
 
          return command;
@@ -98,7 +105,7 @@ namespace PKSim.Core.Services
 
       private ICommand addOverwriteParameterSetCommand(Compound compound, string setName, List<ParameterValue> parameterValues)
       {
-         var newSet = new OverwriteParameterSet { Name = setName };
+         var newSet = _objectBaseFactory.Create<OverwriteParameterSet>().WithName(setName);
          parameterValues.Each(newSet.Add);
          return new AddOverwriteParameterSetToCompoundCommand(newSet, compound);
       }
@@ -120,13 +127,18 @@ namespace PKSim.Core.Services
       private PKSimMacroCommand updateExistingSetsCommand(Compound simulationCompound, Compound templateCompound, string setName,
          List<ParameterValue> parameterValues, Simulation simulation, IReadOnlyList<string> parameterPaths, PathCache<IParameter> parameterCache)
       {
-         var command = new PKSimMacroCommand();
+         var command = new PKSimMacroCommand
+         {
+            ObjectType = PKSimConstants.ObjectTypes.OverwriteParameterSet,
+            CommandType = PKSimConstants.Command.CommandTypeUpdate,
+            Description = PKSimConstants.Command.CommitSimulationParametersToCompound(setName, templateCompound.Name)
+         };
 
          var existingSimulationSet = simulationCompound.OverwriteParameterSets.FindByName(setName);
          var existingTemplateSet = templateCompound.OverwriteParameterSets.FindByName(setName);
          var pathsToRemove = pathsResetByUser(existingSimulationSet, parameterPaths, simulation, parameterCache);
 
-         command.Add(new UpdateOverwriteParameterSetCommand(existingSimulationSet, simulationCompound, parameterValues, pathsToRemove));
+         command.Add(new UpdateOverwriteParameterSetCommand(existingSimulationSet, simulationCompound, parameterValues, pathsToRemove) { Visible = false });
          command.Add(new UpdateOverwriteParameterSetCommand(existingTemplateSet, templateCompound, parameterValues, pathsToRemove));
 
          return command;
