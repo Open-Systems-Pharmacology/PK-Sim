@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -65,6 +66,9 @@ namespace PKSim.Core.Services
             updateCommands.Add(command);
          }
 
+         //then bring over the overwrite parameter sets defined in the template so that they can be selected in the simulation
+         updateCommands.Add(updateOverwriteParameterSets(templateBuildingBlock, usedBuildingBlock));
+
          //now make sure that the used building block is updated with the template building block info
          updateCommands.Add(new UpdateUsedBuildingBlockInfoCommand(simulation, usedBuildingBlock, templateBuildingBlock, _executionContext).Run(_executionContext));
 
@@ -75,6 +79,15 @@ namespace PKSim.Core.Services
 
          synchronizeBuildingBlocks(templateBuildingBlock, simulation);
          return updateCommands;
+      }
+
+      private ICommand updateOverwriteParameterSets(IPKSimBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock)
+      {
+         if (templateBuildingBlock is not Compound templateCompound)
+            return new PKSimEmptyCommand();
+
+         var simulationCompound = usedBuildingBlock.BuildingBlock.DowncastTo<Compound>();
+         return new UpdateOverwriteParameterSetsCommand(simulationCompound, templateCompound.OverwriteParameterSets).Run(_executionContext);
       }
 
       /// <summary>
