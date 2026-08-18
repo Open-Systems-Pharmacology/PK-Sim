@@ -279,8 +279,8 @@ namespace PKSim.Assets
          public static string UpdateOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
             $"Update {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
-         public static string UpdateOverwriteParameterSetsInCompound(string compoundName) =>
-            $"Update {ObjectTypes.OverwriteParameterSet.ToLower()}s in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+         public static string ReplaceOverwriteParameterSetsInCompound(string compoundName) =>
+            $"Replace {ObjectTypes.OverwriteParameterSet.ToLower()}s in {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
          public static string SetDefaultOverwriteParameterSetInCompound(string overwriteParameterSetName, string compoundName) =>
             $"Set {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' as default in {ObjectTypes.Compound.ToLower()} '{compoundName}'";

@@ -13,17 +13,17 @@ namespace PKSim.Core.Commands
    ///    both compounds are matched by name and updated in place, so that a simulation having selected such a set keeps
    ///    its selection.
    /// </summary>
-   public class UpdateOverwriteParameterSetsCommand : BuildingBlockChangeCommand<Compound>
+   public class ReplaceOverwriteParameterSetsInCompoundCommand : BuildingBlockChangeCommand<Compound>
    {
       private readonly IReadOnlyList<OverwriteParameterSet> _sourceSets;
       private IReadOnlyList<OverwriteParameterSet> _previousSets;
 
-      public UpdateOverwriteParameterSetsCommand(Compound compound, IReadOnlyList<OverwriteParameterSet> sourceSets)
+      public ReplaceOverwriteParameterSetsInCompoundCommand(Compound compound, IReadOnlyList<OverwriteParameterSet> sourceSets)
          : base(compound)
       {
          _sourceSets = sourceSets.ToList();
          CommandType = PKSimConstants.Command.CommandTypeUpdate;
-         Description = PKSimConstants.Command.UpdateOverwriteParameterSetsInCompound(compound.Name);
+         Description = PKSimConstants.Command.ReplaceOverwriteParameterSetsInCompound(compound.Name);
          Visible = false;
       }
 
@@ -54,6 +54,6 @@ namespace PKSim.Core.Commands
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context) =>
-         new UpdateOverwriteParameterSetsCommand(_buildingBlock, _previousSets).AsInverseFor(this);
+         new ReplaceOverwriteParameterSetsInCompoundCommand(_buildingBlock, _previousSets).AsInverseFor(this);
    }
 }

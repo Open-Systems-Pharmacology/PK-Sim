@@ -87,7 +87,7 @@ namespace PKSim.Core.Services
             return new PKSimEmptyCommand();
 
          var simulationCompound = usedBuildingBlock.BuildingBlock.DowncastTo<Compound>();
-         return new UpdateOverwriteParameterSetsCommand(simulationCompound, templateCompound.OverwriteParameterSets).Run(_executionContext);
+         return new ReplaceOverwriteParameterSetsInCompoundCommand(simulationCompound, templateCompound.OverwriteParameterSets).Run(_executionContext);
       }
 
       /// <summary>
