@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using ModelOverwriteParameterSet = PKSim.Core.Model.OverwriteParameterSet;
 using ModelParameterValue = OSPSuite.Core.Domain.Builder.ParameterValue;
 using OverwriteParameterSetMapper = PKSim.Core.Snapshots.Mappers.OverwriteParameterSetMapper;
@@ -22,10 +23,13 @@ namespace PKSim.Core
       protected ParameterValueMapper _parameterValueMapper;
       protected ExtendedPropertyMapper _extendedPropertyMapper;
       protected IObjectBaseFactory _objectBaseFactory;
+      protected IDimensionRepository _dimensionRepository;
 
       protected override Task Context()
       {
-         _parameterValueMapper = new ParameterValueMapper();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         A.CallTo(() => _dimensionRepository.DimensionByName(A<string>._)).Returns(Constants.Dimension.NO_DIMENSION);
+         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository);
          _extendedPropertyMapper = new ExtendedPropertyMapper();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          A.CallTo(() => _objectBaseFactory.Create<ModelOverwriteParameterSet>()).ReturnsLazily(() => new ModelOverwriteParameterSet { Id = "NewSetId" });
@@ -90,7 +94,9 @@ namespace PKSim.Core
    {
       protected override Task Context()
       {
-         _parameterValueMapper = new ParameterValueMapper();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         A.CallTo(() => _dimensionRepository.DimensionByName(A<string>._)).Returns(Constants.Dimension.NO_DIMENSION);
+         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository);
          _extendedPropertyMapper = new ExtendedPropertyMapper();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper, _objectBaseFactory);

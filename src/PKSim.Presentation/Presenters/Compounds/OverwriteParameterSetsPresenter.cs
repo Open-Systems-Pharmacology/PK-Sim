@@ -19,7 +19,11 @@ namespace PKSim.Presentation.Presenters.Compounds;
 
 public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, IListener<OverwriteParameterSetChangedEvent>, IListener<RenamedEvent>
 {
-   void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValue);
+   /// <summary>
+   ///    Updates the value of <paramref name="parameterValueDTO" />. <paramref name="newValueInDisplayUnit" /> is given in the
+   ///    display unit of the parameter value.
+   /// </summary>
+   void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValueInDisplayUnit);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
    void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);
    void RemoveSet(OverwriteParameterSetDTO setDTO);
@@ -91,8 +95,9 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
       rebindView();
    }
 
-   public void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValue) =>
-      AddCommand(_overwriteParameterSetTask.UpdateParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString, newValue));
+   public void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValueInDisplayUnit) =>
+      AddCommand(_overwriteParameterSetTask.UpdateParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString,
+         parameterValueDTO.ValueInBaseUnit(newValueInDisplayUnit)));
 
    public void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO) =>
       AddCommand(_overwriteParameterSetTask.RemoveParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString));

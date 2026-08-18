@@ -143,7 +143,10 @@ namespace PKSim.Core.Services
                return new ParameterValue
                {
                   Path = path.ToObjectPath(),
-                  Value = parameter.Value
+                  Value = parameter.Value,
+                  Dimension = parameter.Dimension,
+                  DisplayUnit = parameter.DisplayUnit,
+                  Info = parameter.Info.Clone()
                };
             })
             .Where(pv => pv != null)

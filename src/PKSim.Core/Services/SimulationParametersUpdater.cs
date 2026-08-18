@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using System.Linq;
+using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
@@ -9,6 +10,8 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Updates all simulation parameter values from the source simulation in the target simulation. Returns a <see cref="ValidationResult"/> containing
       /// one message for each parameter that was changed in the <paramref name="sourceSimulation "/> and that does not exist in the <paramref name="targetSimulation"/> anymore.
+      /// Parameters whose value is defined by an <see cref="OverwriteParameterSet"/> selected in the <paramref name="targetSimulation"/> are not reported: their
+      /// value is not lost but taken from the overwrite parameter set.
       /// </summary>
       /// <param name="sourceSimulation">Simulation with the original values</param>
       /// <param name="targetSimulation">Simulation that will be updated</param>
@@ -32,15 +35,18 @@ namespace PKSim.Core.Services
          var sourceParameters = simulationParametersCacheFor(sourceSimulation, buildingBlockType);
          var targetParameters = simulationParametersCacheFor(targetSimulation, buildingBlockType);
          _parameterSetUpdater.UpdateValues(sourceParameters, targetParameters);
-         return validateParameterUpdates(sourceParameters, targetParameters);
+         return validateParameterUpdates(sourceParameters, targetParameters, targetSimulation);
       }
 
-      private ValidationResult validateParameterUpdates(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
+      private ValidationResult validateParameterUpdates(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, Simulation targetSimulation)
       {
          var validationResult = new ValidationResult();
          foreach (var sourceParameterKeyValue in sourceParameters.KeyValues)
          {
             if (targetParameters.Contains(sourceParameterKeyValue.Key))
+               continue;
+
+            if (isDefinedByOverwriteParameterSet(targetSimulation, sourceParameterKeyValue.Key))
                continue;
 
             var sourceParameter = sourceParameterKeyValue.Value;
@@ -52,6 +58,9 @@ namespace PKSim.Core.Services
 
          return validationResult;
       }
+
+      private static bool isDefinedByOverwriteParameterSet(Simulation simulation, string parameterPath) =>
+         simulation.OverwriteParameterSetSelections.Selections.Any(selection => selection.OverwriteParameterSet?.ParameterValueByPath(parameterPath) != null);
 
       private PathCache<IParameter> simulationParametersCacheFor(Simulation simulation, PKSimBuildingBlockType buildingBlockType)
       {
