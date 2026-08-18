@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using static OSPSuite.Core.Extensions.SnapshotMapperBaseExtensions;
@@ -11,11 +12,13 @@ public class OverwriteParameterSetMapper : SnapshotMapperBase<ModelOverwritePara
 {
    private readonly ParameterValueMapper _parameterValueMapper;
    private readonly ExtendedPropertyMapper _extendedPropertyMapper;
+   private readonly IObjectBaseFactory _objectBaseFactory;
 
-   public OverwriteParameterSetMapper(ParameterValueMapper parameterValueMapper, ExtendedPropertyMapper extendedPropertyMapper)
+   public OverwriteParameterSetMapper(ParameterValueMapper parameterValueMapper, ExtendedPropertyMapper extendedPropertyMapper, IObjectBaseFactory objectBaseFactory)
    {
       _parameterValueMapper = parameterValueMapper;
       _extendedPropertyMapper = extendedPropertyMapper;
+      _objectBaseFactory = objectBaseFactory;
    }
 
    public override async Task<SnapshotOverwriteParameterSet> MapToSnapshot(ModelOverwriteParameterSet model)
@@ -34,11 +37,8 @@ public class OverwriteParameterSetMapper : SnapshotMapperBase<ModelOverwritePara
 
    public override async Task<ModelOverwriteParameterSet> MapToModel(SnapshotOverwriteParameterSet snapshot, SnapshotContext snapshotContext)
    {
-      var overwriteParameterSet = new ModelOverwriteParameterSet
-      {
-         Name = snapshot.Name,
-         IsDefault = ModelValueFor(snapshot.IsDefault, false)
-      };
+      var overwriteParameterSet = _objectBaseFactory.Create<ModelOverwriteParameterSet>().WithName(snapshot.Name);
+      overwriteParameterSet.IsDefault = ModelValueFor(snapshot.IsDefault, false);
 
       var extendedProperties = await _extendedPropertyMapper.MapToModels(snapshot.ExtendedProperties, snapshotContext);
       extendedProperties?.Each(overwriteParameterSet.ExtendedProperties.Add);

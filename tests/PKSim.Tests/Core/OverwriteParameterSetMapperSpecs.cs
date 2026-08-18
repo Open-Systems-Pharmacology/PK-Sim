@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -20,12 +21,15 @@ namespace PKSim.Core
       protected SnapshotOverwriteParameterSet _snapshot;
       protected ParameterValueMapper _parameterValueMapper;
       protected ExtendedPropertyMapper _extendedPropertyMapper;
+      protected IObjectBaseFactory _objectBaseFactory;
 
       protected override Task Context()
       {
          _parameterValueMapper = new ParameterValueMapper();
          _extendedPropertyMapper = new ExtendedPropertyMapper();
-         sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper);
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         A.CallTo(() => _objectBaseFactory.Create<ModelOverwriteParameterSet>()).ReturnsLazily(() => new ModelOverwriteParameterSet { Id = "NewSetId" });
+         sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper, _objectBaseFactory);
 
          _modelOverwriteParameterSet = new ModelOverwriteParameterSet
          {
@@ -88,7 +92,8 @@ namespace PKSim.Core
       {
          _parameterValueMapper = new ParameterValueMapper();
          _extendedPropertyMapper = new ExtendedPropertyMapper();
-         sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper);
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper, _objectBaseFactory);
 
          _modelOverwriteParameterSet = new ModelOverwriteParameterSet
          {
@@ -164,6 +169,12 @@ namespace PKSim.Core
          _result.ParameterValues.Count.ShouldBeEqualTo(2);
          _result.ParameterValueByPath("Compound|Lipophilicity").Value.ShouldBeEqualTo(1.5);
          _result.ParameterValueByPath("Compound|Solubility").Value.ShouldBeEqualTo(0.5);
+      }
+
+      [Observation]
+      public void should_create_the_set_with_an_id()
+      {
+         _result.Id.ShouldBeEqualTo("NewSetId");
       }
    }
 
