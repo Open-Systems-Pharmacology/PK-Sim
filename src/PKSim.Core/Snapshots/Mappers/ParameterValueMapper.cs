@@ -19,10 +19,8 @@ public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, Snap
 
    public override Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
    {
-      // We will only use value because in an OverWriteParameterSet we only care about parameters whose values
-      // are overridden in the simulation. You can only override a parameter in a simulation with a value.
-      // Dimension, unit and allowed range are required to display and validate the value in the compound,
-      // where the parameter itself cannot be resolved.
+      //dimension, unit and allowed range are carried so the value can be displayed and validated in the compound,
+      //where the parameter itself cannot be resolved
       return SnapshotFrom(parameterValue, snapshot =>
       {
          snapshot.Path = parameterValue.Path.ToString();
@@ -65,9 +63,6 @@ public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, Snap
       snapshot.MaxIsAllowed = info.MaxValue.HasValue ? SnapshotValueFor(info.MaxIsAllowed, true) : null;
    }
 
-   /// <summary>
-   ///    Returns the allowed range of the parameter or <c>null</c> if the snapshot does not define any bound
-   /// </summary>
    private ParameterInfo allowedRangeFrom(SnapshotParameterValue snapshot, IDimension dimension, Unit displayUnit)
    {
       if (snapshot.MinValue == null && snapshot.MaxValue == null)

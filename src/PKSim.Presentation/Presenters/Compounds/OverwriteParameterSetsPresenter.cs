@@ -19,10 +19,6 @@ namespace PKSim.Presentation.Presenters.Compounds;
 
 public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, IListener<OverwriteParameterSetChangedEvent>, IListener<RenamedEvent>
 {
-   /// <summary>
-   ///    Updates the value of <paramref name="parameterValueDTO" />. <paramref name="newValueInDisplayUnit" /> is given in the
-   ///    display unit of the parameter value.
-   /// </summary>
    void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValueInDisplayUnit);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
    void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);

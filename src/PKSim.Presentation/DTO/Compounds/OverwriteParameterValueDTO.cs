@@ -22,18 +22,12 @@ public class OverwriteParameterValueDTO : DxValidatableDTO
 
    public string Path => ParameterValue.Path.ToString();
 
-   /// <summary>
-   ///    Value of the parameter in <see cref="Unit" />
-   /// </summary>
    public double? Value => ParameterValue.Value.HasValue ? ParameterValue.ConvertToDisplayUnit(ParameterValue.Value) : null;
 
    public string Unit => ParameterValue.DisplayUnit.Name;
 
    public string ValueOrigin => ParameterValue.ValueOrigin.Display;
 
-   /// <summary>
-   ///    Returns the base unit value for <paramref name="valueInDisplayUnit" />
-   /// </summary>
    public double ValueInBaseUnit(double valueInDisplayUnit) => ParameterValue.ConvertToBaseUnit(valueInDisplayUnit);
 
    private string displayValueFor(double? valueInBaseUnit) => _numericFormatter.Format(ParameterValue.ConvertToDisplayUnit(valueInBaseUnit));
@@ -45,14 +39,10 @@ public class OverwriteParameterValueDTO : DxValidatableDTO
          .WithRule((dto, valueInDisplayUnit) => errorFor(dto, valueInDisplayUnit) == null)
          .WithError((dto, valueInDisplayUnit) => errorFor(dto, valueInDisplayUnit));
 
-      /// <summary>
-      ///    Returns the validation error for <paramref name="valueInDisplayUnit" /> or <c>null</c> if the value is allowed.
-      ///    The allowed range is only known for entries created by committing simulation parameters. Any value is allowed
-      ///    for entries without <see cref="ParameterInfo" /> (e.g. loaded from a snapshot).
-      /// </summary>
       private static string errorFor(OverwriteParameterValueDTO dto, double? valueInDisplayUnit)
       {
          var info = dto.ParameterValue.Info;
+         //no allowed range is known unless the entry was created by committing a simulation parameter, so anything goes
          if (info == null || !valueInDisplayUnit.HasValue)
             return null;
 
