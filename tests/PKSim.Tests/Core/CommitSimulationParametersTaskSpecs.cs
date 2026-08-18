@@ -8,6 +8,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -24,12 +27,16 @@ namespace PKSim.Core
       protected IParameter _lipophilicityParam;
       protected IParameter _permeabilityParam;
       protected PathCache<IParameter> _parameterCache;
+      protected IObjectBaseFactory _objectBaseFactory;
+      private int _createdSetCount;
 
       protected override void Context()
       {
          _executionContext = A.Fake<IExecutionContext>();
          _containerTask = A.Fake<IContainerTask>();
          _buildingBlockRepository = A.Fake<PKSim.Core.Repositories.IBuildingBlockRepository>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         A.CallTo(() => _objectBaseFactory.Create<OverwriteParameterSet>()).ReturnsLazily(() => new OverwriteParameterSet { Id = $"NewSetId{_createdSetCount++}" });
 
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId" };
@@ -57,7 +64,7 @@ namespace PKSim.Core
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
          A.CallTo(() => _executionContext.TypeFor(_templateCompound)).Returns("Compound");
 
-         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository);
+         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository, _objectBaseFactory);
       }
    }
 
@@ -103,6 +110,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_create_the_overwrite_parameter_set_with_its_own_id()
+      {
+         string.IsNullOrEmpty(_templateCompound.OverwriteParameterSets[0].Id).ShouldBeFalse();
+      }
+
+      [Observation]
       public void should_set_building_block_properties_on_the_command()
       {
          A.CallTo(() => _executionContext.UpdateBuildingBlockPropertiesInCommand(A<IOSPSuiteCommand>._, _templateCompound)).MustHaveHappened();
@@ -112,6 +125,21 @@ namespace PKSim.Core
       public void should_publish_a_simulation_status_changed_event_for_the_simulation()
       {
          A.CallTo(() => _executionContext.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(e => e.Simulation == _simulation))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_only_show_the_change_to_the_template_compound_in_the_history()
+      {
+         var visibleSubCommands = _result.DowncastTo<IPKSimMacroCommand>().All().Where(x => x.Visible).ToList();
+         visibleSubCommands.Count.ShouldBeEqualTo(1);
+         visibleSubCommands[0].DowncastTo<IBuildingBlockChangeCommand>().BuildingBlockId.ShouldBeEqualTo(_templateCompound.Id);
+      }
+
+      [Observation]
+      public void should_describe_the_commit_on_the_macro_command()
+      {
+         _result.Description.ShouldBeEqualTo(PKSimConstants.Command.CommitSimulationParametersToCompound("MyNewSet", _templateCompound.Name));
+         _result.CommandType.ShouldBeEqualTo(PKSimConstants.Command.CommandTypeAdd);
       }
    }
 
@@ -170,6 +198,14 @@ namespace PKSim.Core
       public void should_preserve_existing_entries_for_parameters_no_longer_present_in_the_simulation()
       {
          _templateExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|OldParam").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_only_show_the_change_to_the_template_compound_in_the_history()
+      {
+         var visibleSubCommands = _result.DowncastTo<IPKSimMacroCommand>().All().Where(x => x.Visible).ToList();
+         visibleSubCommands.Count.ShouldBeEqualTo(1);
+         visibleSubCommands[0].DowncastTo<IBuildingBlockChangeCommand>().BuildingBlockId.ShouldBeEqualTo(_templateCompound.Id);
       }
    }
 

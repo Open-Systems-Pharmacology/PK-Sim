@@ -14,6 +14,8 @@ namespace PKSim.Core.Snapshots
       [Required]
       public int Version { get; set; }
 
+      public string ApplicationName { get; set; }
+
       public ExpressionProfile[] ExpressionProfiles { get; set; }
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }

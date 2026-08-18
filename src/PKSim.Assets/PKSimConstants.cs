@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -299,6 +300,12 @@ namespace PKSim.Assets
          public static string SetExtendedPropertyOnOverwriteParameterSet(string propertyName, string overwriteParameterSetName, string compoundName) =>
             $"Set '{propertyName}' on {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
+         public static string CommitSimulationParametersToCompound(string overwriteParameterSetName, string compoundName) =>
+            $"Commit simulation parameters to {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
+         public static string SetSimulationParameterTracking(int parameterCount, bool tracked, string simulationName) =>
+            $"Mark {parameterCount} parameter(s) as {(tracked ? "uncommitted" : "committed")} in {ObjectTypes.Simulation.ToLower()} '{simulationName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
@@ -437,6 +444,7 @@ namespace PKSim.Assets
          public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
          public const string SimulationCannotShareNamesWithCompounds = "Simulation cannot share names with compounds";
          public const string AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule = "A project snapshot should only contain one simulation when used to rebuild a module";
+         public static string ProjectSnapshotCannotBeLoaded(string snapshotApplicationName) => $"This file contains a {snapshotApplicationName} project snapshot and cannot be loaded in {Origins.PKSim.DisplayName}. Please load it in {snapshotApplicationName}.";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";
