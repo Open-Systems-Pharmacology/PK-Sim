@@ -44,19 +44,30 @@ namespace PKSim.Presentation.DTO.Mappers
          if (!changedPaths.Any())
             return null;
 
-         var existingSelection = simulation.OverwriteParameterSetSelections.SelectedSetFor(compound.Name);
-         var hasExistingSelection = existingSelection != null && templateCompound.OverwriteParameterSets.Contains(existingSelection);
+         var selectedSetInTemplate = selectedSetInTemplateFor(simulation, compound.Name, templateCompound);
 
          return new CompoundCommitDTO
          {
             CompoundName = compound.Name,
             Compound = templateCompound,
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
-            CreateNew = !hasExistingSelection,
-            SelectedExistingSet = hasExistingSelection ? existingSelection : null,
+            CreateNew = selectedSetInTemplate == null,
+            SelectedExistingSet = selectedSetInTemplate,
             NewSetName = compound.Name,
             Parameters = changedPaths.Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path])).ToList()
          };
+      }
+
+      /// <summary>
+      ///    Returns the set of <paramref name="templateCompound" /> selected for the compound in the simulation, matched by
+      ///    name. The selection holds the set of the compound in the simulation when it was made in the simulation
+      ///    configuration, and the set of the template compound when it was restored from a snapshot, so the two cannot be
+      ///    compared by reference.
+      /// </summary>
+      private OverwriteParameterSet selectedSetInTemplateFor(Simulation simulation, string compoundName, Compound templateCompound)
+      {
+         var selection = simulation.OverwriteParameterSetSelections.SelectedSetFor(compoundName);
+         return selection == null ? null : templateCompound.OverwriteParameterSets.FindByName(selection.Name);
       }
 
       private Compound templateCompoundFor(Simulation simulation, string compoundName)
