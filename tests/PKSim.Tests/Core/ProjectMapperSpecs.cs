@@ -212,6 +212,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_identify_PKSim_as_the_application_that_created_the_snapshot()
+      {
+         _snapshot.ApplicationName.ShouldBeEqualTo("PK-Sim");
+      }
+
+      [Observation]
       public void should_retrieve_the_snapshot_for_all_underlying_models()
       {
          _snapshot.Compounds.ShouldContain(_compoundSnapshot);

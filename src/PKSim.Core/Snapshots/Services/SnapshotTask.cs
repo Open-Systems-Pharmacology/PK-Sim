@@ -5,6 +5,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Core.Snapshots.Services;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
@@ -52,11 +53,25 @@ public class SnapshotTask : SnapshotTask<PKSimProject, Project>, ISnapshotTask
    public async Task<T> LoadModelFromProjectFileAsync<T>(string fileName, PKSimBuildingBlockType buildingBlockType, string buildingBlockName)
    {
       var projectSnapshot = await LoadSnapshotFromFileAsync<Project>(fileName);
+      validateApplication(projectSnapshot);
       var snapshot = projectSnapshot.BuildingBlockByTypeAndName(buildingBlockType, buildingBlockName);
       return await LoadModelFromSnapshot<T>(snapshot);
    }
 
-   protected override Task<PKSimProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations));
+   protected override Task<PKSimProject> ProjectFrom(Project snapshot, bool runSimulations)
+   {
+      validateApplication(snapshot);
+      return _projectMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations));
+   }
+
+   private static void validateApplication(Project snapshot)
+   {
+      var applicationName = snapshot?.ApplicationName;
+      if (string.IsNullOrEmpty(applicationName) || string.Equals(applicationName, Origins.PKSim.DisplayName))
+         return;
+
+      throw new PKSimException(PKSimConstants.Error.ProjectSnapshotCannotBeLoaded(applicationName));
+   }
 
    protected override SnapshotContext GetSnapshotContext() => new SnapshotContext(_projectRetriever.Current, SnapshotVersions.Current);
 

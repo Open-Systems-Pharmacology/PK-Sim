@@ -227,6 +227,50 @@ namespace PKSim.Core
       }
    }
 
+   public class When_loading_a_project_from_a_snapshot_file_created_with_another_application : concern_for_SnapshotTask
+   {
+      private readonly string _fileName = @"C:\test\SuperProject.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(Project))).Returns(new object[] {new Project {ApplicationName = Origins.MoBi.DisplayName},});
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.LoadProjectFromSnapshotFileAsync(_fileName)).ShouldThrowAn<PKSimException>();
+      }
+   }
+
+   public class When_loading_a_project_from_a_snapshot_file_that_does_not_specify_the_application : concern_for_SnapshotTask
+   {
+      private PKSimProject _project;
+      private readonly string _fileName = @"C:\test\SuperProject.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var projectSnapshot = new Project();
+         var project = new PKSimProject();
+
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(Project))).Returns(new object[] {projectSnapshot,});
+         A.CallTo(() => _projectMapper.MapToModel(projectSnapshot, A<ProjectContext>._)).Returns(project);
+      }
+
+      protected override async Task Because()
+      {
+         _project = await sut.LoadProjectFromSnapshotFileAsync(_fileName);
+      }
+
+      [Observation]
+      public void should_load_the_project()
+      {
+         _project.Name.ShouldBeEqualTo("SuperProject");
+      }
+   }
+
    public class When_checking_if_an_object_with_meta_data_is_fully_compatible_with_snapshot_creation : concern_for_SnapshotTask
    {
       private PKSimProject _oldProject;
