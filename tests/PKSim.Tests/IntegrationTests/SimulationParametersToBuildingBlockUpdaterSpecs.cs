@@ -206,6 +206,7 @@ namespace PKSim.IntegrationTests
          var setInSimulation = _simulationCompound.OverwriteParameterSets.FindByName("OPS 1");
          setInSimulation.ShouldNotBeNull();
          setInSimulation.ParameterValues.Single().Value.ShouldBeEqualTo(2);
+         _templateCompound.OverwriteParameterSets.FindByName("OPS 1").ShouldNotBeNull();
       }
    }
 }
