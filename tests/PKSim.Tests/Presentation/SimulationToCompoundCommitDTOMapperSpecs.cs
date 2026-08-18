@@ -138,6 +138,74 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_mapping_a_simulation_whose_selection_holds_the_set_of_the_compound_in_the_simulation : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+      private OverwriteParameterSet _setInTemplateCompound;
+
+      protected override void Context()
+      {
+         base.Context();
+         //a selection made in the simulation configuration holds the set of the compound in the simulation, which is never
+         //the same instance as the set of the template compound
+         _setInTemplateCompound = new OverwriteParameterSet { Name = "ExistingSet", Id = "TemplateSetId" };
+         _templateCompound.AddOverwriteParameterSet(_setInTemplateCompound);
+
+         var setInSimulationCompound = new OverwriteParameterSet { Name = "ExistingSet", Id = "SimulationSetId" };
+         _simulationCompound.AddOverwriteParameterSet(setInSimulationCompound);
+         _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", setInSimulationCompound);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _simulationCompound);
+      }
+
+      [Observation]
+      public void should_default_to_update_existing()
+      {
+         _result.CreateNew.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_select_the_set_of_the_template_compound()
+      {
+         _result.SelectedExistingSet.ShouldBeEqualTo(_setInTemplateCompound);
+      }
+   }
+
+   public class When_mapping_a_simulation_whose_selected_set_is_not_defined_in_the_template_compound : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", new OverwriteParameterSet { Name = "RemovedSet" });
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _simulationCompound);
+      }
+
+      [Observation]
+      public void should_default_to_create_new()
+      {
+         _result.CreateNew.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_select_an_existing_set()
+      {
+         _result.SelectedExistingSet.ShouldBeNull();
+      }
+   }
+
    public class When_mapping_a_simulation_with_existing_overwrite_set_selection : concern_for_SimulationToCompoundCommitDTOMapper
    {
       private CompoundCommitDTO _result;
@@ -146,6 +214,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
+         //a selection restored from a snapshot holds the set of the template compound
          _existingSet = new OverwriteParameterSet { Name = "ExistingSet" };
          _templateCompound.AddOverwriteParameterSet(_existingSet);
          _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", _existingSet);
