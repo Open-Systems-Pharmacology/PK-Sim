@@ -16,7 +16,9 @@ namespace PKSim.Presentation.DTO.Mappers
          {
             Path = path,
             DisplayPath = path,
-            Value = parameter?.Value ?? double.NaN
+            Value = parameter?.ValueInDisplayUnit ?? double.NaN,
+            Unit = parameter?.DisplayUnit?.Name,
+            ValueOrigin = parameter?.ValueOrigin?.Display
          };
       }
    }

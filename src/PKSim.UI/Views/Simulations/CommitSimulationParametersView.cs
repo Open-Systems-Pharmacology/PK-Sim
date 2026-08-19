@@ -12,6 +12,7 @@ using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.UI.Views.Simulations
@@ -65,7 +66,12 @@ namespace PKSim.UI.Views.Simulations
 
          _parameterGridBinder.Bind(x => x.Value)
             .WithCaption(PKSimConstants.UI.Value)
+            .WithFormat(dto => new ValueWithUnitFormatter<double>(() => dto.Unit))
             .WithFixedWidth(120)
+            .AsReadOnly();
+
+         _parameterGridBinder.Bind(x => x.ValueOrigin)
+            .WithCaption(Captions.ValueOrigin)
             .AsReadOnly();
 
          _screenBinder.Bind(x => x.NewSetName)

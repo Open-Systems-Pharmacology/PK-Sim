@@ -140,7 +140,7 @@ namespace PKSim.Core.Services
                if (parameter == null)
                   return null;
 
-               return new ParameterValue
+               var parameterValue = new ParameterValue
                {
                   Path = path.ToObjectPath(),
                   Value = parameter.Value,
@@ -148,6 +148,9 @@ namespace PKSim.Core.Services
                   DisplayUnit = parameter.DisplayUnit,
                   Info = parameter.Info.Clone()
                };
+
+               parameterValue.ValueOrigin.UpdateAllFrom(parameter.ValueOrigin);
+               return parameterValue;
             })
             .Where(pv => pv != null)
             .ToList();

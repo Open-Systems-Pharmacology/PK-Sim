@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -85,6 +86,107 @@ public class When_updating_a_parameter_value_for_a_path_not_in_the_set : concern
    protected override void Because()
    {
       _result = sut.UpdateParameterValue(_overwriteParameterSet, _compound, "Organism|Aspirin|Permeability", 9.0);
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+}
+
+public class When_updating_the_unit_of_a_parameter_value : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+   private IDimension _lengthDimension;
+   private ParameterValue _parameterValue;
+
+   protected override void Context()
+   {
+      base.Context();
+      _lengthDimension = DomainHelperForSpecs.LengthDimensionForSpecs();
+      _parameterValue = _overwriteParameterSet.ParameterValueByPath(_path);
+      _parameterValue.Dimension = _lengthDimension;
+      _parameterValue.DisplayUnit = _lengthDimension.Unit("cm");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.UpdateParameterValueUnit(_overwriteParameterSet, _compound, _path, _lengthDimension.Unit("mm"));
+   }
+
+   [Observation]
+   public void should_keep_the_displayed_number_and_recalculate_the_value_in_base_unit()
+   {
+      _parameterValue.DisplayUnit.Name.ShouldBeEqualTo("mm");
+      _parameterValue.ConvertToDisplayUnit(_parameterValue.Value).ShouldBeEqualTo(100);
+      _parameterValue.Value.ShouldBeEqualTo(0.1);
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_updating_the_unit_of_a_parameter_value_with_the_unit_already_used : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+   private IDimension _lengthDimension;
+
+   protected override void Context()
+   {
+      base.Context();
+      _lengthDimension = DomainHelperForSpecs.LengthDimensionForSpecs();
+      var parameterValue = _overwriteParameterSet.ParameterValueByPath(_path);
+      parameterValue.Dimension = _lengthDimension;
+      parameterValue.DisplayUnit = _lengthDimension.Unit("cm");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.UpdateParameterValueUnit(_overwriteParameterSet, _compound, _path, _lengthDimension.Unit("cm"));
+   }
+
+   [Observation]
+   public void should_return_an_empty_command()
+   {
+      _result.IsEmpty().ShouldBeTrue();
+   }
+}
+
+public class When_updating_the_value_origin_of_a_parameter_value : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.UpdateValueOrigin(_overwriteParameterSet, _compound, _path, new ValueOrigin { Source = ValueOriginSources.Publication, Description = "Some publication" });
+   }
+
+   [Observation]
+   public void should_update_the_value_origin_of_the_parameter_value()
+   {
+      var valueOrigin = _overwriteParameterSet.ParameterValueByPath(_path).ValueOrigin;
+      valueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Publication);
+      valueOrigin.Description.ShouldBeEqualTo("Some publication");
+   }
+
+   [Observation]
+   public void should_return_a_non_empty_command()
+   {
+      _result.IsEmpty().ShouldBeFalse();
+   }
+}
+
+public class When_updating_the_value_origin_of_a_parameter_value_with_the_value_origin_already_set : concern_for_OverwriteParameterSetTask
+{
+   private ICommand _result;
+
+   protected override void Because()
+   {
+      _result = sut.UpdateValueOrigin(_overwriteParameterSet, _compound, _path, _overwriteParameterSet.ParameterValueByPath(_path).ValueOrigin.Clone());
    }
 
    [Observation]

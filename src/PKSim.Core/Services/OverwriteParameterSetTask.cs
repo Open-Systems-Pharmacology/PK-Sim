@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -15,6 +17,20 @@ public interface IOverwriteParameterSetTask
    ///    Returns an empty command if the parameter is not in the set or the value is unchanged.
    /// </summary>
    ICommand UpdateParameterValue(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, double newValue);
+
+   /// <summary>
+   ///    Updates the display unit of a parameter (identified by path) in an <see cref="OverwriteParameterSet" />.
+   ///    As for a parameter, the displayed number is kept and the value in base unit is recalculated.
+   ///    Returns an empty command if the parameter is not in the set or the unit is unchanged.
+   /// </summary>
+   ICommand UpdateParameterValueUnit(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, Unit newUnit);
+
+   /// <summary>
+   ///    Updates the <see cref="ValueOrigin" /> of a parameter (identified by path) in an
+   ///    <see cref="OverwriteParameterSet" />.
+   ///    Returns an empty command if the parameter is not in the set or the value origin is unchanged.
+   /// </summary>
+   ICommand UpdateValueOrigin(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, ValueOrigin newValueOrigin);
 
    /// <summary>
    ///    Removes a parameter (identified by path) from an <see cref="OverwriteParameterSet" />.
@@ -56,6 +72,24 @@ public class OverwriteParameterSetTask : IOverwriteParameterSetTask
          return new PKSimEmptyCommand();
 
       return new UpdateParameterValueInOverwriteSetCommand(overwriteParameterSet, compound, parameterPath, newValue).Run(_executionContext);
+   }
+
+   public ICommand UpdateParameterValueUnit(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, Unit newUnit)
+   {
+      var existing = overwriteParameterSet.ParameterValueByPath(parameterPath);
+      if (existing == null || newUnit == null || Equals(existing.DisplayUnit, newUnit))
+         return new PKSimEmptyCommand();
+
+      return new UpdateParameterValueUnitInOverwriteSetCommand(overwriteParameterSet, compound, parameterPath, newUnit.Name).Run(_executionContext);
+   }
+
+   public ICommand UpdateValueOrigin(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath, ValueOrigin newValueOrigin)
+   {
+      var existing = overwriteParameterSet.ParameterValueByPath(parameterPath);
+      if (existing == null || Equals(existing.ValueOrigin, newValueOrigin))
+         return new PKSimEmptyCommand();
+
+      return new UpdateValueOriginInOverwriteSetCommand(overwriteParameterSet, compound, parameterPath, newValueOrigin).Run(_executionContext);
    }
 
    public ICommand RemoveParameterValue(OverwriteParameterSet overwriteParameterSet, Compound compound, string parameterPath)

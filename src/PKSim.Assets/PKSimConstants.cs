@@ -291,6 +291,12 @@ namespace PKSim.Assets
          public static string UpdateParameterValueInOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
             $"Update value of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 
+         public static string UpdateParameterValueUnitInOverwriteParameterSet(string parameterPath, string displayValue, string oldUnit, string newUnit, string overwriteParameterSetName, string compoundName) =>
+            $"Value of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}' set from '{displayValue} {oldUnit}' to '{displayValue} {newUnit}'";
+
+         public static string UpdateValueOriginInOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
+            $"Update value origin of '{parameterPath}' in {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
+
          public static string RemoveParameterValueFromOverwriteParameterSet(string parameterPath, string overwriteParameterSetName, string compoundName) =>
             $"Remove '{parameterPath}' from {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' of {ObjectTypes.Compound.ToLower()} '{compoundName}'";
 

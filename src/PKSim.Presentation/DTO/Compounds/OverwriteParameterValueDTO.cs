@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Format;
 using OSPSuite.Utility.Validation;
 
 namespace PKSim.Presentation.DTO.Compounds;
 
-public class OverwriteParameterValueDTO : DxValidatableDTO
+public class OverwriteParameterValueDTO : DxValidatableDTO, IWithDisplayUnitDTO, IWithValueOrigin
 {
    private static readonly NumericFormatter<double> _numericFormatter = new(NumericFormatterOptions.Instance);
 
@@ -24,9 +25,31 @@ public class OverwriteParameterValueDTO : DxValidatableDTO
 
    public double? Value => ParameterValue.Value.HasValue ? ParameterValue.ConvertToDisplayUnit(ParameterValue.Value) : null;
 
-   public string Unit => ParameterValue.DisplayUnit.Name;
+   public IDimension Dimension
+   {
+      get => ParameterValue.Dimension;
+      set { /*dimension is defined by the committed parameter and never edited*/ }
+   }
 
-   public string ValueOrigin => ParameterValue.ValueOrigin.Display;
+   public Unit DisplayUnit
+   {
+      get => ParameterValue.DisplayUnit;
+      set { /*nothing to do here since the unit should be set in the command*/ }
+   }
+
+   public IEnumerable<Unit> AllUnits
+   {
+      get => Dimension.Units;
+      set { /*all units are defined by the dimension*/ }
+   }
+
+   public ValueOrigin ValueOrigin
+   {
+      get => ParameterValue.ValueOrigin;
+      set { /*nothing to do here since the value origin should be set in the command*/ }
+   }
+
+   public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin) => ParameterValue.UpdateValueOriginFrom(sourceValueOrigin);
 
    public double ValueInBaseUnit(double valueInDisplayUnit) => ParameterValue.ConvertToBaseUnit(valueInDisplayUnit);
 
@@ -52,19 +75,19 @@ public class OverwriteParameterValueDTO : DxValidatableDTO
          if (info.MinValue.HasValue)
          {
             if (value < info.MinValue.Value)
-               return Validation.ValueBiggerThanMin(parameterName, dto.displayValueFor(info.MinValue), dto.Unit);
+               return Validation.ValueBiggerThanMin(parameterName, dto.displayValueFor(info.MinValue), dto.DisplayUnit.Name);
 
             if (value == info.MinValue.Value && !info.MinIsAllowed)
-               return Validation.ValueStrictBiggerThanMin(parameterName, dto.displayValueFor(info.MinValue), dto.Unit);
+               return Validation.ValueStrictBiggerThanMin(parameterName, dto.displayValueFor(info.MinValue), dto.DisplayUnit.Name);
          }
 
          if (info.MaxValue.HasValue)
          {
             if (value > info.MaxValue.Value)
-               return Validation.ValueSmallerThanMax(parameterName, dto.displayValueFor(info.MaxValue), dto.Unit);
+               return Validation.ValueSmallerThanMax(parameterName, dto.displayValueFor(info.MaxValue), dto.DisplayUnit.Name);
 
             if (value == info.MaxValue.Value && !info.MaxIsAllowed)
-               return Validation.ValueStrictSmallerThanMax(parameterName, dto.displayValueFor(info.MaxValue), dto.Unit);
+               return Validation.ValueStrictSmallerThanMax(parameterName, dto.displayValueFor(info.MaxValue), dto.DisplayUnit.Name);
          }
 
          return null;

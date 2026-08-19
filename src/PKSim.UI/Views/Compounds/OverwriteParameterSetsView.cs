@@ -8,19 +8,21 @@ using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
@@ -33,6 +35,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
    private IOverwriteParameterSetsPresenter _presenter;
    private readonly IImageListRetriever _imageListRetriever;
+   private readonly ValueOriginBinder<OverwriteParameterValueDTO> _valueOriginBinder;
    private readonly GridViewBinder<OverwriteParameterSetDTO> _gridViewBinderSets;
    private readonly GridViewBinder<OverwriteParameterValueDTO> _gridViewBinderParameterValues;
    private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
@@ -40,13 +43,15 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
    private readonly UxRepositoryItemCheckEdit _isDefaultRepository;
    private readonly UxRepositoryItemImageComboBox _speciesRepository;
    private readonly UxRepositoryItemImageComboBox _diseaseStateRepository;
+   private readonly UxComboBoxUnit<OverwriteParameterValueDTO> _unitControl;
    private readonly ToolTipController _metadataToolTipController = new();
    private readonly List<BaseEdit> _metadataEditors = new();
    private LayoutControlGroup _metadataGroup;
 
-   public OverwriteParameterSetsView(IImageListRetriever imageListRetriever)
+   public OverwriteParameterSetsView(IImageListRetriever imageListRetriever, ValueOriginBinder<OverwriteParameterValueDTO> valueOriginBinder)
    {
       _imageListRetriever = imageListRetriever;
+      _valueOriginBinder = valueOriginBinder;
       InitializeComponent();
 
       _gridViewBinderSets = new GridViewBinder<OverwriteParameterSetDTO>(gridViewSets)
@@ -60,6 +65,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       };
 
       _isDefaultRepository = new UxRepositoryItemCheckEdit(gridViewSets);
+      _unitControl = new UxComboBoxUnit<OverwriteParameterValueDTO>(gridParameterValues);
       _speciesRepository = new UxRepositoryItemImageComboBox(gridViewSets, imageListRetriever);
       _diseaseStateRepository = new UxRepositoryItemImageComboBox(gridViewSets, imageListRetriever);
 
@@ -73,6 +79,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
       gridViewSets.EditorShowMode = EditorShowMode.MouseDown;
 
       gridViewSets.FocusedRowChanged += (o, e) => OnEvent(selectedSetChanged);
+      gridViewParameterValues.HiddenEditor += (o, e) => _unitControl.Hide();
    }
 
    public void AttachPresenter(IOverwriteParameterSetsPresenter presenter)
@@ -118,16 +125,13 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
       _gridViewBinderParameterValues.Bind(x => x.Value)
          .WithCaption(Captions.Value)
-         .WithFormat(new NumericFormatter<double?>(NumericFormatterOptions.Instance))
+         .WithFormat(dto => new ValueWithUnitFormatter<double?>(() => dto.DisplayUnit.Name))
+         .WithEditorConfiguration((activeEditor, dto) => _unitControl.UpdateUnitsFor(activeEditor, dto))
          .WithOnValueUpdating((dto, e) => OnEvent(() => onParameterValueUpdating(dto, e.NewValue)));
 
-      _gridViewBinderParameterValues.Bind(x => x.Unit)
-         .WithCaption(Captions.Unit)
-         .AsReadOnly();
+      _unitControl.ParameterUnitSet += onUnitUpdating;
 
-      _gridViewBinderParameterValues.Bind(x => x.ValueOrigin)
-         .WithCaption(Captions.ValueOrigin)
-         .AsReadOnly();
+      _valueOriginBinder.InitializeBinding(_gridViewBinderParameterValues, onValueOriginUpdating);
 
       _gridViewBinderParameterValues.AddUnboundColumn()
          .WithCaption(Captions.EmptyColumn)
@@ -279,5 +283,27 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
       _presenter.UpdateParameterValue(selectedSet, dto, newValue.Value);
       gridViewParameterValues.CloseEditor();
+   }
+
+   private void onUnitUpdating(OverwriteParameterValueDTO dto, Unit newUnit)
+   {
+      OnEvent(() =>
+      {
+         var selectedSet = _gridViewBinderSets.FocusedElement;
+         if (selectedSet == null)
+            return;
+
+         gridViewParameterValues.CloseEditor();
+         _presenter.UpdateParameterValueUnit(selectedSet, dto, newUnit);
+      });
+   }
+
+   private void onValueOriginUpdating(OverwriteParameterValueDTO dto, ValueOrigin newValueOrigin)
+   {
+      var selectedSet = _gridViewBinderSets.FocusedElement;
+      if (selectedSet == null)
+         return;
+
+      OnEvent(() => _presenter.UpdateValueOrigin(selectedSet, dto, newValueOrigin));
    }
 }

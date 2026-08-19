@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -20,6 +22,8 @@ namespace PKSim.Presentation.Presenters.Compounds;
 public interface IOverwriteParameterSetsPresenter : ICompoundItemPresenter, IListener<OverwriteParameterSetChangedEvent>, IListener<RenamedEvent>
 {
    void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValueInDisplayUnit);
+   void UpdateParameterValueUnit(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, Unit newUnit);
+   void UpdateValueOrigin(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, ValueOrigin newValueOrigin);
    void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO);
    void SetIsDefault(OverwriteParameterSetDTO setDTO, bool isDefault);
    void RemoveSet(OverwriteParameterSetDTO setDTO);
@@ -94,6 +98,12 @@ public class OverwriteParameterSetsPresenter : AbstractSubPresenter<IOverwritePa
    public void UpdateParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, double newValueInDisplayUnit) =>
       AddCommand(_overwriteParameterSetTask.UpdateParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString,
          parameterValueDTO.ValueInBaseUnit(newValueInDisplayUnit)));
+
+   public void UpdateParameterValueUnit(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, Unit newUnit) =>
+      AddCommand(_overwriteParameterSetTask.UpdateParameterValueUnit(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString, newUnit));
+
+   public void UpdateValueOrigin(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO, ValueOrigin newValueOrigin) =>
+      AddCommand(_overwriteParameterSetTask.UpdateValueOrigin(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString, newValueOrigin));
 
    public void RemoveParameterValue(OverwriteParameterSetDTO setDTO, OverwriteParameterValueDTO parameterValueDTO) =>
       AddCommand(_overwriteParameterSetTask.RemoveParameterValue(setDTO.OverwriteParameterSet, _compound, parameterValueDTO.ParameterValue.Path.PathAsString));

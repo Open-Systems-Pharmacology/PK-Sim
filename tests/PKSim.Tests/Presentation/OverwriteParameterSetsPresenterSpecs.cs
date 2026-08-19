@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
@@ -165,6 +166,56 @@ namespace PKSim.Presentation
       public void should_pass_the_value_converted_to_the_base_unit_to_the_overwrite_parameter_set_task()
       {
          A.CallTo(() => _task.UpdateParameterValue(_overwriteParameterSet, _compound, _path, 0.055)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_updating_the_unit_of_a_parameter_value_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+      private Unit _newUnit;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         _newUnit = DomainHelperForSpecs.LengthDimensionForSpecs().Unit("cm");
+         A.CallTo(() => _task.UpdateParameterValueUnit(_overwriteParameterSet, _compound, _path, _newUnit)).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParameterValueUnit(_setDTO, _valueDTO, _newUnit);
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.UpdateParameterValueUnit(_overwriteParameterSet, _compound, _path, _newUnit)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_updating_the_value_origin_of_a_parameter_value_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      private ICommand _command;
+      private ValueOrigin _newValueOrigin;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<ICommand>();
+         _newValueOrigin = new ValueOrigin { Source = ValueOriginSources.Publication };
+         A.CallTo(() => _task.UpdateValueOrigin(_overwriteParameterSet, _compound, _path, _newValueOrigin)).Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateValueOrigin(_setDTO, _valueDTO, _newValueOrigin);
+      }
+
+      [Observation]
+      public void should_delegate_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.UpdateValueOrigin(_overwriteParameterSet, _compound, _path, _newValueOrigin)).MustHaveHappenedOnceExactly();
       }
    }
 
