@@ -9,6 +9,9 @@ using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.IntegrationTests
 {
@@ -86,6 +89,47 @@ namespace PKSim.IntegrationTests
          bileSaltGroup.AllAlternatives.Select(x => x.Name).ShouldOnlyContain(PKSimConstants.UI.CalculatedAlernative, "Measured", "Predicted");
          bileSaltGroup.DefaultAlternative.Name.ShouldBeEqualTo("Measured");
          bileSaltGroup.AlternativeByName("Predicted").Parameter(CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL).Value.ShouldBeEqualTo(6.5);
+      }
+   }
+
+   public class When_serializing_a_compound_with_an_overwrite_parameter_set : ContextForSerialization<Compound>
+   {
+      private Compound _compound;
+      private Compound _deserializedCompound;
+      private IDimension _dimension;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         _dimension = IoC.Resolve<IDimensionRepository>().Length;
+
+         var overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         overwriteParameterSet.Add(new ParameterValue
+         {
+            Path = "Organism|Aspirin|Permeability".ToObjectPath(),
+            Value = 0.05,
+            Dimension = _dimension,
+            DisplayUnit = _dimension.Unit("cm"),
+            Info = new ParameterInfo { MinValue = 0, MinIsAllowed = true, MaxValue = 0.2, MaxIsAllowed = true }
+         });
+         _compound.AddOverwriteParameterSet(overwriteParameterSet);
+      }
+
+      protected override void Because()
+      {
+         _deserializedCompound = SerializeAndDeserialize(_compound);
+      }
+
+      [Observation]
+      public void should_have_saved_the_dimension_the_display_unit_and_the_allowed_range_of_the_parameter_value()
+      {
+         var parameterValue = _deserializedCompound.OverwriteParameterSets.FindByName("MySet").ParameterValueByPath("Organism|Aspirin|Permeability");
+         parameterValue.Value.ShouldBeEqualTo(0.05);
+         parameterValue.Dimension.ShouldBeEqualTo(_dimension);
+         parameterValue.DisplayUnit.Name.ShouldBeEqualTo("cm");
+         parameterValue.Info.MinValue.ShouldBeEqualTo(0);
+         parameterValue.Info.MaxValue.ShouldBeEqualTo(0.2);
       }
    }
 }

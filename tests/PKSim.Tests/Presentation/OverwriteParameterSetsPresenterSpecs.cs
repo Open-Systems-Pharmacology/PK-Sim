@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -141,6 +142,29 @@ namespace PKSim.Presentation
       public void should_delegate_to_the_overwrite_parameter_set_task()
       {
          A.CallTo(() => _task.UpdateParameterValue(_overwriteParameterSet, _compound, _path, 5.5)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_updating_a_parameter_value_given_in_display_unit_through_the_presenter : concern_for_OverwriteParameterSetsPresenter_editing
+   {
+      protected override void Context()
+      {
+         base.Context();
+         var dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
+         _parameterValue.Dimension = dimension;
+         _parameterValue.DisplayUnit = dimension.Unit("cm");
+         A.CallTo(() => _task.UpdateParameterValue(_overwriteParameterSet, _compound, _path, 0.055)).Returns(A.Fake<ICommand>());
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParameterValue(_setDTO, _valueDTO, 5.5);
+      }
+
+      [Observation]
+      public void should_pass_the_value_converted_to_the_base_unit_to_the_overwrite_parameter_set_task()
+      {
+         A.CallTo(() => _task.UpdateParameterValue(_overwriteParameterSet, _compound, _path, 0.055)).MustHaveHappenedOnceExactly();
       }
    }
 

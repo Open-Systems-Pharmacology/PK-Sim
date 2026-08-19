@@ -43,6 +43,9 @@ namespace PKSim.Core
 
          _lipophilicityParam = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
          _permeabilityParam = DomainHelperForSpecs.ConstantParameterWithValue(7.2).WithName("Permeability");
+         _permeabilityParam.DisplayUnit = _permeabilityParam.Dimension.Unit("cm");
+         _permeabilityParam.MinValue = 0;
+         _permeabilityParam.MinIsAllowed = true;
 
          var root = new Container { Name = "Sim" };
          root.Add(_lipophilicityParam);
@@ -140,6 +143,16 @@ namespace PKSim.Core
       {
          _result.Description.ShouldBeEqualTo(PKSimConstants.Command.CommitSimulationParametersToCompound("MyNewSet", _templateCompound.Name));
          _result.CommandType.ShouldBeEqualTo(PKSimConstants.Command.CommandTypeAdd);
+      }
+
+      [Observation]
+      public void should_take_over_dimension_display_unit_and_allowed_range_of_the_committed_simulation_parameter()
+      {
+         var parameterValue = _templateCompound.OverwriteParameterSets[0].ParameterValueByPath("Organism|Aspirin|Permeability");
+         parameterValue.Dimension.ShouldBeEqualTo(_permeabilityParam.Dimension);
+         parameterValue.DisplayUnit.ShouldBeEqualTo(_permeabilityParam.DisplayUnit);
+         parameterValue.Info.MinValue.ShouldBeEqualTo(_permeabilityParam.MinValue);
+         parameterValue.Info.MinIsAllowed.ShouldBeEqualTo(_permeabilityParam.MinIsAllowed);
       }
    }
 

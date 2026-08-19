@@ -17,6 +17,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
@@ -117,6 +118,7 @@ public partial class OverwriteParameterSetsView : BaseUserControl, IOverwritePar
 
       _gridViewBinderParameterValues.Bind(x => x.Value)
          .WithCaption(Captions.Value)
+         .WithFormat(new NumericFormatter<double?>(NumericFormatterOptions.Instance))
          .WithOnValueUpdating((dto, e) => OnEvent(() => onParameterValueUpdating(dto, e.NewValue)));
 
       _gridViewBinderParameterValues.Bind(x => x.Unit)
