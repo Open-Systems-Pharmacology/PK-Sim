@@ -16,6 +16,7 @@ namespace PKSim.Core.Model
    {
       Protocol Create(ProtocolMode protocolMode);
       Protocol Create(ProtocolMode protocolMode, ApplicationType applicationType);
+      void AddEventOffsetParameterTo(SimpleProtocol protocol);
    }
 
    public class ProtocolFactory : IProtocolFactory
@@ -76,13 +77,19 @@ namespace PKSim.Core.Model
          }
 
          protocol.AddParameter(_parameterFactory.CreateFor(Constants.Parameters.END_TIME, CoreConstants.DEFAULT_PROTOCOL_END_TIME_IN_MIN, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
+         AddEventOffsetParameterTo(protocol);
+
+         return protocol;
+      }
+
+      //Also used by the project converter to add the parameter to protocols saved before v13
+      public void AddEventOffsetParameterTo(SimpleProtocol protocol)
+      {
          var eventOffsetParameter = _parameterFactory.CreateFor(CoreConstants.Parameters.EVENT_OFFSET, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol);
          eventOffsetParameter.Info.MinValue = null;
          eventOffsetParameter.Info.MinIsAllowed = true;
          eventOffsetParameter.Visible = false;
          protocol.AddParameter(eventOffsetParameter);
-
-         return protocol;
       }
 
       private AdvancedProtocol createAdvancedProtocol(ApplicationType applicationType)
