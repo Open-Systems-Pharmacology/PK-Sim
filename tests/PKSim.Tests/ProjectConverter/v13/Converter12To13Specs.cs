@@ -7,6 +7,7 @@ using System;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -34,10 +35,7 @@ namespace PKSim.ProjectConverter.v13
       protected void LoadAll<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock =>
          All<TBuildingBlock>().Each(Load);
 
-      /// <summary>
-      ///    Every parameter the new absorption model added to the lumen of an individual. They are looked up by name
-      ///    rather than by path so the assertion does not depend on which segments a given species defines.
-      /// </summary>
+      //Looked up by name so the assertion does not depend on which segments a species defines
       protected void ShouldHaveTheNewLumenParameters(Individual individual)
       {
          var newLumenParameterNames = new[]
@@ -55,10 +53,7 @@ namespace PKSim.ProjectConverter.v13
          });
       }
 
-      /// <summary>
-      ///    The lumen pH of the lower intestine is a constant up to v12 and a distribution from v13 on. It is the clearest
-      ///    evidence that the definitions were taken over from the database rather than only the missing parameters.
-      /// </summary>
+      //The lumen pH turned from constant into distribution in v13, proving the definitions came from the database
       protected void ShouldHaveADistributedLumenPh(Individual individual)
       {
          var lumen = individual.Organism.GetSingleChildByName<IContainer>(CoreConstants.Organ.LUMEN);
@@ -68,8 +63,7 @@ namespace PKSim.ProjectConverter.v13
          (lowerJejunumPh != null).ShouldBeTrue($"individual '{individual.Name}' has no lumen pH in the lower jejunum");
          (lowerJejunumPh is IDistributedParameter).ShouldBeTrue($"the lumen pH of '{individual.Name}' is not distributed");
 
-         //The default individuals in the fixture never edited the pH, so it must follow its new distribution rather than
-         //stay pinned at the value it had as a constant before the conversion
+         //Unedited pH must follow the new distribution, not stay pinned at its old constant value
          lowerJejunumPh.IsFixedValue.ShouldBeFalse($"the unedited lumen pH of '{individual.Name}' was pinned to a value");
       }
 
@@ -193,11 +187,7 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   /// <summary>
-   ///    An individual that uses the Du Bois body-surface-area option rather than the default Mosteller must not end up
-   ///    with a second method in the same category, which would crash when the individual is mapped to a building block
-   ///    (as happens when a simulation is created or configured).
-   /// </summary>
+   //A second BSA method in the same category crashes the mapping to a building block
    public class When_converting_a_human_individual_that_uses_the_du_bois_body_surface_area_method : ContextForIntegration<Converter12To13>
    {
       private Individual _individual;
@@ -236,11 +226,7 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   /// <summary>
-   ///    No saved project fixture in the repository carries a meal event, so the event branch of the converter is
-   ///    exercised here against the real database template instead. A <see cref="PKSimEvent" /> is rebuilt from a clone of
-   ///    that template and then degraded to look like a project saved before v13, so the conversion has real work to do.
-   /// </summary>
+   //No project fixture carries a meal event, so one is rebuilt from the database template and degraded to pre-v13 state
    public abstract class concern_for_Converter12To13_events : ContextForIntegration<Converter12To13>
    {
       protected PKSimEvent _oldEvent;
@@ -253,8 +239,7 @@ namespace PKSim.ProjectConverter.v13
          _cloner = OSPSuite.Utility.Container.IoC.Resolve<ICloner>();
          var eventGroupRepository = OSPSuite.Utility.Container.IoC.Resolve<IEventGroupRepository>();
 
-         //Any meal that gained the new reset events works. Picking it from the repository keeps the test independent of a
-         //specific meal name
+         //Any meal that gained the new reset events works
          var mealTemplate = eventGroupRepository.All()
             .First(x => x.GetAllChildren<IContainer>(isResetEvent).Any());
 
@@ -267,10 +252,7 @@ namespace PKSim.ProjectConverter.v13
          sut.Convert(_oldEvent, ProjectVersions.V12);
       }
 
-      /// <summary>
-      ///    Rebuilds a <see cref="PKSimEvent" /> from a clone of the template, then strips one reset event and adds back the
-      ///    obsolete stop event so that the state matches a meal saved before the new oral absorption model.
-      /// </summary>
+      //Strips one reset event and adds back the obsolete stop event, like a meal saved before v13
       private PKSimEvent oldEventFrom(EventGroupBuilder template)
       {
          var oldEvent = new PKSimEvent {TemplateName = template.Name}.WithName(template.Name);
@@ -304,12 +286,7 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   /// <summary>
-   ///    End to end check of the v12 → v13 conversion against a real project provided for the new oral absorption model.
-   ///    The project carries several individuals and populations (healthy, diseased and animal) and a set of oral
-   ///    particle-dissolution simulations with all meals plus the gallbladder and urinary bladder emptying events, and one
-   ///    large-molecule IV simulation. The acceptance criteria come from the model owner.
-   /// </summary>
+   //End to end check against the real v12 project provided by the model owner
    public abstract class concern_for_Converter12To13_with_the_test_project : ContextWithLoadedProject<Converter12To13>
    {
       protected IEntityPathResolver _entityPathResolver;
@@ -321,8 +298,7 @@ namespace PKSim.ProjectConverter.v13
          LoadProject("V12_TestProject");
       }
 
-      //The lumen pH parameters are the only user facing parameters redefined by the new model, so they are the ones the
-      //conversion has to carry over unchanged. Every segment uses "pH" except the stomach, which uses "pH in fasted state".
+      //Every segment uses "pH" except the stomach, which uses "pH in fasted state"
       protected IParameter LumenPhParameterIn(ISimulationSubject simulationSubject, string segment)
       {
          var parameterName = segment == CoreConstants.Organ.STOMACH
@@ -330,6 +306,44 @@ namespace PKSim.ProjectConverter.v13
             : ConverterConstants.Parameters.PH;
 
          return simulationSubject.Individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LUMEN, segment, parameterName);
+      }
+
+      //An individual run goes through the SimModel manager because the higher level engine swallows solver errors
+      protected string RunErrorFor(Simulation simulation)
+      {
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               var modelCoreSimulation = OSPSuite.Utility.Container.IoC.Resolve<ISimulationToModelCoreSimulationMapper>().MapFrom(individualSimulation, shouldCloneModel: false);
+               var runResults = OSPSuite.Utility.Container.IoC.Resolve<ISimModelManager>().RunSimulation(modelCoreSimulation);
+               return runResults.Success ? null : errorFrom(runResults);
+
+            case PopulationSimulation populationSimulation:
+               try
+               {
+                  OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>().RunSimulation(populationSimulation).Wait();
+                  return populationSimulation.HasResults ? null : "produced no results";
+               }
+               catch (Exception e)
+               {
+                  return (e.InnerException ?? e).Message;
+               }
+
+            default:
+               return null;
+         }
+      }
+
+      private static string errorFrom(SimulationRunResults runResults) =>
+         string.IsNullOrEmpty(runResults.Error)
+            ? $"solver failed with {runResults.Warnings.Count()} warning(s)"
+            : runResults.Error;
+
+      //The run uses as many individuals as there are ids, so trimming the ids is enough to keep it fast
+      protected static void ReduceToTwoIndividuals(PopulationSimulation simulation)
+      {
+         var individualIds = simulation.Population.IndividualValuesCache.IndividualIds;
+         individualIds.Skip(2).ToList().Each(x => individualIds.Remove(x));
       }
    }
 
@@ -450,8 +464,7 @@ namespace PKSim.ProjectConverter.v13
       [Observation]
       public void should_have_added_the_new_compound_parameters()
       {
-         //These particle-dissolution parameters are new in v13 and were absent from the saved compounds. They are needed
-         //so that a value edited in a simulation can be committed back to the compound building block.
+         //New in v13, needed so a value edited in a simulation can be committed back to the compound
          var newCompoundParameterNames = new[] {"Surface integration factor", "Diffusion layer thickness exponent"};
 
          _allCompounds.Any().ShouldBeTrue();
@@ -461,9 +474,8 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   //Reconfigure: rebuild every model from the building blocks. A partial conversion fails here on an unresolved
-   //reference, so there is no need to run - which for all twelve would be far too slow.
-   public class When_reconfiguring_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   //An incomplete conversion fails the model rebuild, a wrong value the run (issue 3640)
+   public class When_reconfiguring_and_running_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
       private ISimulationModelCreator _simulationModelCreator;
       private List<Simulation> _allSimulations;
@@ -477,7 +489,7 @@ namespace PKSim.ProjectConverter.v13
       }
 
       [Observation]
-      public void should_rebuild_the_model_of_every_converted_simulation()
+      public void should_rebuild_the_model_of_every_converted_simulation_and_run_it()
       {
          _allSimulations.Any().ShouldBeTrue();
 
@@ -486,11 +498,21 @@ namespace PKSim.ProjectConverter.v13
          {
             try
             {
+               if (simulation is PopulationSimulation populationSimulation)
+                  ReduceToTwoIndividuals(populationSimulation);
+
                _simulationModelCreator.CreateModelFor(simulation);
                if (simulation.Model?.Root == null)
+               {
                   errors.Add($"{simulation.Name}: no model was built");
+                  continue;
+               }
+
+               var error = RunErrorFor(simulation);
+               if (error != null)
+                  errors.Add($"{simulation.Name}: {error}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                errors.Add($"{simulation.Name}: {(e.InnerException ?? e).Message}");
             }
@@ -500,58 +522,112 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   //One population is run to prove a rebuilt model still solves; the reconfigure test already covers every model.
-   public class When_running_a_converted_population_simulation_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   //Uses the converted standalone building blocks, not the copies stored inside the simulations
+   public class When_creating_and_running_new_simulations_from_the_converted_building_blocks_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
-      private PopulationSimulation _simulation;
+      private IEventMappingFactory _eventMappingFactory;
+      private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulation = FindByName<PopulationSimulation>("11_Pop_01_Human_Default_Healthy");
-         reduceToTwoIndividuals(_simulation);
-         OSPSuite.Utility.Container.IoC.Resolve<ISimulationModelCreator>().CreateModelFor(_simulation);
-      }
-
-      protected override void Because()
-      {
-         OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>().RunSimulation(_simulation).Wait();
+         _eventMappingFactory = OSPSuite.Utility.Container.IoC.Resolve<IEventMappingFactory>();
+         _allSimulations = All<Simulation>();
+         _allSimulations.Each(Load);
       }
 
       [Observation]
-      public void should_have_produced_results_for_the_two_individuals()
+      public void should_create_and_run_a_new_simulation_for_the_configuration_of_every_simulation_of_the_project()
       {
-         _simulation.HasResults.ShouldBeTrue();
-         _simulation.Results.Count.ShouldBeEqualTo(2);
+         _allSimulations.Any().ShouldBeTrue();
+
+         var errors = new List<string>();
+         foreach (var storedSimulation in _allSimulations)
+         {
+            try
+            {
+               var newSimulation = createSimulationWithTheConfigurationOf(storedSimulation);
+               if (newSimulation.Model?.Root == null)
+               {
+                  errors.Add($"{storedSimulation.Name}: no model was built");
+                  continue;
+               }
+
+               var error = RunErrorFor(newSimulation);
+               if (error != null)
+                  errors.Add($"{storedSimulation.Name}: {error}");
+            }
+            catch (Exception e)
+            {
+               errors.Add($"{storedSimulation.Name}: {(e.InnerException ?? e).Message}");
+            }
+         }
+
+         Assert.IsTrue(errors.Count == 0, errors.ToString("\n"));
       }
 
-      //The run uses as many individuals as there are ids, so trimming the ids is enough to keep it fast
-      private static void reduceToTwoIndividuals(PopulationSimulation simulation)
+      private Simulation createSimulationWithTheConfigurationOf(Simulation storedSimulation)
       {
-         var individualIds = simulation.Population.IndividualValuesCache.IndividualIds;
-         individualIds.Skip(2).ToList().Each(x => individualIds.Remove(x));
-      }
-   }
+         var subject = templateSubjectOf(storedSimulation);
+         var compounds = storedSimulation.CompoundPropertiesList.Select(x => FindByName<Compound>(x.Compound.Name)).ToList();
+         var protocols = storedSimulation.CompoundPropertiesList.Select(templateProtocolOf).ToList();
+         var formulation = templateFormulationOf(storedSimulation);
+         var modelProperties = DomainFactoryForSpecs.CreateModelPropertiesFor(subject, storedSimulation.ModelConfiguration.ModelName);
 
-   //Builds a new oral simulation from the converted standalone building blocks (fresh model properties), not the copies
-   //stored inside a simulation. A building block missing a new parameter fails the model construction.
-   public class When_creating_a_new_oral_simulation_from_the_converted_building_blocks_of_the_test_project : concern_for_Converter12To13_with_the_test_project
-   {
-      private Simulation _simulation;
+         var newSimulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(subject, compounds, protocols, modelProperties, storedSimulation.AllowAging, formulation);
+         addTemplateEventsOf(storedSimulation, newSimulation);
 
-      protected override void Because()
-      {
-         var individual = FindByName<Individual>("01_Human_Default_Healthy");
-         var compound = FindByName<Compound>("C1");
-         var protocol = FindByName<Protocol>("Oral_BD");
-         var formulation = FindByName<Formulation>("Particles_2Bin");
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, formulation);
+         if (newSimulation is PopulationSimulation populationSimulation)
+            ReduceToTwoIndividuals(populationSimulation);
+
+         DomainFactoryForSpecs.AddModelToSimulation(newSimulation);
+         return newSimulation;
       }
 
-      [Observation]
-      public void should_have_built_a_model_from_the_converted_building_blocks()
+      private ISimulationSubject templateSubjectOf(Simulation storedSimulation)
       {
-         (_simulation.Model?.Root != null).ShouldBeTrue();
+         var usedSubject = storedSimulation.UsedBuildingBlocksInSimulation<Population>().FirstOrDefault()
+                           ?? storedSimulation.UsedBuildingBlocksInSimulation<Individual>().First();
+
+         var subject = _project.BuildingBlockById<ISimulationSubject>(usedSubject.TemplateId);
+         Load(subject);
+         return subject;
+      }
+
+      private Protocol templateProtocolOf(CompoundProperties compoundProperties)
+      {
+         var protocol = compoundProperties.ProtocolProperties.Protocol;
+         return protocol == null ? null : FindByName<Protocol>(protocol.Name);
+      }
+
+      private Formulation templateFormulationOf(Simulation storedSimulation)
+      {
+         var formulationMapping = storedSimulation.CompoundPropertiesList
+            .SelectMany(x => x.ProtocolProperties.FormulationMappings)
+            .FirstOrDefault();
+
+         if (formulationMapping == null)
+            return null;
+
+         var formulation = _project.BuildingBlockById<Formulation>(formulationMapping.TemplateFormulationId);
+         Load(formulation);
+         return formulation;
+      }
+
+      //The event resolves through a used building block keyed by the template id
+      private void addTemplateEventsOf(Simulation storedSimulation, Simulation newSimulation)
+      {
+         foreach (var eventMapping in storedSimulation.EventProperties.EventMappings)
+         {
+            var templateEvent = _project.BuildingBlockById<PKSimEvent>(eventMapping.TemplateEventId);
+            Load(templateEvent);
+
+            var newEventMapping = _eventMappingFactory.Create(templateEvent);
+            newEventMapping.StartTime.Value = eventMapping.StartTime.Value;
+
+            newSimulation.AddUsedBuildingBlock(new UsedBuildingBlock(templateEvent.Id, PKSimBuildingBlockType.Event) {BuildingBlock = templateEvent});
+            newSimulation.EventProperties.AddEventMapping(newEventMapping);
+         }
       }
    }
 
