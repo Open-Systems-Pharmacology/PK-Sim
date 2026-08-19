@@ -104,7 +104,7 @@ namespace PKSim.IntegrationTests
       public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
-            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name!="Feces");
+            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name != "Feces");
          allParameters.Count().ShouldBeEqualTo(0);
       }
 
@@ -241,7 +241,7 @@ namespace PKSim.IntegrationTests
          var diseaseState = diseaseStateRepository.FindByName(CoreConstants.DiseaseStates.CKD);
          _individual.OriginData.DiseaseState = diseaseState;
          var param = diseaseState.Parameter(CKDDiseaseStateImplementation.TARGET_GFR);
-         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter {Name = param.Name, Value = param.Value, Unit = param.DisplayUnitName()});
+         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter { Name = param.Name, Value = param.Value, Unit = param.DisplayUnitName() });
          _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
@@ -250,7 +250,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_a_population_with_new_changed_by_create_individual_algorithm()
       {
-         var parameterPath = new[] {Constants.ORGANISM, CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR}.ToPathString();
+         var parameterPath = new[] { Constants.ORGANISM, CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR }.ToPathString();
          _population.IndividualValuesCache.Has(parameterPath).ShouldBeTrue();
       }
 
@@ -344,8 +344,8 @@ namespace PKSim.IntegrationTests
       {
          var msv = _simulationConfiguration.All<InitialConditionsBuildingBlock>().SelectMany(x => x);
          var moleculesWithAllowedNegativeValues = (from molecule in msv
-            where molecule.NegativeValuesAllowed
-            select molecule).ToList();
+                                                   where molecule.NegativeValuesAllowed
+                                                   select molecule).ToList();
          moleculesWithAllowedNegativeValues.Count.ShouldBeEqualTo(2);
       }
 
@@ -365,8 +365,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
-         var simulationExporter = IoC.Resolve<IMoBiExportTask>();
-         await simulationExporter.ExportSimulationToPkmlFileAsync(_simulation, "C:\\temp\\bug.pkml");
+         //var simulationExporter = IoC.Resolve<IMoBiExportTask>();
+         //await simulationExporter.ExportSimulationToPkmlFileAsync(_simulation, "C:\\temp\\bug.pkml");
 
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
@@ -377,8 +377,60 @@ namespace PKSim.IntegrationTests
       public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
-            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name!="Feces");
+            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name != "Feces");
          allParameters.Count().ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_creating_an_individual_simulation_2pores_with_nearly_zero_lymph_flow : concern_for_IndividualSimulation
+   {
+      private SimulationConfiguration _simulationConfiguration;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _workspace.Project.AddBuildingBlock(_individual);
+         _workspace.Project.AddBuildingBlock(_protocol);
+         _workspace.Project.AddBuildingBlock(_compound);
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
+         var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _simulation.Model.Root
+            .EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, CoreConstants.Parameters.LYMPH_FLOW)
+            .Value = 1E-20;
+      }
+
+      [Observation]
+      public void all_simulation_parameters_should_be_not_nan_and_finite()
+      {
+         var invalidParameters = _simulation.All<IParameter>().Where(x => !x.Value.IsFinite()).ToList();
+         invalidParameters.Count.ShouldBeEqualTo(0,
+            $"The following parameters are NaN or Infinity: {string.Join(", ", invalidParameters.Select(x => x.EntityPath()))}");
+      }
+
+      [Observation]
+      public async Task should_be_able_to_simulate_the_simulation()
+      {
+         var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
+         _simulation.HasResults.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void all_molecule_initial_values_must_be_finite()
+      {
+         var invalidMolecules = _simulation.All<MoleculeAmount>().Where(x => !x.Formula.Calculate(x).IsFinite()).ToList();
+         invalidMolecules.Count.ShouldBeEqualTo(0,
+            $"The following molecules have NaN or Infinity as initial values: {string.Join(", ", invalidMolecules.Select(x => x.EntityPath()))}");
+      }
+
+      [Observation]
+      public void all_process_rates_at_t_0_must_be_finite()
+      {
+         var invalidProcesses = _simulation.All<Process>().Where(x => !x.Formula.Calculate(x).IsFinite()).ToList();
+         invalidProcesses.Count.ShouldBeEqualTo(0,
+            $"The following processes have NaN or Infinity as rates at time 0: {string.Join(", ", invalidProcesses.Select(x => x.EntityPath()))}");
       }
    }
 
@@ -393,7 +445,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName,
-            x => x.Molecule.Ontogeny = new UserDefinedOntogeny {Table = createOntogenyTable()});
+            x => x.Molecule.Ontogeny = new UserDefinedOntogeny { Table = createOntogenyTable() });
 
          var containerTask = IoC.Resolve<IContainerTask>();
          _individual.OriginData.Age = new OriginDataParameter(2);
@@ -609,7 +661,7 @@ namespace PKSim.IntegrationTests
          var modelProps = DomainFactoryForSpecs.CreateModelPropertiesFor(_individual, CoreConstants.Model.TWO_PORES);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(
-            _individual, new[] {_compound, _compound2}, new[] {_protocol, _protocol2}, modelProps) as IndividualSimulation;
+            _individual, new[] { _compound, _compound2 }, new[] { _protocol, _protocol2 }, modelProps) as IndividualSimulation;
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
 
          _compound1Name = _compound.Name;
@@ -710,13 +762,13 @@ namespace PKSim.IntegrationTests
       private IEnumerable<string> moleculeNamesIn(IContainer container)
       {
          return (from molecule in container.GetAllChildren<MoleculeAmount>()
-            select molecule.Name).ToList();
+                 select molecule.Name).ToList();
       }
 
       private IEnumerable<string> reactionNamesIn(IContainer container)
       {
          return (from molecule in container.GetAllChildren<Reaction>()
-            select molecule.Name).ToList();
+                 select molecule.Name).ToList();
       }
 
       [Observation]
@@ -822,7 +874,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("COMP_FIRST");
-         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound2, _compound}, new[] {_protocol, DomainFactoryForSpecs.CreateStandardIVProtocol()}).DowncastTo<IndividualSimulation>();
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] { _compound2, _compound }, new[] { _protocol, DomainFactoryForSpecs.CreateStandardIVProtocol() }).DowncastTo<IndividualSimulation>();
       }
 
       [Observation]
@@ -917,11 +969,11 @@ namespace PKSim.IntegrationTests
          }
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(
-            _individual, new[] {_compound, inhibitor}, new[] {_protocol, protocol2}).DowncastTo<IndividualSimulation>();
+            _individual, new[] { _compound, inhibitor }, new[] { _protocol, protocol2 }).DowncastTo<IndividualSimulation>();
 
          foreach (var inhibitionProcess in inhibitor.AllProcesses<InteractionProcess>())
          {
-            var interactionSelection = new InteractionSelection {CompoundName = inhibitor.Name, MoleculeName = inhibitionProcess.MoleculeName, ProcessName = inhibitionProcess.Name};
+            var interactionSelection = new InteractionSelection { CompoundName = inhibitor.Name, MoleculeName = inhibitionProcess.MoleculeName, ProcessName = inhibitionProcess.Name };
             _simulation.InteractionProperties.AddInteraction(interactionSelection);
          }
 

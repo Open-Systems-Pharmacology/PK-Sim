@@ -23,6 +23,63 @@ namespace PKSim.IntegrationTests
    {
    }
 
+   public class When_checking_the_changes_in_the_database_for_version_13_0 : concern_for_DatabaseUpdate
+   {
+      private IRateFormulaRepository _rateFormulaRepository;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+      }
+
+      [Observation]
+      public void should_adjust_the_diffusion_layer_gradient_formula()
+      {
+         var formula = formulaFor("PARAM_Diffusion_layer_gradient");
+         formula.StartsWith("hu>0 AND hb>0 AND Liquid>0 ?").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_adjust_the_absolute_surface_integration_factor_formula()
+      {
+         var formula = formulaFor("PARAM_Surface_integration_factor_absolute");
+         formula.ShouldBeEqualTo("DiffusionLayerGradient < 0 ? (r+SIF > 0 ? r/(r+SIF) : 1) : 1");
+      }
+
+      [Observation]
+      public void should_adjust_the_neutral_bile_salt_micelle_water_partition_coefficient_formula()
+      {
+         var formula = formulaFor("PARAM_K_n");
+         formula.ShouldBeEqualTo("max(0; c1*LogP+c2)");
+      }
+
+      [Observation]
+      public void should_adjust_the_ionized_bile_salt_micelle_water_partition_coefficient_formula()
+      {
+         var formula = formulaFor("PARAM_K_i");
+         formula.ShouldBeEqualTo("pKa_Acids_Count = 0 ? (pKa_Bases_Count != 0 ? max(0; K_n - PenaltyBases) : 0) : max(0; K_n-PenaltyOthers)");
+      }
+
+      [Observation]
+      public void should_rename_the_local_kd_fcrn_parameter_of_the_molecule_properties()
+      {
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         var allMoleculePropertiesParameters = parameterRateRepository.All()
+            .Where(p => p.ContainerName.Equals("MoleculeProperties")).ToList();
+
+         allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) in endosomal space of container")).ShouldBeFalse();
+         allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) of container")).ShouldBeTrue();
+      }
+
+      private string formulaFor(string rate)
+      {
+         var rateFormulas = _rateFormulaRepository.All().Where(r => r.Rate.Equals(rate)).ToList();
+         rateFormulas.Count.ShouldBeEqualTo(1);
+         return rateFormulas[0].Formula;
+      }
+   }
+
    public class When_checking_the_changes_in_the_database_for_version_12_0 : concern_for_DatabaseUpdate
    {
       [Observation]
