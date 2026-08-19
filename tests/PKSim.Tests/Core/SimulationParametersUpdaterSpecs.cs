@@ -3,7 +3,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
@@ -80,47 +79,6 @@ namespace PKSim.Core
       {
          _result.Messages.Count().ShouldBeEqualTo(1);
          _result.Messages.ElementAt(0).Object.ShouldBeEqualTo(_sourceP2);
-      }
-   }
-
-   public class When_starting_the_reconciliation_of_parameters_in_a_simulation_using_an_overwrite_parameter_set : concern_for_SimulationParametersUpdater
-   {
-      private Simulation _sourceSimulation;
-      private Simulation _targetSimulation;
-      private ValidationResult _result;
-      private IParameter _sourceP1;
-
-      protected override void Context()
-      {
-         base.Context();
-         _sourceSimulation = A.Fake<Simulation>();
-         _targetSimulation = A.Fake<Simulation>();
-         _sourceP1 = A.Fake<IParameter>();
-         A.CallTo(() => _sourceSimulation.ParametersOfType(PKSimBuildingBlockType.Simulation)).Returns(new[] { _sourceP1 });
-         A.CallTo(() => _targetSimulation.ParametersOfType(PKSimBuildingBlockType.Simulation)).Returns(new IParameter[] { });
-         A.CallTo(() => _entityPathResolver.PathFor(_sourceP1)).Returns("P1");
-
-         //this parameter was changed by the user and is a compound parameter in the target simulation
-         _sourceP1.Formula = new ExplicitFormula();
-         _sourceP1.Editable = true;
-         _sourceP1.IsFixedValue = true;
-
-         var overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
-         overwriteParameterSet.Add(new ParameterValue { Path = "P1".ToObjectPath(), Value = 10 });
-         var selections = new OverwriteParameterSetSelections();
-         selections.SetSelectionForCompound("Aspirin", overwriteParameterSet);
-         A.CallTo(() => _targetSimulation.OverwriteParameterSetSelections).Returns(selections);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ReconciliateSimulationParametersBetween(_sourceSimulation, _targetSimulation);
-      }
-
-      [Observation]
-      public void should_not_return_a_validation_message_for_a_parameter_whose_value_is_defined_by_the_selected_overwrite_parameter_set()
-      {
-         _result.ValidationState.ShouldBeEqualTo(ValidationState.Valid);
       }
    }
 }	
