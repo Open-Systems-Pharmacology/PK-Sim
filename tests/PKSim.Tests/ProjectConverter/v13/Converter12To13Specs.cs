@@ -7,6 +7,7 @@ using System;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -331,6 +332,47 @@ namespace PKSim.ProjectConverter.v13
 
          return simulationSubject.Individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LUMEN, segment, parameterName);
       }
+
+      //Returns the error a run reported, or null when it succeeded. An individual simulation is run through the SimModel
+      //manager so the returned SimulationRunResults can be inspected directly: a solver failure sets Success to false and
+      //carries the error, which the higher level engine swallows. A population run raises an exception on failure, so it
+      //is run through the runner and the exception is captured.
+      protected string RunErrorFor(Simulation simulation)
+      {
+         switch (simulation)
+         {
+            case IndividualSimulation individualSimulation:
+               var modelCoreSimulation = OSPSuite.Utility.Container.IoC.Resolve<ISimulationToModelCoreSimulationMapper>().MapFrom(individualSimulation, shouldCloneModel: false);
+               var runResults = OSPSuite.Utility.Container.IoC.Resolve<ISimModelManager>().RunSimulation(modelCoreSimulation);
+               return runResults.Success ? null : errorFrom(runResults);
+
+            case PopulationSimulation populationSimulation:
+               try
+               {
+                  OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>().RunSimulation(populationSimulation).Wait();
+                  return populationSimulation.HasResults ? null : "produced no results";
+               }
+               catch (Exception e)
+               {
+                  return (e.InnerException ?? e).Message;
+               }
+
+            default:
+               return null;
+         }
+      }
+
+      private static string errorFrom(SimulationRunResults runResults) =>
+         string.IsNullOrEmpty(runResults.Error)
+            ? $"solver failed with {runResults.Warnings.Count()} warning(s)"
+            : runResults.Error;
+
+      //The run uses as many individuals as there are ids, so trimming the ids is enough to keep it fast
+      protected static void ReduceToTwoIndividuals(PopulationSimulation simulation)
+      {
+         var individualIds = simulation.Population.IndividualValuesCache.IndividualIds;
+         individualIds.Skip(2).ToList().Each(x => individualIds.Remove(x));
+      }
    }
 
    public class When_converting_the_modified_individual_of_the_test_project : concern_for_Converter12To13_with_the_test_project
@@ -461,9 +503,10 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   //Reconfigure: rebuild every model from the building blocks. A partial conversion fails here on an unresolved
-   //reference, so there is no need to run - which for all twelve would be far too slow.
-   public class When_reconfiguring_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   //Reconfigure: rebuild every model from the building blocks - a partial conversion fails here on an unresolved
+   //reference - then run it, so a defect that only surfaces when the model is solved is caught as well (issue 3640).
+   //Populations are trimmed to two individuals to keep the runs fast.
+   public class When_reconfiguring_and_running_the_converted_simulations_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
       private ISimulationModelCreator _simulationModelCreator;
       private List<Simulation> _allSimulations;
@@ -477,7 +520,7 @@ namespace PKSim.ProjectConverter.v13
       }
 
       [Observation]
-      public void should_rebuild_the_model_of_every_converted_simulation()
+      public void should_rebuild_the_model_of_every_converted_simulation_and_run_it()
       {
          _allSimulations.Any().ShouldBeTrue();
 
@@ -486,11 +529,21 @@ namespace PKSim.ProjectConverter.v13
          {
             try
             {
+               if (simulation is PopulationSimulation populationSimulation)
+                  ReduceToTwoIndividuals(populationSimulation);
+
                _simulationModelCreator.CreateModelFor(simulation);
                if (simulation.Model?.Root == null)
+               {
                   errors.Add($"{simulation.Name}: no model was built");
+                  continue;
+               }
+
+               var error = RunErrorFor(simulation);
+               if (error != null)
+                  errors.Add($"{simulation.Name}: {error}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                errors.Add($"{simulation.Name}: {(e.InnerException ?? e).Message}");
             }
@@ -500,58 +553,118 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
-   //One population is run to prove a rebuilt model still solves; the reconfigure test already covers every model.
-   public class When_running_a_converted_population_simulation_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   //Builds a new simulation from the converted standalone building blocks (fresh model properties), not the copies
+   //stored inside a simulation, for the configuration of every simulation of the project, and runs it. A building
+   //block missing a new parameter fails the model construction, a wrong value surfaces when the model is solved.
+   public class When_creating_and_running_new_simulations_from_the_converted_building_blocks_of_the_test_project : concern_for_Converter12To13_with_the_test_project
    {
-      private PopulationSimulation _simulation;
+      private IEventMappingFactory _eventMappingFactory;
+      private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulation = FindByName<PopulationSimulation>("11_Pop_01_Human_Default_Healthy");
-         reduceToTwoIndividuals(_simulation);
-         OSPSuite.Utility.Container.IoC.Resolve<ISimulationModelCreator>().CreateModelFor(_simulation);
-      }
-
-      protected override void Because()
-      {
-         OSPSuite.Utility.Container.IoC.Resolve<ISimulationRunner>().RunSimulation(_simulation).Wait();
+         _eventMappingFactory = OSPSuite.Utility.Container.IoC.Resolve<IEventMappingFactory>();
+         _allSimulations = All<Simulation>();
+         _allSimulations.Each(Load);
       }
 
       [Observation]
-      public void should_have_produced_results_for_the_two_individuals()
+      public void should_create_and_run_a_new_simulation_for_the_configuration_of_every_simulation_of_the_project()
       {
-         _simulation.HasResults.ShouldBeTrue();
-         _simulation.Results.Count.ShouldBeEqualTo(2);
+         _allSimulations.Any().ShouldBeTrue();
+
+         var errors = new List<string>();
+         foreach (var storedSimulation in _allSimulations)
+         {
+            try
+            {
+               var newSimulation = createSimulationWithTheConfigurationOf(storedSimulation);
+               if (newSimulation.Model?.Root == null)
+               {
+                  errors.Add($"{storedSimulation.Name}: no model was built");
+                  continue;
+               }
+
+               var error = RunErrorFor(newSimulation);
+               if (error != null)
+                  errors.Add($"{storedSimulation.Name}: {error}");
+            }
+            catch (Exception e)
+            {
+               errors.Add($"{storedSimulation.Name}: {(e.InnerException ?? e).Message}");
+            }
+         }
+
+         Assert.IsTrue(errors.Count == 0, errors.ToString("\n"));
       }
 
-      //The run uses as many individuals as there are ids, so trimming the ids is enough to keep it fast
-      private static void reduceToTwoIndividuals(PopulationSimulation simulation)
+      //Rebuilds the configuration of the stored simulation from the standalone building blocks of the project: the same
+      //subject, compounds, protocols, formulation and events, on the same model with fresh default model properties -
+      //as a user would when creating a new simulation and picking the same building blocks.
+      private Simulation createSimulationWithTheConfigurationOf(Simulation storedSimulation)
       {
-         var individualIds = simulation.Population.IndividualValuesCache.IndividualIds;
-         individualIds.Skip(2).ToList().Each(x => individualIds.Remove(x));
-      }
-   }
+         var subject = templateSubjectOf(storedSimulation);
+         var compounds = storedSimulation.CompoundPropertiesList.Select(x => FindByName<Compound>(x.Compound.Name)).ToList();
+         var protocols = storedSimulation.CompoundPropertiesList.Select(templateProtocolOf).ToList();
+         var formulation = templateFormulationOf(storedSimulation);
+         var modelProperties = DomainFactoryForSpecs.CreateModelPropertiesFor(subject, storedSimulation.ModelConfiguration.ModelName);
 
-   //Builds a new oral simulation from the converted standalone building blocks (fresh model properties), not the copies
-   //stored inside a simulation. A building block missing a new parameter fails the model construction.
-   public class When_creating_a_new_oral_simulation_from_the_converted_building_blocks_of_the_test_project : concern_for_Converter12To13_with_the_test_project
-   {
-      private Simulation _simulation;
+         var newSimulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(subject, compounds, protocols, modelProperties, storedSimulation.AllowAging, formulation);
+         addTemplateEventsOf(storedSimulation, newSimulation);
 
-      protected override void Because()
-      {
-         var individual = FindByName<Individual>("01_Human_Default_Healthy");
-         var compound = FindByName<Compound>("C1");
-         var protocol = FindByName<Protocol>("Oral_BD");
-         var formulation = FindByName<Formulation>("Particles_2Bin");
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, formulation);
+         if (newSimulation is PopulationSimulation populationSimulation)
+            ReduceToTwoIndividuals(populationSimulation);
+
+         DomainFactoryForSpecs.AddModelToSimulation(newSimulation);
+         return newSimulation;
       }
 
-      [Observation]
-      public void should_have_built_a_model_from_the_converted_building_blocks()
+      private ISimulationSubject templateSubjectOf(Simulation storedSimulation)
       {
-         (_simulation.Model?.Root != null).ShouldBeTrue();
+         var usedSubject = storedSimulation.UsedBuildingBlocksInSimulation<Population>().FirstOrDefault()
+                           ?? storedSimulation.UsedBuildingBlocksInSimulation<Individual>().First();
+
+         var subject = _project.BuildingBlockById<ISimulationSubject>(usedSubject.TemplateId);
+         Load(subject);
+         return subject;
+      }
+
+      private Protocol templateProtocolOf(CompoundProperties compoundProperties)
+      {
+         var protocol = compoundProperties.ProtocolProperties.Protocol;
+         return protocol == null ? null : FindByName<Protocol>(protocol.Name);
+      }
+
+      private Formulation templateFormulationOf(Simulation storedSimulation)
+      {
+         var formulationMapping = storedSimulation.CompoundPropertiesList
+            .SelectMany(x => x.ProtocolProperties.FormulationMappings)
+            .FirstOrDefault();
+
+         if (formulationMapping == null)
+            return null;
+
+         var formulation = _project.BuildingBlockById<Formulation>(formulationMapping.TemplateFormulationId);
+         Load(formulation);
+         return formulation;
+      }
+
+      //The events are wired up as the simulation event configuration does it: the template as used building block and a
+      //mapping carrying the start time of the stored simulation
+      private void addTemplateEventsOf(Simulation storedSimulation, Simulation newSimulation)
+      {
+         foreach (var eventMapping in storedSimulation.EventProperties.EventMappings)
+         {
+            var templateEvent = _project.BuildingBlockById<PKSimEvent>(eventMapping.TemplateEventId);
+            Load(templateEvent);
+
+            var newEventMapping = _eventMappingFactory.Create(templateEvent);
+            newEventMapping.StartTime.Value = eventMapping.StartTime.Value;
+
+            newSimulation.AddUsedBuildingBlock(new UsedBuildingBlock(templateEvent.Id, PKSimBuildingBlockType.Event) {BuildingBlock = templateEvent});
+            newSimulation.EventProperties.AddEventMapping(newEventMapping);
+         }
       }
    }
 
