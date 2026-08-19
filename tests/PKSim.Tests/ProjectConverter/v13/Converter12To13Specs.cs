@@ -286,6 +286,69 @@ namespace PKSim.ProjectConverter.v13
       }
    }
 
+   //The event offset was introduced in v13, so a protocol saved before lacks the parameter (issue 3489)
+   public abstract class concern_for_Converter12To13_protocols : ContextForIntegration<Converter12To13>
+   {
+      protected SimpleProtocol _protocol;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var protocolFactory = OSPSuite.Utility.Container.IoC.Resolve<IProtocolFactory>();
+         _protocol = protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Oral).DowncastTo<SimpleProtocol>().WithName("Old protocol");
+      }
+
+      protected override void Because()
+      {
+         sut.Convert(_protocol, ProjectVersions.V12);
+      }
+
+      protected void ShouldHaveASingleWellDefinedEventOffsetParameter()
+      {
+         _protocol.GetChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.EVENT_OFFSET)).Count().ShouldBeEqualTo(1);
+
+         var parameter = _protocol.EventOffsetParameter;
+         parameter.ShouldNotBeNull();
+         parameter.Value.ShouldBeEqualTo(0d);
+         parameter.Visible.ShouldBeFalse();
+         parameter.Dimension.Name.ShouldBeEqualTo(Constants.Dimension.TIME);
+         parameter.Info.MinValue.ShouldBeNull();
+         parameter.Info.MinIsAllowed.ShouldBeTrue();
+      }
+   }
+
+   public class When_converting_a_simple_protocol_saved_before_the_event_offset_parameter_existed : concern_for_Converter12To13_protocols
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _protocol.RemoveChild(_protocol.EventOffsetParameter);
+      }
+
+      [Observation]
+      public void should_have_added_the_event_offset_parameter_with_the_same_definition_as_a_new_protocol() =>
+         ShouldHaveASingleWellDefinedEventOffsetParameter();
+   }
+
+   public class When_converting_a_simple_protocol_that_already_has_the_event_offset_parameter : concern_for_Converter12To13_protocols
+   {
+      private IParameter _existingParameter;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _existingParameter = _protocol.EventOffsetParameter;
+      }
+
+      [Observation]
+      public void should_have_left_the_existing_parameter_untouched() =>
+         _protocol.EventOffsetParameter.ShouldBeEqualTo(_existingParameter);
+
+      [Observation]
+      public void should_not_have_created_a_duplicate() =>
+         ShouldHaveASingleWellDefinedEventOffsetParameter();
+   }
+
    //End to end check against the real v12 project provided by the model owner
    public abstract class concern_for_Converter12To13_with_the_test_project : ContextWithLoadedProject<Converter12To13>
    {
@@ -471,6 +534,44 @@ namespace PKSim.ProjectConverter.v13
          _allCompounds.Each(compound =>
             newCompoundParameterNames.Each(name =>
                (compound.Parameter(name) != null).ShouldBeTrue($"'{name}' was not added to compound '{compound.Name}'")));
+      }
+   }
+
+   public class When_converting_the_protocols_of_the_test_project : concern_for_Converter12To13_with_the_test_project
+   {
+      private List<SimpleProtocol> _allSimpleProtocols;
+      private List<Simulation> _allSimulations;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         All<Protocol>().Each(Load);
+         _allSimulations = All<Simulation>();
+         _allSimulations.Each(Load);
+         _allSimpleProtocols = All<Protocol>().OfType<SimpleProtocol>().ToList();
+      }
+
+      [Observation]
+      public void should_have_added_the_event_offset_parameter_to_every_simple_protocol()
+      {
+         _allSimpleProtocols.Any().ShouldBeTrue();
+         _allSimpleProtocols.Each(shouldHaveTheEventOffsetParameter);
+      }
+
+      //A simulation carries its own copies of the protocols, so they need the parameter too
+      [Observation]
+      public void should_have_added_the_event_offset_parameter_to_the_protocols_of_every_simulation()
+      {
+         var simulationProtocols = _allSimulations.SelectMany(x => x.AllBuildingBlocks<Protocol>()).OfType<SimpleProtocol>().ToList();
+         simulationProtocols.Any().ShouldBeTrue();
+         simulationProtocols.Each(shouldHaveTheEventOffsetParameter);
+      }
+
+      private static void shouldHaveTheEventOffsetParameter(SimpleProtocol protocol)
+      {
+         (protocol.EventOffsetParameter != null).ShouldBeTrue($"'{protocol.Name}' has no event offset parameter");
+         protocol.EventOffsetParameter.Value.ShouldBeEqualTo(0d);
+         protocol.EventOffsetParameter.Visible.ShouldBeFalse();
       }
    }
 

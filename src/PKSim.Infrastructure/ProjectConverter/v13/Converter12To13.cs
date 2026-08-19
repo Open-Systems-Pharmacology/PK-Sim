@@ -25,6 +25,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       IVisitor<Compound>,
       IVisitor<Formulation>,
       IVisitor<PKSimEvent>,
+      IVisitor<SimpleProtocol>,
       IVisitor<Simulation>
    {
       private readonly CoreConverter121To130 _coreConverter;
@@ -34,6 +35,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
       private readonly ITemplateStructureUpdater _templateStructureUpdater;
       private readonly IIndividualCalculationMethodsUpdater _individualCalculationMethodsUpdater;
       private readonly IPopulationParameterValuesUpdater _populationParameterValuesUpdater;
+      private readonly IProtocolFactory _protocolFactory;
       private readonly ICloner _cloner;
       private readonly Lazy<Compound> _templateCompound;
       private bool _converted;
@@ -47,6 +49,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          ITemplateStructureUpdater templateStructureUpdater,
          IIndividualCalculationMethodsUpdater individualCalculationMethodsUpdater,
          IPopulationParameterValuesUpdater populationParameterValuesUpdater,
+         IProtocolFactory protocolFactory,
          ICloner cloner)
       {
          _coreConverter = coreConverter;
@@ -56,6 +59,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          _templateStructureUpdater = templateStructureUpdater;
          _individualCalculationMethodsUpdater = individualCalculationMethodsUpdater;
          _populationParameterValuesUpdater = populationParameterValuesUpdater;
+         _protocolFactory = protocolFactory;
          _cloner = cloner;
          //The compound template is the same for every compound, so it is built once and reused
          _templateCompound = new Lazy<Compound>(compoundFactory.Create);
@@ -86,6 +90,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
 
       public void Visit(PKSimEvent pkSimEvent) => convertEvent(pkSimEvent);
 
+      public void Visit(SimpleProtocol protocol) => convertProtocol(protocol);
+
       public void Visit(Simulation simulation) => convertSimulation(simulation);
 
       private void convertSimulation(Simulation simulation)
@@ -99,6 +105,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          simulation.Compounds.Each(convertCompound);
          simulation.AllBuildingBlocks<Formulation>().Each(convertFormulation);
          simulation.AllBuildingBlocks<PKSimEvent>().Each(convertEvent);
+         simulation.AllBuildingBlocks<Protocol>().OfType<SimpleProtocol>().Each(convertProtocol);
 
          //Last, once the converted individual's calculation methods have flowed into the model properties
          _individualCalculationMethodsUpdater.AddMissingModelCalculationMethodsTo(simulation);
@@ -198,6 +205,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
                   _converted = true;
             }
          }
+      }
+
+      //The event offset was introduced in v13, where only the factory adds it to newly created protocols
+      private void convertProtocol(SimpleProtocol protocol)
+      {
+         if (protocol == null || protocol.EventOffsetParameter != null)
+            return;
+
+         _protocolFactory.AddEventOffsetParameterTo(protocol);
+         _converted = true;
       }
 
       private void convertFormulation(Formulation formulation)
