@@ -713,6 +713,82 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_opening_a_project_in_which_building_blocks_were_converted_from_an_older_version : concern_for_ProjectTask
+   {
+      private string _fileToOpen;
+      private Compound _convertedCompound;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _fileToOpen = "toto.pksim5";
+         FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
+         _project = new PKSimProject();
+         _workspace.Project = _project;
+         _convertedCompound = new Compound {Name = "Converted compound", IsLoaded = true};
+         //simulates the conversion of the project to the current version taking place during the project load
+         A.CallTo(() => _workspace.OpenProject(_fileToOpen)).Invokes(x =>
+         {
+            _project.AddBuildingBlock(_convertedCompound);
+            _convertedCompound.HasChanged = true;
+            _project.HasChanged = true;
+         });
+      }
+
+      protected override Task Because()
+      {
+         sut.OpenProjectFrom(_fileToOpen);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_keep_the_converted_building_block_flagged_as_changed_so_that_the_converted_content_is_persisted_with_the_next_save()
+      {
+         _convertedCompound.HasChanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_keep_the_project_flagged_as_changed_so_that_the_user_is_prompted_to_save_the_conversion()
+      {
+         _project.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   public class When_opening_a_project_that_is_already_at_the_current_version : concern_for_ProjectTask
+   {
+      private string _fileToOpen;
+      private Compound _compound;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _fileToOpen = "toto.pksim5";
+         FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
+         _project = new PKSimProject();
+         _workspace.Project = _project;
+         _compound = new Compound {Name = "Compound", IsLoaded = true, HasChanged = false};
+         //simulates the loading process itself flagging the project as changed even though no conversion took place
+         A.CallTo(() => _workspace.OpenProject(_fileToOpen)).Invokes(x =>
+         {
+            _project.AddBuildingBlock(_compound);
+            _compound.HasChanged = false;
+            _project.HasChanged = true;
+         });
+      }
+
+      protected override Task Because()
+      {
+         sut.OpenProjectFrom(_fileToOpen);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_not_flag_the_project_as_changed_so_that_the_user_is_not_prompted_to_save()
+      {
+         _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
    public class When_opening_a_project_file_that_does_not_exist : concern_for_ProjectTask
    {
       private string _fileToOpen;
