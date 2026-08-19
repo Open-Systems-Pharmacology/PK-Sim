@@ -346,7 +346,7 @@ namespace PKSim.Presentation.Services
             // which is not loaded but AFTER the deserialization.
             // Ideally this should go down in the callstack, but we are getting a circular dependency issue.
             _workspace.Project.All<Individual>().Each(_lazyLoadTask.Load);
-            _workspace.Project.HasChanged = false;
+            resetProjectChangedState();
          }
 
          try
@@ -376,6 +376,16 @@ namespace PKSim.Presentation.Services
          {
             _executionContext.PublishEvent(new EnableUIEvent(_workspace.Project, _workspace.ProjectLoaded));
          }
+      }
+
+      private void resetProjectChangedState()
+      {
+         var project = _workspace.Project;
+         //loaded building blocks still flagged as changed were converted during the load and must remain flagged so that the conversion is saved
+         var convertedBuildingBlocks = project.All<IPKSimBuildingBlock>().Where(x => x.IsLoaded && x.HasChanged).ToList();
+         project.HasChanged = false;
+         convertedBuildingBlocks.Each(x => x.HasChanged = true);
+         project.HasChanged = convertedBuildingBlocks.Any();
       }
 
       private void checkFileExtension(string projectFile)
