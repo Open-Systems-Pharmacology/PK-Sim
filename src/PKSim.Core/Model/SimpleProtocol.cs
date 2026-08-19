@@ -3,8 +3,6 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility.Validation;
-using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -18,13 +16,7 @@ namespace PKSim.Core.Model
       public SimpleProtocol()
       {
          Rules.AddRange(SchemaItemRules.All());
-         Rules.Add(eventPlaceholderValid);
       }
-
-      private static IBusinessRule eventPlaceholderValid { get; } = CreateRule.For<SimpleProtocol>()
-         .Property(x => x.EventKey)
-         .WithRule((protocol, eventKey) => !protocol.HasEvent || !string.IsNullOrEmpty(eventKey))
-         .WithError(PKSimConstants.Error.EventPlaceholderRequired);
 
       public virtual ApplicationType ApplicationType
       {

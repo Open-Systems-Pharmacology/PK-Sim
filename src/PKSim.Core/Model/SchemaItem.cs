@@ -41,20 +41,10 @@ namespace PKSim.Core.Model
          set
          {
             SetProperty(ref _applicationType, value);
-            allowNegativeStartTimeForEvents();
+            //an event may be scheduled before its administration (negative offset), unlike an administration
+            if (IsEvent)
+               StartTime.AllowNegativeValues();
          }
-      }
-
-      //an event may be scheduled before its administration (negative offset), so an event's start time
-      //must accept negative values, unlike an administration's
-      private void allowNegativeStartTimeForEvents()
-      {
-         if (!IsEvent) return;
-         var startTime = StartTime;
-         if (startTime?.Info == null) return;
-
-         startTime.Info.MinValue = null;
-         startTime.Info.MinIsAllowed = true;
       }
 
       public string FormulationKey

@@ -113,7 +113,8 @@ namespace PKSim.Core.Services
 
             var eventStartTime = mainSubContainer.StartTime();
             _parameterSetUpdater.UpdateValue(startTime, eventStartTime);
-            allowNegativeStartTime(eventStartTime);
+            //an event may be scheduled before an administration (negative protocol offset)
+            eventStartTime.AllowNegativeValues();
 
             eventGroup.Add(mainSubContainer);
          }
@@ -121,15 +122,6 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, pkSimEvent);
 
          _eventGroupBuildingBlock.Add(eventGroup);
-      }
-
-      //an event may be scheduled before an administration (negative protocol offset), so its start time must allow negative values
-      private static void allowNegativeStartTime(IParameter startTime)
-      {
-         if (startTime?.Info == null) return;
-
-         startTime.Info.MinValue = null;
-         startTime.Info.MinIsAllowed = true;
       }
 
       /// <summary>
@@ -144,20 +136,21 @@ namespace PKSim.Core.Services
          // Standalone events
          foreach (var eventMapping in _simulation.EventProperties.EventMappings)
          {
-            var pkSimEvent = resolveEvent(eventMapping.TemplateEventId);
+            var pkSimEvent = resolveEvent(eventMapping.TemplateEventId) ?? throw new NoEventFoundException(eventMapping.TemplateEventId);
             eventStartTimeFor(pkSimEvent).AddStartTime(eventMapping.StartTime);
          }
 
          // Protocol events
          foreach (var protocolProperties in _simulation.CompoundPropertiesList.Select(x => x.ProtocolProperties))
          {
-            if (protocolProperties.Protocol == null)
+            var protocol = protocolProperties.Protocol;
+            if (protocol == null)
                continue;
 
-            foreach (var schemaItem in _schemaItemsMapper.MapFrom(protocolProperties.Protocol).Where(item => item.IsEvent))
+            foreach (var schemaItem in _schemaItemsMapper.MapFrom(protocol).Where(item => item.IsEvent))
             {
                var mapping = protocolProperties.EventMappingWith(schemaItem.EventKey);
-               var pkSimEvent = resolveEvent(mapping?.TemplateEventId);
+               var pkSimEvent = resolveEvent(mapping?.TemplateEventId) ?? throw new NoEventFoundException(protocol, schemaItem.EventKey);
                eventStartTimeFor(pkSimEvent).AddStartTime(schemaItem.StartTime);
             }
          }
@@ -165,15 +158,13 @@ namespace PKSim.Core.Services
          return result;
       }
 
+      //returns null if the template id is not defined or does not reference an event used by the simulation
       private PKSimEvent resolveEvent(string templateEventId)
       {
-         var usedBuildingBlock = string.IsNullOrEmpty(templateEventId) ? null : _simulation.UsedBuildingBlockByTemplateId(templateEventId);
-         var pkSimEvent = usedBuildingBlock?.BuildingBlock.DowncastTo<PKSimEvent>();
+         if (string.IsNullOrEmpty(templateEventId))
+            return null;
 
-         if (pkSimEvent == null)
-            throw new PKSimException($"Could not resolve event building block for template id '{templateEventId}'.");
-
-         return pkSimEvent;
+         return _simulation.UsedBuildingBlockByTemplateId(templateEventId)?.BuildingBlock as PKSimEvent;
       }
 
       private static Func<PKSimEvent, EventStartTimeCollection> eventStartTimeForDef(Cache<string, EventStartTimeCollection> cache) => pkSimEvent =>

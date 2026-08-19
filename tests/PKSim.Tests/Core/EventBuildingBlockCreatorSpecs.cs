@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
@@ -8,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -83,6 +85,19 @@ namespace PKSim.Core
          startTime.Info.MinValue = minValue;
          startTime.Info.MinIsAllowed = true;
          return startTime;
+      }
+
+      protected static NoEventFoundException exceptionThrownBy(Action action)
+      {
+         try
+         {
+            action();
+            return null;
+         }
+         catch (NoEventFoundException e)
+         {
+            return e;
+         }
       }
    }
 
@@ -184,12 +199,46 @@ namespace PKSim.Core
 
    public class When_creating_event_building_block_with_no_event_mapping_for_key : concern_for_EventBuildingBlockCreator
    {
+      private Protocol _protocol;
+      private NoEventFoundException _exception;
+
       protected override void Context()
       {
          base.Context();
 
-         var protocol = A.Fake<Protocol>();
+         _protocol = A.Fake<Protocol>().WithName("MyProtocol");
+         var protocolProperties = new ProtocolProperties { Protocol = _protocol };
+         var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
+         _simulation.Properties.AddCompoundProperties(compoundProperties);
+
+         var eventSchemaItem = createEventSchemaItem("EVENT_1", 10);
+         A.CallTo(() => _schemaItemsMapper.MapFrom(_protocol)).Returns(new List<SchemaItem> { eventSchemaItem });
+      }
+
+      protected override void Because()
+      {
+         _exception = exceptionThrownBy(() => sut.CreateFor(_simulation));
+      }
+
+      [Observation]
+      public void should_throw_an_exception_naming_the_protocol_and_the_placeholder()
+      {
+         _exception.ShouldNotBeNull();
+         _exception.Message.ShouldBeEqualTo(PKSimConstants.Error.NoEventFoundForPlaceholder("MyProtocol", "EVENT_1"));
+      }
+   }
+
+   public class When_creating_event_building_block_with_a_placeholder_mapped_to_an_event_not_used_by_the_simulation : concern_for_EventBuildingBlockCreator
+   {
+      private NoEventFoundException _exception;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var protocol = A.Fake<Protocol>().WithName("MyProtocol");
          var protocolProperties = new ProtocolProperties { Protocol = protocol };
+         protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping { EventKey = "EVENT_1", TemplateEventId = "unknown-event-id" });
          var compoundProperties = new CompoundProperties { ProtocolProperties = protocolProperties };
          _simulation.Properties.AddCompoundProperties(compoundProperties);
 
@@ -197,10 +246,41 @@ namespace PKSim.Core
          A.CallTo(() => _schemaItemsMapper.MapFrom(protocol)).Returns(new List<SchemaItem> { eventSchemaItem });
       }
 
-      [Observation]
-      public void should_throw_when_event_cannot_be_resolved()
+      protected override void Because()
       {
-         The.Action(() => sut.CreateFor(_simulation)).ShouldThrowAn<PKSimException>();
+         _exception = exceptionThrownBy(() => sut.CreateFor(_simulation));
+      }
+
+      [Observation]
+      public void should_throw_an_exception_naming_the_protocol_and_the_placeholder()
+      {
+         _exception.ShouldNotBeNull();
+         _exception.Message.ShouldBeEqualTo(PKSimConstants.Error.NoEventFoundForPlaceholder("MyProtocol", "EVENT_1"));
+      }
+   }
+
+   public class When_creating_event_building_block_with_a_standalone_event_mapping_that_cannot_be_resolved : concern_for_EventBuildingBlockCreator
+   {
+      private NoEventFoundException _exception;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var startTime = new PKSimParameter().WithName(Constants.Parameters.START_TIME);
+         _simulation.EventProperties.AddEventMapping(new EventMapping { TemplateEventId = "unknown-event-id", StartTime = startTime });
+      }
+
+      protected override void Because()
+      {
+         _exception = exceptionThrownBy(() => sut.CreateFor(_simulation));
+      }
+
+      [Observation]
+      public void should_throw_an_exception_naming_the_template_event_id()
+      {
+         _exception.ShouldNotBeNull();
+         _exception.Message.ShouldBeEqualTo(PKSimConstants.Error.NoEventFoundForSimulationEvent("unknown-event-id"));
       }
    }
 

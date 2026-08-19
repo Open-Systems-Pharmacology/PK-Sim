@@ -86,8 +86,7 @@ namespace PKSim.Core.Model
       public void AddEventOffsetParameterTo(SimpleProtocol protocol)
       {
          var eventOffsetParameter = _parameterFactory.CreateFor(CoreConstants.Parameters.EVENT_OFFSET, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol);
-         eventOffsetParameter.Info.MinValue = null;
-         eventOffsetParameter.Info.MinIsAllowed = true;
+         eventOffsetParameter.AllowNegativeValues();
          eventOffsetParameter.Visible = false;
          protocol.AddParameter(eventOffsetParameter);
       }

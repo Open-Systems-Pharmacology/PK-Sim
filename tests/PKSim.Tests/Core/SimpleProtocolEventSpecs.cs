@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 
 namespace PKSim.Core
@@ -12,7 +13,7 @@ namespace PKSim.Core
    {
       protected override void Context()
       {
-         sut = new SimpleProtocol();
+         sut = new SimpleProtocol().WithName("Protocol");
          sut.ApplicationType = ApplicationTypes.IntravenousBolus;
          sut.DosingInterval = DosingIntervals.Single;
          sut.Add(DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.EVENT_OFFSET));
@@ -31,6 +32,12 @@ namespace PKSim.Core
       public void used_event_keys_should_be_empty()
       {
          sut.UsedEventKeys.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_be_valid()
+      {
+         sut.IsValid().ShouldBeTrue();
       }
    }
 
@@ -58,6 +65,12 @@ namespace PKSim.Core
       public void used_event_keys_should_have_exactly_one_entry()
       {
          sut.UsedEventKeys.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_be_valid()
+      {
+         sut.IsValid().ShouldBeTrue();
       }
    }
 
@@ -133,6 +146,12 @@ namespace PKSim.Core
       public void used_event_keys_should_be_empty()
       {
          sut.UsedEventKeys.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_remain_valid()
+      {
+         sut.IsValid().ShouldBeTrue();
       }
    }
 }

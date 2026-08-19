@@ -84,11 +84,14 @@ namespace PKSim.Presentation.Presenters.Simulations
          return hashSet;
       }
 
-      private EventSelectionDTO selectionFrom(PKSimEvent pkSimEvent) => new EventSelectionDTO
-      {
-         BuildingBlock = pkSimEvent,
-         DisplayName = _buildingBlockSelectionDisplayer.DisplayNameFor(pkSimEvent)
-      };
+      //no selection at all (rather than a blank one) when the project has no event to offer
+      private EventSelectionDTO selectionFrom(PKSimEvent pkSimEvent) => pkSimEvent == null
+         ? null
+         : new EventSelectionDTO
+         {
+            BuildingBlock = pkSimEvent,
+            DisplayName = _buildingBlockSelectionDisplayer.DisplayNameFor(pkSimEvent)
+         };
 
       public void CreateEventFor(EventPlaceholderMappingDTO eventPlaceholderMappingDTO)
       {
@@ -117,7 +120,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _protocolProperties.ClearEventPlaceholderMappings();
 
-         _allEventMappingDTO.Each(dto =>
+         //an unmapped placeholder is rejected by validation before we get here; skipping it keeps this safe regardless
+         _allEventMappingDTO.Where(dto => dto.Event != null).Each(dto =>
          {
             _eventTask.Load(dto.Event);
             _protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping
