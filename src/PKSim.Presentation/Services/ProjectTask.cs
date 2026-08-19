@@ -383,6 +383,7 @@ namespace PKSim.Presentation.Services
          var project = _workspace.Project;
          //loaded building blocks still flagged as changed were converted during the load and must remain flagged so that the conversion is saved
          var convertedBuildingBlocks = project.All<IPKSimBuildingBlock>().Where(x => x.IsLoaded && x.HasChanged).ToList();
+         //this resets the HasChanged flag of ALL building blocks, hence the converted ones captured above need to be restored below
          project.HasChanged = false;
          convertedBuildingBlocks.Each(x => x.HasChanged = true);
          project.HasChanged = convertedBuildingBlocks.Any();
