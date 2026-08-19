@@ -1,7 +1,9 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -21,6 +23,7 @@ namespace PKSim.IntegrationTests
       protected Individual _templateIndividualUsingSameProfile;
       protected Individual _templateIndividualUsingAnotherProfile;
       protected ExpressionProfile _templateExpressionProfileCYP2D6;
+      protected Compound _templateCompound;
 
       public override void GlobalContext()
       {
@@ -38,7 +41,7 @@ namespace PKSim.IntegrationTests
          _templateExpressionProfileCYP2D6 = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>("CYP2D6");
          moleculeExpressionTask.AddExpressionProfile(_templateIndividualUsingAnotherProfile, _templateExpressionProfileCYP2D6);
 
-         var compound = DomainFactoryForSpecs.CreateStandardCompound();
+         var compound = _templateCompound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_templateIndividual, compound, protocol) as IndividualSimulation;
@@ -175,6 +178,35 @@ namespace PKSim.IntegrationTests
       public void should_make_the_template_parameter_eligible_for_snapshot_export()
       {
          _templateFatVolume.ShouldExportToSnapshot().ShouldBeTrue();
+      }
+   }
+
+   public class When_updating_the_template_compound_from_a_simulation_while_the_template_defines_an_overwrite_parameter_set_missing_in_the_simulation : concern_for_SimulationParametersToBuildingBlockUpdater
+   {
+      private Compound _simulationCompound;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _simulationCompound = _simulation.BuildingBlockByTemplateId<Compound>(_templateCompound.Id);
+
+         var setInTemplate = new OverwriteParameterSet {Name = "OPS 1"};
+         setInTemplate.Add(new ParameterValue {Path = $"{_templateCompound.Name}|Lipophilicity".ToObjectPath(), Value = 2});
+         _templateCompound.AddOverwriteParameterSet(setInTemplate);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParametersFromSimulationInBuildingBlock(_simulation, _templateCompound);
+      }
+
+      [Observation]
+      public void should_have_added_the_set_only_defined_in_the_template_to_the_compound_of_the_simulation()
+      {
+         var setInSimulation = _simulationCompound.OverwriteParameterSets.FindByName("OPS 1");
+         setInSimulation.ShouldNotBeNull();
+         setInSimulation.ParameterValues.Single().Value.ShouldBeEqualTo(2);
+         _templateCompound.OverwriteParameterSets.FindByName("OPS 1").ShouldNotBeNull();
       }
    }
 }
