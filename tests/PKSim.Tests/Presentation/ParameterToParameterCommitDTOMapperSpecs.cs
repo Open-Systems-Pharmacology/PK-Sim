@@ -24,6 +24,10 @@ namespace PKSim.Presentation
       {
          base.Context();
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
+         _parameter.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
+         _parameter.DisplayUnit = _parameter.Dimension.Unit("cm");
+         _parameter.ValueOrigin.Source = ValueOriginSources.Publication;
+         _parameter.ValueOrigin.Description = "From literature";
       }
 
       protected override void Because()
@@ -38,9 +42,21 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_set_the_value()
+      public void should_set_the_value_in_the_display_unit()
       {
-         _result.Value.ShouldBeEqualTo(3.5);
+         _result.Value.ShouldBeEqualTo(350);
+      }
+
+      [Observation]
+      public void should_set_the_display_unit()
+      {
+         _result.Unit.ShouldBeEqualTo("cm");
+      }
+
+      [Observation]
+      public void should_set_the_value_origin()
+      {
+         _result.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin.Display);
       }
 
       [Observation]

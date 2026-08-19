@@ -46,6 +46,9 @@ namespace PKSim.Core
          _permeabilityParam.DisplayUnit = _permeabilityParam.Dimension.Unit("cm");
          _permeabilityParam.MinValue = 0;
          _permeabilityParam.MinIsAllowed = true;
+         _permeabilityParam.ValueOrigin.Id = 42;
+         _permeabilityParam.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
+         _permeabilityParam.ValueOrigin.Description = "Fitted to data";
 
          var root = new Container { Name = "Sim" };
          root.Add(_lipophilicityParam);
@@ -153,6 +156,16 @@ namespace PKSim.Core
          parameterValue.DisplayUnit.ShouldBeEqualTo(_permeabilityParam.DisplayUnit);
          parameterValue.Info.MinValue.ShouldBeEqualTo(_permeabilityParam.MinValue);
          parameterValue.Info.MinIsAllowed.ShouldBeEqualTo(_permeabilityParam.MinIsAllowed);
+      }
+
+      [Observation]
+      public void should_take_over_the_value_origin_of_the_committed_simulation_parameter()
+      {
+         var valueOrigin = _templateCompound.OverwriteParameterSets[0].ParameterValueByPath("Organism|Aspirin|Permeability").ValueOrigin;
+         valueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.ParameterIdentification);
+         valueOrigin.Description.ShouldBeEqualTo("Fitted to data");
+         //the id keeps the link to the value origin database entry, so it is not written to the snapshot again
+         valueOrigin.Id.ShouldBeEqualTo(42);
       }
    }
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core.Snapshots;
 
@@ -21,4 +22,6 @@ public class ParameterValue
    public double? MaxValue { get; set; }
 
    public bool? MaxIsAllowed { get; set; }
+
+   public ValueOrigin ValueOrigin { get; set; }
 }

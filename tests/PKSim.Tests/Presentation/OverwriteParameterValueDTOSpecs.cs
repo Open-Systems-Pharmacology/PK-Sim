@@ -1,3 +1,4 @@
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -29,6 +30,8 @@ namespace PKSim.Presentation
             Info = new ParameterInfo { MinValue = 0, MinIsAllowed = true, MaxValue = 0.2, MaxIsAllowed = true }
          };
 
+         _parameterValue.ValueOrigin.Description = "From literature";
+
          sut = new OverwriteParameterValueDTO(_parameterValue);
       }
    }
@@ -44,7 +47,19 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_display_unit_of_the_parameter_value()
       {
-         sut.Unit.ShouldBeEqualTo("cm");
+         sut.DisplayUnit.Name.ShouldBeEqualTo("cm");
+      }
+
+      [Observation]
+      public void should_return_all_units_of_the_dimension()
+      {
+         sut.AllUnits.ShouldOnlyContain(_dimension.Units.ToArray());
+      }
+
+      [Observation]
+      public void should_return_the_value_origin_of_the_parameter_value()
+      {
+         sut.ValueOrigin.Description.ShouldBeEqualTo("From literature");
       }
 
       [Observation]

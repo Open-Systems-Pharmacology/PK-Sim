@@ -30,7 +30,10 @@ namespace PKSim.Core
          A.CallTo(() => _dimensionRepository.DimensionByName(null)).Returns(Constants.Dimension.NO_DIMENSION);
 
          _snapshotContext = new SnapshotContext(new PKSimProject(), SnapshotVersions.Current);
-         sut = new ParameterValueMapper(_dimensionRepository);
+
+         var valueOriginRepository = A.Fake<IValueOriginRepository>();
+         A.CallTo(() => valueOriginRepository.FindBy(A<int?>._)).Returns(new OSPSuite.Core.Domain.ValueOrigin());
+         sut = new ParameterValueMapper(_dimensionRepository, new PKSim.Core.Snapshots.Mappers.ValueOriginMapper(valueOriginRepository));
 
          _parameterValue = new ModelParameterValue
          {
@@ -40,6 +43,8 @@ namespace PKSim.Core
             DisplayUnit = _dimension.Unit("cm"),
             Info = new ParameterInfo { MinValue = 0, MinIsAllowed = true, MaxValue = 0.2, MaxIsAllowed = false }
          };
+
+         _parameterValue.ValueOrigin.Description = "From literature";
 
          return _completed;
       }
@@ -83,6 +88,12 @@ namespace PKSim.Core
       {
          _snapshot.MinIsAllowed.ShouldBeNull();
          _snapshot.MaxIsAllowed.ShouldBeEqualTo(false);
+      }
+
+      [Observation]
+      public void should_map_the_value_origin()
+      {
+         _snapshot.ValueOrigin.Description.ShouldBeEqualTo("From literature");
       }
    }
 
@@ -174,6 +185,12 @@ namespace PKSim.Core
          _result.Info.MinIsAllowed.ShouldBeTrue();
          _result.Info.MaxValue.ShouldBeEqualTo(0.2);
          _result.Info.MaxIsAllowed.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_restore_the_value_origin()
+      {
+         _result.ValueOrigin.Description.ShouldBeEqualTo("From literature");
       }
    }
 

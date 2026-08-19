@@ -11,24 +11,30 @@ namespace PKSim.Core.Snapshots.Mappers;
 public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, SnapshotParameterValue>
 {
    private readonly IDimensionRepository _dimensionRepository;
+   private readonly ValueOriginMapper _valueOriginMapper;
 
-   public ParameterValueMapper(IDimensionRepository dimensionRepository)
+   public ParameterValueMapper(IDimensionRepository dimensionRepository, ValueOriginMapper valueOriginMapper)
    {
       _dimensionRepository = dimensionRepository;
+      _valueOriginMapper = valueOriginMapper;
    }
 
-   public override Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
+   public override async Task<SnapshotParameterValue> MapToSnapshot(ModelParameterValue parameterValue)
    {
       //dimension, unit and allowed range are carried so the value can be displayed and validated in the compound,
       //where the parameter itself cannot be resolved
-      return SnapshotFrom(parameterValue, snapshot =>
+      var snapshot = await SnapshotFrom(parameterValue, x =>
       {
-         snapshot.Path = parameterValue.Path.ToString();
-         snapshot.Value = parameterValue.ConvertToDisplayUnit(parameterValue.Value);
-         snapshot.Dimension = dimensionNameFor(parameterValue);
-         snapshot.Unit = SnapshotValueFor(parameterValue.DisplayUnit.Name);
-         updateAllowedRange(snapshot, parameterValue);
+         x.Path = parameterValue.Path.ToString();
+         x.Value = parameterValue.ConvertToDisplayUnit(parameterValue.Value);
+         x.Dimension = dimensionNameFor(parameterValue);
+         x.Unit = SnapshotValueFor(parameterValue.DisplayUnit.Name);
+         updateAllowedRange(x, parameterValue);
       });
+
+      snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(parameterValue.ValueOrigin);
+
+      return snapshot;
    }
 
    public override Task<ModelParameterValue> MapToModel(SnapshotParameterValue snapshot, SnapshotContext snapshotContext)
@@ -44,6 +50,8 @@ public class ParameterValueMapper : SnapshotMapperBase<ModelParameterValue, Snap
          Value = dimension.UnitValueToBaseUnitValue(displayUnit, snapshot.Value),
          Info = allowedRangeFrom(snapshot, dimension, displayUnit)
       };
+
+      _valueOriginMapper.UpdateValueOrigin(parameterValue.ValueOrigin, snapshot.ValueOrigin);
 
       return Task.FromResult(parameterValue);
    }

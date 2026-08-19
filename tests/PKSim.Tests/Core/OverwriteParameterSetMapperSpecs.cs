@@ -29,7 +29,7 @@ namespace PKSim.Core
       {
          _dimensionRepository = A.Fake<IDimensionRepository>();
          A.CallTo(() => _dimensionRepository.DimensionByName(A<string>._)).Returns(Constants.Dimension.NO_DIMENSION);
-         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository);
+         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository, valueOriginMapperForSpecs());
          _extendedPropertyMapper = new ExtendedPropertyMapper();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          A.CallTo(() => _objectBaseFactory.Create<ModelOverwriteParameterSet>()).ReturnsLazily(() => new ModelOverwriteParameterSet { Id = "NewSetId" });
@@ -47,6 +47,13 @@ namespace PKSim.Core
          _modelOverwriteParameterSet.Add(new ModelParameterValue { Path = "Compound|Solubility".ToObjectPath(), Value = 0.5 });
 
          return _completed;
+      }
+
+      protected static PKSim.Core.Snapshots.Mappers.ValueOriginMapper valueOriginMapperForSpecs()
+      {
+         var valueOriginRepository = A.Fake<IValueOriginRepository>();
+         A.CallTo(() => valueOriginRepository.FindBy(A<int?>._)).Returns(new OSPSuite.Core.Domain.ValueOrigin());
+         return new PKSim.Core.Snapshots.Mappers.ValueOriginMapper(valueOriginRepository);
       }
    }
 
@@ -96,7 +103,7 @@ namespace PKSim.Core
       {
          _dimensionRepository = A.Fake<IDimensionRepository>();
          A.CallTo(() => _dimensionRepository.DimensionByName(A<string>._)).Returns(Constants.Dimension.NO_DIMENSION);
-         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository);
+         _parameterValueMapper = new ParameterValueMapper(_dimensionRepository, valueOriginMapperForSpecs());
          _extendedPropertyMapper = new ExtendedPropertyMapper();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          sut = new OverwriteParameterSetMapper(_parameterValueMapper, _extendedPropertyMapper, _objectBaseFactory);
