@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -315,6 +316,155 @@ namespace PKSim.Core
       {
          _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
          _simulation.ParameterChangeTracker.ChangedPaths[0].PathAsString.ShouldBeEqualTo("Organism|Aspirin|Lipophilicity");
+      }
+   }
+
+   public class When_setting_the_value_of_a_parameter_overwritten_by_the_overwrite_parameter_set_applied_to_the_simulation : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+      private UsedBuildingBlock _usedCompound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Intestinal permeability (transcellular)");
+
+         //the overwrite parameter set application flags the parameter as a compound parameter
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin", Id = "CompId" };
+         _usedCompound = new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(_usedCompound);
+
+         var overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         overwriteParameterSet.Add(new ParameterValue { Path = "Aspirin|Intestinal permeability (transcellular)".ToObjectPath(), Value = _oldValue });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSet);
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Aspirin|Intestinal permeability (transcellular)");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_track_the_parameter_path_in_the_simulation_change_tracker()
+      {
+         _simulation.ParameterChangeTracker.ChangedPaths.Select(x => x.PathAsString)
+            .ShouldOnlyContain("Aspirin|Intestinal permeability (transcellular)");
+      }
+
+      [Observation]
+      public void should_not_flag_the_compound_used_in_the_simulation_as_altered()
+      {
+         _usedCompound.Altered.ShouldBeFalse();
+      }
+   }
+
+   public class When_setting_the_value_of_a_compound_parameter_in_a_simulation_that_is_not_part_of_the_applied_overwrite_parameter_set : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Lipophilicity");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         _parameter.Origin.SimulationId = "SimId";
+         _parameter.Origin.BuilingBlockId = "CompId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin", Id = "CompId" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Aspirin|Lipophilicity");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_not_track_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
+
+   public class When_undoing_the_value_change_of_a_parameter_overwritten_by_the_overwrite_parameter_set_applied_to_the_simulation : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Intestinal permeability (transcellular)");
+
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin", Id = "CompId" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+
+         var overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         overwriteParameterSet.Add(new ParameterValue { Path = "Aspirin|Intestinal permeability (transcellular)".ToObjectPath(), Value = _oldValue });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSet);
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Get<IParameter>(_parameter.Id)).Returns(_parameter);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Aspirin|Intestinal permeability (transcellular)");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_untrack_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
       }
    }
 

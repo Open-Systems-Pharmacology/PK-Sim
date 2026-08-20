@@ -771,6 +771,49 @@ namespace PKSim.Core
       }
    }
 
+   public class When_checking_whether_a_parameter_path_is_overwritten_by_the_selected_overwrite_parameter_set : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _renalImpairmentSet.Add(new ParameterValue { Path = "Aspirin|Intestinal permeability (transcellular)".ToObjectPath() });
+         sut.AddOverwriteParameterSetSelection(_compound.Name, _renalImpairmentSet);
+      }
+
+      [Observation]
+      public void should_return_true_for_a_path_defined_in_the_selected_set()
+      {
+         sut.IsOverwrittenParameterPath(_compound.Name, "Aspirin|Intestinal permeability (transcellular)").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_path_that_is_not_defined_in_the_selected_set()
+      {
+         sut.IsOverwrittenParameterPath(_compound.Name, "Aspirin|Lipophilicity").ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_compound_without_a_selection()
+      {
+         sut.IsOverwrittenParameterPath("Metabolite", "Aspirin|Intestinal permeability (transcellular)").ShouldBeFalse();
+      }
+   }
+
+   public class When_checking_whether_a_parameter_path_is_overwritten_for_a_compound_whose_selection_is_none : concern_for_IndividualSimulation_with_compound
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AddOverwriteParameterSetSelection(_compound.Name, null);
+      }
+
+      [Observation]
+      public void should_return_false()
+      {
+         sut.IsOverwrittenParameterPath(_compound.Name, "Aspirin|Intestinal permeability (transcellular)").ShouldBeFalse();
+      }
+   }
+
    public class When_updating_an_overwrite_parameter_set_selection_for_an_existing_compound : concern_for_IndividualSimulation_with_compound
    {
       protected override void Context()

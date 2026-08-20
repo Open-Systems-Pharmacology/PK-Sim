@@ -102,9 +102,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_point_the_applied_parameter_origin_to_the_compound_building_block()
+      public void should_not_point_the_applied_parameter_origin_to_the_compound_building_block()
       {
-         _lipophilicityParam.Origin.BuilingBlockId.ShouldBeEqualTo(_compound.Id);
+         string.IsNullOrEmpty(_lipophilicityParam.Origin.BuilingBlockId).ShouldBeTrue();
       }
 
       [Observation]
@@ -210,10 +210,10 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_point_each_applied_parameter_origin_to_the_matching_compound()
+      public void should_not_point_any_applied_parameter_origin_to_a_compound_building_block()
       {
-         _lipophilicityParam.Origin.BuilingBlockId.ShouldBeEqualTo(_compound.Id);
-         _secondCompoundParam.Origin.BuilingBlockId.ShouldBeEqualTo(_secondCompound.Id);
+         string.IsNullOrEmpty(_lipophilicityParam.Origin.BuilingBlockId).ShouldBeTrue();
+         string.IsNullOrEmpty(_secondCompoundParam.Origin.BuilingBlockId).ShouldBeTrue();
       }
    }
 
