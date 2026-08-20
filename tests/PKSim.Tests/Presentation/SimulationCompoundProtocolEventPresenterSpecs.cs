@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
@@ -221,6 +222,81 @@ namespace PKSim.Presentation
          _protocolProperties.EventPlaceholderMappings.Count.ShouldBeEqualTo(1);
          _protocolProperties.EventPlaceholderMappings[0].EventKey.ShouldBeEqualTo(_eventKey1);
          _protocolProperties.EventPlaceholderMappings[0].Event.ShouldNotBeNull();
+      }
+   }
+
+   public class When_saving_event_placeholder_configuration_with_an_unmapped_placeholder : concern_for_SimulationCompoundProtocolEventPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _eventTask.All()).Returns(new PKSimEvent[0]);
+         A.CallTo(() => _eventFromMappingRetriever.TemplateEventUsedBy(_simulation, A<EventPlaceholderMapping>._)).Returns(null);
+         A.CallTo(() => _protocol.UsedEventKeys).Returns(new[] { "EVENT_1" });
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      protected override void Because()
+      {
+         sut.SaveConfiguration();
+      }
+
+      [Observation]
+      public void should_not_add_a_mapping_for_the_unmapped_placeholder()
+      {
+         _protocolProperties.EventPlaceholderMappings.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_not_try_to_load_an_undefined_event()
+      {
+         A.CallTo(() => _eventTask.Load(A<PKSimEvent>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_the_event_presenter_is_editing_a_protocol_with_event_placeholders_in_a_project_without_events : concern_for_SimulationCompoundProtocolEventPresenter
+   {
+      private IList<EventPlaceholderMappingDTO> _eventMappingDtoList;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _eventTask.All()).Returns(new PKSimEvent[0]);
+         A.CallTo(() => _eventFromMappingRetriever.TemplateEventUsedBy(_simulation, A<EventPlaceholderMapping>._)).Returns(null);
+         A.CallTo(() => _protocol.UsedEventKeys).Returns(new[] { "EVENT_1" });
+         A.CallTo(() => _view.BindTo(A<IEnumerable<EventPlaceholderMappingDTO>>._))
+            .Invokes(x => _eventMappingDtoList = x.GetArgument<IEnumerable<EventPlaceholderMappingDTO>>(0).ToList());
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_display_the_placeholder_without_a_selected_event()
+      {
+         _eventMappingDtoList.Count.ShouldBeEqualTo(1);
+         _eventMappingDtoList[0].EventKey.ShouldBeEqualTo("EVENT_1");
+         _eventMappingDtoList[0].Selection.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_mark_the_mapping_as_invalid()
+      {
+         _eventMappingDtoList[0].IsValid().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_offer_any_event_for_selection()
+      {
+         sut.AllEventsFor(_eventMappingDtoList[0]).ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_make_event_mapping_visible()
+      {
+         A.CallToSet(() => _view.EventVisible).To(true).MustHaveHappened();
       }
    }
 

@@ -73,6 +73,15 @@ namespace PKSim.Core.Model
          return parameter;
       }
 
+      //removes the lower bound so that a time parameter can be negative (e.g. an event scheduled before an administration)
+      public static void AllowNegativeValues(this IParameter parameter)
+      {
+         if (parameter?.Info == null) return;
+
+         parameter.Info.MinValue = null;
+         parameter.Info.MinIsAllowed = true;
+      }
+
       public static bool NeedsDefault(this IParameter parameter)
       {
          if (parameter.NameIsOneOf(AllDistributionParameters))

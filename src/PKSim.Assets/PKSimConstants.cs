@@ -573,7 +573,6 @@ namespace PKSim.Assets
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
 
          public static readonly string EventKeyRequired = "Event key is required for event entries.";
-         public static readonly string EventPlaceholderRequired = "A placeholder is required when 'Administer with event' is selected.";
 
          public static string BuildingBlockNotDefined(string buildingBlock) => $"No {buildingBlock} defined. Please use create.";
 
@@ -657,6 +656,12 @@ namespace PKSim.Assets
 
          public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) =>
             $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
+
+         public static string NoEventFoundForPlaceholder(string protocolName, string eventKey) =>
+            $"No event found for placeholder '{eventKey}' in administration protocol '{protocolName}'.";
+
+         public static string NoEventFoundForSimulationEvent(string templateEventId) =>
+            $"No event found for simulation event with template id '{templateEventId}'.";
 
          public static string UnableToCreateSimulationWithMoleculesHavingSameName(string duplicateName)
          {

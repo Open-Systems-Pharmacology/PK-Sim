@@ -297,4 +297,56 @@ namespace PKSim.Core
          _parameter.WithName(CoreConstants.Parameters.HALF_LIFE_LIVER).IsIndividualMoleculeGlobal().ShouldBeTrue();
       }
    }
+
+   public class When_allowing_negative_values_for_a_parameter_with_a_lower_bound : StaticContextSpecification
+   {
+      private IParameter _parameter;
+
+      protected override void Context()
+      {
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10);
+         _parameter.Info.MinValue = 0;
+         _parameter.Info.MinIsAllowed = false;
+      }
+
+      protected override void Because()
+      {
+         _parameter.AllowNegativeValues();
+      }
+
+      [Observation]
+      public void should_remove_the_lower_bound()
+      {
+         _parameter.Info.MinValue.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_allow_the_minimum_value()
+      {
+         _parameter.Info.MinIsAllowed.ShouldBeTrue();
+      }
+   }
+
+   public class When_allowing_negative_values_for_a_parameter_without_info_or_for_an_undefined_parameter : StaticContextSpecification
+   {
+      private IParameter _parameterWithoutInfo;
+
+      protected override void Context()
+      {
+         _parameterWithoutInfo = A.Fake<IParameter>();
+         A.CallTo(() => _parameterWithoutInfo.Info).Returns(null);
+      }
+
+      [Observation]
+      public void should_not_throw_for_a_parameter_without_info()
+      {
+         _parameterWithoutInfo.AllowNegativeValues();
+      }
+
+      [Observation]
+      public void should_not_throw_for_an_undefined_parameter()
+      {
+         ((IParameter)null).AllowNegativeValues();
+      }
+   }
 }
