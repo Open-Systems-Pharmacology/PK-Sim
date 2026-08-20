@@ -1,4 +1,6 @@
-﻿using PKSim.Core.Model;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
@@ -32,15 +34,18 @@ namespace PKSim.Core.Services
          var sourceParameters = simulationParametersCacheFor(sourceSimulation, buildingBlockType);
          var targetParameters = simulationParametersCacheFor(targetSimulation, buildingBlockType);
          _parameterSetUpdater.UpdateValues(sourceParameters, targetParameters);
-         return validateParameterUpdates(sourceParameters, targetParameters);
+         return validateParameterUpdates(sourceParameters, targetParameters, overwrittenCompoundParameterPathsFor(targetSimulation));
       }
 
-      private ValidationResult validateParameterUpdates(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
+      private ValidationResult validateParameterUpdates(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, ISet<string> overwrittenCompoundParameterPaths)
       {
          var validationResult = new ValidationResult();
          foreach (var sourceParameterKeyValue in sourceParameters.KeyValues)
          {
             if (targetParameters.Contains(sourceParameterKeyValue.Key))
+               continue;
+
+            if (overwrittenCompoundParameterPaths.Contains(sourceParameterKeyValue.Key))
                continue;
 
             var sourceParameter = sourceParameterKeyValue.Value;
@@ -51,6 +56,21 @@ namespace PKSim.Core.Services
          }
 
          return validationResult;
+      }
+
+      private ISet<string> overwrittenCompoundParameterPathsFor(Simulation targetSimulation)
+      {
+         var overwritePaths = targetSimulation.OverwriteParameterSetSelections.Selections
+            .Where(x => x.OverwriteParameterSet != null)
+            .SelectMany(x => x.OverwriteParameterSet.ParameterValues)
+            .Select(x => x.Path.PathAsString)
+            .ToHashSet();
+
+         if (!overwritePaths.Any())
+            return overwritePaths;
+
+         var compoundParameters = simulationParametersCacheFor(targetSimulation, PKSimBuildingBlockType.Compound);
+         return compoundParameters.Keys.Where(overwritePaths.Contains).ToHashSet();
       }
 
       private PathCache<IParameter> simulationParametersCacheFor(Simulation simulation, PKSimBuildingBlockType buildingBlockType)
