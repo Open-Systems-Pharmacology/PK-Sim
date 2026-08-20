@@ -19,9 +19,7 @@ using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_DatabaseUpdate : ContextForIntegration<IModelDatabase>
-   {
-   }
+   public abstract class concern_for_DatabaseUpdate : ContextForIntegration<IModelDatabase>;
 
    public class When_checking_the_changes_in_the_database_for_version_13_0 : concern_for_DatabaseUpdate
    {
@@ -71,6 +69,38 @@ namespace PKSim.IntegrationTests
          allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) in endosomal space of container")).ShouldBeFalse();
          allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) of container")).ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_add_descriptions_for_the_new_PBBM_parameters()
+      {
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+
+         foreach (var parameterName in _newPBBMParameterNames)
+         {
+            var parameterInfo = representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, parameterName);
+            var displayName = parameterInfo.DisplayName;
+            var description = parameterInfo.Description;
+            string.IsNullOrEmpty(description).ShouldBeFalse($"Missing description for '{parameterName}'");
+            description.Equals(displayName).ShouldBeFalse($"Description for '{parameterName}' is the same as the display name");
+         }
+      }
+
+      [Observation]
+      public void should_remove_the_placeholder_value_origin_of_the_PBBM_publications()
+      {
+         var valueOriginRepository = IoC.Resolve<IValueOriginRepository>();
+         valueOriginRepository.All().Any(vo => string.Equals(vo.Description, "Literature study to be published")).ShouldBeFalse();
+      }
+
+      //exemplary checks for some new parameters
+      private static readonly string[] _newPBBMParameterNames =
+      [
+         CoreConstants.Parameters.CRITICAL_MICELLAR_CONCENTRATION,
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_1,
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_CONSTANT_2,
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_IONIZED,
+         CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL
+      ];
 
       private string formulaFor(string rate)
       {
@@ -189,7 +219,7 @@ namespace PKSim.IntegrationTests
             maxCount.ShouldBeEqualTo(2*alphasCount/3);
 
             //all occurrences of K_water should start with the opening bracket: 
-            // "(K_water_xxx*C)^alpha
+            // (K_water_xxx*C)^alpha
             //Exception: one occurrence in pgp-hill-kinetic
             var kwaterCount = Regex.Matches(equation, "K_water").Count;
             var expectedBracketedKwaterCount = hillFormula.Rate.Equals("PgpSpecific_Hill") ? kwaterCount - 1 : kwaterCount;
