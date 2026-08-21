@@ -115,7 +115,7 @@ namespace PKSim.Core.Commands
 
       private void trackCompoundParameterChange(IParameter parameter, IExecutionContext context)
       {
-         if (parameter.BuildingBlockType != PKSimBuildingBlockType.Simulation)
+         if (string.IsNullOrEmpty(SimulationId) || !parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Compound))
             return;
 
          var simulation = context.Get<Simulation>(SimulationId);
@@ -125,7 +125,11 @@ namespace PKSim.Core.Commands
          var entityPathResolver = context.Resolve<IEntityPathResolver>();
          var parameterPath = entityPathResolver.PathFor(parameter);
 
-         if (simulation.CompoundNameForParameterPath(parameterPath) == null)
+         var compoundName = simulation.CompoundNameForParameterPath(parameterPath);
+         if (compoundName == null)
+            return;
+
+         if (!isCompoundDependentSimulationParameter(parameter, simulation, compoundName, parameterPath))
             return;
 
          var tracker = simulation.ParameterChangeTracker;
@@ -141,6 +145,14 @@ namespace PKSim.Core.Commands
             ReverseTrackerUpdateForParameter(tracker, parameterPath);
          }
       }
+
+      /// <summary>
+      ///    A parameter overwritten by the overwrite parameter set applied to the simulation is flagged as a compound
+      ///    parameter, but remains a simulation parameter that can only be committed to the compound as part of a set.
+      /// </summary>
+      private static bool isCompoundDependentSimulationParameter(IParameter parameter, Simulation simulation, string compoundName, string parameterPath) =>
+         parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation ||
+         simulation.IsOverwrittenParameterPath(compoundName, parameterPath);
 
       protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
       {

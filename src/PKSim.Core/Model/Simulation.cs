@@ -514,6 +514,14 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
+      ///    Returns <c>true</c> if <paramref name="parameterPath" /> is one of the paths of the
+      ///    <see cref="OverwriteParameterSet" /> selected for the compound named <paramref name="compoundName" />,
+      ///    otherwise <c>false</c>.
+      /// </summary>
+      public virtual bool IsOverwrittenParameterPath(string compoundName, string parameterPath) =>
+         OverwriteParameterSetSelections.SelectedSetFor(compoundName)?.ParameterValueByPath(parameterPath) != null;
+
+      /// <summary>
       ///    gets or sets the simulation properties used to configure the simulation
       /// </summary>
       public virtual SimulationProperties Properties
