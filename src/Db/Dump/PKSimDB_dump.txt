@@ -307,7 +307,7 @@ INSERT INTO tab_rates VALUES('PARAM_Degradation_Coefficient','PARAM_Degradation_
 INSERT INTO tab_rates VALUES('PARAM_Density (tissue)_LiverZone','PARAM_Density (tissue)_LiverZone','PARAM_Density (tissue)_LiverZone');
 INSERT INTO tab_rates VALUES('PARAM_Dextrose_Solution_Energy_Content','PARAM_Dextrose_Solution_Energy_Content','PARAM_Dextrose_Solution_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_Dextrose_Solution_Fraction_Solid','PARAM_Dextrose_Solution_Fraction_Solid','PARAM_Dextrose_Solution_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_Dextrose_Solution_Volume','PARAM_Dextrose_Solution_Volume','PARAM_Dextrose_Solution_Volume');
+INSERT INTO tab_rates VALUES('PARAM_Dextrose_Solution_RefAdult_Meal_Volume','PARAM_Dextrose_Solution_RefAdult_Meal_Volume','PARAM_Dextrose_Solution_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_Dissolved_tEnd','PARAM_Dissolved_tEnd','PARAM_Dissolved_tEnd');
 INSERT INTO tab_rates VALUES('PARAM_DissTime50','PARAM_DissTime50','PARAM_DissTime50');
 INSERT INTO tab_rates VALUES('PARAM_DissTime80','PARAM_DissTime80','PARAM_DissTime80');
@@ -317,11 +317,11 @@ INSERT INTO tab_rates VALUES('PARAM_DrugDensity','Rate for DrugDensity','Rate fo
 INSERT INTO tab_rates VALUES('PARAM_EffectiveSurfaceArea','PARAM_EffectiveSurfaceArea','PARAM_EffectiveSurfaceArea');
 INSERT INTO tab_rates VALUES('PARAM_Egg_Sandwich_Energy_Content','PARAM_Egg_Sandwich_Energy_Content','PARAM_Egg_Sandwich_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_Egg_Sandwich_Fraction_Solid','PARAM_Egg_Sandwich_Fraction_Solid','PARAM_Egg_Sandwich_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_Egg_Sandwich_Volume','PARAM_Egg_Sandwich_Volume','PARAM_Egg_Sandwich_Volume');
+INSERT INTO tab_rates VALUES('PARAM_Egg_Sandwich_RefAdult_Meal_Volume','PARAM_Egg_Sandwich_RefAdult_Meal_Volume','PARAM_Egg_Sandwich_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_EHCLagTime','PARAM_EHCLagTime','PARAM_EHCLagTime');
 INSERT INTO tab_rates VALUES('PARAM_Ensure_Plus_Energy_Content','PARAM_Ensure_Plus_Energy_Content','PARAM_Ensure_Plus_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_Ensure_Plus_Fraction_Solid','PARAM_Ensure_Plus_Fraction_Solid','PARAM_Ensure_Plus_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_Ensure_Plus_Volume','PARAM_Ensure_Plus_Volume','PARAM_Ensure_Plus_Volume');
+INSERT INTO tab_rates VALUES('PARAM_Ensure_Plus_RefAdult_Meal_Volume','PARAM_Ensure_Plus_RefAdult_Meal_Volume','PARAM_Ensure_Plus_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_F','Rate for F','Rate for F');
 INSERT INTO tab_rates VALUES('PARAM_f_cell','f_cell','f_cell in organ as a function of f_int and f_vas');
 INSERT INTO tab_rates VALUES('PARAM_f_cell_LiverZone','PARAM_f_cell_LiverZone','PARAM_f_cell_LiverZone');
@@ -365,10 +365,10 @@ INSERT INTO tab_rates VALUES('PARAM_HasHalogens','PARAM_HasHalogens','PARAM_HasH
 INSERT INTO tab_rates VALUES('PARAM_HasStrongBase','Parameter','Boolean: returns if the compound has at least one basic pKa >=7');
 INSERT INTO tab_rates VALUES('PARAM_High_Fat_Breakfast_Energy_Content','PARAM_High_Fat_Breakfast_Energy_Content','PARAM_High_Fat_Breakfast_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_High_Fat_Breakfast_Fraction_Solid','PARAM_High_Fat_Breakfast_Fraction_Solid','PARAM_High_Fat_Breakfast_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_High_Fat_Breakfast_Volume','PARAM_High_Fat_Breakfast_Volume','PARAM_High_Fat_Breakfast_Volume');
+INSERT INTO tab_rates VALUES('PARAM_High_Fat_Breakfast_RefAdult_Meal_Volume','PARAM_High_Fat_Breakfast_RefAdult_Meal_Volume','PARAM_High_Fat_Breakfast_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_High_Fat_Soup_Energy_Content','PARAM_High_Fat_Soup_Energy_Content','PARAM_High_Fat_Soup_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_High_Fat_Soup_Fraction_Solid','PARAM_High_Fat_Soup_Fraction_Solid','PARAM_High_Fat_Soup_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_High_Fat_Soup_Volume','PARAM_High_Fat_Soup_Volume','PARAM_High_Fat_Soup_Volume');
+INSERT INTO tab_rates VALUES('PARAM_High_Fat_Soup_RefAdult_Meal_Volume','PARAM_High_Fat_Soup_RefAdult_Meal_Volume','PARAM_High_Fat_Soup_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_Hydraulic conductivity_LiverZone','PARAM_Hydraulic conductivity_LiverZone','PARAM_Hydraulic conductivity_LiverZone');
 INSERT INTO tab_rates VALUES('PARAM_I','Rate for I','Rate for I');
 INSERT INTO tab_rates VALUES('PARAM_igg_J_iso','PARAM_igg_J_iso','PARAM_igg_J_iso');
@@ -505,7 +505,7 @@ INSERT INTO tab_rates VALUES('PARAM_MEAL_pH_Stomach','PARAM_MEAL_pH_Stomach','PA
 INSERT INTO tab_rates VALUES('PARAM_Microsomal protein mass/g tissue_LiverZone','PARAM_Microsomal protein mass/g tissue_LiverZone','PARAM_Microsomal protein mass/g tissue_LiverZone');
 INSERT INTO tab_rates VALUES('PARAM_Mixed_Solid_Liquid_Meal_Energy_Content','PARAM_Mixed_Solid_Liquid_Meal_Energy_Content','PARAM_Mixed_Solid_Liquid_Meal_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_Mixed_Solid_Liquid_Meal_Fraction_Solid','PARAM_Mixed_Solid_Liquid_Meal_Fraction_Solid','PARAM_Mixed_Solid_Liquid_Meal_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_Mixed_Solid_Liquid_Meal_Volume','PARAM_Mixed_Solid_Liquid_Meal_Volume','PARAM_Mixed_Solid_Liquid_Meal_Volume');
+INSERT INTO tab_rates VALUES('PARAM_Mixed_Solid_Liquid_RefAdult_Meal_Volume','PARAM_Mixed_Solid_Liquid_RefAdult_Meal_Volume','PARAM_Mixed_Solid_Liquid_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_MucosaPermeabilityScaleFactor_trans','PARAM_MucosaPermeabilityScaleFactor_trans','PARAM_MucosaPermeabilityScaleFactor_trans');
 INSERT INTO tab_rates VALUES('PARAM_MW','Rate for MW','Rate for MW');
 INSERT INTO tab_rates VALUES('PARAM_MW_Water','Molweight water','Molweight of water');
@@ -792,7 +792,7 @@ INSERT INTO tab_rates VALUES('PARAM_Specific blood flow rate_LiverZone','PARAM_S
 INSERT INTO tab_rates VALUES('PARAM_SpecificHepaticClearance','Specific hepatic clearance','Specific hepatic clearance from hepatic (Liver + Gall Bladder)  plasma clearance');
 INSERT INTO tab_rates VALUES('PARAM_Standard_Meal_Energy_Content','PARAM_Standard_Meal_Energy_Content','PARAM_Standard_Meal_Energy_Content');
 INSERT INTO tab_rates VALUES('PARAM_Standard_Meal_Fraction_Solid','PARAM_Standard_Meal_Fraction_Solid','PARAM_Standard_Meal_Fraction_Solid');
-INSERT INTO tab_rates VALUES('PARAM_Standard_Meal_Volume','PARAM_Standard_Meal_Volume','PARAM_Standard_Meal_Volume');
+INSERT INTO tab_rates VALUES('PARAM_Standard_RefAdult_Meal_Volume','PARAM_Standard_RefAdult_Meal_Volume','PARAM_Standard_RefAdult_Meal_Volume');
 INSERT INTO tab_rates VALUES('PARAM_StartAmount_Protein','PARAM_StartAmount_Protein','PARAM_StartAmount_Protein');
 INSERT INTO tab_rates VALUES('PARAM_Subcutaneous_t1/2','PARAM_Subcutaneous_t1/2','PARAM_Subcutaneous_t1/2');
 INSERT INTO tab_rates VALUES('PARAM_SumOfActiveProcessRatesMucosaToLumen','PARAM_SumOfActiveProcessRatesMucosaToLumen','PARAM_SumOfActiveProcessRatesMucosaToLumen');
@@ -1227,6 +1227,8 @@ INSERT INTO tab_rates VALUES('PARAM_hu_sto','PARAM_hu_sto','PARAM_hu_sto');
 INSERT INTO tab_rates VALUES('PARAM_hu_uil','PARAM_hu_uil','PARAM_hu_uil');
 INSERT INTO tab_rates VALUES('PARAM_hu_uje','PARAM_hu_uje','PARAM_hu_uje');
 INSERT INTO tab_rates VALUES('PARAM_pH_Stomach','PARAM_pH_Stomach','PARAM_pH_Stomach');
+INSERT INTO tab_rates VALUES('PARAM_Meal_Volume','PARAM_Meal_Volume','Effective meal volume');
+INSERT INTO tab_rates VALUES('PARAM_Stomach_RefAdult_Volume','PARAM_Stomach_RefAdult_Volume','Volume of the stomach lumen of the reference adult individual (30 year old European male).');
 CREATE TABLE tab_dimensions (
 	dimension text NOT NULL,
 	kernel_unit text NULL,
@@ -3398,20 +3400,20 @@ INSERT INTO tab_calculation_method_rates VALUES('Events','EventGroupStartConditi
 INSERT INTO tab_calculation_method_rates VALUES('Events','One_Rate','1','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Dextrose_Solution_Energy_Content','300*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Dextrose_Solution_Fraction_Solid','0','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Dextrose_Solution_Volume','0.3','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Dextrose_Solution_RefAdult_Meal_Volume','0.3','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Egg_Sandwich_Energy_Content','340*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Egg_Sandwich_Fraction_Solid','1','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Egg_Sandwich_Volume','0.146','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Egg_Sandwich_RefAdult_Meal_Volume','0.146','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_EHCLagTime','30','Time');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Ensure_Plus_Energy_Content','750*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Ensure_Plus_Fraction_Solid','0','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Ensure_Plus_Volume','0.5','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Ensure_Plus_RefAdult_Meal_Volume','0.5','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Breakfast_Energy_Content','690*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Breakfast_Fraction_Solid','0.8','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Breakfast_Volume','0.5','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Breakfast_RefAdult_Meal_Volume','0.5','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Soup_Energy_Content','400*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Soup_Fraction_Solid','0','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Soup_Volume','0.425','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_High_Fat_Soup_RefAdult_Meal_Volume','0.425','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_InverseGastricEmptyingTime','1/GET','Inversed time');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Meal_alpha','((0.8292 *(1-exp(-Energy/(4184*10*10*60*60)/578.4)) +0.13) *exp(Meal_beta*5.17))*Variability_Factor','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Meal_beta','(0.31*fraction_solid+ 1.11)*Variability_Factor','Dimensionless');
@@ -3421,10 +3423,10 @@ INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Meal_pH_alpha','
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_MEAL_pH_Stomach','pH_fasted+(pH_fed-pH_fasted)*exp(-alpha*(Time-StartTime))','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Mixed_Solid_Liquid_Meal_Energy_Content','524*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Mixed_Solid_Liquid_Meal_Fraction_Solid','0.6','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Mixed_Solid_Liquid_Meal_Volume','0.455','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Mixed_Solid_Liquid_RefAdult_Meal_Volume','0.455','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Standard_Meal_Energy_Content','1000*4184*10*10*60*60','Energy');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Standard_Meal_Fraction_Solid','0.6','Fraction');
-INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Standard_Meal_Volume','0.592','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Standard_RefAdult_Meal_Volume','0.592','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('Events','Zero_Rate','0','Time');
 INSERT INTO tab_calculation_method_rates VALUES('Formulation','One_Rate','1','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Formulation','PARAM_DissTime50','240','Time');
@@ -4091,6 +4093,8 @@ INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalS
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization','Max(S0 * (Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor-1); 0)','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Intestinal_fu','Stot > 0 ? Saq/Stot : 0','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_pH_Stomach','V>0 AND SteadyStateFillLevel>0 AND Liquid>0 ? -Log10(10^(-BasalpH)*(V*SteadyStateFillLevel)/Liquid) : BasalpH','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Meal_Volume','Meal_volume_reference_Adult * Stomach_volume / Stomach_volume_reference_Adult','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('LumenSegmentVolume','PARAM_Stomach_RefAdult_Volume','1,570796327','Volume');
 CREATE TABLE [tab_calculation_method_rate_descriptor_conditions](
   [calculation_method] text NOT NULL, 
   [formula_rate] text NOT NULL, 
@@ -11395,7 +11399,7 @@ INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (H
 INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5238,'APPLICATION','UserDefined_ZeroOrder','Application rate',0,1,0,0,'PROTOCOL',500,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5239,'APPLICATION','UserDefined_FirstOrder','Application rate',0,1,0,0,'PROTOCOL',500,'LOCAL','SIMULATION',0,0);
@@ -11495,7 +11499,7 @@ INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat br
 INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5290,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -11504,7 +11508,7 @@ INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus
 INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5296,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -11513,7 +11517,7 @@ INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat so
 INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5302,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -11522,7 +11526,7 @@ INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5308,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -11531,7 +11535,7 @@ INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose so
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5314,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -11540,7 +11544,7 @@ INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwic
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','GET_beta (Weibull function)',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal energy content',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal fraction solid',1,0,1,1,'EVENTS',3,'LOCAL','EVENT',0,0);
-INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume',1,0,1,0,'EVENTS',2,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal_pH_exponent',1,1,0,0,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5320,'EVENTGROUP','EventGroupSubContainer','Start time',1,0,1,0,'EVENTS',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5325,'EVENTGROUP','Gallbladder emptying','Gallbladder emptying enabled',1,0,1,0,'EVENTS',4,'LOCAL','EVENT',0,0);
@@ -12340,6 +12344,14 @@ INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwic
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH exponent',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','pH after meal',1,0,1,1,'EVENTS',1,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(7029,'GENERAL','ProtocolSchemaItem','Start time',1,0,1,0,'PROTOCOL',1,'LOCAL','PROTOCOL',1,0);
+INSERT INTO tab_container_parameters VALUES(4482,'COMPARTMENT','Stomach','Volume (reference Adult)',0,1,0,0,'LUMEN_VOLUMES',1,'LOCAL','SIMULATION',0,0);
+INSERT INTO tab_container_parameters VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
 CREATE TABLE [tab_container_parameter_curves](
   [parameter_value_version] text NOT NULL, 
   [species] text NOT NULL, 
@@ -54697,7 +54709,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standa
 INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal energy content','Events','PARAM_Standard_Meal_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal fraction solid','Events','PARAM_Standard_Meal_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume','Events','PARAM_Standard_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume (reference Adult)','Events','PARAM_Standard_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5238,'APPLICATION','UserDefined_ZeroOrder','Application rate','ApplicationParameter','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5239,'APPLICATION','UserDefined_FirstOrder','Application rate','ApplicationParameter','Zero_Rate',0.0,1,NULL,1,NULL);
@@ -54797,7 +54809,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-f
 INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal energy content','Events','PARAM_High_Fat_Breakfast_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal fraction solid','Events','PARAM_High_Fat_Breakfast_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume','Events','PARAM_High_Fat_Breakfast_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume (reference Adult)','Events','PARAM_High_Fat_Breakfast_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5290,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -54806,7 +54818,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure
 INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal energy content','Events','PARAM_Ensure_Plus_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal fraction solid','Events','PARAM_Ensure_Plus_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume','Events','PARAM_Ensure_Plus_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume (reference Adult)','Events','PARAM_Ensure_Plus_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5296,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -54815,7 +54827,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-f
 INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal energy content','Events','PARAM_High_Fat_Soup_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal fraction solid','Events','PARAM_High_Fat_Soup_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume','Events','PARAM_High_Fat_Soup_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume (reference Adult)','Events','PARAM_High_Fat_Soup_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5302,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -54824,7 +54836,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed 
 INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal energy content','Events','PARAM_Mixed_Solid_Liquid_Meal_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal fraction solid','Events','PARAM_Mixed_Solid_Liquid_Meal_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume','Events','PARAM_Mixed_Solid_Liquid_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume (reference Adult)','Events','PARAM_Mixed_Solid_Liquid_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5308,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -54833,7 +54845,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextro
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal energy content','Events','PARAM_Dextrose_Solution_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal fraction solid','Events','PARAM_Dextrose_Solution_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume','Events','PARAM_Dextrose_Solution_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume (reference Adult)','Events','PARAM_Dextrose_Solution_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5314,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -54842,7 +54854,7 @@ INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sa
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','GET_beta (Weibull function)','Events','PARAM_Meal_beta',1.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal energy content','Events','PARAM_Egg_Sandwich_Energy_Content',0.0,1,3012480000000.0,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal fraction solid','Events','PARAM_Egg_Sandwich_Fraction_Solid',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume','Events','PARAM_Egg_Sandwich_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume (reference Adult)','Events','PARAM_Egg_Sandwich_RefAdult_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal_pH_exponent','Events','PARAM_Meal_pH_alpha',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5320,'EVENTGROUP','EventGroupSubContainer','Start time','Events','Zero_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5325,'EVENTGROUP','Gallbladder emptying','Gallbladder emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -55485,6 +55497,14 @@ INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sa
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 2 (Duodenum)','Events','PARAM_Meal_pH_c2_Duodenum',0.0,0,NULL,1,119);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal pH coefficient 2 (Upper Jejunum)','Events','PARAM_Meal_pH_c2_Jejunum',0.0,0,NULL,1,119);
 INSERT INTO tab_container_parameter_rates VALUES(7029,'GENERAL','ProtocolSchemaItem','Start time','SchemaItemParameter','PARAM_Application_StartTime',0.0,1,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5215,'EVENTGROUP','Meal: Standard (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5289,'EVENTGROUP','Meal: High-fat breakfast (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5295,'EVENTGROUP','Meal: Ensure Plus (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5301,'EVENTGROUP','Meal: High-fat soup (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(4482,'COMPARTMENT','Stomach','Volume (reference Adult)','LumenSegmentVolume','PARAM_Stomach_RefAdult_Volume',0.0,0,NULL,1,NULL);
 CREATE TABLE [tab_container_parameter_rhs](
   [container_id] bigint NOT NULL, 
   [container_type] text NOT NULL, 
@@ -71248,6 +71268,8 @@ INSERT INTO tab_parameters VALUES('Use Hintz-Johnson','Use Hintz-Johnson','Model
 INSERT INTO tab_parameters VALUES('Use Hydrodynamic Model','Use Hydrodynamic Model','Model switch to calculate diffusion-layer thickness from particle size together with luminal hydrodynamics (via Reynolds number, Schmidt number, Sherwood number) instead of a fixed value.','Dimensionless',NULL);
 INSERT INTO tab_parameters VALUES('Use bidirectional surface integration factor','Use bidirectional surface integration factor','Model switch to apply the surface integration correction when particle growth (precipitation) could occur, while having no effect during dissolution (Ψ = 1).','Dimensionless',NULL);
 INSERT INTO tab_parameters VALUES('pH after meal','pH  after meal','The postprandial luminal pH (gastric or upper intestinal) initialized by meal intake and allowed to decay or recover via fitted empirical functions.','Dimensionless',NULL);
+INSERT INTO tab_parameters VALUES('Volume (reference Adult)','Volume (reference Adult)',replace(replace('Volume of the stomach lumen of the reference adult individual (30 year old European male).\r\nUsed as reference value for scaling the meal volume with the stomach volume of the simulated individual.','\r',char(13)),'\n',char(10)),'Volume','');
+INSERT INTO tab_parameters VALUES('Meal volume (reference Adult)','Meal volume (reference Adult)',replace(replace('Approximate volume of the meal administered to the reference adult individual (30 year old European male).\r\nIn a simulation, the effective meal volume is scaled from this value with the stomach volume of the simulated individual, i.e. \r\nMeal volume = Meal volume (reference Adult) * Stomach volume / Stomach volume (reference Adult).','\r',char(13)),'\n',char(10)),'Volume','');
 CREATE TABLE [tab_parameter_value_versions](
   [parameter_value_version] text PRIMARY KEY NOT NULL, 
   [display_name] text NOT NULL, 
@@ -82676,6 +82698,8 @@ INSERT INTO tab_rate_container_parameters VALUES('Lumen_PKSim','PARAM_Deff_sto',
 INSERT INTO tab_rate_container_parameters VALUES('Lumen_PKSim','PARAM_Deff_uil',4486,'COMPARTMENT','UpperIleum','Micellar diffusion coefficient in fasted state','Db');
 INSERT INTO tab_rate_container_parameters VALUES('Lumen_PKSim','PARAM_Deff_uje',4484,'COMPARTMENT','UpperJejunum','Micellar diffusion coefficient in fasted state','Db');
 INSERT INTO tab_rate_container_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',146,'ORGANISM','Organism','Pure water concentration (37°C)','CW');
+INSERT INTO tab_rate_container_parameters VALUES('Events','PARAM_Meal_Volume',4482,'COMPARTMENT','Stomach','Volume','Stomach_volume');
+INSERT INTO tab_rate_container_parameters VALUES('Events','PARAM_Meal_Volume',4482,'COMPARTMENT','Stomach','Volume (reference Adult)','Stomach_volume_reference_Adult');
 CREATE TABLE [tab_rate_generic_molecules](
   [calculation_method] text NOT NULL, 
   [formula_rate] text NOT NULL, 
@@ -86788,6 +86812,7 @@ INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',139,'Fractional steady state fill level','SteadyStateFillLevel');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',139,'Liquid','Liquid');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',139,'Volume','V');
+INSERT INTO tab_rate_generic_parameters VALUES('Events','PARAM_Meal_Volume',139,'Meal volume (reference Adult)','Meal_volume_reference_Adult');
 CREATE TABLE [tab_species_calculation_methods](
   [species] text NOT NULL REFERENCES [tab_species]([species]) ON DELETE CASCADE ON UPDATE CASCADE, 
   [calculation_method] text NOT NULL REFERENCES [tab_calculation_methods]([calculation_method]) ON UPDATE CASCADE, 

@@ -284,6 +284,12 @@ namespace PKSim.ProjectConverter.v13
       {
          _oldEvent.GetAllChildren<IContainer>(x => x.IsNamed(ConverterConstants.Containers.MEAL_STOP_EVENT)).ShouldBeEmpty();
       }
+
+      [Observation]
+      public void should_have_removed_the_meal_volume_parameter()
+      {
+         _oldEvent.Parameter(ConverterConstants.Parameters.MEAL_VOLUME).ShouldBeNull();
+      }
    }
 
    //The event offset was introduced in v13, so a protocol saved before lacks the parameter (issue 3489)
