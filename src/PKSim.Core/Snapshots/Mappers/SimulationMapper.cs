@@ -357,7 +357,7 @@ namespace PKSim.Core.Snapshots.Mappers
          //No process found and a name was specified. This is a snapshot that is corrupted
          if (!string.IsNullOrEmpty(snapshotInteraction.Name))
          {
-            _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
+            _logger.AddError(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotInteraction.Name, snapshotInteraction.CompoundName));
             return null;
          }
 

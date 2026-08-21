@@ -35,14 +35,14 @@ public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOver
       var compound = project.BuildingBlockByName<ModelCompound>(snapshot.CompoundName);
       if (compound == null)
       {
-         _logger.AddWarning(PKSimConstants.Error.SimulationTemplateBuildingBlockNotFoundInProject(snapshot.CompoundName, nameof(ModelCompound)));
+         _logger.AddError(PKSimConstants.Error.SimulationTemplateBuildingBlockNotFoundInProject(snapshot.CompoundName, nameof(ModelCompound)));
          return Task.FromResult<ModelOverwriteParameterSetSelection>(null);
       }
 
       var overwriteParameterSet = compound.OverwriteParameterSets.FirstOrDefault(x => x.IsNamed(snapshot.OverwriteParameterSetName));
       if (overwriteParameterSet == null)
       {
-         _logger.AddWarning(PKSimConstants.Error.OverWriteParameterSetNotFoundInCompound(snapshot.OverwriteParameterSetName, snapshot.CompoundName));
+         _logger.AddError(PKSimConstants.Error.OverWriteParameterSetNotFoundInCompound(snapshot.OverwriteParameterSetName, snapshot.CompoundName));
          return Task.FromResult<ModelOverwriteParameterSetSelection>(null);
       }
 
