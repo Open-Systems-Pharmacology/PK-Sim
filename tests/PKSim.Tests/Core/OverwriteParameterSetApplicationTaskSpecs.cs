@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -108,10 +107,10 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_the_value_origin_of_the_applied_parameter_to_the_overwrite_parameter_set()
+      public void should_clear_the_value_origin_of_the_applied_parameter_when_the_set_does_not_define_one()
       {
-         _lipophilicityParam.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Other);
-         _lipophilicityParam.ValueOrigin.Description.ShouldBeEqualTo($"{PKSimConstants.ObjectTypes.OverwriteParameterSet} 'MySet'");
+         _lipophilicityParam.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Undefined);
+         _lipophilicityParam.ValueOrigin.Description.ShouldBeNull();
       }
 
       [Observation]
@@ -119,6 +118,58 @@ namespace PKSim.Core
       {
          _permeabilityParam.Value.ShouldBeEqualTo(7.2);
          _permeabilityParam.BuildingBlockType.ShouldBeEqualTo(PKSimBuildingBlockType.Simulation);
+      }
+   }
+
+   public class When_applying_an_overwrite_parameter_set_whose_entry_defines_a_value_origin : concern_for_OverwriteParameterSetApplicationTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _lipophilicityParam.ValueOrigin.Source = ValueOriginSources.Other;
+         _lipophilicityParam.ValueOrigin.Description = "replaced by the value origin of the set";
+
+         var set = overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0));
+         var parameterValue = set.ParameterValueByPath("Organism|Aspirin|Lipophilicity");
+         parameterValue.ValueOrigin.Source = ValueOriginSources.Publication;
+         parameterValue.ValueOrigin.Description = "Smith 2019";
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", set);
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_simulation);
+      }
+
+      [Observation]
+      public void should_take_the_value_origin_of_the_applied_parameter_from_the_entry_of_the_set()
+      {
+         _lipophilicityParam.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Publication);
+         _lipophilicityParam.ValueOrigin.Description.ShouldBeEqualTo("Smith 2019");
+      }
+   }
+
+   public class When_applying_an_overwrite_parameter_set_whose_entry_has_no_value_origin_to_a_parameter_that_has_one : concern_for_OverwriteParameterSetApplicationTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _lipophilicityParam.ValueOrigin.Source = ValueOriginSources.Publication;
+         _lipophilicityParam.ValueOrigin.Description = "Smith 2019";
+
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_simulation);
+      }
+
+      [Observation]
+      public void should_clear_the_value_origin_of_the_applied_parameter()
+      {
+         _lipophilicityParam.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Undefined);
+         _lipophilicityParam.ValueOrigin.Description.ShouldBeNull();
       }
    }
 
