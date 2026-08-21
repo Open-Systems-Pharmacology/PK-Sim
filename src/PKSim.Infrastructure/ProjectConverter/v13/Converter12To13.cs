@@ -251,7 +251,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
             return false;
 
          pkSimEvent.RemoveChild(mealEventParameter);
-         return false;
+         return true;
       }
 
       private static bool removeObsoleteContainersFrom(PKSimEvent pkSimEvent)
