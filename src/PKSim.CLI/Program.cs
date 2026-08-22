@@ -41,6 +41,7 @@ namespace PKSim.CLI
 
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
+         // If a qualification workflow logs errors, the return code should be non-zero
          var errorCounter = command is QualificationRunCommand ? new ErrorCountingLoggerProvider() : null;
 
          var logger = initializeLogger(command, errorCounter);
