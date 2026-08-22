@@ -174,7 +174,7 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
          {
             //No process found and a name was specified. This is a snapshot that is corrupted
             if (!string.IsNullOrEmpty(snapshotProcess.Name))
-               _logger.AddWarning(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
+               _logger.AddError(PKSimConstants.Error.ProcessNotFoundInCompound(snapshotProcess.Name, compound.Name));
 
             continue;
          }

@@ -128,9 +128,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_log_a_warning()
+      public void should_log_an_error()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -153,6 +153,12 @@ namespace PKSim.Core
       public void should_return_null()
       {
          _result.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_log_an_error()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 }
