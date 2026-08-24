@@ -705,6 +705,22 @@ namespace PKSim.Core
       }
    }
 
+   public class When_checking_if_a_simulation_has_uncommitted_changes : concern_for_IndividualSimulation_compound_path_matching
+   {
+      [Observation]
+      public void should_return_false_when_no_parameter_change_is_tracked()
+      {
+         sut.HasUncommittedChanges.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_true_once_a_parameter_change_is_tracked()
+      {
+         sut.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+         sut.HasUncommittedChanges.ShouldBeTrue();
+      }
+   }
+
    public abstract class concern_for_IndividualSimulation_with_compound : concern_for_IndividualSimulation
    {
       protected Compound _compound;

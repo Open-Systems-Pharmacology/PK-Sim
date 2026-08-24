@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.153" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.159" />
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.11" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.153" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.153" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.153" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.159" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.159" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.159" />
   </ItemGroup>
 
   <ItemGroup>

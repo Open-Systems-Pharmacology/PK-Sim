@@ -691,6 +691,11 @@ namespace PKSim.Core.Model
          CompoundNames.FirstOrDefault(pathElements.Contains);
 
       /// <summary>
+      ///    Returns <c>true</c> if the simulation has any uncommitted compound-dependent parameter changes.
+      /// </summary>
+      public virtual bool HasUncommittedChanges => ParameterChangeTracker.HasUncommittedChanges;
+
+      /// <summary>
       ///    Returns <c>true</c> if the simulation has uncommitted compound-dependent parameter changes
       ///    for the compound with the given <paramref name="compoundName"/>.
       /// </summary>

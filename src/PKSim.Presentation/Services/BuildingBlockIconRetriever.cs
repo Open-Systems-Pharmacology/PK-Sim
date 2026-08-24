@@ -42,7 +42,9 @@ namespace PKSim.Presentation.Services
          if (simulation.AllowAging)
             iconName = $"Aging{iconName}";
 
-         return retrieveIconForStatus(iconName, _buildingBlockInProjectManager.StatusFor(simulation));
+         var icon = retrieveIconForStatus(iconName, _buildingBlockInProjectManager.StatusFor(simulation));
+
+         return simulation.HasUncommittedChanges ? ApplicationIcons.OrangeOverlayFor(icon) : icon;
       }
 
       public ApplicationIcon IconFor(UsedBuildingBlock usedBuildingBlock)
