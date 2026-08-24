@@ -7,7 +7,7 @@ namespace PKSim.Core
 {
    public static class CoreConstants
    {
-      public const int LAYOUT_VERSION = 38;
+      public const int LAYOUT_VERSION = 39;
       public const int DEFAULT_NUMBER_OF_BINS = 20;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN = 100;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION = 100;

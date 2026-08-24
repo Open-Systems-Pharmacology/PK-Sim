@@ -159,6 +159,86 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_retrieving_the_icon_for_a_simulation_with_uncommitted_changes : concern_for_BuildingBlockIconRetriever
+   {
+      private ApplicationIcon _result;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties(), ModelProperties = new ModelProperties() };
+         _simulation.ModelConfiguration = A.Fake<ModelConfiguration>();
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IconFor(_simulation);
+      }
+
+      [Observation]
+      public void should_return_the_orange_overlay_variant_of_the_status_icon()
+      {
+         _result.ShouldBeEqualTo(ApplicationIcons.SimulationGreenOrange);
+      }
+   }
+
+   public class When_retrieving_the_icon_for_a_simulation_with_uncommitted_changes_and_red_status : concern_for_BuildingBlockIconRetriever
+   {
+      private ApplicationIcon _result;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties(), ModelProperties = new ModelProperties() };
+         _simulation.ModelConfiguration = A.Fake<ModelConfiguration>();
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IconFor(_simulation);
+      }
+
+      [Observation]
+      public void should_return_the_orange_overlay_variant_of_the_status_icon()
+      {
+         _result.ShouldBeEqualTo(ApplicationIcons.SimulationRedOrange);
+      }
+   }
+
+   public class When_retrieving_the_icon_for_a_simulation_without_uncommitted_changes : concern_for_BuildingBlockIconRetriever
+   {
+      private ApplicationIcon _result;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties(), ModelProperties = new ModelProperties() };
+         _simulation.ModelConfiguration = A.Fake<ModelConfiguration>();
+
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IconFor(_simulation);
+      }
+
+      [Observation]
+      public void should_return_the_plain_status_icon()
+      {
+         _result.ShouldBeEqualTo(ApplicationIcons.SimulationGreen);
+      }
+   }
+
    public class When_retrieving_icon_for_non_compound_building_block_with_simulation : concern_for_BuildingBlockIconRetriever
    {
       private ApplicationIcon _result;
