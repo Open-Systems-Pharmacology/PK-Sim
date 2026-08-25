@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Core
 {
@@ -15,6 +16,7 @@ namespace PKSim.Core
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       protected ISerializationManager _serializationManager;
       protected IObjectIdResetter _objectIdResetter;
+      protected IContainer _container;
 
       protected override void Context()
       {
@@ -23,7 +25,9 @@ namespace PKSim.Core
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _objectIdResetter= A.Fake<IObjectIdResetter>();
          _serializationManager = A.Fake<ISerializationManager>();
-         sut = new Cloner(_cloneManagerForModel, _cloneManagerForBuildingBlock, _buildingBlockFinalizer, _serializationManager, _objectIdResetter);
+         _container = A.Fake<IContainer>();
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).Returns(_cloneManagerForBuildingBlock);
+         sut = new Cloner(_cloneManagerForModel, _buildingBlockFinalizer, _serializationManager, _objectIdResetter, _container);
       }
    }
 

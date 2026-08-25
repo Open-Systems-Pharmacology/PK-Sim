@@ -47,12 +47,21 @@ namespace PKSim.Core.Services
          _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
 
+      //the configuration pipeline relies on services that are not safe for concurrent use (ORM queries, spatial structure
+      //creation). Model creation may run on parallel workers: only the thread-safe model construction runs unsynchronized
+      private static readonly object _configurationLock = new object();
+
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
       {
-         _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
+         SimulationConfiguration simulationConfiguration;
+         lock (_configurationLock)
+         {
+            _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
-         simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
-         var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+            simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
+            simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+         }
+
          simulationConfiguration.ShowProgress = shouldShowProgress;
          simulationConfiguration.ShouldValidate = shouldValidate;
 
@@ -64,7 +73,10 @@ namespace PKSim.Core.Services
          simulation.Model = creationResult.Model;
          simulation.UpdateReactions(simulationConfiguration.All<ReactionBuildingBlock>());
 
-         updateSimulationAfterModelCreation(simulation);
+         lock (_configurationLock)
+         {
+            updateSimulationAfterModelCreation(simulation);
+         }
       }
 
       private void updateSimulationAfterModelCreation(Simulation simulation)

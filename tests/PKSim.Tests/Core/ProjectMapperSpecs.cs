@@ -85,6 +85,7 @@ namespace PKSim.Core
       protected ISimulationRunner _simulationRunner;
       protected SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+      protected IStartableWarmup _startableWarmup;
 
 
       protected override Task Context()
@@ -104,6 +105,7 @@ namespace PKSim.Core
          _simulationRunner = A.Fake<ISimulationRunner>();
          _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
+         _startableWarmup = A.Fake<IStartableWarmup>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -118,7 +120,8 @@ namespace PKSim.Core
             _userSettings,
             _simulationRunner,
             _simulationTimeProfileChartMapper,
-            _populationAnalysisChartMapper);
+            _populationAnalysisChartMapper,
+            _startableWarmup);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -458,6 +461,50 @@ namespace PKSim.Core
       public void should_log_an_error_for_simulation_that_could_not_be_loaded_from_snapshot()
       {
          A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_with_multiple_simulations_to_project : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+      private Simulation _simulationSnapshot3;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _simulationSnapshot3 = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2, _simulationSnapshot3}
+         };
+
+         //the mappings complete out of order to verify that the simulations are nevertheless added in snapshot order
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).ReturnsLazily(async () =>
+         {
+            await Task.Delay(100);
+            return (Model.Simulation) new IndividualSimulation().WithName("S1");
+         });
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).ReturnsLazily(async () =>
+         {
+            await Task.Delay(50);
+            return (Model.Simulation) new IndividualSimulation().WithName("S2");
+         });
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot3, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S3"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_add_the_simulations_to_the_project_in_the_snapshot_order()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S2", "S3");
       }
    }
 
