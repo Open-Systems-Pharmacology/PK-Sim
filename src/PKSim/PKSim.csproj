@@ -14,7 +14,6 @@
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
     <IsPackable>false</IsPackable>
-    <!-- parallel model construction is allocation-heavy: workstation GC stalls it (see #3710 measurements) -->
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
