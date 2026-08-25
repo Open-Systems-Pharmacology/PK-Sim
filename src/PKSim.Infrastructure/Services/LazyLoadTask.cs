@@ -38,7 +38,6 @@ namespace PKSim.Infrastructure.Services
          _sensitivityAnalysisContentLoader = sensitivityAnalysisContentLoader;
       }
 
-      //instances are transient: the gate is shared so that the same object is never loaded by two threads at once
       private static readonly object _loadLock = new object();
 
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
