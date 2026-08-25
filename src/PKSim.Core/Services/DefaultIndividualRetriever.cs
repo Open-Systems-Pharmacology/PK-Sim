@@ -14,6 +14,7 @@ namespace PKSim.Core.Services
       private readonly IIndividualFactory _individualFactory;
       private readonly OriginDataMapper _originDataMapper;
       private readonly ICache<SpeciesPopulation, Individual> _individualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
+      private readonly object _locker = new object();
 
       public DefaultIndividualRetriever(
          ISpeciesRepository speciesRepository,
@@ -49,21 +50,24 @@ namespace PKSim.Core.Services
 
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
       {
-         if (!_individualCacheProSpecies.Contains(speciesPopulation))
+         lock (_locker)
          {
-            var originDataSnapshot = new OriginData
+            if (!_individualCacheProSpecies.Contains(speciesPopulation))
             {
-               Species = speciesPopulation.Species,
-               Population = speciesPopulation.Name,
-               Gender = DefaultGenderFor(speciesPopulation).Name
-            };
+               var originDataSnapshot = new OriginData
+               {
+                  Species = speciesPopulation.Species,
+                  Population = speciesPopulation.Name,
+                  Gender = DefaultGenderFor(speciesPopulation).Name
+               };
 
-            //We do not need to pass any valid snapshot context in this case.
-            var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
-            _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
+               //We do not need to pass any valid snapshot context in this case.
+               var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
+               _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
+            }
+
+            return _individualCacheProSpecies[speciesPopulation];
          }
-
-         return _individualCacheProSpecies[speciesPopulation];
       }
    }
 }

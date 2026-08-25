@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -57,6 +59,36 @@ namespace PKSim.Infrastructure
       public void should_do_nothing()
       {
          A.CallTo(() => _contentLoader.LoadContentFor(_objectToLoad)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_loading_the_same_object_concurrently_from_multiple_threads : concern_for_LazyLoadTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _objectToLoad.IsLoaded = false;
+         //the task loads the object as IObjectBase: the stub must match that generic instantiation
+         A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _objectToLoad)).Invokes(() => Thread.Sleep(300));
+      }
+
+      protected override void Because()
+      {
+         var firstLoad = Task.Run(() => sut.Load(_objectToLoad));
+         var secondLoad = Task.Run(() => sut.Load(_objectToLoad));
+         Task.WaitAll(firstLoad, secondLoad);
+      }
+
+      [Observation]
+      public void should_load_the_content_only_once()
+      {
+         A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _objectToLoad)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_register_the_object_only_once()
+      {
+         A.CallTo(() => _registrationTask.Register(_objectToLoad)).MustHaveHappenedOnceExactly();
       }
    }
 

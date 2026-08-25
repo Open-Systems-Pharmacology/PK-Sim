@@ -38,26 +38,34 @@ namespace PKSim.Infrastructure.Services
          _sensitivityAnalysisContentLoader = sensitivityAnalysisContentLoader;
       }
 
+      //instances are transient: the gate is shared so that the same object is never loaded by two threads at once
+      private static readonly object _loadLock = new object();
+
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
       {
          if (objectToLoad == null || objectToLoad.IsLoaded) return;
 
-         if (objectToLoad.IsAnImplementationOf<ISimulationComparison>())
-            _simulationComparisonContentLoader.LoadContentFor(objectToLoad.DowncastTo<ISimulationComparison>());
+         lock (_loadLock)
+         {
+            if (objectToLoad.IsLoaded) return;
 
-         else if (objectToLoad.IsAnImplementationOf<ParameterIdentification>())
-            _parameterIdentificationContentLoader.LoadContentFor(objectToLoad.DowncastTo<ParameterIdentification>());
+            if (objectToLoad.IsAnImplementationOf<ISimulationComparison>())
+               _simulationComparisonContentLoader.LoadContentFor(objectToLoad.DowncastTo<ISimulationComparison>());
 
-         else if (objectToLoad.IsAnImplementationOf<SensitivityAnalysis>())
-            _sensitivityAnalysisContentLoader.LoadContentFor(objectToLoad.DowncastTo<SensitivityAnalysis>());
+            else if (objectToLoad.IsAnImplementationOf<ParameterIdentification>())
+               _parameterIdentificationContentLoader.LoadContentFor(objectToLoad.DowncastTo<ParameterIdentification>());
 
-         else if (objectToLoad.IsAnImplementationOf<IObjectBase>())
-            loadObjectBase(objectToLoad as IObjectBase);
+            else if (objectToLoad.IsAnImplementationOf<SensitivityAnalysis>())
+               _sensitivityAnalysisContentLoader.LoadContentFor(objectToLoad.DowncastTo<SensitivityAnalysis>());
 
-         else
-            return;
+            else if (objectToLoad.IsAnImplementationOf<IObjectBase>())
+               loadObjectBase(objectToLoad as IObjectBase);
 
-         objectToLoad.IsLoaded = true;
+            else
+               return;
+
+            objectToLoad.IsLoaded = true;
+         }
       }
 
       public void LoadResults<TSimulation>(TSimulation simulation) where TSimulation : Simulation
