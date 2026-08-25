@@ -330,7 +330,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
 
-         //the startable repositories must be initialized before models are constructed in parallel
          _startableWarmup.AwaitCompletion();
 
          _logger.AddInfo(PKSimConstants.UI.LoadingSimulationsMessage(snapshots.Length), snapshotContext.Project.Name);
@@ -354,7 +353,6 @@ namespace PKSim.Core.Snapshots.Mappers
             }
          }
 
-         //the first simulation is mapped alone so that lazily initialized repositories and caches warm up before the parallel phase
          await mapSimulationAt(0);
 
          var options = new ParallelOptions

@@ -47,8 +47,6 @@ namespace PKSim.Core.Services
          _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
 
-      //the configuration pipeline relies on services that are not safe for concurrent use (ORM queries, spatial structure
-      //creation). Model creation may run on parallel workers: only the thread-safe model construction runs unsynchronized
       private static readonly object _configurationLock = new object();
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
