@@ -44,7 +44,7 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 		'examples/*.txt',
 		'src/PKSim.UI/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
-		'documentation/*.pdf',
+		*documentation_files,
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
@@ -81,7 +81,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'Open Systems Pharmacology Suite License.pdf',
-		'documentation/*.pdf',
+		*documentation_files,
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/**/*.{rtf}'
@@ -157,6 +157,20 @@ end
 
 def solution_dir
 	File.dirname(__FILE__)
+end
+
+#Documentation files that are kept in the documentation repo as legacy only and that should not be shipped
+def legacy_documentation_files
+	[
+		'PK-Sim Ontogeny Database Version 7.3.pdf'
+	]
+end
+
+def documentation_files
+	Dir.glob(File.join(solution_dir, 'documentation', '*.pdf'))
+		.map { |file| File.basename(file) }
+		.reject { |file| legacy_documentation_files.include?(file) }
+		.map { |file| "documentation/#{file}" }
 end
 
 def	manufacturer
