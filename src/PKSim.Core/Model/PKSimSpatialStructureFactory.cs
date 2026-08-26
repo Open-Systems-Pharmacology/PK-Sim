@@ -51,6 +51,8 @@ namespace PKSim.Core.Model
       public SpatialStructure CreateFor(Individual individual, Simulation simulation)
       {
          var spatialStructure = Create();
+         spatialStructure.GlobalMoleculeDependentProperties = CreateGlobalMoleculeDependentProperties();
+
          var organism = _objectBaseFactory.Create<Organism>();
          spatialStructure.AddTopContainer(organism);
 
