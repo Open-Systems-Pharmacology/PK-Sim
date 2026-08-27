@@ -42,6 +42,7 @@ namespace PKSim
       public static class Events
       {
          public const string URINARY_BLADDER_EMPTYING = "Urinary bladder emptying";
+         public const string STANDARD_MEAL = "Meal: Standard (Human)";
       }
       public static class Parameters
       {
