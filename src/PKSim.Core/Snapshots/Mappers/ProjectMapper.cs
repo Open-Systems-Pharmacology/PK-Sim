@@ -330,6 +330,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
 
+         //the startable repositories must finish initializing before models are constructed in parallel
          _startableWarmup.AwaitCompletion();
 
          _logger.AddInfo(PKSimConstants.UI.LoadingSimulationsMessage(snapshots.Length), snapshotContext.Project.Name);
