@@ -140,8 +140,8 @@ namespace PKSim.Core.Model
       {
          set
          {
-            //the individual is flagged first so that a reader seeing the population loaded also sees its
-            //individual loaded (the base setter is the volatile publication)
+            //the individual is flagged first so that a load never publishes the population as loaded
+            //before its individual (the base setter is the volatile publication)
             if (FirstIndividual != null)
                FirstIndividual.IsLoaded = value;
             base.IsLoaded = value;

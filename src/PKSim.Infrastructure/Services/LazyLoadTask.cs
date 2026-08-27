@@ -25,9 +25,11 @@ namespace PKSim.Infrastructure.Services
       //chart loads the simulations it references. Those references only point from a container to a simulation and
       //never back, so gates are always taken in that one direction and cannot deadlock.
       //Completing a load also flags owned children as loaded without taking their gates (a simulation flags its
-      //used building blocks, a population its base individual). That is safe because those children are private
-      //copies deserialized as part of their owner's content: they are not reachable until the owner's load
-      //completes and no other load path targets the same instances.
+      //used building blocks, a population its base individual). That is safe because a child only becomes
+      //reachable once its owner is loaded, and a load flags the children before publishing the owner's flag,
+      //so a later Load on a child fast-paths out. The guarantee belongs to the load, not to the object graph:
+      //BuildingBlockInSimulationSynchronizer can hand a loaded simulation an unloaded clone, which is then
+      //loaded under its own gate like any other object.
       private static readonly ConditionalWeakTable<object, object> _loadGates = new ConditionalWeakTable<object, object>();
 
       public LazyLoadTask(
@@ -82,8 +84,8 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      //no already-loaded fast path here: unlike IsLoaded, HasResults carries no publication guarantee, and
-      //results are loaded per chart or analysis rather than on hot paths, so the uncontended gate is cheap
+      //no already-loaded fast path here: unlike IsLoaded, HasResults carries no publication guarantee, so the
+      //gate is always taken - uncontended, it costs a few nanoseconds per call
       public void LoadResults<TSimulation>(TSimulation simulation) where TSimulation : Simulation
       {
          if (simulation == null)

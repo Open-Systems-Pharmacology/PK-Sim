@@ -270,4 +270,55 @@ namespace PKSim.Core
          sut.IsPreterm.ShouldBeFalse();
       }
    }
+
+   public class When_a_population_load_flags_it_as_loaded : concern_for_RandomPopulation
+   {
+      private IndividualObservingOwnerFlag _individual;
+
+      //records the owner's flag at the moment the individual is flagged, pinning that a load flags the
+      //individual before publishing the owner's flag
+      private class IndividualObservingOwnerFlag : Individual
+      {
+         private readonly Population _owner;
+         public bool? OwnerFlagWhenFlagged { get; private set; }
+
+         public IndividualObservingOwnerFlag(Population owner)
+         {
+            _owner = owner;
+         }
+
+         public override bool IsLoaded
+         {
+            set
+            {
+               OwnerFlagWhenFlagged = _owner.IsLoaded;
+               base.IsLoaded = value;
+            }
+         }
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _individual = new IndividualObservingOwnerFlag(sut);
+         sut.Settings = new RandomPopulationSettings {BaseIndividual = _individual};
+      }
+
+      protected override void Because()
+      {
+         sut.IsLoaded = true;
+      }
+
+      [Observation]
+      public void should_flag_its_individual_before_publishing_its_own_flag()
+      {
+         _individual.OwnerFlagWhenFlagged.ShouldBeEqualTo(false);
+      }
+
+      [Observation]
+      public void should_flag_its_individual()
+      {
+         _individual.IsLoaded.ShouldBeTrue();
+      }
+   }
 }

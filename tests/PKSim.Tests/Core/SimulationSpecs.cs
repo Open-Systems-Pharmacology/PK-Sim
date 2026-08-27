@@ -1,4 +1,5 @@
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 
@@ -68,6 +69,57 @@ namespace PKSim.Core
       public void should_return_false()
       {
          sut.UsesEventTemplate("templateEventId").ShouldBeFalse();
+      }
+   }
+
+   public class When_a_simulation_load_flags_it_as_loaded : concern_for_Simulation
+   {
+      private BuildingBlockObservingOwnerFlag _buildingBlock;
+
+      //records the owner's flag at the moment the child is flagged, pinning that a load flags the
+      //children before publishing the owner's flag
+      private class BuildingBlockObservingOwnerFlag : Individual
+      {
+         private readonly Simulation _owner;
+         public bool? OwnerFlagWhenFlagged { get; private set; }
+
+         public BuildingBlockObservingOwnerFlag(Simulation owner)
+         {
+            _owner = owner;
+         }
+
+         public override bool IsLoaded
+         {
+            set
+            {
+               OwnerFlagWhenFlagged = _owner.IsLoaded;
+               base.IsLoaded = value;
+            }
+         }
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new BuildingBlockObservingOwnerFlag(sut);
+         sut.AddUsedBuildingBlock(new UsedBuildingBlock("template", PKSimBuildingBlockType.Individual) {BuildingBlock = _buildingBlock});
+      }
+
+      protected override void Because()
+      {
+         sut.IsLoaded = true;
+      }
+
+      [Observation]
+      public void should_flag_the_used_building_blocks_before_publishing_its_own_flag()
+      {
+         _buildingBlock.OwnerFlagWhenFlagged.ShouldBeEqualTo(false);
+      }
+
+      [Observation]
+      public void should_flag_the_used_building_blocks()
+      {
+         _buildingBlock.IsLoaded.ShouldBeTrue();
       }
    }
 }
