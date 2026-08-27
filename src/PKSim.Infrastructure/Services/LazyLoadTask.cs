@@ -24,6 +24,10 @@ namespace PKSim.Infrastructure.Services
       //A load holds its gate while nested loads happen: deserializing a comparison, a parameter identification or a
       //chart loads the simulations it references. Those references only point from a container to a simulation and
       //never back, so gates are always taken in that one direction and cannot deadlock.
+      //Completing a load also flags owned children as loaded without taking their gates (a simulation flags its
+      //used building blocks, a population its base individual). That is safe because those children are private
+      //copies deserialized as part of their owner's content: they are not reachable until the owner's load
+      //completes and no other load path targets the same instances.
       private static readonly ConditionalWeakTable<object, object> _loadGates = new ConditionalWeakTable<object, object>();
 
       public LazyLoadTask(
@@ -49,6 +53,7 @@ namespace PKSim.Infrastructure.Services
       private static object gateFor(object objectToLoad) => _loadGates.GetValue(objectToLoad, x => new object());
 
       //the gate is held for the whole load, so nothing reached from here may wait on the UI thread
+      //(the closest edge is loadSimulations -> SimulationChartsLoader/ChartTask in PKSim.Presentation, clean today)
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
       {
          //an object that is already loaded is the common case and must not pay for the gate
@@ -77,6 +82,8 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      //no already-loaded fast path here: unlike IsLoaded, HasResults carries no publication guarantee, and
+      //results are loaded per chart or analysis rather than on hot paths, so the uncontended gate is cheap
       public void LoadResults<TSimulation>(TSimulation simulation) where TSimulation : Simulation
       {
          if (simulation == null)

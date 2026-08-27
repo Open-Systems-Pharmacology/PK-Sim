@@ -618,8 +618,10 @@ namespace PKSim.Core.Model
       {
          set
          {
-            base.IsLoaded = value;
+            //the used building blocks are flagged first so that a reader seeing the simulation loaded also
+            //sees its building blocks loaded (the base setter is the volatile publication)
             UsedBuildingBlocks.Each(bb => bb.IsLoaded = value);
+            base.IsLoaded = value;
          }
       }
 

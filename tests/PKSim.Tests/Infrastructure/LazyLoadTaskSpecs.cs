@@ -92,7 +92,7 @@ namespace PKSim.Infrastructure
       protected override void Because()
       {
          var firstLoad = Task.Run(() => sut.Load(_individual));
-         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5));
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
          var secondLoad = Task.Run(() =>
          {
@@ -100,16 +100,19 @@ namespace PKSim.Infrastructure
             sut.Load(_individual);
          });
 
-         //the second load is running and cannot get past the gate while the first one holds it
-         _secondLoadStarted.Wait(TimeSpan.FromSeconds(5));
+         //the second load is running and cannot get past the gate while the first one holds it. A load that
+         //never reached the gate in time would also read as blocked here: the guard was verified by removing
+         //the gate, which makes the observation fail
+         _secondLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
          _secondLoadWasBlocked = !secondLoad.Wait(TimeSpan.FromMilliseconds(500));
 
          _releaseFirstLoad.Set();
-         Task.WaitAll(new[] {firstLoad, secondLoad}, TimeSpan.FromSeconds(5));
+         Task.WaitAll(new[] {firstLoad, secondLoad}, TimeSpan.FromSeconds(5)).ShouldBeTrue();
       }
 
       public override void Cleanup()
       {
+         base.Cleanup();
          _firstLoadStarted.Dispose();
          _releaseFirstLoad.Dispose();
          _secondLoadStarted.Dispose();
@@ -166,17 +169,18 @@ namespace PKSim.Infrastructure
       protected override void Because()
       {
          var blockedLoad = Task.Run(() => sut.Load(_blockedIndividual));
-         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5));
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
          //the load of an unrelated object must not wait for the blocked one
          _otherLoadCompleted = Task.Run(() => sut.Load(_otherIndividual)).Wait(TimeSpan.FromSeconds(2));
 
          _releaseFirstLoad.Set();
-         blockedLoad.Wait(TimeSpan.FromSeconds(5));
+         blockedLoad.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
       }
 
       public override void Cleanup()
       {
+         base.Cleanup();
          _firstLoadStarted.Dispose();
          _releaseFirstLoad.Dispose();
       }
