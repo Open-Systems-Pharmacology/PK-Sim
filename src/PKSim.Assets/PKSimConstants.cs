@@ -2613,6 +2613,7 @@ namespace PKSim.Assets
          public static string SimulationFinishedMessage(string simulationName, int allSimCount)=> $"{simulationName} Finished, {allSimCount} Simulation(s) Remaining...";
          public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} Simulation(s)...";
          public static string SimulationsLoadedMessage(string simulationName, int loadedCount, int simulationCount) => $"Simulation '{simulationName}' loaded ({loadedCount}/{simulationCount})";
+         public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} Simulation(s) Loaded";
          public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
       }
 

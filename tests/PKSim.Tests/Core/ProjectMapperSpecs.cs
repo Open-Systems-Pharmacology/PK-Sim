@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -606,9 +607,19 @@ namespace PKSim.Core
       public void should_not_log_warnings_about_missing_quantities()
       {
          // Fixes #3467: when simulations are not run, CurveMapper must not warn about
-         // missing data columns since no results are expected
-         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._))
+         // missing data columns since no results are expected. The partial-load warning for the
+         // corrupted simulation in this fixture is the only expected warning
+         A.CallTo(() => _logger.AddToLog(
+               A<string>.That.Matches(message => message != PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(1, 2)),
+               LogLevel.Warning, A<string>._))
             .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(1, 2), LogLevel.Warning, A<string>._))
+            .MustHaveHappened();
       }
    }
 

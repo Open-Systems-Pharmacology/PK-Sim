@@ -350,8 +350,8 @@ namespace PKSim.Core.Snapshots.Mappers
             }
             catch (Exception e)
             {
-               _logger.AddException(e);
-               _logger.AddError(PKSimConstants.Error.CannotLoadSimulation(snapshot.Name));
+               _logger.AddException(e, snapshotContext.Project.Name);
+               _logger.AddError(PKSimConstants.Error.CannotLoadSimulation(snapshot.Name), snapshotContext.Project.Name);
             }
          }
 
@@ -371,6 +371,9 @@ namespace PKSim.Core.Snapshots.Mappers
             if (mappedSimulations[i] != null)
                simulations.Add(new(mappedSimulations[i], snapshots[i]));
          }
+
+         if (numberOfSimulationsLoaded < snapshots.Length)
+            _logger.AddWarning(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), snapshotContext.Project.Name);
 
          return simulations;
       }
