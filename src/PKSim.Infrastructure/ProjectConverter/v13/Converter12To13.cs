@@ -239,6 +239,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v13
          //The new reset events are whole containers, so the event is synchronized recursively
          if (_templateStructureUpdater.AddMissingStructureTo(pkSimEvent, templateEventGroup))
             _converted = true;
+
+         if(removeObsoleteParametersFrom(pkSimEvent))
+            _converted = true;
+      }
+
+      private bool removeObsoleteParametersFrom(PKSimEvent pkSimEvent)
+      {
+         var mealEventParameter = pkSimEvent.Parameter(ConverterConstants.Parameters.MEAL_VOLUME);
+         if (mealEventParameter == null)
+            return false;
+
+         pkSimEvent.RemoveChild(mealEventParameter);
+         return true;
       }
 
       private static bool removeObsoleteContainersFrom(PKSimEvent pkSimEvent)

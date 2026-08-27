@@ -47,7 +47,10 @@ namespace PKSim.Core.Model
          newEvent.TemplateName = eventGroupBuilder.Name;
          var clonedEvent = _cloner.Clone(eventGroupBuilder);
 
-         newEvent.AddChildren(clonedEvent.GetAllChildren<IParameter>());
+         //only parameters defined in the database as event parameters belong to the event building block.
+         //parameters defined for another building block type (e.g. SIMULATION) are only created in the simulation
+         //when the event group template is cloned by the EventBuildingBlockCreator
+         newEvent.AddChildren(clonedEvent.GetAllChildren<IParameter>(x => x.Info.BuildingBlockType == PKSimBuildingBlockType.Event));
 
          newEvent.IsLoaded = true;
          return newEvent;

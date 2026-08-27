@@ -39,8 +39,9 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string FRACTION_ENDOSOMAL = "Fraction endosomal";
          public static readonly string NORM_SUFFIX = " (normalized)";
          public static readonly string FRACTION_OF_BLOOD_FOR_SAMPLING = "Fraction of blood for sampling";
-         public const string E_GFR = "eGFR";
-         public const string GFR = "GFR";
+         public static readonly string E_GFR = "eGFR";
+         public static readonly string GFR = "GFR";
+         public static readonly string MEAL_VOLUME = "Meal volume";
          public static readonly string BASAL_PH_IN_FASTED_STATE = "Basal pH in fasted state";
          public static readonly string BASAL_BILE_SALT_CONCENTRATION = "Basal Bile Salt concentration";
          public static readonly string BILE_SALT_CONCENTRATION_IN_FASTED_STATE = "Bile Salt concentration in fasted state";

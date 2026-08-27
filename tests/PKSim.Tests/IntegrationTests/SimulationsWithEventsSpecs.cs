@@ -39,6 +39,75 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_creating_a_simulation_with_a_meal_event : concern_for_IndividualSimulation
+   {
+      private const string _mealEventName = "MyMeal";
+      private const string _mealVolume = "Meal volume";
+      private const string _mealVolumeReferenceAdult = "Meal volume (reference Adult)";
+      private const string _volumeReferenceAdult = "Volume (reference Adult)";
+
+      private PKSimEvent _mealEvent;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var eventMappingFactory = IoC.Resolve<IEventMappingFactory>();
+         var eventFactory = IoC.Resolve<IEventFactory>();
+
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol).DowncastTo<IndividualSimulation>();
+         _mealEvent = eventFactory.Create(CoreConstantsForSpecs.Events.STANDARD_MEAL).WithName(_mealEventName);
+         var eventMapping = eventMappingFactory.Create(_mealEvent);
+         eventMapping.StartTime.ValueInDisplayUnit = 0;
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock(_mealEvent.Id, PKSimBuildingBlockType.Event) {BuildingBlock = _mealEvent});
+         _simulation.EventProperties.AddEventMapping(eventMapping);
+
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+      }
+
+      private IContainer mealEventContainer => _simulation.Model.Root.EntityAt<IContainer>(Constants.EVENTS, _mealEventName);
+
+      private IContainer lumenStomach => _simulation.Model.Root.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.LUMEN, CoreConstants.Organ.STOMACH);
+
+      [Observation]
+      public void should_define_the_reference_meal_volume_in_the_event_building_block_instead_of_the_meal_volume()
+      {
+         _mealEvent.Parameter(_mealVolumeReferenceAdult).ShouldNotBeNull();
+         _mealEvent.Parameter(_mealVolume).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_create_the_meal_volume_parameter_in_the_simulation()
+      {
+         var mealVolume = mealEventContainer.EntityAt<IParameter>(_mealVolume);
+         mealVolume.ShouldNotBeNull();
+         mealVolume.Visible.ShouldBeTrue();
+         mealVolume.Editable.ShouldBeTrue();
+         mealVolume.CanBeVariedInPopulation.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_create_a_hidden_reference_adult_volume_parameter_in_the_lumen_stomach()
+      {
+         var referenceVolume = lumenStomach.EntityAt<IParameter>(_volumeReferenceAdult);
+         referenceVolume.ShouldNotBeNull();
+         referenceVolume.Visible.ShouldBeFalse();
+
+         //standard individual is a 30 years old european male: reference volume and stomach volume should be equal
+         referenceVolume.Value.ShouldBeEqualTo(lumenStomach.Parameter(Constants.Parameters.VOLUME).Value, 1e-5);
+      }
+
+      [Observation]
+      public void should_scale_the_meal_volume_with_the_stomach_volume()
+      {
+         var mealVolume = mealEventContainer.EntityAt<IParameter>(_mealVolume);
+         var referenceMealVolume = mealEventContainer.EntityAt<IParameter>(_mealVolumeReferenceAdult);
+         var stomachVolume = lumenStomach.Parameter(Constants.Parameters.VOLUME);
+         var referenceStomachVolume = lumenStomach.EntityAt<IParameter>(_volumeReferenceAdult);
+
+         mealVolume.Value.ShouldBeEqualTo(referenceMealVolume.Value * stomachVolume.Value / referenceStomachVolume.Value, 1e-5);
+      }
+   }
+
    public class When_creating_a_simulation_with_a_simple_protocol_that_has_an_event_placeholder : concern_for_IndividualSimulation
    {
       public override void GlobalContext()
