@@ -345,7 +345,7 @@ namespace PKSim.Core.Snapshots.Mappers
             {
                mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
                var loadedCount = System.Threading.Interlocked.Increment(ref numberOfSimulationsLoaded);
-               _logger.AddInfo(PKSimConstants.UI.SimulationsLoadedMessage(loadedCount, snapshots.Length), snapshotContext.Project.Name);
+               _logger.AddInfo(PKSimConstants.UI.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), snapshotContext.Project.Name);
             }
             catch (Exception e)
             {
