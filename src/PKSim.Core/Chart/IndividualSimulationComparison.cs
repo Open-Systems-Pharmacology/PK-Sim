@@ -9,7 +9,15 @@ namespace PKSim.Core.Chart
    {
       private readonly ICache<string, IndividualSimulation> _allSimulations;
 
-      public bool IsLoaded { get; set; }
+      //see ILazyLoadable: lazy loading reads this flag without holding the lock that guards the load, so it is
+      //published with a volatile field to make the writes that loaded the object visible with it
+      private volatile bool _isLoaded;
+
+      public bool IsLoaded
+      {
+         get => _isLoaded;
+         set => _isLoaded = value;
+      }
 
       public IndividualSimulationComparison()
       {
