@@ -15,6 +15,7 @@
     <NoWarn>1591, 3246</NoWarn>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
     <IsPackable>false</IsPackable>
+    <!-- needed to improve memory management for parallel model construction -->
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
