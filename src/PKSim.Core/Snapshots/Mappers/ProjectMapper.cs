@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -182,7 +183,7 @@ namespace PKSim.Core.Snapshots.Mappers
             {
                var (simulation, _) = simulationWithSnapshot;
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
-               var remaining = System.Threading.Interlocked.Decrement(ref allSimCount);
+               var remaining = Interlocked.Decrement(ref allSimCount);
                _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, remaining));
             }
             catch (Exception ex)
@@ -344,7 +345,7 @@ namespace PKSim.Core.Snapshots.Mappers
             try
             {
                mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
-               var loadedCount = System.Threading.Interlocked.Increment(ref numberOfSimulationsLoaded);
+               var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(PKSimConstants.UI.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), snapshotContext.Project.Name);
             }
             catch (Exception e)
