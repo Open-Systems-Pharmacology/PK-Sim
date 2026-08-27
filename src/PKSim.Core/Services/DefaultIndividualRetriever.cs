@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -51,8 +52,19 @@ namespace PKSim.Core.Services
 
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
       {
-         return _individualCacheProSpecies.GetOrAdd(speciesPopulation,
-            population => new Lazy<Individual>(() => createDefaultIndividualFor(population), LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+         var cachedIndividual = _individualCacheProSpecies.GetOrAdd(speciesPopulation,
+            population => new Lazy<Individual>(() => createDefaultIndividualFor(population), LazyThreadSafetyMode.ExecutionAndPublication));
+
+         try
+         {
+            return cachedIndividual.Value;
+         }
+         catch
+         {
+            //a lazy that faulted keeps throwing the same exception, so the entry is dropped to let the next call retry
+            _individualCacheProSpecies.TryRemove(new KeyValuePair<SpeciesPopulation, Lazy<Individual>>(speciesPopulation, cachedIndividual));
+            throw;
+         }
       }
 
       private Individual createDefaultIndividualFor(SpeciesPopulation speciesPopulation)

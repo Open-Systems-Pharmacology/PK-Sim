@@ -18,8 +18,12 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationAnalysesLoader _simulationAnalysesLoader;
       private readonly IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
       private readonly ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
-      //lazy loading is gated per object rather than on the object itself, whose monitor any other code could take.
-      //The table is keyed by reference and holds its keys weakly, so a gate never outlives the object it guards.
+      //each object is loaded under its own gate, taken on a private object rather than on the object's own monitor,
+      //which any other code could take as well. The table is keyed by reference and holds its keys weakly, so a gate
+      //never outlives the object it guards.
+      //A load holds its gate while nested loads happen: deserializing a comparison, a parameter identification or a
+      //chart loads the simulations it references. Those references only point from a container to a simulation and
+      //never back, so gates are always taken in that one direction and cannot deadlock.
       private static readonly ConditionalWeakTable<object, object> _loadGates = new ConditionalWeakTable<object, object>();
 
       public LazyLoadTask(
@@ -44,9 +48,11 @@ namespace PKSim.Infrastructure.Services
 
       private static object gateFor(object objectToLoad) => _loadGates.GetValue(objectToLoad, x => new object());
 
+      //the gate is held for the whole load, so nothing reached from here may wait on the UI thread
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
       {
-         if (objectToLoad == null) return;
+         //an object that is already loaded is the common case and must not pay for the gate
+         if (objectToLoad == null || objectToLoad.IsLoaded) return;
 
          lock (gateFor(objectToLoad))
          {
@@ -76,10 +82,11 @@ namespace PKSim.Infrastructure.Services
          if (simulation == null)
             return;
 
-         Load(simulation);
-
+         //one gate for both steps: loading the simulation may already have loaded its results
          lock (gateFor(simulation))
          {
+            Load(simulation);
+
             if (simulation.HasResults)
                return;
 
