@@ -68,34 +68,57 @@ namespace PKSim.Infrastructure
       private Individual _individual;
       private ManualResetEventSlim _firstLoadStarted;
       private ManualResetEventSlim _releaseFirstLoad;
+      private ManualResetEventSlim _secondLoadStarted;
+      private bool _secondLoadWasBlocked;
 
       protected override void Context()
       {
          base.Context();
          _firstLoadStarted = new ManualResetEventSlim();
          _releaseFirstLoad = new ManualResetEventSlim();
+         _secondLoadStarted = new ManualResetEventSlim();
 
          //a real building block so that the spec exercises the actual IsLoaded field
-         _individual = new Individual { Id = "IND" };
+         _individual = new Individual {Id = "IND"};
 
          //the task loads the object as IObjectBase: the stub must match that generic instantiation
          A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _individual)).Invokes(() =>
          {
             _firstLoadStarted.Set();
-            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5));
          });
       }
 
       protected override void Because()
       {
          var firstLoad = Task.Run(() => sut.Load(_individual));
-         //the second load only starts once the first is inside the guarded region, so it has to wait for it
-         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5));
 
-         var secondLoad = Task.Run(() => sut.Load(_individual));
+         var secondLoad = Task.Run(() =>
+         {
+            _secondLoadStarted.Set();
+            sut.Load(_individual);
+         });
+
+         //the second load is running and cannot get past the gate while the first one holds it
+         _secondLoadStarted.Wait(TimeSpan.FromSeconds(5));
+         _secondLoadWasBlocked = !secondLoad.Wait(TimeSpan.FromMilliseconds(500));
+
          _releaseFirstLoad.Set();
+         Task.WaitAll(new[] {firstLoad, secondLoad}, TimeSpan.FromSeconds(5));
+      }
 
-         Task.WaitAll(new[] { firstLoad, secondLoad }, TimeSpan.FromSeconds(5)).ShouldBeTrue();
+      public override void Cleanup()
+      {
+         _firstLoadStarted.Dispose();
+         _releaseFirstLoad.Dispose();
+         _secondLoadStarted.Dispose();
+      }
+
+      [Observation]
+      public void should_make_the_second_load_wait_for_the_first_one()
+      {
+         _secondLoadWasBlocked.ShouldBeTrue();
       }
 
       [Observation]
@@ -130,26 +153,32 @@ namespace PKSim.Infrastructure
          base.Context();
          _firstLoadStarted = new ManualResetEventSlim();
          _releaseFirstLoad = new ManualResetEventSlim();
-         _blockedIndividual = new Individual { Id = "BLOCKED" };
-         _otherIndividual = new Individual { Id = "OTHER" };
+         _blockedIndividual = new Individual {Id = "BLOCKED"};
+         _otherIndividual = new Individual {Id = "OTHER"};
 
          A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _blockedIndividual)).Invokes(() =>
          {
             _firstLoadStarted.Set();
-            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5));
          });
       }
 
       protected override void Because()
       {
          var blockedLoad = Task.Run(() => sut.Load(_blockedIndividual));
-         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5));
 
          //the load of an unrelated object must not wait for the blocked one
-         _otherLoadCompleted = Task.Run(() => sut.Load(_otherIndividual)).Wait(TimeSpan.FromSeconds(5));
+         _otherLoadCompleted = Task.Run(() => sut.Load(_otherIndividual)).Wait(TimeSpan.FromSeconds(2));
 
          _releaseFirstLoad.Set();
-         blockedLoad.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+         blockedLoad.Wait(TimeSpan.FromSeconds(5));
+      }
+
+      public override void Cleanup()
+      {
+         _firstLoadStarted.Dispose();
+         _releaseFirstLoad.Dispose();
       }
 
       [Observation]
