@@ -18,6 +18,8 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationAnalysesLoader _simulationAnalysesLoader;
       private readonly IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
       private readonly ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
+      //lazy loading is gated per object rather than on the object itself, whose monitor any other code could take.
+      //The table is keyed by reference and holds its keys weakly, so a gate never outlives the object it guards.
       private static readonly ConditionalWeakTable<object, object> _loadGates = new ConditionalWeakTable<object, object>();
 
       public LazyLoadTask(
