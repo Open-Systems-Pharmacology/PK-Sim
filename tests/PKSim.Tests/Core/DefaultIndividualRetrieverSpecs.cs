@@ -59,7 +59,7 @@ namespace PKSim.Core
       protected override void Because()
       {
          var firstRetrieval = Task.Run(() => sut.DefaultIndividualFor(_speciesPopulation));
-         _creationStarted.Wait(TimeSpan.FromSeconds(5));
+         _creationStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
          var secondRetrieval = Task.Run(() =>
          {
@@ -67,18 +67,21 @@ namespace PKSim.Core
             return sut.DefaultIndividualFor(_speciesPopulation);
          });
 
-         //the second retrieval is running and has to wait for the creation already in progress
-         _secondRetrievalStarted.Wait(TimeSpan.FromSeconds(5));
+         //the second retrieval is running and has to wait for the creation already in progress. A retrieval
+         //that never reached the cache in time would also read as blocked here: the guard was verified by
+         //making the creation eager, which makes the observation fail
+         _secondRetrievalStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
          _secondRetrievalWasBlocked = !secondRetrieval.Wait(TimeSpan.FromMilliseconds(500));
 
          _releaseCreation.Set();
-         Task.WaitAll(new[] {firstRetrieval, secondRetrieval}, TimeSpan.FromSeconds(5));
+         Task.WaitAll(new[] {firstRetrieval, secondRetrieval}, TimeSpan.FromSeconds(5)).ShouldBeTrue();
          _firstResult = firstRetrieval.Result;
          _secondResult = secondRetrieval.Result;
       }
 
       public override void Cleanup()
       {
+         base.Cleanup();
          _creationStarted.Dispose();
          _releaseCreation.Dispose();
          _secondRetrievalStarted.Dispose();
@@ -132,17 +135,18 @@ namespace PKSim.Core
       protected override void Because()
       {
          var blockedRetrieval = Task.Run(() => sut.DefaultIndividualFor(_speciesPopulation));
-         _creationStarted.Wait(TimeSpan.FromSeconds(5));
+         _creationStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
          //a different population must not wait for the creation already in progress
          _otherRetrievalCompleted = Task.Run(() => sut.DefaultIndividualFor(_otherPopulation)).Wait(TimeSpan.FromSeconds(2));
 
          _releaseCreation.Set();
-         blockedRetrieval.Wait(TimeSpan.FromSeconds(5));
+         blockedRetrieval.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
       }
 
       public override void Cleanup()
       {
+         base.Cleanup();
          _creationStarted.Dispose();
          _releaseCreation.Dispose();
       }
@@ -170,7 +174,7 @@ namespace PKSim.Core
       public void should_not_cache_the_failure_and_create_the_individual_on_the_next_call()
       {
          The.Action(() => sut.DefaultIndividualFor(_speciesPopulation)).ShouldThrowAn<OSPSuiteException>();
-         sut.DefaultIndividualFor(_speciesPopulation).ShouldBeEqualTo(_individual);
+         ReferenceEquals(sut.DefaultIndividualFor(_speciesPopulation), _individual).ShouldBeTrue();
       }
    }
 }
