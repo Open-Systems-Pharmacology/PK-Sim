@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
@@ -17,6 +18,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationAnalysesLoader _simulationAnalysesLoader;
       private readonly IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
       private readonly ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
+      private static readonly ConditionalWeakTable<object, object> _loadGates = new ConditionalWeakTable<object, object>();
 
       public LazyLoadTask(
          IContentLoader contentLoader,
@@ -38,13 +40,13 @@ namespace PKSim.Infrastructure.Services
          _sensitivityAnalysisContentLoader = sensitivityAnalysisContentLoader;
       }
 
-      private static readonly object _loadLock = new object();
+      private static object gateFor(object objectToLoad) => _loadGates.GetValue(objectToLoad, x => new object());
 
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
       {
-         if (objectToLoad == null || objectToLoad.IsLoaded) return;
+         if (objectToLoad == null) return;
 
-         lock (_loadLock)
+         lock (gateFor(objectToLoad))
          {
             if (objectToLoad.IsLoaded) return;
 
@@ -74,10 +76,13 @@ namespace PKSim.Infrastructure.Services
 
          Load(simulation);
 
-         if (simulation.HasResults)
-            return;
+         lock (gateFor(simulation))
+         {
+            if (simulation.HasResults)
+               return;
 
-         _simulationResultsLoader.LoadResultsFor(simulation);
+            _simulationResultsLoader.LoadResultsFor(simulation);
+         }
       }
 
       public void LoadResults(IPopulationDataCollector populationDataCollector)
