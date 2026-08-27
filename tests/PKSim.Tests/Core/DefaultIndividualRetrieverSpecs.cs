@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -34,13 +35,19 @@ namespace PKSim.Core
    {
       private Individual _firstResult;
       private Individual _secondResult;
+      private ManualResetEventSlim _creationStarted;
+      private ManualResetEventSlim _releaseCreation;
 
       protected override void Context()
       {
          base.Context();
+         _creationStarted = new ManualResetEventSlim();
+         _releaseCreation = new ManualResetEventSlim();
+
          A.CallTo(() => _individualFactory.CreateStandardFor(A<OriginData>._)).ReturnsLazily(() =>
          {
-            Thread.Sleep(300);
+            _creationStarted.Set();
+            _releaseCreation.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
             return A.Fake<Individual>();
          });
       }
@@ -48,8 +55,13 @@ namespace PKSim.Core
       protected override void Because()
       {
          var firstRetrieval = Task.Run(() => sut.DefaultIndividualFor(_speciesPopulation));
+         //the second retrieval only starts once the first is creating, so it has to wait for that creation
+         _creationStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
          var secondRetrieval = Task.Run(() => sut.DefaultIndividualFor(_speciesPopulation));
-         Task.WaitAll(firstRetrieval, secondRetrieval);
+         _releaseCreation.Set();
+
+         Task.WaitAll(new[] { firstRetrieval, secondRetrieval }, TimeSpan.FromSeconds(5)).ShouldBeTrue();
          _firstResult = firstRetrieval.Result;
          _secondResult = secondRetrieval.Result;
       }
@@ -61,9 +73,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_the_same_cached_instance_to_all_callers()
+      public void should_serve_both_callers_from_the_same_cache_entry()
       {
-         _firstResult.ShouldBeEqualTo(_secondResult);
+         ReferenceEquals(_firstResult, _secondResult).ShouldBeTrue();
       }
    }
 }

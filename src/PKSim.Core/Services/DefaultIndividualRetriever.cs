@@ -1,6 +1,8 @@
-﻿using OSPSuite.Core.Snapshots;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
-using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
@@ -13,8 +15,7 @@ namespace PKSim.Core.Services
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IIndividualFactory _individualFactory;
       private readonly OriginDataMapper _originDataMapper;
-      private readonly ICache<SpeciesPopulation, Individual> _individualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
-      private readonly object _locker = new object();
+      private readonly ConcurrentDictionary<SpeciesPopulation, Lazy<Individual>> _individualCacheProSpecies = new ConcurrentDictionary<SpeciesPopulation, Lazy<Individual>>();
 
       public DefaultIndividualRetriever(
          ISpeciesRepository speciesRepository,
@@ -50,24 +51,22 @@ namespace PKSim.Core.Services
 
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
       {
-         lock (_locker)
+         return _individualCacheProSpecies.GetOrAdd(speciesPopulation,
+            population => new Lazy<Individual>(() => createDefaultIndividualFor(population), LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+      }
+
+      private Individual createDefaultIndividualFor(SpeciesPopulation speciesPopulation)
+      {
+         var originDataSnapshot = new OriginData
          {
-            if (!_individualCacheProSpecies.Contains(speciesPopulation))
-            {
-               var originDataSnapshot = new OriginData
-               {
-                  Species = speciesPopulation.Species,
-                  Population = speciesPopulation.Name,
-                  Gender = DefaultGenderFor(speciesPopulation).Name
-               };
+            Species = speciesPopulation.Species,
+            Population = speciesPopulation.Name,
+            Gender = DefaultGenderFor(speciesPopulation).Name
+         };
 
-               //We do not need to pass any valid snapshot context in this case.
-               var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
-               _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
-            }
-
-            return _individualCacheProSpecies[speciesPopulation];
-         }
+         //We do not need to pass any valid snapshot context in this case.
+         var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
+         return _individualFactory.CreateStandardFor(originData);
       }
    }
 }
