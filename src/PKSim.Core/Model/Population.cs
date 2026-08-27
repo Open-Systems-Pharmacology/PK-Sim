@@ -140,9 +140,11 @@ namespace PKSim.Core.Model
       {
          set
          {
-            base.IsLoaded = value;
+            //the individual is flagged first so that a load never publishes the population as loaded
+            //before its individual (the base setter is the volatile publication)
             if (FirstIndividual != null)
                FirstIndividual.IsLoaded = value;
+            base.IsLoaded = value;
          }
       }
 

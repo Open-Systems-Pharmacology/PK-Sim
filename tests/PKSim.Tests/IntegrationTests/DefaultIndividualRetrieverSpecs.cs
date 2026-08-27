@@ -32,4 +32,14 @@ namespace PKSim.IntegrationTests
          _individual.OriginData.Age.Value.ShouldBeEqualTo(30);
       }
    }
+
+   public class When_resolving_the_default_individual_retriever_more_than_once : concern_for_DefaultIndividualRetriever
+   {
+      //the cache lives on the instance, so two effective registrations would hand out two different default individuals
+      [Observation]
+      public void should_always_resolve_the_same_instance()
+      {
+         ReferenceEquals(sut, IoC.Resolve<IDefaultIndividualRetriever>()).ShouldBeTrue();
+      }
+   }
 }

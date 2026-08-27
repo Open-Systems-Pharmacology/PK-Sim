@@ -31,7 +31,15 @@ namespace PKSim.Core.Model
 
    public abstract class PKSimBuildingBlock : Entity, IPKSimBuildingBlock
    {
-      public virtual bool IsLoaded { get; set; }
+      //see ILazyLoadable: lazy loading reads this flag without holding the lock that guards the load, so it is
+      //published with a volatile field to make the writes that loaded the object visible with it
+      private volatile bool _isLoaded;
+
+      public virtual bool IsLoaded
+      {
+         get => _isLoaded;
+         set => _isLoaded = value;
+      }
       public virtual bool HasChanged { get; set; }
       public virtual string ExtendedDescription { get; set; }
       public virtual CreationMetaData Creation { get; set; }

@@ -15,7 +15,15 @@ namespace PKSim.Core.Model
    {
       private readonly ICache<string, PopulationSimulation> _allSimulations = new Cache<string, PopulationSimulation>(x => x.Id);
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
-      public bool IsLoaded { get; set; }
+      //see ILazyLoadable: lazy loading reads this flag without holding the lock that guards the load, so it is
+      //published with a volatile field to make the writes that loaded the object visible with it
+      private volatile bool _isLoaded;
+
+      public bool IsLoaded
+      {
+         get => _isLoaded;
+         set => _isLoaded = value;
+      }
       public virtual PopulationSimulation ReferenceSimulation { get; set; }
       public virtual GroupingItem ReferenceGroupingItem { get; set; }
       public virtual ParameterDistributionSettingsCache SelectedDistributions { get; }

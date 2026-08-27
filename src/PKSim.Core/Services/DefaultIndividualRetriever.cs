@@ -1,6 +1,9 @@
-﻿using OSPSuite.Core.Snapshots;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
-using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
@@ -13,7 +16,7 @@ namespace PKSim.Core.Services
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IIndividualFactory _individualFactory;
       private readonly OriginDataMapper _originDataMapper;
-      private readonly ICache<SpeciesPopulation, Individual> _individualCacheProSpecies = new Cache<SpeciesPopulation, Individual>();
+      private readonly ConcurrentDictionary<SpeciesPopulation, Lazy<Individual>> _individualCacheProSpecies = new ConcurrentDictionary<SpeciesPopulation, Lazy<Individual>>();
 
       public DefaultIndividualRetriever(
          ISpeciesRepository speciesRepository,
@@ -49,21 +52,33 @@ namespace PKSim.Core.Services
 
       public Individual DefaultIndividualFor(SpeciesPopulation speciesPopulation)
       {
-         if (!_individualCacheProSpecies.Contains(speciesPopulation))
+         var cachedIndividual = _individualCacheProSpecies.GetOrAdd(speciesPopulation,
+            population => new Lazy<Individual>(() => createDefaultIndividualFor(population), LazyThreadSafetyMode.ExecutionAndPublication));
+
+         try
          {
-            var originDataSnapshot = new OriginData
-            {
-               Species = speciesPopulation.Species,
-               Population = speciesPopulation.Name,
-               Gender = DefaultGenderFor(speciesPopulation).Name
-            };
-
-            //We do not need to pass any valid snapshot context in this case.
-            var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
-            _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
+            return cachedIndividual.Value;
          }
+         catch
+         {
+            //a lazy that faulted keeps throwing the same exception, so the entry is dropped to let the next call retry
+            _individualCacheProSpecies.TryRemove(new KeyValuePair<SpeciesPopulation, Lazy<Individual>>(speciesPopulation, cachedIndividual));
+            throw;
+         }
+      }
 
-         return _individualCacheProSpecies[speciesPopulation];
+      private Individual createDefaultIndividualFor(SpeciesPopulation speciesPopulation)
+      {
+         var originDataSnapshot = new OriginData
+         {
+            Species = speciesPopulation.Species,
+            Population = speciesPopulation.Name,
+            Gender = DefaultGenderFor(speciesPopulation).Name
+         };
+
+         //We do not need to pass any valid snapshot context in this case.
+         var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
+         return _individualFactory.CreateStandardFor(originData);
       }
    }
 }

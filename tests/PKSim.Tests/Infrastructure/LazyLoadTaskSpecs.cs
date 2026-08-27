@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -57,6 +60,135 @@ namespace PKSim.Infrastructure
       public void should_do_nothing()
       {
          A.CallTo(() => _contentLoader.LoadContentFor(_objectToLoad)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_loading_the_same_object_concurrently_from_multiple_threads : concern_for_LazyLoadTask
+   {
+      private Individual _individual;
+      private ManualResetEventSlim _firstLoadStarted;
+      private ManualResetEventSlim _releaseFirstLoad;
+      private ManualResetEventSlim _secondLoadStarted;
+      private bool _secondLoadWasBlocked;
+
+      protected override void Context()
+      {
+         base.Context();
+         _firstLoadStarted = new ManualResetEventSlim();
+         _releaseFirstLoad = new ManualResetEventSlim();
+         _secondLoadStarted = new ManualResetEventSlim();
+
+         //a real building block so that the spec exercises the actual IsLoaded field
+         _individual = new Individual {Id = "IND"};
+
+         //the task loads the object as IObjectBase: the stub must match that generic instantiation
+         A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _individual)).Invokes(() =>
+         {
+            _firstLoadStarted.Set();
+            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5));
+         });
+      }
+
+      protected override void Because()
+      {
+         var firstLoad = Task.Run(() => sut.Load(_individual));
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
+         var secondLoad = Task.Run(() =>
+         {
+            _secondLoadStarted.Set();
+            sut.Load(_individual);
+         });
+
+         //the second load is running and cannot get past the gate while the first one holds it. A load that
+         //never reached the gate in time would also read as blocked here: the guard was verified by removing
+         //the gate, which makes the observation fail
+         _secondLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+         _secondLoadWasBlocked = !secondLoad.Wait(TimeSpan.FromMilliseconds(500));
+
+         _releaseFirstLoad.Set();
+         Task.WaitAll(new[] {firstLoad, secondLoad}, TimeSpan.FromSeconds(5)).ShouldBeTrue();
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         _firstLoadStarted.Dispose();
+         _releaseFirstLoad.Dispose();
+         _secondLoadStarted.Dispose();
+      }
+
+      [Observation]
+      public void should_make_the_second_load_wait_for_the_first_one()
+      {
+         _secondLoadWasBlocked.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_load_the_content_only_once()
+      {
+         A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _individual)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_register_the_object_only_once()
+      {
+         A.CallTo(() => _registrationTask.Register(_individual)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_have_loaded_the_object()
+      {
+         _individual.IsLoaded.ShouldBeTrue();
+      }
+   }
+
+   public class When_loading_different_objects_concurrently_from_multiple_threads : concern_for_LazyLoadTask
+   {
+      private Individual _blockedIndividual;
+      private Individual _otherIndividual;
+      private ManualResetEventSlim _firstLoadStarted;
+      private ManualResetEventSlim _releaseFirstLoad;
+      private bool _otherLoadCompleted;
+
+      protected override void Context()
+      {
+         base.Context();
+         _firstLoadStarted = new ManualResetEventSlim();
+         _releaseFirstLoad = new ManualResetEventSlim();
+         _blockedIndividual = new Individual {Id = "BLOCKED"};
+         _otherIndividual = new Individual {Id = "OTHER"};
+
+         A.CallTo(() => _contentLoader.LoadContentFor((IObjectBase) _blockedIndividual)).Invokes(() =>
+         {
+            _firstLoadStarted.Set();
+            _releaseFirstLoad.Wait(TimeSpan.FromSeconds(5));
+         });
+      }
+
+      protected override void Because()
+      {
+         var blockedLoad = Task.Run(() => sut.Load(_blockedIndividual));
+         _firstLoadStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
+         //the load of an unrelated object must not wait for the blocked one
+         _otherLoadCompleted = Task.Run(() => sut.Load(_otherIndividual)).Wait(TimeSpan.FromSeconds(2));
+
+         _releaseFirstLoad.Set();
+         blockedLoad.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         _firstLoadStarted.Dispose();
+         _releaseFirstLoad.Dispose();
+      }
+
+      [Observation]
+      public void should_not_block_the_load_of_an_unrelated_object()
+      {
+         _otherLoadCompleted.ShouldBeTrue();
       }
    }
 
