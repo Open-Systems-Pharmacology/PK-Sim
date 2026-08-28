@@ -15,8 +15,9 @@ namespace PKSim.Core.Services
       void Begin(IReadOnlyList<IStartable> startables);
 
       /// <summary>
-      ///    Blocks until the warm-up started by <see cref="Begin" /> has completed, rethrowing any exception it raised.
-      ///    A no-op when no warm-up was started.
+      ///    Blocks until the warm-up has completed, rethrowing any exception it raised. When no warm-up was started
+      ///    with <see cref="Begin" /> (CLI, R and qualification hosts), the first call starts it by resolving every
+      ///    <see cref="IStartable" /> itself. A failed warm-up is retried on the next call.
       /// </summary>
       void AwaitCompletion();
    }

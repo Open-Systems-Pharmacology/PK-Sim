@@ -2614,7 +2614,8 @@ namespace PKSim.Assets
          public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} Simulation(s)...";
          public static string SimulationsLoadedMessage(string simulationName, int loadedCount, int simulationCount) => $"Simulation '{simulationName}' loaded ({loadedCount}/{simulationCount})";
          public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} Simulation(s) Loaded";
-         public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
+         public static string SimulationsConstructedMessage(int loadedCount, int simulationCount, string time) => $"{loadedCount}/{simulationCount} Simulation(s) Constructed in {time}";
+         public static string AllSimulationsFinishedMessage(string time) => $"All Simulations Finished Running in {time}.";
       }
 
       public static class Classifications

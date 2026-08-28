@@ -83,6 +83,28 @@ namespace PKSim.Core
       }
    }
 
+   public class When_cloning_several_objects : concern_for_Cloner
+   {
+      protected override void Context()
+      {
+         base.Context();
+         //each call must get its own clone manager: it carries per-operation state (FormulaCache)
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).ReturnsLazily(() => A.Fake<ICloneManagerForBuildingBlock>());
+      }
+
+      protected override void Because()
+      {
+         sut.Clone(A.Fake<Individual>());
+         sut.Clone(A.Fake<Individual>());
+      }
+
+      [Observation]
+      public void should_resolve_a_fresh_clone_manager_for_each_clone_operation()
+      {
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).MustHaveHappenedTwiceExactly();
+      }
+   }
+
    public class When_cloning_an_object_that_is_not_updtable : concern_for_Cloner
    {
       private IWithId _objectWithId;

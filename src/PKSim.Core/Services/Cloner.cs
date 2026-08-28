@@ -43,6 +43,8 @@ namespace PKSim.Core.Services
 
       public T Clone<T>(T objectToClone) where T : class, IUpdatable
       {
+         //resolved per call: the clone manager holds per-operation state (FormulaCache) and its transient
+         //lifestyle guarantees each call - including concurrent ones - gets its own instance
          var cloneManagerForBuildingBlock = _container.Resolve<ICloneManagerForBuildingBlock>();
          //formula cache are never used in pksim explicitly. And if need, we access CloneManagerForBuildingBlock
          cloneManagerForBuildingBlock.FormulaCache = new FormulaCache();

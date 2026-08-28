@@ -176,6 +176,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          var allSimCount = simulationsWithSnapshot.Count;
+         var stopwatch = Stopwatch.StartNew();
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
          var options = parallelOptions();
          _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
@@ -187,14 +188,14 @@ namespace PKSim.Core.Snapshots.Mappers
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
                _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, Interlocked.Decrement(ref allSimCount)));
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OutOfMemoryException)
             {
                //a failed run still counts as completed so later successes report the true remaining count
                Interlocked.Decrement(ref allSimCount);
                _logger.AddException(ex);
             }
          });
-         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage());
+         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage(stopwatch.Elapsed.ToDisplay()), snapshotContext.Project.Name);
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
@@ -334,6 +335,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
 
+         var stopwatch = Stopwatch.StartNew();
+
          //the startable repositories must finish initializing before models are constructed in parallel
          _startableWarmup.AwaitCompletion();
 
@@ -342,30 +345,33 @@ namespace PKSim.Core.Snapshots.Mappers
          var mappedSimulations = new ModelSimulation[snapshots.Length];
          var numberOfSimulationsLoaded = 0;
 
-         async Task mapSimulationAt(int index)
+         async Task<bool> mapSimulationAt(int index)
          {
             var snapshot = snapshots[index];
             try
             {
+               _logger.AddDebug($"Constructing simulation '{snapshot.Name}'...", snapshotContext.Project.Name);
                mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
                var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(PKSimConstants.UI.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), snapshotContext.Project.Name);
+               return mappedSimulations[index] != null;
             }
-            catch (Exception e)
+            catch (Exception e) when (e is not OutOfMemoryException)
             {
                _logger.AddException(e, snapshotContext.Project.Name);
                _logger.AddError(PKSimConstants.Error.CannotLoadSimulation(snapshot.Name), snapshotContext.Project.Name);
+               return false;
             }
          }
 
-         //simulations are mapped sequentially until one succeeds, so that lazily initialized services are
-         //warmed up before the remaining simulations are mapped in parallel
+         //the startable repositories are warmed deterministically above; simulations are additionally mapped
+         //sequentially until one succeeds, so remaining lazily initialized services are warm before the fan-out
          var warmupCount = 0;
          while (warmupCount < snapshots.Length)
          {
-            await mapSimulationAt(warmupCount);
+            var success = await mapSimulationAt(warmupCount);
             warmupCount++;
-            if (mappedSimulations[warmupCount - 1] != null)
+            if (success)
                break;
          }
 
@@ -384,6 +390,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (numberOfSimulationsLoaded < snapshots.Length)
             _logger.AddWarning(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), snapshotContext.Project.Name);
+
+         _logger.AddInfo(PKSimConstants.UI.SimulationsConstructedMessage(numberOfSimulationsLoaded, snapshots.Length, stopwatch.Elapsed.ToDisplay()), snapshotContext.Project.Name);
 
          return simulations;
       }

@@ -26,6 +26,12 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
+      //the configuration pipeline (validator, settings factory, SimulationConfigurationTask with its ORM queries
+      //and mappers) is not thread-safe and runs serialized; the post-creation update is serialized separately so
+      //one worker finalizing does not block another worker configuring
+      private static readonly object _configurationLock = new object();
+      private static readonly object _finalizationLock = new object();
+
       public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
          IModelConstructor modelConstructor,
          IParameterIdUpdater parameterIdUpdater,
@@ -46,8 +52,6 @@ namespace PKSim.Core.Services
          _containerTask = containerTask;
          _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
-
-      private static readonly object _configurationLock = new object();
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
       {
@@ -71,7 +75,7 @@ namespace PKSim.Core.Services
          simulation.Model = creationResult.Model;
          simulation.UpdateReactions(simulationConfiguration.All<ReactionBuildingBlock>());
 
-         lock (_configurationLock)
+         lock (_finalizationLock)
          {
             updateSimulationAfterModelCreation(simulation);
          }

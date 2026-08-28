@@ -483,6 +483,9 @@ namespace PKSim.Core
             Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2, _simulationSnapshot3}
          };
 
+         //the parallel path must actually run for the ordering to be at stake
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
          //the mappings complete out of order to verify that the simulations are nevertheless added in snapshot order
          A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).ReturnsLazily(async () =>
          {
@@ -631,6 +634,84 @@ namespace PKSim.Core
          //the corrupted simulation comes first: mapping keeps going sequentially until one simulation
          //succeeds, so the parallel phase never starts without warmed-up services
          _snapshot.Simulations = new[] {_snapshot.Simulations[1], _snapshot.Simulations[0]};
+      }
+   }
+
+   public class When_converting_a_project_snapshot_whose_leading_simulations_cannot_be_loaded : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _failingSnapshot1;
+      private Simulation _failingSnapshot2;
+      private Simulation _validSnapshot;
+      private ManualResetEventSlim _secondMappingStarted;
+      private ManualResetEventSlim _releaseSecondMapping;
+      private ManualResetEventSlim _thirdMappingStarted;
+      private bool _thirdStartedWhileSecondWasRunning;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _secondMappingStarted = new ManualResetEventSlim();
+         _releaseSecondMapping = new ManualResetEventSlim();
+         _thirdMappingStarted = new ManualResetEventSlim();
+
+         _failingSnapshot1 = new Simulation {Name = "S1"};
+         _failingSnapshot2 = new Simulation {Name = "S2"};
+         _validSnapshot = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_failingSnapshot1, _failingSnapshot2, _validSnapshot}
+         };
+
+         //cores are available: a fan-out that started before the first success would map S3 while S2 is still running
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_failingSnapshot1, A<SimulationContext>._)).Throws<Exception>();
+         Model.Simulation failWhenReleased()
+         {
+            _secondMappingStarted.Set();
+            _releaseSecondMapping.Wait(TimeSpan.FromSeconds(5));
+            throw new Exception();
+         }
+
+         A.CallTo(() => _simulationMapper.MapToModel(_failingSnapshot2, A<SimulationContext>._)).ReturnsLazily(() => Task.Run(failWhenReleased));
+         A.CallTo(() => _simulationMapper.MapToModel(_validSnapshot, A<SimulationContext>._)).ReturnsLazily(() =>
+         {
+            _thirdMappingStarted.Set();
+            return Task.FromResult((Model.Simulation) new IndividualSimulation().WithName("S3"));
+         });
+      }
+
+      protected override async Task Because()
+      {
+         var mapping = sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+         _secondMappingStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
+         //no other mapping may begin while the second one - not yet successful - is still running
+         _thirdStartedWhileSecondWasRunning = _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
+
+         _releaseSecondMapping.Set();
+         _newProject = await mapping;
+      }
+
+      public override async Task Cleanup()
+      {
+         await base.Cleanup();
+         _secondMappingStarted.Dispose();
+         _releaseSecondMapping.Dispose();
+         _thirdMappingStarted.Dispose();
+      }
+
+      [Observation]
+      public void should_map_sequentially_until_a_simulation_succeeds()
+      {
+         _thirdStartedWhileSecondWasRunning.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_add_the_simulation_that_could_be_loaded()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S3");
       }
    }
 
