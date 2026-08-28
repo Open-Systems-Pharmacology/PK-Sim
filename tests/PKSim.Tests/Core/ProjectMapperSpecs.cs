@@ -12,6 +12,7 @@ using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -107,6 +108,7 @@ namespace PKSim.Core
          _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _startableWarmup = A.Fake<IStartableWarmup>();
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(true);
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -764,10 +766,74 @@ namespace PKSim.Core
       }
    }
 
+   public class When_converting_a_project_snapshot_with_a_single_simulation : concern_for_ProjectMapper
+   {
+      private Simulation _simulationSnapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot = new Simulation {Name = "S1"};
+         _snapshot = new Project {Simulations = new[] {_simulationSnapshot}};
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      //a sequential load initializes lazily exactly what it touches instead of paying the full warm-up
+      [Observation]
+      public void should_not_await_the_startable_warmup()
+      {
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_when_the_warmup_could_not_start_every_repository : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _snapshot = new Project {Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2}};
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(false);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S2"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      //a cold repository is not safe to initialize from parallel workers: the load degrades to sequential instead of failing
+      [Observation]
+      public void should_still_load_every_simulation()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S2");
+      }
+
+      [Observation]
+      public void should_construct_the_simulations_on_a_single_core()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.ConstructingSimulationsWithCoresMessage(1), LogLevel.Debug, A<string>._)).MustHaveHappened();
+      }
+   }
+
    public class When_converting_a_project_snapshot_where_a_simulation_runs_out_of_memory : concern_for_ProjectMapper
    {
       private Simulation _simulationSnapshot1;
       private Simulation _simulationSnapshot2;
+      private Exception _failure;
 
       protected override async Task Context()
       {
@@ -787,11 +853,30 @@ namespace PKSim.Core
             .ReturnsLazily(() => Task.FromException<Model.Simulation>(new AggregateException(new OutOfMemoryException())));
       }
 
-      [Observation]
-      public void should_fail_the_load()
+      protected override async Task Because()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).GetAwaiter().GetResult())
-            .ShouldThrowAn<AggregateException>();
+         try
+         {
+            await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+         }
+         catch (Exception e)
+         {
+            _failure = e;
+         }
+      }
+
+      [Observation]
+      public void should_fail_the_load_with_the_out_of_memory_in_the_exception_chain()
+      {
+         _failure.ShouldBeAnInstanceOf<AggregateException>();
+         _failure.IsOutOfMemory().ShouldBeTrue();
+      }
+
+      //no silent degradation: an out-of-memory failure must not be reported as a per-simulation load error
+      [Observation]
+      public void should_not_log_the_out_of_memory_as_a_simulation_load_error()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CannotLoadSimulation("S2"), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
       }
    }
 

@@ -921,6 +921,7 @@ namespace PKSim.Assets
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
          public static readonly string SimulationRunsAbortedAfterOutOfMemory = "The simulation runs were aborted after running out of memory. The loaded project is unaffected.";
+         public static string StartableFailedToStart(string startableName) => $"'{startableName}' failed to start and will be retried on its next use";
 
          public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
@@ -2619,6 +2620,8 @@ namespace PKSim.Assets
          public static string RunningSimulationsWithCoresMessage(int numberOfCores) => $"Running simulations with up to {numberOfCores} core(s)";
          public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} Simulation(s) Loaded";
          public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
+         public static string SimulationRunCancelledMessage(string simulationName) => $"Run of simulation '{simulationName}' was cancelled";
+         public static string RemoteTemplateSummaryNotFoundMessage(string summaryPath) => $"No remote template summary found at '{summaryPath}'. Remote templates are not available";
       }
 
       public static class Classifications

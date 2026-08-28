@@ -4,10 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
+using PKSim.Assets;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -15,12 +15,16 @@ namespace PKSim.Infrastructure.Services
    public class StartableWarmup : IStartableWarmup
    {
       private readonly IContainer _container;
+      private readonly IOSPSuiteLogger _logger;
       private readonly object _lock = new object();
-      private Task _warmupTask;
 
-      public StartableWarmup(IContainer container)
+      //completes with the startables that failed to start (empty when the warm-up fully succeeded)
+      private Task<IReadOnlyList<IStartable>> _warmupTask;
+
+      public StartableWarmup(IContainer container, IOSPSuiteLogger logger)
       {
          _container = container;
+         _logger = logger;
       }
 
       public void Begin(IReadOnlyList<IStartable> startables)
@@ -34,45 +38,57 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void AwaitCompletion()
+      public bool AwaitCompletion()
       {
-         Task task;
+         Task<IReadOnlyList<IStartable>> task;
          lock (_lock)
          {
-            //hosts that never called Begin (CLI, R, qualification) warm up on first use
-            _warmupTask ??= warmupTaskFor(_container.ResolveAll<IStartable>().ToList());
+            if (_warmupTask == null)
+            {
+               //hosts that never called Begin (CLI, R, qualification) warm up on first use
+               _warmupTask = warmupTaskFor(_container.ResolveAll<IStartable>().ToList());
+            }
+            else if (_warmupTask.IsCompleted && _warmupTask.Result.Any())
+            {
+               //a warm-up that ended with failures retries the failed startables only, so a transient
+               //failure (e.g. a briefly locked file) never permanently disables the warm-up
+               _warmupTask = warmupTaskFor(_warmupTask.Result);
+            }
+
             task = _warmupTask;
          }
 
-         //a failed warm-up stays failed: every call rethrows the same exception, keeping the broken
-         //installation loud without running Start again on a repository that already mutated its state
-         task.GetAwaiter().GetResult();
+         return !task.GetAwaiter().GetResult().Any();
       }
 
-      private static Task warmupTaskFor(IReadOnlyList<IStartable> startables)
+      private Task<IReadOnlyList<IStartable>> warmupTaskFor(IReadOnlyList<IStartable> startables)
       {
-         return Task.Factory.StartNew(
+         return Task.Factory.StartNew<IReadOnlyList<IStartable>>(
             () =>
             {
                //DB values are mapped using the current culture; match the culture InfrastructureRegister sets for the UI thread.
                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-               startables.Each(start);
+               //one broken startable must not leave the remaining ones cold
+               return startables.Where(startable => !start(startable)).ToList();
             },
             CancellationToken.None,
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
       }
 
-      private static void start(IStartable startable)
+      private bool start(IStartable startable)
       {
          try
          {
             startable.Start();
+            return true;
          }
          catch (Exception e)
          {
-            throw new PKSimException($"'{startable.GetType().Name}' failed to start", e);
+            _logger.AddException(e);
+            _logger.AddError(PKSimConstants.Error.StartableFailedToStart(startable.GetType().Name));
+            return false;
          }
       }
    }

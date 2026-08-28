@@ -16,10 +16,11 @@ namespace PKSim.Core.Services
       void Begin(IReadOnlyList<IStartable> startables);
 
       /// <summary>
-      ///    Blocks until the warm-up has completed, rethrowing any exception it raised. When no warm-up was started
-      ///    with <see cref="Begin" /> (CLI, R and qualification hosts), the first call starts it by resolving every
-      ///    <see cref="IStartable" /> itself. A failed warm-up stays failed: every call rethrows the same exception.
+      ///    Blocks until the warm-up has completed and returns <c>true</c> when every startable started. When no warm-up
+      ///    was started with <see cref="Begin" /> (CLI, R and qualification hosts), the first call starts it by resolving
+      ///    every <see cref="IStartable" /> itself. A startable that fails to start is logged by name and retried on the
+      ///    next call (e.g. after a transient file lock cleared); the ones that already started are not started again.
       /// </summary>
-      void AwaitCompletion();
+      bool AwaitCompletion();
    }
 }

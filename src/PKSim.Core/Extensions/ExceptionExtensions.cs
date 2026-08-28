@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+
+namespace PKSim.Core.Extensions
+{
+   public static class ExceptionExtensions
+   {
+      private const int MAXIMUM_NUMBER_OF_EXCEPTIONS_TO_INSPECT = 20;
+
+      /// <summary>
+      ///    Returns <c>true</c> when <paramref name="exception" /> is or wraps an <see cref="OutOfMemoryException" />, e.g.
+      ///    inside an <see cref="AggregateException" /> from a blocking wait or an inner exception from a reflection
+      ///    invocation. An out-of-memory failure must fail the operation rather than degrade it silently.
+      /// </summary>
+      public static bool IsOutOfMemory(this Exception exception)
+      {
+         //iterative with a cap instead of recursive: exception chains from interop or serialization can be
+         //self-referencing, and this is called from exception filters where a stack overflow is unrecoverable
+         var pending = new Stack<Exception>();
+         pending.Push(exception);
+         var inspected = 0;
+
+         while (pending.Count > 0 && inspected < MAXIMUM_NUMBER_OF_EXCEPTIONS_TO_INSPECT)
+         {
+            var current = pending.Pop();
+            if (current == null)
+               continue;
+
+            inspected++;
+            switch (current)
+            {
+               case OutOfMemoryException:
+                  return true;
+               case AggregateException aggregateException:
+                  foreach (var innerException in aggregateException.InnerExceptions)
+                  {
+                     pending.Push(innerException);
+                  }
+
+                  break;
+               default:
+                  pending.Push(current.InnerException);
+                  break;
+            }
+         }
+
+         return false;
+      }
+   }
+}

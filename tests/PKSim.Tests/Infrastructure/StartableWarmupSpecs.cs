@@ -2,10 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
-using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -15,22 +16,26 @@ namespace PKSim.Infrastructure
    public abstract class concern_for_StartableWarmup : ContextSpecification<IStartableWarmup>
    {
       protected IContainer _container;
+      protected IOSPSuiteLogger _logger;
       protected IStartable _startable;
 
       protected override void Context()
       {
          _container = A.Fake<IContainer>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _startable = A.Fake<IStartable>();
          A.CallTo(() => _container.ResolveAll<IStartable>()).Returns(new[] {_startable});
-         sut = new StartableWarmup(_container);
+         sut = new StartableWarmup(_container, _logger);
       }
    }
 
    public class When_awaiting_completion_without_a_started_warmup : concern_for_StartableWarmup
    {
+      private bool _result;
+
       protected override void Because()
       {
-         sut.AwaitCompletion();
+         _result = sut.AwaitCompletion();
          sut.AwaitCompletion();
       }
 
@@ -39,6 +44,12 @@ namespace PKSim.Infrastructure
       public void should_start_every_startable_exactly_once()
       {
          A.CallTo(() => _startable.Start()).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_report_the_warmup_as_complete()
+      {
+         _result.ShouldBeTrue();
       }
    }
 
@@ -99,7 +110,7 @@ namespace PKSim.Infrastructure
          var secondCaller = Task.Run(() => sut.AwaitCompletion());
 
          _releaseStart.Set();
-         _bothCallersCompleted = Task.WaitAll(new[] {firstCaller, secondCaller}, TimeSpan.FromSeconds(5));
+         _bothCallersCompleted = Task.WaitAll(new Task[] {firstCaller, secondCaller}, TimeSpan.FromSeconds(5));
       }
 
       public override void Cleanup()
@@ -122,49 +133,46 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_the_warmup_fails : concern_for_StartableWarmup
+   public class When_a_startable_fails_to_start : concern_for_StartableWarmup
    {
-      private Exception _firstFailure;
-      private Exception _secondFailure;
+      private IStartable _failing;
+      private bool _firstResult;
+      private bool _secondResult;
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _startable.Start()).Throws<InvalidOperationException>();
+         _failing = A.Fake<IStartable>();
+         //fails once (e.g. a transiently locked file) and succeeds on the retry
+         A.CallTo(() => _failing.Start()).Throws<InvalidOperationException>().Once();
+         A.CallTo(() => _container.ResolveAll<IStartable>()).Returns(new[] {_failing, _startable});
       }
 
       protected override void Because()
       {
-         _firstFailure = failureOf(() => sut.AwaitCompletion());
-         _secondFailure = failureOf(() => sut.AwaitCompletion());
+         _firstResult = sut.AwaitCompletion();
+         _secondResult = sut.AwaitCompletion();
       }
 
-      private static Exception failureOf(Action action)
+      //one broken startable must not leave the remaining ones cold
+      [Observation]
+      public void should_report_the_incomplete_warmup_and_still_start_the_remaining_startables()
       {
-         try
-         {
-            action();
-            return null;
-         }
-         catch (Exception e)
-         {
-            return e;
-         }
+         _firstResult.ShouldBeFalse();
+         A.CallTo(() => _startable.Start()).MustHaveHappened();
       }
 
       [Observation]
-      public void should_fail_naming_the_startable_that_could_not_start()
+      public void should_log_the_failure_naming_the_startable()
       {
-         _firstFailure.ShouldBeAnInstanceOf<PKSimException>();
-         _firstFailure.Message.Contains("failed to start").ShouldBeTrue();
+         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("failed to start"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
 
-      //a failed warm-up stays failed: the same exception is rethrown without running Start again on a
-      //repository that already mutated part of its state
       [Observation]
-      public void should_rethrow_the_same_failure_without_starting_again()
+      public void should_retry_only_the_failed_startable_on_the_next_call()
       {
-         ReferenceEquals(_firstFailure, _secondFailure).ShouldBeTrue();
+         _secondResult.ShouldBeTrue();
+         A.CallTo(() => _failing.Start()).MustHaveHappenedTwiceExactly();
          A.CallTo(() => _startable.Start()).MustHaveHappenedOnceExactly();
       }
    }
