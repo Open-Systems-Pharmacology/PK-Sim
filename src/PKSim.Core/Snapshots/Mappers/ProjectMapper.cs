@@ -176,7 +176,6 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          var allSimCount = simulationsWithSnapshot.Count;
-         var stopwatch = Stopwatch.StartNew();
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
          var options = parallelOptions();
          _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
@@ -195,7 +194,7 @@ namespace PKSim.Core.Snapshots.Mappers
                _logger.AddException(ex);
             }
          });
-         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage(stopwatch.Elapsed.ToDisplay()), snapshotContext.Project.Name);
+         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage());
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
@@ -335,8 +334,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
 
-         var stopwatch = Stopwatch.StartNew();
-
          //the startable repositories must finish initializing before models are constructed in parallel
          _startableWarmup.AwaitCompletion();
 
@@ -390,8 +387,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (numberOfSimulationsLoaded < snapshots.Length)
             _logger.AddWarning(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), snapshotContext.Project.Name);
-
-         _logger.AddInfo(PKSimConstants.UI.SimulationsConstructedMessage(numberOfSimulationsLoaded, snapshots.Length, stopwatch.Elapsed.ToDisplay()), snapshotContext.Project.Name);
 
          return simulations;
       }
