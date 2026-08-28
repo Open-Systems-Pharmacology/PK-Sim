@@ -186,8 +186,8 @@ namespace PKSim.UI.BootStrapping
 
       private void startStartableObject(IContainer container)
       {
-         //Resolve all startables on the UI thread (Castle Windsor resolution stays single-threaded), then warm the
-         //DB-backed repositories on a background thread so their loading overlaps the main window construction.
+         //Resolve all startables up front so the warm-up thread only runs Start(), then warm the DB-backed
+         //repositories on a background thread so their loading overlaps the main window construction.
          var startables = container.ResolveAll<IStartable>().ToList();
 
          //Settings are read while the main window is built (e.g. layout restore, comparison settings), so they must

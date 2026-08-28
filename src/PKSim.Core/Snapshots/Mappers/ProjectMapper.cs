@@ -142,7 +142,16 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (projectContext.RunSimulations)
          {
-            await runParallelSimulations(allSimulationsWithSnapshots, snapshotContext);
+            try
+            {
+               await runParallelSimulations(allSimulationsWithSnapshots, snapshotContext);
+            }
+            catch (Exception e) when (isOutOfMemory(e))
+            {
+               //running the simulations is optional, reloading the project is not: keep the loaded project
+               _logger.AddException(e, snapshotContext.Project.Name);
+               _logger.AddError(PKSimConstants.Error.SimulationRunsAbortedAfterOutOfMemory, snapshotContext.Project.Name);
+            }
          }
 
          await addAnalysesToSimulations(snapshotContext, allSimulationsWithSnapshots, projectContext.RunSimulations);
@@ -165,6 +174,23 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
+      //an out-of-memory failure must fail the load rather than degrade it silently, also when an
+      //intermediate layer wrapped it (AggregateException from a blocking wait, reflection invocation, ...)
+      private static bool isOutOfMemory(Exception e)
+      {
+         switch (e)
+         {
+            case null:
+               return false;
+            case OutOfMemoryException:
+               return true;
+            case AggregateException aggregateException:
+               return aggregateException.InnerExceptions.Any(isOutOfMemory);
+            default:
+               return isOutOfMemory(e.InnerException);
+         }
+      }
+
       private ParallelOptions parallelOptions() => new ParallelOptions
       {
          MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
@@ -178,7 +204,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var allSimCount = simulationsWithSnapshot.Count;
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
          var options = parallelOptions();
-         _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
+         _logger.AddDebug(PKSimConstants.UI.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), snapshotContext.Project.Name);
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
             var (simulation, _) = simulationWithSnapshot;
@@ -187,7 +213,12 @@ namespace PKSim.Core.Snapshots.Mappers
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
                _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, Interlocked.Decrement(ref allSimCount)));
             }
-            catch (Exception ex) when (ex is not OutOfMemoryException)
+            catch (OperationCanceledException)
+            {
+               //cancelled because another run failed hard; not a failure of this simulation
+               Interlocked.Decrement(ref allSimCount);
+            }
+            catch (Exception ex) when (!isOutOfMemory(ex))
             {
                //a failed run still counts as completed so later successes report the true remaining count
                Interlocked.Decrement(ref allSimCount);
@@ -347,13 +378,19 @@ namespace PKSim.Core.Snapshots.Mappers
             var snapshot = snapshots[index];
             try
             {
-               _logger.AddDebug($"Constructing simulation '{snapshot.Name}'...", snapshotContext.Project.Name);
-               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               _logger.AddDebug(PKSimConstants.UI.ConstructingSimulationMessage(snapshot.Name), snapshotContext.Project.Name);
+               var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               mappedSimulations[index] = simulation;
+
+               //a null mapping is skipped when the project is filled and must not count as loaded
+               if (simulation == null)
+                  return false;
+
                var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(PKSimConstants.UI.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), snapshotContext.Project.Name);
-               return mappedSimulations[index] != null;
+               return true;
             }
-            catch (Exception e) when (e is not OutOfMemoryException)
+            catch (Exception e) when (!isOutOfMemory(e))
             {
                _logger.AddException(e, snapshotContext.Project.Name);
                _logger.AddError(PKSimConstants.Error.CannotLoadSimulation(snapshot.Name), snapshotContext.Project.Name);
@@ -375,7 +412,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshots.Length > warmupCount)
          {
             var options = parallelOptions();
-            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
+            _logger.AddDebug(PKSimConstants.UI.ConstructingSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), snapshotContext.Project.Name);
             await Parallel.ForEachAsync(Enumerable.Range(warmupCount, snapshots.Length - warmupCount), options, (index, _) => new ValueTask(mapSimulationAt(index)));
          }
 

@@ -920,6 +920,7 @@ namespace PKSim.Assets
          public static string CompoundAlternativeNotFoundFor(string alternativeName, string defaultAlternativeName, string compoundGroup, string compoundName) => $"Cannot find alternative '{alternativeName}' in compound group '{compoundGroup}' for compound '{compoundName}'. Default alternative '{defaultAlternativeName}' will be used instead";
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
+         public static readonly string SimulationRunsAbortedAfterOutOfMemory = "The simulation runs were aborted after running out of memory. The loaded project is unaffected.";
 
          public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
@@ -2613,6 +2614,9 @@ namespace PKSim.Assets
          public static string SimulationFinishedMessage(string simulationName, int allSimCount)=> $"{simulationName} Finished, {allSimCount} Simulation(s) Remaining...";
          public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} Simulation(s)...";
          public static string SimulationsLoadedMessage(string simulationName, int loadedCount, int simulationCount) => $"Simulation '{simulationName}' loaded ({loadedCount}/{simulationCount})";
+         public static string ConstructingSimulationMessage(string simulationName) => $"Constructing simulation '{simulationName}'...";
+         public static string ConstructingSimulationsWithCoresMessage(int numberOfCores) => $"Constructing simulations with up to {numberOfCores} core(s)";
+         public static string RunningSimulationsWithCoresMessage(int numberOfCores) => $"Running simulations with up to {numberOfCores} core(s)";
          public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} Simulation(s) Loaded";
          public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
       }

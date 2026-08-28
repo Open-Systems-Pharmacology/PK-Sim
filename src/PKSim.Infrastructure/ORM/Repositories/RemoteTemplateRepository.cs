@@ -115,6 +115,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
+         //the summary file is provisioned best-effort (the copy from the all-users folder swallows IOException),
+         //so a missing file means no remote templates are available, not a broken installation
+         if (!FileHelper.FileExists(_configuration.RemoteTemplateSummaryPath))
+            return;
+
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
 
          snapshots.Templates.Each(x =>

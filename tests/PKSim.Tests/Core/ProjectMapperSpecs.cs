@@ -646,7 +646,8 @@ namespace PKSim.Core
       private ManualResetEventSlim _secondMappingStarted;
       private ManualResetEventSlim _releaseSecondMapping;
       private ManualResetEventSlim _thirdMappingStarted;
-      private bool _thirdStartedWhileSecondWasRunning;
+      private volatile bool _secondMappingCompleted;
+      private bool _thirdStartedBeforeSecondCompleted;
 
       protected override async Task Context()
       {
@@ -671,12 +672,15 @@ namespace PKSim.Core
          {
             _secondMappingStarted.Set();
             _releaseSecondMapping.Wait(TimeSpan.FromSeconds(5));
+            _secondMappingCompleted = true;
             throw new Exception();
          }
 
          A.CallTo(() => _simulationMapper.MapToModel(_failingSnapshot2, A<SimulationContext>._)).ReturnsLazily(() => Task.Run(failWhenReleased));
          A.CallTo(() => _simulationMapper.MapToModel(_validSnapshot, A<SimulationContext>._)).ReturnsLazily(() =>
          {
+            //under an early fan-out the third mapping starts while the second still blocks, so the flag reads false
+            _thirdStartedBeforeSecondCompleted = !_secondMappingCompleted;
             _thirdMappingStarted.Set();
             return Task.FromResult((Model.Simulation) new IndividualSimulation().WithName("S3"));
          });
@@ -687,8 +691,9 @@ namespace PKSim.Core
          var mapping = sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
          _secondMappingStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
-         //no other mapping may begin while the second one - not yet successful - is still running
-         _thirdStartedWhileSecondWasRunning = _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
+         //an early fan-out would start the third mapping within this window (it returns immediately in that
+         //case); the guard was verified by mutation - an immediate fan-out fails the observation below
+         _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
 
          _releaseSecondMapping.Set();
          _newProject = await mapping;
@@ -702,16 +707,91 @@ namespace PKSim.Core
          _thirdMappingStarted.Dispose();
       }
 
+      //no other mapping may begin while the second one - not yet successful - is still running
       [Observation]
       public void should_map_sequentially_until_a_simulation_succeeds()
       {
-         _thirdStartedWhileSecondWasRunning.ShouldBeFalse();
+         _thirdStartedBeforeSecondCompleted.ShouldBeFalse();
       }
 
       [Observation]
       public void should_add_the_simulation_that_could_be_loaded()
       {
          _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S3");
+      }
+   }
+
+   public class When_converting_a_project_snapshot_where_a_simulation_maps_to_nothing : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+      private Simulation _simulationSnapshot3;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _simulationSnapshot3 = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2, _simulationSnapshot3}
+         };
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).Returns((Model.Simulation) null);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot3, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S3"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_add_only_the_simulations_that_were_mapped()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S3");
+      }
+
+      //a null mapping is skipped when the project is filled and must not count as loaded
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(2, 3), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_where_a_simulation_runs_out_of_memory : concern_for_ProjectMapper
+   {
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2}
+         };
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(2);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+
+         //wrapped the way a blocking wait would deliver it: the load must still fail rather than degrade silently
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._))
+            .ReturnsLazily(() => Task.FromException<Model.Simulation>(new AggregateException(new OutOfMemoryException())));
+      }
+
+      [Observation]
+      public void should_fail_the_load()
+      {
+         The.Action(() => sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).GetAwaiter().GetResult())
+            .ShouldThrowAn<AggregateException>();
       }
    }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -42,22 +44,9 @@ namespace PKSim.Infrastructure.Services
             task = _warmupTask;
          }
 
-         try
-         {
-            //GetResult rethrows the original warm-up exception (unwrapped) on the calling thread
-            task.GetAwaiter().GetResult();
-         }
-         catch
-         {
-            //a failed warm-up is dropped so that the next call retries instead of rethrowing a stale exception
-            lock (_lock)
-            {
-               if (_warmupTask == task)
-                  _warmupTask = null;
-            }
-
-            throw;
-         }
+         //a failed warm-up stays failed: every call rethrows the same exception, keeping the broken
+         //installation loud without running Start again on a repository that already mutated its state
+         task.GetAwaiter().GetResult();
       }
 
       private static Task warmupTaskFor(IReadOnlyList<IStartable> startables)
@@ -68,11 +57,23 @@ namespace PKSim.Infrastructure.Services
                //DB values are mapped using the current culture; match the culture InfrastructureRegister sets for the UI thread.
                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-               startables.Each(x => x.Start());
+               startables.Each(start);
             },
             CancellationToken.None,
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
+      }
+
+      private static void start(IStartable startable)
+      {
+         try
+         {
+            startable.Start();
+         }
+         catch (Exception e)
+         {
+            throw new PKSimException($"'{startable.GetType().Name}' failed to start", e);
+         }
       }
    }
 }

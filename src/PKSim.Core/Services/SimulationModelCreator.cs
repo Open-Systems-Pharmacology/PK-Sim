@@ -26,11 +26,11 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
-      //the configuration pipeline (validator, settings factory, SimulationConfigurationTask with its ORM queries
-      //and mappers) is not thread-safe and runs serialized; the post-creation update is serialized separately so
-      //one worker finalizing does not block another worker configuring
+      //the configuration pipeline (validator, settings factory, SimulationConfigurationTask) and the
+      //post-creation update sit on the same ORM/mapper/path-resolution layer whose thread-safety is not
+      //verified: both run under one lock, the configuration the parallel load was benchmarked with.
+      //Only the thread-safe IModelConstructor.CreateModelFrom runs unserialized on parallel workers.
       private static readonly object _configurationLock = new object();
-      private static readonly object _finalizationLock = new object();
 
       public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
          IModelConstructor modelConstructor,
@@ -75,7 +75,7 @@ namespace PKSim.Core.Services
          simulation.Model = creationResult.Model;
          simulation.UpdateReactions(simulationConfiguration.All<ReactionBuildingBlock>());
 
-         lock (_finalizationLock)
+         lock (_configurationLock)
          {
             updateSimulationAfterModelCreation(simulation);
          }
