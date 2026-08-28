@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
