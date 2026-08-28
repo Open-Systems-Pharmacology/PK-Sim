@@ -627,6 +627,77 @@ namespace PKSim.Core
       }
    }
 
+   public class When_running_parallel_simulations_and_a_run_is_cancelled : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(1);
+         //matched by name: simulations without an id would otherwise all compare equal
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>.That.Matches(x => x.Name == "Sim1"), null, A<CancellationToken>._)).Throws<OperationCanceledException>();
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      [Observation]
+      public void should_log_the_cancelled_run()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SimulationRunCancelledMessage("Sim1"), LogLevel.Information, A<string>._)).MustHaveHappened();
+      }
+
+      //"All Simulations Finished Running." would be misleading after a cancellation
+      [Observation]
+      public void should_not_report_that_all_simulations_finished()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.AllSimulationsFinishedMessage(), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_running_parallel_simulations_when_the_warmup_could_not_start_every_repository : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(false);
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      //runs touch lazily initialized services too: a cold repository degrades the run phase to sequential as well
+      [Observation]
+      public void should_run_the_simulations_on_a_single_core()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.RunningSimulationsWithCoresMessage(1), LogLevel.Debug, A<string>._)).MustHaveHappened();
+      }
+   }
+
 
    public class When_converting_a_project_snapshot_whose_first_simulation_cannot_be_loaded : When_converting_a_project_snapshot_to_project
    {
@@ -826,6 +897,13 @@ namespace PKSim.Core
       public void should_construct_the_simulations_on_a_single_core()
       {
          A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.ConstructingSimulationsWithCoresMessage(1), LogLevel.Debug, A<string>._)).MustHaveHappened();
+      }
+
+      //the fallback must be diagnosable above debug level, pointing at the error naming the failed repository
+      [Observation]
+      public void should_warn_that_the_load_falls_back_to_sequential_processing()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SequentialProcessingAfterFailedWarmupMessage, LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 

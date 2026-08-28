@@ -18,8 +18,9 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Blocks until the warm-up has completed and returns <c>true</c> when every startable started. When no warm-up
       ///    was started with <see cref="Begin" /> (CLI, R and qualification hosts), the first call starts it by resolving
-      ///    every <see cref="IStartable" /> itself. A startable that fails to start is logged by name and retried on the
-      ///    next call (e.g. after a transient file lock cleared); the ones that already started are not started again.
+      ///    every <see cref="IStartable" /> itself. A startable that fails to start is logged by name and left cold: its
+      ///    only retry is the lazy initialization on its first use, and every call keeps returning <c>false</c>. An
+      ///    out-of-memory failure faults the warm-up instead and is rethrown on every call.
       /// </summary>
       bool AwaitCompletion();
    }

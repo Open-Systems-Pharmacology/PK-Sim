@@ -118,6 +118,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
+         //a failed previous start may have partially filled the repository (lazy Start retries); begin clean
+         _allTemplates.Clear();
+         Version = null;
+
          //the summary file is provisioned best-effort (the copy from the all-users folder swallows IOException),
          //so a missing file means no remote templates are available, not a broken installation
          if (!FileHelper.FileExists(_configuration.RemoteTemplateSummaryPath))

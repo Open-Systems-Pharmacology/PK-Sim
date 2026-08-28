@@ -8,6 +8,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
+using PKSim.Core.Extensions;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -43,21 +44,13 @@ namespace PKSim.Infrastructure.Services
          Task<IReadOnlyList<IStartable>> task;
          lock (_lock)
          {
-            if (_warmupTask == null)
-            {
-               //hosts that never called Begin (CLI, R, qualification) warm up on first use
-               _warmupTask = warmupTaskFor(_container.ResolveAll<IStartable>().ToList());
-            }
-            else if (_warmupTask.IsCompleted && _warmupTask.Result.Any())
-            {
-               //a warm-up that ended with failures retries the failed startables only, so a transient
-               //failure (e.g. a briefly locked file) never permanently disables the warm-up
-               _warmupTask = warmupTaskFor(_warmupTask.Result);
-            }
-
+            //hosts that never called Begin (CLI, R, qualification) warm up on first use
+            _warmupTask ??= warmupTaskFor(_container.ResolveAll<IStartable>().ToList());
             task = _warmupTask;
          }
 
+         //the task only faults on an out-of-memory failure, which must fail the operation rather than
+         //degrade it silently: it rethrows on every call for the life of the memory-exhausted process
          return !task.GetAwaiter().GetResult().Any();
       }
 
@@ -77,6 +70,8 @@ namespace PKSim.Infrastructure.Services
             TaskScheduler.Default);
       }
 
+      //a failed startable stays cold and is logged by name; its only retry is the lazy Start on first use:
+      //the warm-up never runs Start again on a repository that may already have mutated part of its state
       private bool start(IStartable startable)
       {
          try
@@ -84,7 +79,7 @@ namespace PKSim.Infrastructure.Services
             startable.Start();
             return true;
          }
-         catch (Exception e)
+         catch (Exception e) when (!e.IsOutOfMemory())
          {
             _logger.AddException(e);
             _logger.AddError(PKSimConstants.Error.StartableFailedToStart(startable.GetType().Name));

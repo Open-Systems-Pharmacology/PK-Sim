@@ -178,10 +178,21 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      private ParallelOptions parallelOptions() => new ParallelOptions
+      //one gate for both parallel loops: a single item or a single core runs sequentially without awaiting the
+      //warm-up (lazy initialization touches exactly what it needs), and a warm-up that could not start every
+      //repository degrades to sequential rather than initializing a cold repository from parallel workers
+      private ParallelOptions parallelOptionsFor(int itemCount, string category)
       {
-         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-      };
+         var maximumNumberOfCores = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
+         if (itemCount <= 1 || maximumNumberOfCores == 1)
+            return new ParallelOptions {MaxDegreeOfParallelism = 1};
+
+         if (_startableWarmup.AwaitCompletion())
+            return new ParallelOptions {MaxDegreeOfParallelism = maximumNumberOfCores};
+
+         _logger.AddWarning(PKSimConstants.UI.SequentialProcessingAfterFailedWarmupMessage, category);
+         return new ParallelOptions {MaxDegreeOfParallelism = 1};
+      }
 
       private async Task runParallelSimulations(IReadOnlyList<(ModelSimulation, Simulation)> simulationsWithSnapshot, SnapshotContext snapshotContext)
       {
@@ -190,9 +201,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var allSimCount = simulationsWithSnapshot.Count;
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
-         var options = parallelOptions();
+         var options = parallelOptionsFor(simulationsWithSnapshot.Count, snapshotContext.Project.Name);
          _logger.AddDebug(PKSimConstants.UI.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), snapshotContext.Project.Name);
          var abortedByOutOfMemory = 0;
+         var cancelledCount = 0;
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
             var (simulation, _) = simulationWithSnapshot;
@@ -204,8 +216,9 @@ namespace PKSim.Core.Snapshots.Mappers
             catch (OperationCanceledException)
             {
                Interlocked.Decrement(ref allSimCount);
+               Interlocked.Increment(ref cancelledCount);
                //only the cancellations that follow an out-of-memory abort are collateral and stay quiet
-               if (Interlocked.CompareExchange(ref abortedByOutOfMemory, 0, 0) == 0)
+               if (Volatile.Read(ref abortedByOutOfMemory) == 0)
                   _logger.AddInfo(PKSimConstants.UI.SimulationRunCancelledMessage(simulation.Name), snapshotContext.Project.Name);
             }
             catch (Exception ex) when (ex.IsOutOfMemory())
@@ -220,7 +233,10 @@ namespace PKSim.Core.Snapshots.Mappers
                _logger.AddException(ex);
             }
          });
-         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage());
+
+         //"All Simulations Finished Running." would be misleading after a cancellation
+         if (cancelledCount == 0)
+            _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage());
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
@@ -360,13 +376,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
 
-         //the startable repositories must finish initializing before models are constructed in parallel. A sequential
-         //load (single simulation or single core) skips the warm-up and initializes lazily exactly what it touches,
-         //and a warm-up that could not start every repository degrades the load to sequential instead of failing it
-         var options = parallelOptions();
-         var mapInParallel = snapshots.Length > 1 && options.MaxDegreeOfParallelism > 1 && _startableWarmup.AwaitCompletion();
-         if (!mapInParallel)
-            options.MaxDegreeOfParallelism = 1;
+         //the startable repositories must finish initializing before models are constructed in parallel
+         var options = parallelOptionsFor(snapshots.Length, snapshotContext.Project.Name);
 
          _logger.AddInfo(PKSimConstants.UI.LoadingSimulationsMessage(snapshots.Length), snapshotContext.Project.Name);
 

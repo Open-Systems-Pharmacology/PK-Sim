@@ -143,8 +143,7 @@ namespace PKSim.Infrastructure
       {
          base.Context();
          _failing = A.Fake<IStartable>();
-         //fails once (e.g. a transiently locked file) and succeeds on the retry
-         A.CallTo(() => _failing.Start()).Throws<InvalidOperationException>().Once();
+         A.CallTo(() => _failing.Start()).Throws<InvalidOperationException>();
          A.CallTo(() => _container.ResolveAll<IStartable>()).Returns(new[] {_failing, _startable});
       }
 
@@ -159,7 +158,7 @@ namespace PKSim.Infrastructure
       public void should_report_the_incomplete_warmup_and_still_start_the_remaining_startables()
       {
          _firstResult.ShouldBeFalse();
-         A.CallTo(() => _startable.Start()).MustHaveHappened();
+         A.CallTo(() => _startable.Start()).MustHaveHappenedOnceExactly();
       }
 
       [Observation]
@@ -168,11 +167,30 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _logger.AddToLog(A<string>.That.Contains("failed to start"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
 
+      //the failed startable stays cold: its only retry is the lazy initialization on its first use, the
+      //warm-up never runs Start again on a repository that may already have mutated part of its state
       [Observation]
-      public void should_retry_only_the_failed_startable_on_the_next_call()
+      public void should_not_start_the_failed_startable_again_on_the_next_call()
       {
-         _secondResult.ShouldBeTrue();
-         A.CallTo(() => _failing.Start()).MustHaveHappenedTwiceExactly();
+         _secondResult.ShouldBeFalse();
+         A.CallTo(() => _failing.Start()).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_the_warmup_runs_out_of_memory : concern_for_StartableWarmup
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _startable.Start()).Throws<OutOfMemoryException>();
+      }
+
+      //an out-of-memory failure must fail the operation rather than degrade it silently
+      [Observation]
+      public void should_rethrow_on_every_call_without_starting_again()
+      {
+         The.Action(() => sut.AwaitCompletion()).ShouldThrowAn<OutOfMemoryException>();
+         The.Action(() => sut.AwaitCompletion()).ShouldThrowAn<OutOfMemoryException>();
          A.CallTo(() => _startable.Start()).MustHaveHappenedOnceExactly();
       }
    }
