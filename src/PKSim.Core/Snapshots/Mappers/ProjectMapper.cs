@@ -165,18 +165,20 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
+      private ParallelOptions parallelOptions() => new ParallelOptions
+      {
+         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+      };
+
       private async Task runParallelSimulations(IReadOnlyList<(ModelSimulation, Simulation)> simulationsWithSnapshot, SnapshotContext snapshotContext)
       {
          if (!simulationsWithSnapshot.Any())
             return;
 
-         var options = new ParallelOptions
-         {
-            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-         };
-
          var allSimCount = simulationsWithSnapshot.Count;
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
+         var options = parallelOptions();
+         _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
             try
@@ -359,12 +361,12 @@ namespace PKSim.Core.Snapshots.Mappers
          //before the remaining simulations are mapped in parallel
          await mapSimulationAt(0);
 
-         var options = new ParallelOptions
+         if (snapshots.Length > 1)
          {
-            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-         };
-
-         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+            var options = parallelOptions();
+            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
+            await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         }
 
          for (var i = 0; i < snapshots.Length; i++)
          {
