@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using OSPSuite.BDDHelper;
@@ -43,6 +44,28 @@ namespace PKSim.IntegrationTests
       {
          var formula = formulaFor("PARAM_Surface_integration_factor_absolute");
          formula.ShouldBeEqualTo("DiffusionLayerGradient < 0 ? (r+SIF > 0 ? r/(r+SIF) : 1) : 1");
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3719
+      [Observation]
+      public void should_correct_the_fluid_kinematic_viscosity_in_the_stomach()
+      {
+         constantValueOf("PARAM_Fluid_kinematic_viscosity_sto").ShouldBeEqualTo(0.0001999, 1e-10);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3719
+      [Observation]
+      public void should_set_the_default_value_of_the_surface_integration_factor_to_zero()
+      {
+         constantValueOf("PARAM_Surface_integration_factor").ShouldBeEqualTo(0);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3721
+      [Observation]
+      public void should_remove_the_discontinuity_jump_in_the_solubility_formula()
+      {
+         var formula = formulaFor("PARAM_IntestinalSolubility");
+         formula.ShouldBeEqualTo("Saq + Max(BS_C - CMC; 0)*S0/CW*10^K_n + Max(BS_C - CMC; 0)*Si/CW*10^K_i + SolubilityTable");
       }
 
       [Observation]
@@ -101,6 +124,12 @@ namespace PKSim.IntegrationTests
          CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_IONIZED,
          CoreConstants.Parameters.BILE_SALT_PARTITION_COEFFICIENT_NEUTRAL
       ];
+
+      private double constantValueOf(string rate)
+      {
+         var formula = formulaFor(rate).Replace(",", ".");
+         return double.Parse(formula, NumberStyles.Float, CultureInfo.InvariantCulture);
+      }
 
       private string formulaFor(string rate)
       {

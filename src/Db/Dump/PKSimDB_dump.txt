@@ -3623,7 +3623,7 @@ INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_Rect
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_Stomach','SteadyStateFillLevel*V/StomachInflowTime','Flow');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_UpperIleum','0.0029585*V','Flow');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_UpperJejunum','0.0031572*V','Flow');
-INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubility','BS_C >= CMC ? S0 + BS_C*S0/CW*10^K_n + Si +BS_C*Si/CW*10^K_i + SolubilityTable : Saq + SolubilityTable','Concentration (mass)');
+INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubility','Saq + Max(BS_C - CMC; 0)*S0/CW*10^K_n + Max(BS_C - CMC; 0)*Si/CW*10^K_i + SolubilityTable','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseGastricEmptyingTime','1/GET','Inversed time');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_Caecum','LuminalVelocity/LITT_fact','Inversed time');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_ColonAscendens','LuminalVelocity/LITT_fact','Inversed time');
@@ -3970,7 +3970,7 @@ INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_K_c1','0
 INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_K_c2','2,29','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_K_i','pKa_Acids_Count = 0 ? (pKa_Bases_Count != 0 ? max(0; K_n - PenaltyBases) : 0) : max(0; K_n-PenaltyOthers)','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_K_n','max(0; c1*LogP+c2)','Dimensionless');
-INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_Surface_integration_factor','5,00E-05','Length');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_Surface_integration_factor','0','Length');
 INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_Use_bidirectional_surface_integration_factor','1','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('CompoundCommon','PARAM_h_c','0,333333333','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Events','MEAL_Reset_BileSalt_Concentration_Duodenum','BSconc < BSconc_fasted','Dimensionless');
@@ -4022,7 +4022,7 @@ INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Deff_sto','
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Deff_uil','fu*D+(1-fu)*Db','Diffusion coefficient');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Deff_uje','fu*D+(1-fu)*Db','Diffusion coefficient');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Fluid_kinematic_viscosity_gi','0,0046674','Diffusion coefficient');
-INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Fluid_kinematic_viscosity_sto','0,01999','Diffusion coefficient');
+INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Fluid_kinematic_viscosity_sto','0,0001999','Diffusion coefficient');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous','S0 * Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization','Max(S0 * (Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor-1); 0)','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Intestinal_fu','Stot > 0 ? Saq/Stot : 0','Dimensionless');
