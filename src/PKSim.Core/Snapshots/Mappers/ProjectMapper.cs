@@ -181,15 +181,16 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
+            var (simulation, _) = simulationWithSnapshot;
             try
             {
-               var (simulation, _) = simulationWithSnapshot;
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
-               var remaining = Interlocked.Decrement(ref allSimCount);
-               _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, remaining));
+               _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, Interlocked.Decrement(ref allSimCount)));
             }
             catch (Exception ex)
             {
+               //a failed run still counts as completed so later successes report the true remaining count
+               Interlocked.Decrement(ref allSimCount);
                _logger.AddException(ex);
             }
          });
@@ -357,15 +358,22 @@ namespace PKSim.Core.Snapshots.Mappers
             }
          }
 
-         //the first simulation is mapped on its own so that lazily initialized services are warmed up
-         //before the remaining simulations are mapped in parallel
-         await mapSimulationAt(0);
+         //simulations are mapped sequentially until one succeeds, so that lazily initialized services are
+         //warmed up before the remaining simulations are mapped in parallel
+         var warmupCount = 0;
+         while (warmupCount < snapshots.Length)
+         {
+            await mapSimulationAt(warmupCount);
+            warmupCount++;
+            if (mappedSimulations[warmupCount - 1] != null)
+               break;
+         }
 
-         if (snapshots.Length > 1)
+         if (snapshots.Length > warmupCount)
          {
             var options = parallelOptions();
             _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", snapshotContext.Project.Name);
-            await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+            await Parallel.ForEachAsync(Enumerable.Range(warmupCount, snapshots.Length - warmupCount), options, (index, _) => new ValueTask(mapSimulationAt(index)));
          }
 
          for (var i = 0; i < snapshots.Length; i++)

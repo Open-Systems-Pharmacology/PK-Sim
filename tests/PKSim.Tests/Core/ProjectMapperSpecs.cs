@@ -588,6 +588,51 @@ namespace PKSim.Core
       }
    }
 
+   public class When_running_parallel_simulations_and_a_run_fails : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         //sequential so that the remaining counts are deterministic
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(1);
+         //matched by name: simulations without an id would otherwise all compare equal
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>.That.Matches(x => x.Name == "Sim1"), null, A<CancellationToken>._)).Throws<Exception>();
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      //the failed run counts as completed, so the last success reports zero simulations remaining
+      [Observation]
+      public void should_report_the_remaining_count_including_the_failed_run()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SimulationFinishedMessage("Sim2", 0), LogLevel.Information, A<string>._)).MustHaveHappened();
+      }
+   }
+
+
+   public class When_converting_a_project_snapshot_whose_first_simulation_cannot_be_loaded : When_converting_a_project_snapshot_to_project
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         //the corrupted simulation comes first: mapping keeps going sequentially until one simulation
+         //succeeds, so the parallel phase never starts without warmed-up services
+         _snapshot.Simulations = new[] {_snapshot.Simulations[1], _snapshot.Simulations[0]};
+      }
+   }
 
    public class When_loading_a_project_snapshot_without_running_simulations : When_converting_a_project_snapshot_to_project
    {
