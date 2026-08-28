@@ -26,6 +26,12 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
+      //the configuration pipeline (validator, settings factory, SimulationConfigurationTask) and the
+      //post-creation update sit on the same ORM/mapper/path-resolution layer whose thread-safety is not
+      //verified: both run under one lock, the configuration the parallel load was benchmarked with.
+      //Only the thread-safe IModelConstructor.CreateModelFrom runs unserialized on parallel workers.
+      private static readonly object _configurationLock = new object();
+
       public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
          IModelConstructor modelConstructor,
          IParameterIdUpdater parameterIdUpdater,
@@ -49,10 +55,15 @@ namespace PKSim.Core.Services
 
       public void CreateModelFor(Simulation simulation, bool shouldValidate = true, bool shouldShowProgress = false)
       {
-         _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
+         SimulationConfiguration simulationConfiguration;
+         lock (_configurationLock)
+         {
+            _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
-         simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
-         var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+            simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
+            simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+         }
+
          simulationConfiguration.ShowProgress = shouldShowProgress;
          simulationConfiguration.ShouldValidate = shouldValidate;
 
@@ -64,7 +75,10 @@ namespace PKSim.Core.Services
          simulation.Model = creationResult.Model;
          simulation.UpdateReactions(simulationConfiguration.All<ReactionBuildingBlock>());
 
-         updateSimulationAfterModelCreation(simulation);
+         lock (_configurationLock)
+         {
+            updateSimulationAfterModelCreation(simulation);
+         }
       }
 
       private void updateSimulationAfterModelCreation(Simulation simulation)

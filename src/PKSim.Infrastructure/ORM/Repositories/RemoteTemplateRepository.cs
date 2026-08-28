@@ -24,17 +24,20 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IPKSimConfiguration _configuration;
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotTask _snapshotTask;
+      private readonly IOSPSuiteLogger _logger;
       private readonly List<RemoteTemplate> _allTemplates = new List<RemoteTemplate>();
       public string Version { get; private set; }
 
       public RemoteTemplateRepository(
          IPKSimConfiguration configuration,
          IJsonSerializer jsonSerializer,
-         ISnapshotTask snapshotTask)
+         ISnapshotTask snapshotTask,
+         IOSPSuiteLogger logger)
       {
          _configuration = configuration;
          _jsonSerializer = jsonSerializer;
          _snapshotTask = snapshotTask;
+         _logger = logger;
       }
 
       public IReadOnlyList<RemoteTemplate> AllTemplatesFor(TemplateType templateType)
@@ -115,6 +118,18 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
+         //a failed previous start may have partially filled the repository (lazy Start retries); begin clean
+         _allTemplates.Clear();
+         Version = null;
+
+         //the summary file is provisioned best-effort (the copy from the all-users folder swallows IOException),
+         //so a missing file means no remote templates are available, not a broken installation
+         if (!FileHelper.FileExists(_configuration.RemoteTemplateSummaryPath))
+         {
+            _logger.AddDebug(PKSimConstants.UI.RemoteTemplateSummaryNotFoundMessage(_configuration.RemoteTemplateSummaryPath));
+            return;
+         }
+
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
 
          snapshots.Templates.Each(x =>

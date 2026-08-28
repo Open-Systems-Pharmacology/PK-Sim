@@ -10,7 +10,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
@@ -85,6 +87,7 @@ namespace PKSim.Core
       protected ISimulationRunner _simulationRunner;
       protected SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
+      protected IStartableWarmup _startableWarmup;
 
 
       protected override Task Context()
@@ -104,6 +107,8 @@ namespace PKSim.Core
          _simulationRunner = A.Fake<ISimulationRunner>();
          _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
+         _startableWarmup = A.Fake<IStartableWarmup>();
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(true);
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -118,7 +123,8 @@ namespace PKSim.Core
             _userSettings,
             _simulationRunner,
             _simulationTimeProfileChartMapper,
-            _populationAnalysisChartMapper);
+            _populationAnalysisChartMapper,
+            _startableWarmup);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -461,6 +467,53 @@ namespace PKSim.Core
       }
    }
 
+   public class When_converting_a_project_snapshot_with_multiple_simulations_to_project : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+      private Simulation _simulationSnapshot3;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _simulationSnapshot3 = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2, _simulationSnapshot3}
+         };
+
+         //the parallel path must actually run for the ordering to be at stake
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
+         //the mappings complete out of order to verify that the simulations are nevertheless added in snapshot order
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).ReturnsLazily(async () =>
+         {
+            await Task.Delay(100);
+            return (Model.Simulation) new IndividualSimulation().WithName("S1");
+         });
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).ReturnsLazily(async () =>
+         {
+            await Task.Delay(50);
+            return (Model.Simulation) new IndividualSimulation().WithName("S2");
+         });
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot3, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S3"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_add_the_simulations_to_the_project_in_the_snapshot_order()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S2", "S3");
+      }
+   }
+
    public class When_converting_a_corrupted_project_snapshot_to_project : concern_for_ProjectMapper
    {
       private PKSimProject _newProject;
@@ -540,6 +593,370 @@ namespace PKSim.Core
       }
    }
 
+   public class When_running_parallel_simulations_and_a_run_fails : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         //sequential so that the remaining counts are deterministic
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(1);
+         //matched by name: simulations without an id would otherwise all compare equal
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>.That.Matches(x => x.Name == "Sim1"), null, A<CancellationToken>._)).Throws<Exception>();
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      //the failed run counts as completed, so the last success reports zero simulations remaining
+      [Observation]
+      public void should_report_the_remaining_count_including_the_failed_run()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SimulationFinishedMessage("Sim2", 0), LogLevel.Information, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_running_parallel_simulations_and_a_run_is_cancelled : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(1);
+         //matched by name: simulations without an id would otherwise all compare equal
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>.That.Matches(x => x.Name == "Sim1"), null, A<CancellationToken>._)).Throws<OperationCanceledException>();
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      [Observation]
+      public void should_log_the_cancelled_run()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SimulationRunCancelledMessage("Sim1"), LogLevel.Information, A<string>._)).MustHaveHappened();
+      }
+
+      //"All Simulations Finished Running." would be misleading after a cancellation
+      [Observation]
+      public void should_not_report_that_all_simulations_finished()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.AllSimulationsFinishedMessage(), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_running_parallel_simulations_when_the_warmup_could_not_start_every_repository : concern_for_ProjectMapper
+   {
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(false);
+      }
+
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
+
+      //runs touch lazily initialized services too: a cold repository degrades the run phase to sequential as well
+      [Observation]
+      public void should_run_the_simulations_on_a_single_core()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.RunningSimulationsWithCoresMessage(1), LogLevel.Debug, A<string>._)).MustHaveHappened();
+      }
+   }
+
+
+   public class When_converting_a_project_snapshot_whose_first_simulation_cannot_be_loaded : When_converting_a_project_snapshot_to_project
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         //the corrupted simulation comes first: mapping keeps going sequentially until one simulation
+         //succeeds, so the parallel phase never starts without warmed-up services
+         _snapshot.Simulations = new[] {_snapshot.Simulations[1], _snapshot.Simulations[0]};
+      }
+   }
+
+   public class When_converting_a_project_snapshot_whose_leading_simulations_cannot_be_loaded : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _failingSnapshot1;
+      private Simulation _failingSnapshot2;
+      private Simulation _validSnapshot;
+      private ManualResetEventSlim _secondMappingStarted;
+      private ManualResetEventSlim _releaseSecondMapping;
+      private ManualResetEventSlim _thirdMappingStarted;
+      private volatile bool _secondMappingCompleted;
+      private bool _thirdStartedBeforeSecondCompleted;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _secondMappingStarted = new ManualResetEventSlim();
+         _releaseSecondMapping = new ManualResetEventSlim();
+         _thirdMappingStarted = new ManualResetEventSlim();
+
+         _failingSnapshot1 = new Simulation {Name = "S1"};
+         _failingSnapshot2 = new Simulation {Name = "S2"};
+         _validSnapshot = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_failingSnapshot1, _failingSnapshot2, _validSnapshot}
+         };
+
+         //cores are available: a fan-out that started before the first success would map S3 while S2 is still running
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_failingSnapshot1, A<SimulationContext>._)).Throws<Exception>();
+         Model.Simulation failWhenReleased()
+         {
+            _secondMappingStarted.Set();
+            _releaseSecondMapping.Wait(TimeSpan.FromSeconds(5));
+            _secondMappingCompleted = true;
+            throw new Exception();
+         }
+
+         A.CallTo(() => _simulationMapper.MapToModel(_failingSnapshot2, A<SimulationContext>._)).ReturnsLazily(() => Task.Run(failWhenReleased));
+         A.CallTo(() => _simulationMapper.MapToModel(_validSnapshot, A<SimulationContext>._)).ReturnsLazily(() =>
+         {
+            //under an early fan-out the third mapping starts while the second still blocks, so the flag reads false
+            _thirdStartedBeforeSecondCompleted = !_secondMappingCompleted;
+            _thirdMappingStarted.Set();
+            return Task.FromResult((Model.Simulation) new IndividualSimulation().WithName("S3"));
+         });
+      }
+
+      protected override async Task Because()
+      {
+         var mapping = sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+         _secondMappingStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
+         //an early fan-out would start the third mapping within this window (it returns immediately in that
+         //case); the guard was verified by mutation - an immediate fan-out fails the observation below
+         _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
+
+         _releaseSecondMapping.Set();
+         _newProject = await mapping;
+      }
+
+      public override async Task Cleanup()
+      {
+         await base.Cleanup();
+         _secondMappingStarted.Dispose();
+         _releaseSecondMapping.Dispose();
+         _thirdMappingStarted.Dispose();
+      }
+
+      //no other mapping may begin while the second one - not yet successful - is still running
+      [Observation]
+      public void should_map_sequentially_until_a_simulation_succeeds()
+      {
+         _thirdStartedBeforeSecondCompleted.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_add_the_simulation_that_could_be_loaded()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S3");
+      }
+   }
+
+   public class When_converting_a_project_snapshot_where_a_simulation_maps_to_nothing : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+      private Simulation _simulationSnapshot3;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _simulationSnapshot3 = new Simulation {Name = "S3"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2, _simulationSnapshot3}
+         };
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(3);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).Returns((Model.Simulation) null);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot3, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S3"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_add_only_the_simulations_that_were_mapped()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S3");
+      }
+
+      //a null mapping is skipped when the project is filled and must not count as loaded
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(2, 3), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_with_a_single_simulation : concern_for_ProjectMapper
+   {
+      private Simulation _simulationSnapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot = new Simulation {Name = "S1"};
+         _snapshot = new Project {Simulations = new[] {_simulationSnapshot}};
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      //a sequential load initializes lazily exactly what it touches instead of paying the full warm-up
+      [Observation]
+      public void should_not_await_the_startable_warmup()
+      {
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_when_the_warmup_could_not_start_every_repository : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _snapshot = new Project {Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2}};
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(false);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S2"));
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      //a cold repository is not safe to initialize from parallel workers: the load degrades to sequential instead of failing
+      [Observation]
+      public void should_still_load_every_simulation()
+      {
+         _newProject.All<Model.Simulation>().AllNames().ShouldOnlyContainInOrder("S1", "S2");
+      }
+
+      [Observation]
+      public void should_construct_the_simulations_on_a_single_core()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.ConstructingSimulationsWithCoresMessage(1), LogLevel.Debug, A<string>._)).MustHaveHappened();
+      }
+
+      //the fallback must be diagnosable above debug level, pointing at the error naming the failed repository
+      [Observation]
+      public void should_warn_that_the_load_falls_back_to_sequential_processing()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.SequentialProcessingAfterFailedWarmupMessage, LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_where_a_simulation_runs_out_of_memory : concern_for_ProjectMapper
+   {
+      private Simulation _simulationSnapshot1;
+      private Simulation _simulationSnapshot2;
+      private Exception _failure;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationSnapshot1 = new Simulation {Name = "S1"};
+         _simulationSnapshot2 = new Simulation {Name = "S2"};
+         _snapshot = new Project
+         {
+            Simulations = new[] {_simulationSnapshot1, _simulationSnapshot2}
+         };
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(2);
+
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot1, A<SimulationContext>._)).Returns(new IndividualSimulation().WithName("S1"));
+
+         //wrapped the way a blocking wait would deliver it: the load must still fail rather than degrade silently
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot2, A<SimulationContext>._))
+            .ReturnsLazily(() => Task.FromException<Model.Simulation>(new AggregateException(new OutOfMemoryException())));
+      }
+
+      protected override async Task Because()
+      {
+         try
+         {
+            await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+         }
+         catch (Exception e)
+         {
+            _failure = e;
+         }
+      }
+
+      [Observation]
+      public void should_fail_the_load_with_the_out_of_memory_in_the_exception_chain()
+      {
+         _failure.ShouldBeAnInstanceOf<AggregateException>();
+         _failure.IsOutOfMemory().ShouldBeTrue();
+      }
+
+      //no silent degradation: an out-of-memory failure must not be reported as a per-simulation load error
+      [Observation]
+      public void should_not_log_the_out_of_memory_as_a_simulation_load_error()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CannotLoadSimulation("S2"), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
+      }
+   }
 
    public class When_loading_a_project_snapshot_without_running_simulations : When_converting_a_project_snapshot_to_project
    {
@@ -559,9 +976,19 @@ namespace PKSim.Core
       public void should_not_log_warnings_about_missing_quantities()
       {
          // Fixes #3467: when simulations are not run, CurveMapper must not warn about
-         // missing data columns since no results are expected
-         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._))
+         // missing data columns since no results are expected. The partial-load warning for the
+         // corrupted simulation in this fixture is the only expected warning
+         A.CallTo(() => _logger.AddToLog(
+               A<string>.That.Matches(message => message != PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(1, 2)),
+               LogLevel.Warning, A<string>._))
             .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.UI.OnlySomeSimulationsLoadedMessage(1, 2), LogLevel.Warning, A<string>._))
+            .MustHaveHappened();
       }
    }
 

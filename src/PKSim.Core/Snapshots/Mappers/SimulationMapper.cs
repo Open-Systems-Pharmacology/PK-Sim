@@ -287,9 +287,8 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext snapshotContext)
       {
          var project = snapshotContext.PKSimProject();
-         _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
 
-         //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
+         //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered
          //in global context once the whole snapshot mapping process is completed
 
          var withIdRepository = new WithIdRepository();

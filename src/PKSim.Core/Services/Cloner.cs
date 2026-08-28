@@ -2,6 +2,7 @@ using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Core.Services
 {
@@ -25,26 +26,29 @@ namespace PKSim.Core.Services
    public class Cloner : ICloner
    {
       private readonly ICloneManagerForModel _cloneManagerForModel;
-      private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       private readonly IBuildingBlockFinalizer _buildingBlockFinalizer;
       private readonly ISerializationManager _serializationManager;
       private readonly IObjectIdResetter _objectIdResetter;
+      private readonly IContainer _container;
 
-      public Cloner(ICloneManagerForModel cloneManagerForModel, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
-         IBuildingBlockFinalizer buildingBlockFinalizer, ISerializationManager serializationManager, IObjectIdResetter objectIdResetter)
+      public Cloner(ICloneManagerForModel cloneManagerForModel,
+         IBuildingBlockFinalizer buildingBlockFinalizer, ISerializationManager serializationManager, IObjectIdResetter objectIdResetter, IContainer container)
       {
          _cloneManagerForModel = cloneManagerForModel;
-         _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _buildingBlockFinalizer = buildingBlockFinalizer;
          _serializationManager = serializationManager;
          _objectIdResetter = objectIdResetter;
+         _container = container;
       }
 
       public T Clone<T>(T objectToClone) where T : class, IUpdatable
       {
+         //resolved per call: the clone manager holds per-operation state (FormulaCache) and its transient
+         //lifestyle guarantees each call - including concurrent ones - gets its own instance
+         var cloneManagerForBuildingBlock = _container.Resolve<ICloneManagerForBuildingBlock>();
          //formula cache are never used in pksim explicitly. And if need, we access CloneManagerForBuildingBlock
-         _cloneManagerForBuildingBlock.FormulaCache = new FormulaCache();
-         return createClone(objectToClone, _cloneManagerForBuildingBlock);
+         cloneManagerForBuildingBlock.FormulaCache = new FormulaCache();
+         return createClone(objectToClone, cloneManagerForBuildingBlock);
       }
 
       public T CloneForModel<T>(T objectToClone) where T : class, IUpdatable

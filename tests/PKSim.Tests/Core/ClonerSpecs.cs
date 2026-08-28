@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Core
 {
@@ -15,6 +16,7 @@ namespace PKSim.Core
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       protected ISerializationManager _serializationManager;
       protected IObjectIdResetter _objectIdResetter;
+      protected IContainer _container;
 
       protected override void Context()
       {
@@ -23,7 +25,9 @@ namespace PKSim.Core
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _objectIdResetter= A.Fake<IObjectIdResetter>();
          _serializationManager = A.Fake<ISerializationManager>();
-         sut = new Cloner(_cloneManagerForModel, _cloneManagerForBuildingBlock, _buildingBlockFinalizer, _serializationManager, _objectIdResetter);
+         _container = A.Fake<IContainer>();
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).Returns(_cloneManagerForBuildingBlock);
+         sut = new Cloner(_cloneManagerForModel, _buildingBlockFinalizer, _serializationManager, _objectIdResetter, _container);
       }
    }
 
@@ -76,6 +80,28 @@ namespace PKSim.Core
       public void should_resolve_the_references_define_in_the_building_block()
       {
          A.CallTo(() => _buildingBlockFinalizer.Finalize(_result)).MustHaveHappened();
+      }
+   }
+
+   public class When_cloning_several_objects : concern_for_Cloner
+   {
+      protected override void Context()
+      {
+         base.Context();
+         //each call must get its own clone manager: it carries per-operation state (FormulaCache)
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).ReturnsLazily(() => A.Fake<ICloneManagerForBuildingBlock>());
+      }
+
+      protected override void Because()
+      {
+         sut.Clone(A.Fake<Individual>());
+         sut.Clone(A.Fake<Individual>());
+      }
+
+      [Observation]
+      public void should_resolve_a_fresh_clone_manager_for_each_clone_operation()
+      {
+         A.CallTo(() => _container.Resolve<ICloneManagerForBuildingBlock>()).MustHaveHappenedTwiceExactly();
       }
    }
 
