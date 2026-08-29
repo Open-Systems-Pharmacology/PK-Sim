@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\PKSim.BatchTool\PKSim.BatchTool.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.CLI\PKSim.CLI.csproj" />
     <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
     <ProjectReference Include="..\..\src\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
