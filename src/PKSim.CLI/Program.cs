@@ -50,6 +50,7 @@ namespace PKSim.CLI
 
          logger.AddDebug($"Arguments:\n{command}");
          ApplicationStartup.Start();
+         command.ApplyCoresTo(IoC.Resolve<ICoreUserSettings>());
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
          try
          {
