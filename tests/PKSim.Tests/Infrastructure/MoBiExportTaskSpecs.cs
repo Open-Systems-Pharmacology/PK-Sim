@@ -12,7 +12,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -25,7 +24,7 @@ namespace PKSim.Infrastructure
    {
       protected ISimulationConfigurationTask _simulationConfigurationTask;
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
-      protected IRepresentationInfoRepository _representationInfoRepository;
+      protected IRepresentationInfoUpdater _representationInfoUpdater;
       protected IPKSimConfiguration _configuration;
       protected ILazyLoadTask _lazyLoadTask;
       protected IDialogCreator _dialogCreator;
@@ -44,7 +43,7 @@ namespace PKSim.Infrastructure
       {
          _simulationConfigurationTask = A.Fake<ISimulationConfigurationTask>();
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
-         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         _representationInfoUpdater = A.Fake<IRepresentationInfoUpdater>();
          _configuration = A.Fake<IPKSimConfiguration>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
@@ -78,7 +77,7 @@ namespace PKSim.Infrastructure
 
          A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
 
-         sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoRepository,
+         sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoUpdater,
             _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _modelCoreSimulationSnapshotUpdater, _overwriteParameterSetApplicationTask);
       }
    }

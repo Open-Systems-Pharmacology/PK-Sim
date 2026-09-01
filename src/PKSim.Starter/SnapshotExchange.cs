@@ -34,6 +34,7 @@ public static class SnapshotExchange
       var projectSnapshotToModuleMapper = container.Resolve<IProjectSnapshotToModuleMapper>();
 
       var module = projectSnapshotToModuleMapper.MapFrom(projectSnapshot).module;
+      container.Resolve<IRepresentationInfoUpdater>().UpdateRepresentationInfoIn(module);
       var objectIdResetter = container.Resolve<IObjectIdResetter>();
       objectIdResetter.ResetIdFor(module);
       return serialize(module, container);
@@ -46,6 +47,7 @@ public static class SnapshotExchange
       var qualificationInputTask = container.Resolve<IQualificationInputTask>();
 
       var (module, project) = projectSnapshotToSimulationTransferMapper.MapFrom(projectSnapshot);
+      container.Resolve<IRepresentationInfoUpdater>().UpdateRepresentationInfoIn(module);
       var objectIdResetter = container.Resolve<IObjectIdResetter>();
       objectIdResetter.ResetIdFor(module);
       var inputMappings = qualificationInputTask.ExportInputs(project, qualificationConfiguration);
