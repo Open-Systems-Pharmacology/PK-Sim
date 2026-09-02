@@ -37,12 +37,6 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_start_the_representation_info_repository_so_that_the_lookup_cache_is_filled()
-      {
-         A.CallTo(() => _representationInfoRepository.Start()).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_set_the_icon_of_the_visited_container()
       {
          _organism.Icon.ShouldBeEqualTo("Organism");

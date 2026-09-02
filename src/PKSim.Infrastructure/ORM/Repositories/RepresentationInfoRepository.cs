@@ -70,7 +70,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public string DisplayNameFor(RepresentationObjectType objectType, string objectName) => InfoFor(objectType, objectName).DisplayName;
 
-      public bool ContainsInfoFor(IObjectBase objectBase) => _representationInfosCache.Contains(getKey(objectBase));
+      public bool ContainsInfoFor(IObjectBase objectBase)
+      {
+         Start();
+         return _representationInfosCache.Contains(getKey(objectBase));
+      }
 
       private string getKey(RepresentationObjectType objectType, string objectName) => $"{objectType}{ObjectPath.PATH_DELIMITER}{objectName}";
 

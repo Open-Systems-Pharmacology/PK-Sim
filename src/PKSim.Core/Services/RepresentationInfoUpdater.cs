@@ -18,11 +18,7 @@ namespace PKSim.Core.Services
          _representationInfoRepository = representationInfoRepository;
       }
 
-      public void UpdateRepresentationInfoIn(IVisitable<IVisitor> visitable)
-      {
-         _representationInfoRepository.Start();
-         visitable.AcceptVisitor(this);
-      }
+      public void UpdateRepresentationInfoIn(IVisitable<IVisitor> visitable) => visitable.AcceptVisitor(this);
 
       public void Visit(IObjectBase objToVisit)
       {
