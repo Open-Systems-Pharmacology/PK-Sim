@@ -15,10 +15,11 @@ public static class SnapshotExchange
    public static string CreateModule(string projectSnapshot)
    {
       Api.InitializeOnce();
-      var (projectSnapshotToModuleMapper, objectIdResetter, serializer) =
-         Api.ResolveTasks<IProjectSnapshotToModuleMapper, IObjectIdResetter, IPKMLPersistor>();
+      var (projectSnapshotToModuleMapper, objectIdResetter, serializer, representationInfoUpdater) =
+         Api.ResolveTasks<IProjectSnapshotToModuleMapper, IObjectIdResetter, IPKMLPersistor, IRepresentationInfoUpdater>();
 
       var module = projectSnapshotToModuleMapper.MapFrom(projectSnapshot).module;
+      representationInfoUpdater.UpdateRepresentationInfoIn(module);
       objectIdResetter.ResetIdFor(module);
 
       return serializer.Serialize(module);

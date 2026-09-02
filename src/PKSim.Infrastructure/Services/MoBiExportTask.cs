@@ -9,21 +9,19 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class MoBiExportTask : IMoBiExportTask, IVisitor<IObjectBase>
+   public class MoBiExportTask : IMoBiExportTask
    {
       private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly ISimulationToModelCoreSimulationMapper _simulationMapper;
-      private readonly IRepresentationInfoRepository _representationInfoRepository;
+      private readonly IRepresentationInfoUpdater _representationInfoUpdater;
       private readonly IPKSimConfiguration _configuration;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
@@ -39,7 +37,7 @@ namespace PKSim.Infrastructure.Services
       public MoBiExportTask(
          ISimulationConfigurationTask simulationConfigurationTask,
          ISimulationToModelCoreSimulationMapper simulationMapper,
-         IRepresentationInfoRepository representationInfoRepository,
+         IRepresentationInfoUpdater representationInfoUpdater,
          IPKSimConfiguration configuration,
          ILazyLoadTask lazyLoadTask,
          IDialogCreator dialogCreator,
@@ -54,7 +52,7 @@ namespace PKSim.Infrastructure.Services
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
-         _representationInfoRepository = representationInfoRepository;
+         _representationInfoUpdater = representationInfoUpdater;
          _configuration = configuration;
          _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
@@ -174,20 +172,8 @@ namespace PKSim.Infrastructure.Services
 
       private void updateRepresentationInfo(IModelCoreSimulation moBiSimulation)
       {
-         moBiSimulation.Configuration.AcceptVisitor(this);
-         moBiSimulation.Model.AcceptVisitor(this);
-      }
-
-      public void Visit(IObjectBase objToVisit)
-      {
-         if (!_representationInfoRepository.ContainsInfoFor(objToVisit))
-            return;
-
-         var repInfo = _representationInfoRepository.InfoFor(objToVisit);
-         objToVisit.Icon = repInfo.IconName;
-
-         if (string.IsNullOrEmpty(objToVisit.Description))
-            objToVisit.Description = repInfo.Description;
+         _representationInfoUpdater.UpdateRepresentationInfoIn(moBiSimulation.Configuration);
+         _representationInfoUpdater.UpdateRepresentationInfoIn(moBiSimulation.Model);
       }
    }
 }
