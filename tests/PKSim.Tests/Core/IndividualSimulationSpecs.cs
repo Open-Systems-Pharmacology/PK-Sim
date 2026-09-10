@@ -406,16 +406,20 @@ namespace PKSim.Core
    {
       private Simulation _originalSimulation;
       private UsedObservedData _usedObservedData;
+      private OverwriteParameterSet _overwriteParameterSet;
 
       protected override void Context()
       {
          base.Context();
          _usedObservedData = new UsedObservedData {Id = "id"};
+         _overwriteParameterSet = new OverwriteParameterSet {Name = "Set"};
          _originalSimulation = new IndividualSimulation();
          _originalSimulation.Name = "sim";
          _originalSimulation.Description = "desc";
          _originalSimulation.Properties = new SimulationProperties();
          _originalSimulation.AddUsedObservedData(_usedObservedData);
+         _originalSimulation.ParameterChangeTracker.Track("Organism|Drug|Lipophilicity");
+         _originalSimulation.OverwriteParameterSetSelections.SetSelectionForCompound("Drug", _overwriteParameterSet);
       }
 
       protected override void Because()
@@ -451,6 +455,18 @@ namespace PKSim.Core
       public void should_have_added_the_used_observed_data_from_the_original_simulation_in_the_updated_simulation()
       {
          sut.UsedObservedData.ShouldOnlyContain(_usedObservedData);
+      }
+
+      [Observation]
+      public void should_keep_tracking_the_uncommitted_parameter_changes_of_the_original_simulation()
+      {
+         sut.ParameterChangeTracker.IsTracked("Organism|Drug|Lipophilicity").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_keep_the_overwrite_parameter_set_selections_of_the_original_simulation()
+      {
+         sut.OverwriteParameterSetSelections.SelectedSetFor("Drug").ShouldBeEqualTo(_overwriteParameterSet);
       }
    }
 
