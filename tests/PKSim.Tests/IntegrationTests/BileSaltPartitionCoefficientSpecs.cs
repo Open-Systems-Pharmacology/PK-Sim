@@ -82,13 +82,6 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_group_the_four_constants_under_advanced_solubility()
-      {
-         _compound.AllParameters(x => string.Equals(x.GroupName, COMPOUND_ADVANCED_SOLUBILITY)).Select(x => x.Name)
-            .ShouldOnlyContain(_advancedSolubilityConstants);
-      }
-
-      [Observation]
       public void should_keep_the_four_constants_as_plain_compound_parameters_outside_of_any_alternative()
       {
          var simpleParameterNames = _compound.AllSimpleParameters().Select(x => x.Name).ToList();

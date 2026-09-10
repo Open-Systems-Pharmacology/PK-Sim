@@ -61,11 +61,20 @@ namespace PKSim.IntegrationTests
       }
 
       //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3721
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730
       [Observation]
-      public void should_remove_the_discontinuity_jump_in_the_solubility_formula()
+      public void should_remove_the_discontinuity_jump_in_the_solubility_formula_and_make_the_bile_salt_micellization_switchable()
       {
          var formula = formulaFor("PARAM_IntestinalSolubility");
-         formula.ShouldBeEqualTo("Saq + Max(BS_C - CMC; 0)*S0/CW*10^K_n + Max(BS_C - CMC; 0)*Si/CW*10^K_i + SolubilityTable");
+         formula.ShouldBeEqualTo("Saq + SolubilityTable + (UseBileSaltMicellization = 1 ? Max(BS_C - CMC; 0)*(S0/CW*10^K_n + Si/CW*10^K_i) : 0)");
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730
+      [Observation]
+      public void should_adjust_the_solubility_increase_from_ionization_formula()
+      {
+         var formula = formulaFor("PARAM_IntestinalSolubilityIonization");
+         formula.ShouldBeEqualTo("Max(Saq - S0; 0)");
       }
 
       [Observation]

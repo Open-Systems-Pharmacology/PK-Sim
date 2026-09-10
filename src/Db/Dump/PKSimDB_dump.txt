@@ -1196,6 +1196,20 @@ INSERT INTO tab_rates VALUES('PARAM_hu','PARAM_hu','PARAM_hu');
 INSERT INTO tab_rates VALUES('PARAM_pH_Stomach','PARAM_pH_Stomach','PARAM_pH_Stomach');
 INSERT INTO tab_rates VALUES('PARAM_Meal_Volume','PARAM_Meal_Volume','Effective meal volume');
 INSERT INTO tab_rates VALUES('PARAM_Stomach_RefAdult_Volume','PARAM_Stomach_RefAdult_Volume','Volume of the stomach lumen of the reference adult individual (30 year old European male).');
+INSERT INTO tab_rates VALUES('PARAM_pH_Intrinsic_Solubility','pH used for the calculation of intrinsic solubility','pH used for the calculation of intrinsic solubility of a drug');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_F1','PARAM_pKa_pH_IntrinsicSolubility_F1','PARAM_pKa_pH_IntrinsicSolubility_F1');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_F2','PARAM_pKa_pH_IntrinsicSolubility_F2','PARAM_pKa_pH_IntrinsicSolubility_F2');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_F3','PARAM_pKa_pH_IntrinsicSolubility_F3','PARAM_pKa_pH_IntrinsicSolubility_F3');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K1','PARAM_pKa_pH_IntrinsicSolubility_K1','PARAM_pKa_pH_IntrinsicSolubility_K1');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K2','PARAM_pKa_pH_IntrinsicSolubility_K2','PARAM_pKa_pH_IntrinsicSolubility_K2');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K3','PARAM_pKa_pH_IntrinsicSolubility_K3','PARAM_pKa_pH_IntrinsicSolubility_K3');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K4','PARAM_pKa_pH_IntrinsicSolubility_K4','PARAM_pKa_pH_IntrinsicSolubility_K4');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K5','PARAM_pKa_pH_IntrinsicSolubility_K5','PARAM_pKa_pH_IntrinsicSolubility_K5');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K6','PARAM_pKa_pH_IntrinsicSolubility_K6','PARAM_pKa_pH_IntrinsicSolubility_K6');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K7','PARAM_pKa_pH_IntrinsicSolubility_K7','PARAM_pKa_pH_IntrinsicSolubility_K7');
+INSERT INTO tab_rates VALUES('PARAM_pKa_pH_IntrinsicSolubility_K8','PARAM_pKa_pH_IntrinsicSolubility_K8','PARAM_pKa_pH_IntrinsicSolubility_K8');
+INSERT INTO tab_rates VALUES('PARAM_Solubility_Intrinsic','PARAM_Solubility_Intrinsic','PARAM_Solubility_Intrinsic');
+INSERT INTO tab_rates VALUES('PARAM_Intrinsic_Solubility_pKa_pH_Factor','PARAM_Intrinsic_Solubility_pKa_pH_Factor','PARAM_Intrinsic_Solubility_pKa_pH_Factor');
 CREATE TABLE tab_dimensions (
 	dimension text NOT NULL,
 	kernel_unit text NULL,
@@ -3623,7 +3637,7 @@ INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_Rect
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_Stomach','SteadyStateFillLevel*V/StomachInflowTime','Flow');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_UpperIleum','0.0029585*V','Flow');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Inflow_UpperJejunum','0.0031572*V','Flow');
-INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubility','Saq + Max(BS_C - CMC; 0)*S0/CW*10^K_n + Max(BS_C - CMC; 0)*Si/CW*10^K_i + SolubilityTable','Concentration (mass)');
+INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubility','Saq + SolubilityTable + (UseBileSaltMicellization = 1 ? Max(BS_C - CMC; 0)*(S0/CW*10^K_n + Si/CW*10^K_i) : 0)','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseGastricEmptyingTime','1/GET','Inversed time');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_Caecum','LuminalVelocity/LITT_fact','Inversed time');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_ColonAscendens','LuminalVelocity/LITT_fact','Inversed time');
@@ -4024,11 +4038,25 @@ INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Deff_uje','
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Fluid_kinematic_viscosity_gi','0,0046674','Diffusion coefficient');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Fluid_kinematic_viscosity_sto','0,0001999','Diffusion coefficient');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous','S0 * Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor','Concentration (mass)');
-INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization','Max(S0 * (Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor-1); 0)','Concentration (mass)');
+INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization','Max(Saq - S0; 0)','Concentration (mass)');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_Intestinal_fu','Stot > 0 ? Saq/Stot : 0','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Lumen_PKSim','PARAM_pH_Stomach','V>0 AND SteadyStateFillLevel>0 AND Liquid>0 ? -Log10(10^(-BasalpH)*(V*SteadyStateFillLevel)/Liquid) : BasalpH','Dimensionless');
 INSERT INTO tab_calculation_method_rates VALUES('Events','PARAM_Meal_Volume','Meal_volume_reference_Adult * Stomach_volume / Stomach_volume_reference_Adult','Volume');
 INSERT INTO tab_calculation_method_rates VALUES('LumenSegmentVolume','PARAM_Stomach_RefAdult_Volume','1,570796327','Volume');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility','nBases = 0 ? 0 : (nAcids = 0 ? 14 : (nBases = 2 ? (Max(pKa_Acid_0; pKa_Base_0) + pKa_Base_1)/2 : (nAcids = 2 ? (pKa_Acid_0 + Min(pKa_Acid_1; pKa_Base_0))/2 : (pKa_Acid_0 + pKa_Base_0)/2)))','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1','CT0 != CT_NEUTRAL ?  1/(1+10^(CT0*(pKa_0-pH))) : 1','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2','CT1 != CT_NEUTRAL ?  1/(1+10^(CT1*(pKa_1-pH))) : 1','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3','CT2 != CT_NEUTRAL ?  1/(1+10^(CT2*(pKa_2-pH))) : 1','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1','F1*F2*F3','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K2','(1-F1)*F2*F3','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K3','F1*(1-F2)*F3','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K4','F1*F2*(1-F3)','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K5','(1-F1)*(1-F2)*F3','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K6','(1-F1)*F2*(1-F3)','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K7','F1*(1-F2)*(1-F3)','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K8','(1-F1)*(1-F2)*(1-F3)','Dimensionless');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_Solubility_Intrinsic','S0 * Solubility_pKa_REFpH_Factor / Solubility_pKa_Intrinsic_pH_Factor','Concentration (mass)');
+INSERT INTO tab_calculation_method_rates VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor','K1+K2/base^(CT0^2)+K3/base^(CT1^2)+K4/base^(CT2^2)+K5/base^max(CT0+CT1;-CT0-CT1)+K6/base^max(CT0+CT2;-CT0-CT2)+K7/base^max(CT1+CT2;-CT1-CT2)+K8/base^max(CT0+CT1+CT2;-CT0-CT1-CT2)','Dimensionless');
 CREATE TABLE [tab_calculation_method_rate_descriptor_conditions](
   [calculation_method] text NOT NULL, 
   [formula_rate] text NOT NULL, 
@@ -8414,7 +8442,7 @@ INSERT INTO tab_container_parameters VALUES(1476,'GENERAL','MoleculeProperties',
 INSERT INTO tab_container_parameters VALUES(1476,'GENERAL','MoleculeProperties','Radius ratio (solute/small pores)',0,1,0,0,'TWO-PORE MODEL',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(1476,'GENERAL','MoleculeProperties','Reflection coefficient (large pores)',1,0,1,0,'REFELCTION_COEFF_LARGE_PORES',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(1476,'GENERAL','MoleculeProperties','Reflection coefficient (small pores)',1,0,1,0,'REFELCTION_COEFF_SMALL_PORES',1,'LOCAL','SIMULATION',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Aqueous diffusion coefficient',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',31,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Aqueous diffusion coefficient',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',204,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','base_For_KaPL_Factor',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','base_For_logD_Factor',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','base_For_P_cell_Factor',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
@@ -8431,13 +8459,13 @@ INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Compound typ
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','CT_ACID',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','CT_BASE',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','CT_NEUTRAL',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Density (drug)',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',32,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Density (drug)',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',205,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Effective molecular weight',1,1,1,0,'COMPOUND_MW',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','F',1,0,1,0,'COMPOUND_MW',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Fraction unbound (plasma, reference value)',1,0,1,1,'COMPOUND_FRACTION_UNBOUND',3,'GLOBAL','COMPOUND',1,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Has halogens',0,1,1,0,'COMPOUND_MW',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','I',1,0,1,0,'COMPOUND_MW',1,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Immediately dissolve particles smaller than',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',33,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Immediately dissolve particles smaller than',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',206,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is diprotic acid',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is diprotic base',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is diprotic base monoprotic acid',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
@@ -8451,9 +8479,9 @@ INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is small mol
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is strong base',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is triprotic acid',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Is triprotic base',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','kass (FcRn)',1,0,1,0,'COMPOUND_TWO_PORE',43,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Kd (FcRn) in endosomal space',1,0,1,0,'COMPOUND_TWO_PORE',41,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Kd (FcRn) in plasma/interstitial',1,0,1,0,'COMPOUND_TWO_PORE',42,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','kass (FcRn)',1,0,1,0,'COMPOUND_TWO_PORE',304,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Kd (FcRn) in endosomal space',1,0,1,0,'COMPOUND_TWO_PORE',302,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Kd (FcRn) in plasma/interstitial',1,0,1,0,'COMPOUND_TWO_PORE',303,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Lipophilicity',1,0,1,0,'COMPOUND_LIPOPHILICITY',2,'GLOBAL','COMPOUND',1,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Molecular weight',0,0,1,0,'COMPOUND_MW',1,'GLOBAL','COMPOUND',1,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (water/protein)',1,0,1,1,'PARTITION_COEFFICIENT',9,'GLOBAL','SIMULATION',0,0);
@@ -8491,7 +8519,7 @@ INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_TwoAcids
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_TwoBases_0',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_TwoBases_1',0,1,0,0,'COMPOUND_PKA',1,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Plasma protein binding partner',1,0,1,0,'COMPOUND',1,'GLOBAL','COMPOUND',1,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Radius (solute)',1,0,1,0,'COMPOUND_TWO_PORE',40,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Radius (solute)',1,0,1,0,'COMPOUND_TWO_PORE',301,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Reference pH',1,0,1,0,'COMPOUND_SOLUBILITY',5,'GLOBAL','COMPOUND',1,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Solubility at reference pH',1,0,1,1,'COMPOUND_SOLUBILITY',4,'GLOBAL','COMPOUND',1,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Solubility gain per charge',1,0,1,0,'COMPOUND_SOLUBILITY',6,'GLOBAL','COMPOUND',0,0);
@@ -8500,7 +8528,7 @@ INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Solubility_p
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Specific intestinal permeability (transcellular)',1,0,1,0,'COMPOUND_INTESTINAL_PERMEABILITY',8,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Total drug mass',0,1,0,0,'COMPOUND',1,'GLOBAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Total oral drug mass',0,1,0,0,'ORAL_APPLICATION',1,'GLOBAL','SIMULATION',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Treat precipitated drug as',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',30,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Treat precipitated drug as',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',203,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use pH- and pKa-dependent penalty factor for charged molecule fraction',1,0,1,0,'PERMEABILITY',100,'GLOBAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(1716,'FORMULATION','Formulation_ZeroOrder','End time',1,0,1,1,'FORMULATIONS',1,'LOCAL','FORMULATION',1,0);
 INSERT INTO tab_container_parameters VALUES(1719,'FORMULATION','Formulation_FirstOrder','t1/2',1,0,1,1,'FORMULATIONS',1,'LOCAL','FORMULATION',1,0);
@@ -11918,7 +11946,7 @@ INSERT INTO tab_container_parameters VALUES(5646,'ORGAN','VenousBlood_UmbilicalC
 INSERT INTO tab_container_parameters VALUES(5646,'ORGAN','VenousBlood_UmbilicalCord','Volume',1,0,1,1,'ORGAN_VOLUMES',9,'LOCAL','INDIVIDUAL',0,1);
 INSERT INTO tab_container_parameters VALUES(5646,'ORGAN','VenousBlood_UmbilicalCord','Weight (tissue)',1,1,0,0,'TISSUE_WEIGHT',1,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(5647,'NEIGHBORHOOD','PlacentaMaternal_pls_PlacentaFetal_cell','Surface area (plasma/intracellular)',1,0,1,1,'SURFACE_AREA_PLS_INT',1,'LOCAL','INDIVIDUAL',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Enable supersaturation',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',100,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Enable supersaturation',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',207,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(5007,'GENERAL','MoleculeProperties','Effective concentration in lumen',0,1,0,0,'INTESTINAL_SOLUBILITY',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4887,'GENERAL','MoleculeProperties','Effective concentration in lumen',0,1,0,0,'INTESTINAL_SOLUBILITY',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(5011,'GENERAL','MoleculeProperties','Effective concentration in lumen',0,1,0,0,'INTESTINAL_SOLUBILITY',1,'LOCAL','SIMULATION',0,0);
@@ -12002,16 +12030,16 @@ INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Mars
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 2',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 3',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(146,'ORGANISM','Organism','Ranz-Marshall correlation constant 4',1,1,0,0,'CONSTANT',1,'LOCAL','SIMULATION',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Critical Micellar concentration',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',17,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Critical Micellar concentration',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',102,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Diffusion layer thickness exponent',0,1,0,0,'COMPOUND_SOLUBILITY',10,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty basic compounds',0,1,0,0,'COMPOUND_SOLUBILITY',15,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Micelle affinity penalty other ionizable compounds',0,1,0,0,'COMPOUND_SOLUBILITY',16,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 1',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',12,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 2',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',13,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',14,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) neutral',1,0,1,0,'COMPOUND_BILE_SALT_PARTITION_COEFFICIENT',11,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
-INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use bidirectional surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',11,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 1',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',103,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) constant 2',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',104,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) ionized',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',106,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Partition coefficient (bile salt micelle/water) neutral',1,0,1,0,'COMPOUND_BILE_SALT_PARTITION_COEFFICIENT',105,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',201,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use bidirectional surface integration factor',1,0,1,0,'COMPOUND_PARTICLE_DISSOLUTION',202,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(4482,'COMPARTMENT','Stomach','Average fluid velocity',1,0,1,1,'GI_PHYSIOLOGY',3,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(4482,'COMPARTMENT','Stomach','Basal Bile Salt concentration',1,0,1,1,'GI_PHYSIOLOGY_PH',4,'LOCAL','INDIVIDUAL',0,1);
 INSERT INTO tab_container_parameters VALUES(4482,'COMPARTMENT','Stomach','Basal pH in fasted state',1,0,1,1,'GI_PHYSIOLOGY_PH',1,'LOCAL','INDIVIDUAL',0,1);
@@ -12286,6 +12314,21 @@ INSERT INTO tab_container_parameters VALUES(5301,'EVENTGROUP','Meal: High-fat so
 INSERT INTO tab_container_parameters VALUES(5307,'EVENTGROUP','Meal: Mixed solid/liquid meal (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
 INSERT INTO tab_container_parameters VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume (reference Adult)',1,0,1,1,'EVENTS',2,'LOCAL','EVENT',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Use bile salt micellization',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',101,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pH (intrinsic solubility)',0,1,1,0,'COMPOUND_ADVANCED_SOLUBILITY',17,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F1',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F2',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F3',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K1',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K2',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K3',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K4',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K5',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K6',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K7',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K8',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','Solubility (intrinsic)',1,0,1,0,'COMPOUND_ADVANCED_SOLUBILITY',4,'GLOBAL','SIMULATION',0,0);
+INSERT INTO tab_container_parameters VALUES(1678,'COMPOUND','DRUG','IntrinsicSolubility_pKa_pH_Factor',0,1,0,0,'COMPOUND_ADVANCED_SOLUBILITY',1,'GLOBAL','COMPOUND',0,0);
 CREATE TABLE [tab_container_parameter_curves](
   [parameter_value_version] text NOT NULL, 
   [species] text NOT NULL, 
@@ -55439,6 +55482,21 @@ INSERT INTO tab_container_parameter_rates VALUES(5307,'EVENTGROUP','Meal: Mixed 
 INSERT INTO tab_container_parameter_rates VALUES(5313,'EVENTGROUP','Meal: Dextrose solution (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(5319,'EVENTGROUP','Meal: Egg sandwich (Human)','Meal volume','Events','PARAM_Meal_Volume',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(4482,'COMPARTMENT','Stomach','Volume (reference Adult)','LumenSegmentVolume','PARAM_Stomach_RefAdult_Volume',0.0,0,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Use bile salt micellization','CompoundCommon','One_Rate',0.0,1,1.0,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pH (intrinsic solubility)','CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',0.0,1,14.0,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F1','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F2','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_F3','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K1','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K2','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K2',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K3','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K3',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K4','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K4',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K5','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K5',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K6','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K6',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K7','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K7',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','pKa_pH_IntrinsicSolubility_K8','CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K8',0.0,1,1.0,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','Solubility (intrinsic)','CompoundAcidBase_PKSim','PARAM_Solubility_Intrinsic',0.0,1,NULL,1,119);
+INSERT INTO tab_container_parameter_rates VALUES(1678,'COMPOUND','DRUG','IntrinsicSolubility_pKa_pH_Factor','CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',0.0,1,NULL,1,119);
 CREATE TABLE [tab_container_parameter_rhs](
   [container_id] bigint NOT NULL, 
   [container_type] text NOT NULL, 
@@ -71204,6 +71262,21 @@ INSERT INTO tab_parameters VALUES('Use bidirectional surface integration factor'
 INSERT INTO tab_parameters VALUES('pH after meal','pH  after meal','The postprandial luminal pH (gastric or upper intestinal) initialized by meal intake and allowed to decay or recover via fitted empirical functions.','Dimensionless',NULL);
 INSERT INTO tab_parameters VALUES('Volume (reference Adult)','Volume (reference Adult)',replace(replace('Volume of the stomach lumen of the reference adult individual (30 year old European male).\r\nUsed as reference value for scaling the meal volume with the stomach volume of the simulated individual.','\r',char(13)),'\n',char(10)),'Volume','');
 INSERT INTO tab_parameters VALUES('Meal volume (reference Adult)','Meal volume (reference Adult)',replace(replace('Approximate volume of the meal administered to the reference adult individual (30 year old European male).\r\nIn a simulation, the effective meal volume is scaled from this value with the stomach volume of the simulated individual, i.e. \r\nMeal volume = Meal volume (reference Adult) * Stomach volume / Stomach volume (reference Adult).','\r',char(13)),'\n',char(10)),'Volume','');
+INSERT INTO tab_parameters VALUES('Use bile salt micellization','Use bile salt micellization','Use bile salt micellization','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pH (intrinsic solubility)','pH (intrinsic solubility)','pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('Solubility (intrinsic)','Solubility (intrinsic)','Intrinsic solubility of a compound','Concentration (mass)','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_F1','pKa_pH_IntrinsicSolubility_F1','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_F2','pKa_pH_IntrinsicSolubility_F2','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_F3','pKa_pH_IntrinsicSolubility_F3','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K1','pKa_pH_IntrinsicSolubility_K1','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K2','pKa_pH_IntrinsicSolubility_K2','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K3','pKa_pH_IntrinsicSolubility_K3','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K4','pKa_pH_IntrinsicSolubility_K4','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K5','pKa_pH_IntrinsicSolubility_K5','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K6','pKa_pH_IntrinsicSolubility_K6','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K7','pKa_pH_IntrinsicSolubility_K7','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('pKa_pH_IntrinsicSolubility_K8','pKa_pH_IntrinsicSolubility_K8','Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at pH (intrinsic solubility)','Dimensionless','');
+INSERT INTO tab_parameters VALUES('IntrinsicSolubility_pKa_pH_Factor','IntrinsicSolubility_pKa_pH_Factor','pKa/pH-Dependent factor for intrinsic solubility','Dimensionless','');
 CREATE TABLE [tab_parameter_value_versions](
   [parameter_value_version] text PRIMARY KEY NOT NULL, 
   [display_name] text NOT NULL, 
@@ -85650,7 +85723,7 @@ INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Inflow_Stoma
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Inflow_UpperIleum',139,'Volume','V');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Inflow_UpperJejunum',139,'Volume','V');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',139,'Solubility table','SolubilityTable');
-INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Solubility at reference pH','S0');
+INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Solubility (intrinsic)','S0');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_InverseGastricEmptyingTime',139,'Gastric emptying time','GET');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_Caecum',139,'Intestinal transit rate','LuminalVelocity');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_InverseLITT_Factor_ColonAscendens',139,'Intestinal transit rate','LuminalVelocity');
@@ -86594,9 +86667,8 @@ INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSo
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous',139,'Solubility_pKa_pH_Factor','Solubility_pKa_pH_Factor');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous',240,'Solubility at reference pH','S0');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityAqueous',240,'Solubility_pKa_pH_Factor','Solubility_pKa_REFpH_Factor');
-INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization',139,'Solubility_pKa_pH_Factor','Solubility_pKa_pH_Factor');
-INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization',240,'Solubility at reference pH','S0');
-INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization',240,'Solubility_pKa_pH_Factor','Solubility_pKa_REFpH_Factor');
+INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization',139,'Solubility (aqueous)','Saq');
+INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubilityIonization',240,'Solubility (intrinsic)','S0');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Intestinal_fu',139,'Solubility','Stot');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_Intestinal_fu',139,'Solubility (aqueous)','Saq');
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',139,'Basal pH in fasted state','BasalpH');
@@ -86605,6 +86677,64 @@ INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',
 INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_pH_Stomach',139,'Volume','V');
 INSERT INTO tab_rate_generic_parameters VALUES('Events','PARAM_Meal_Volume',139,'Meal volume (reference Adult)','Meal_volume_reference_Adult');
 INSERT INTO tab_rate_generic_parameters VALUES('ApplicationParameter','PARAM_hu',240,'Immediately dissolve particles smaller than','ParticleRadiusDissolved');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Acids_Count','nAcids');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Bases_Count','nBases');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Acid_0','pKa_Acid_0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Acid_1','pKa_Acid_1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Base_0','pKa_Base_0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pH_Intrinsic_Solubility',139,'pKa_Base_1','pKa_Base_1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'Compound type 0','CT0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'CT_NEUTRAL','CT_NEUTRAL');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'pKa value 0','pKa_0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'Compound type 1','CT1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'CT_NEUTRAL','CT_NEUTRAL');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'pKa value 1','pKa_1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'Compound type 2','CT2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'CT_NEUTRAL','CT_NEUTRAL');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'pKa value 2','pKa_2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K2',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K2',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K2',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K3',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K3',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K3',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K4',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K4',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K4',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K5',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K5',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K5',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K6',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K6',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K6',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K7',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K7',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K7',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K8',139,'pKa_pH_IntrinsicSolubility_F1','F1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K8',139,'pKa_pH_IntrinsicSolubility_F2','F2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K8',139,'pKa_pH_IntrinsicSolubility_F3','F3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Solubility_Intrinsic',139,'Solubility at reference pH','S0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Solubility_Intrinsic',139,'Solubility_pKa_pH_Factor','Solubility_pKa_REFpH_Factor');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Solubility_Intrinsic',139,'IntrinsicSolubility_pKa_pH_Factor','Solubility_pKa_Intrinsic_pH_Factor');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'Compound type 0','CT0');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'Compound type 1','CT1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'Compound type 2','CT2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K1','K1');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K2','K2');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K3','K3');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K4','K4');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K5','K5');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K6','K6');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K7','K7');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'pKa_pH_IntrinsicSolubility_K8','K8');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_Intrinsic_Solubility_pKa_pH_Factor',139,'Solubility gain per charge','base');
+INSERT INTO tab_rate_generic_parameters VALUES('Lumen_PKSim','PARAM_IntestinalSolubility',240,'Use bile salt micellization','UseBileSaltMicellization');
 CREATE TABLE [tab_species_calculation_methods](
   [species] text NOT NULL REFERENCES [tab_species]([species]) ON DELETE CASCADE ON UPDATE CASCADE, 
   [calculation_method] text NOT NULL REFERENCES [tab_calculation_methods]([calculation_method]) ON UPDATE CASCADE, 

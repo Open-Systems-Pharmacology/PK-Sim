@@ -951,7 +951,7 @@ namespace PKSim.Core
          public const string FRACTION_UNBOUND_EXPERIMENT = "Fraction unbound (experiment)";
          public const string LIPOPHILICITY_EXPERIMENT = "Lipophilicity (experiment)";
          public const string FRACTION_DOSE = "Fraction (dose)";
-         public const string SOLUBILITY_P_KA__P_H_FACTOR = "Solubility_pKa_pH_Factor";
+         public const string SOLUBILITY_PKA_PH_FACTOR = "Solubility_pKa_pH_Factor";
          public const string HALF_LIFE = "t1/2";
          public const string HALF_LIFE_LIVER = "t1/2 (liver)";
          public const string HALF_LIFE_INTESTINE = "t1/2 (intestine)";

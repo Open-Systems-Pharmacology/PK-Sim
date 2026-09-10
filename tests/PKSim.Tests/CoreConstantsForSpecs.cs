@@ -81,28 +81,30 @@ namespace PKSim
          public const string USE_HYDRODYNAMIC_MODEL = "Use Hydrodynamic Model";
          public const string USE_EFFECTIVE_DIFFUSION = "Use Effective Diffusion";
          public const string USE_HINTZ_JOHNSON = "Use Hintz-Johnson";
+         public const string PH_INTRINSIC_SOLUBILITY = "pH (intrinsic solubility)";
+         public const string INTRINSIC_SOLUBILITY_PKA_PH_FACTOR = "IntrinsicSolubility_pKa_pH_Factor";
+         public const string SOLUBILITY_INTRINSIC = "Solubility (intrinsic)";
       }
 
       public static class ContainerName
       {
          public static readonly string IRREVERSIBLE_INHIBITION = "IrreversibleInhibition";
-         
-         public static IReadOnlyList<string> PregnancyOrgansWithBloodFlow = new[]
-         {
+
+         public static IReadOnlyList<string> PregnancyOrgansWithBloodFlow =
+         [
             "Breasts", 
             "Endometrium", 
             "Myometrium", 
             "PlacentaFetal", 
             "PlacentaMaternal"
-         };
+         ];
 
-         public static IReadOnlyList<string> PregnancyOrgans = PregnancyOrgansWithBloodFlow.Concat(new[]
-         {
+         public static IReadOnlyList<string> PregnancyOrgans = PregnancyOrgansWithBloodFlow.Concat([
             "AmnioticFluid",
             "ArterialBlood_UmbilicalCord",
             "Fetus",
             "VenousBlood_UmbilicalCord"
-         }).ToList().AsReadOnly();
+         ]).ToList().AsReadOnly();
 
       }
 
