@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
 
@@ -15,7 +14,6 @@ namespace PKSim.Presentation
    public abstract class concern_for_SimulationToCompoundCommitDTOMapper : ContextSpecification<SimulationToCompoundCommitDTOMapper>
    {
       protected IContainerTask _containerTask;
-      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected IParameterToParameterCommitDTOMapper _parameterCommitDTOMapper;
       protected IndividualSimulation _simulation;
       protected Compound _templateCompound;
@@ -27,7 +25,6 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _containerTask = A.Fake<IContainerTask>();
-         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _parameterCommitDTOMapper = A.Fake<IParameterToParameterCommitDTOMapper>();
 
          _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateId" };
@@ -50,8 +47,6 @@ namespace PKSim.Presentation
             BuildingBlock = _simulationCompound
          });
 
-         A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(_simulation, _simulationCompound)).Returns(_templateCompound);
-
          _parameterCache = new PathCacheForSpecs<IParameter>();
          _parameterCache.Add("Organism|Aspirin|Lipophilicity", _lipophilicity);
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeability);
@@ -62,7 +57,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Permeability", _permeability))
             .Returns(new ParameterCommitDTO { Path = "Organism|Aspirin|Permeability", Value = 7.2 });
 
-         sut = new SimulationToCompoundCommitDTOMapper(_containerTask, _buildingBlockInProjectManager, _parameterCommitDTOMapper);
+         sut = new SimulationToCompoundCommitDTOMapper(_containerTask, _parameterCommitDTOMapper);
       }
    }
 
@@ -79,7 +74,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation, _simulationCompound);
+         _result = sut.MapFrom(_simulation, _templateCompound);
       }
 
       [Observation]
@@ -128,7 +123,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation, _simulationCompound);
+         _result = sut.MapFrom(_simulation, _templateCompound);
       }
 
       [Observation]
@@ -160,7 +155,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation, _simulationCompound);
+         _result = sut.MapFrom(_simulation, _templateCompound);
       }
 
       [Observation]
@@ -190,7 +185,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation, _simulationCompound);
+         _result = sut.MapFrom(_simulation, _templateCompound);
       }
 
       [Observation]
@@ -224,7 +219,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simulation, _simulationCompound);
+         _result = sut.MapFrom(_simulation, _templateCompound);
       }
 
       [Observation]
@@ -237,6 +232,39 @@ namespace PKSim.Presentation
       public void should_select_the_existing_set()
       {
          _result.SelectedExistingSet.ShouldBeEqualTo(_existingSet);
+      }
+   }
+
+   public class When_mapping_a_simulation_whose_compound_is_outdated_compared_to_the_project_compound : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+      private OverwriteParameterSet _setInProjectCompound;
+
+      protected override void Context()
+      {
+         base.Context();
+         //a set committed from another simulation exists in the project compound but not in the outdated compound of this simulation
+         _setInProjectCompound = new OverwriteParameterSet { Name = "ExistingSet" };
+         _templateCompound.AddOverwriteParameterSet(_setInProjectCompound);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _templateCompound);
+      }
+
+      [Observation]
+      public void should_use_the_project_compound()
+      {
+         _result.Compound.ShouldBeEqualTo(_templateCompound);
+      }
+
+      [Observation]
+      public void should_offer_the_sets_defined_in_the_project_compound()
+      {
+         _result.AvailableExistingSets.ShouldOnlyContain(_setInProjectCompound);
       }
    }
 }
