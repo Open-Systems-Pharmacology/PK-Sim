@@ -141,6 +141,7 @@ namespace PKSim.UI.Views.Simulations
          layoutItemExistingSet.Visibility = toVisibility(!isCreateNew && hasExistingSets);
 
          radioGroupCommitMode.Properties.Items[UPDATE_EXISTING].Enabled = hasExistingSets;
+         radioGroupCommitMode.ToolTip = hasExistingSets ? string.Empty : PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
       }
 
       private bool hasExistingSets => _dto?.AvailableExistingSets != null && _dto.AvailableExistingSets.Any();

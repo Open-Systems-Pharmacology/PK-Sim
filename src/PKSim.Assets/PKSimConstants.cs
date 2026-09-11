@@ -1755,6 +1755,7 @@ namespace PKSim.Assets
          public static readonly string DissociationConstants = "Dissociation Constants";
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
+         public static string NoOverwriteParameterSetToUpdateIn(string compoundName) => $"{ObjectTypes.Compound} '{compoundName}' does not define any {ObjectTypes.OverwriteParameterSet.ToLower()} that could be updated.";
          public static readonly string Metadata = "Metadata";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;
