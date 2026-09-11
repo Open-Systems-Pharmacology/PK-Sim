@@ -29,27 +29,31 @@ public static class BuildingBlockCreator
 
       var originData = originDataMapper.MapToModel(individualCharacteristics, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
 
-      var buildingBlock = individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
+      var individual = individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
 
-      return serializer.Serialize(mapper.MapFrom(buildingBlock));
+      var individualBuildingBlock = mapper.MapFrom(individual);
+      Api.ResolveTask<IBuildingBlockSnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, individual);
+      return serializer.Serialize(individualBuildingBlock);
    }
 
    public static string CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype)
    {
       Api.InitializeOnce();
-      var (serializer, mapper) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper>();
-      ExpressionProfile buildingBlock;
+      var (serializer, mapper, snapshotUpdater) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper, IBuildingBlockSnapshotUpdater>();
+      ExpressionProfile expressionProfile;
 
       if (string.Equals(category, TransportProtein))
-         buildingBlock = createExpressionProfile<IndividualTransporter>(moleculeName, speciesName, phenotype);
+         expressionProfile = createExpressionProfile<IndividualTransporter>(moleculeName, speciesName, phenotype);
       else if (string.Equals(category, ProteinBindingPartner))
-         buildingBlock = createExpressionProfile<IndividualOtherProtein>(moleculeName, speciesName, phenotype);
+         expressionProfile = createExpressionProfile<IndividualOtherProtein>(moleculeName, speciesName, phenotype);
       else if (string.Equals(category, MetabolizingEnzyme))
-         buildingBlock = createExpressionProfile<IndividualEnzyme>(moleculeName, speciesName, phenotype);
+         expressionProfile = createExpressionProfile<IndividualEnzyme>(moleculeName, speciesName, phenotype);
       else
          throw new ArgumentException(PKSimConstants.Error.InvalidProteinCategory(category));
 
-      return serializer.Serialize(mapper.MapFrom(buildingBlock));
+      var expressionProfileBuildingBlock = mapper.MapFrom(expressionProfile);
+      snapshotUpdater.AddSnapshotTo(expressionProfileBuildingBlock, expressionProfile);
+      return serializer.Serialize(expressionProfileBuildingBlock);
    }
 
    private static ExpressionProfile createExpressionProfile<T>(string moleculeName, string speciesName, string phenotype) where T : IndividualMolecule
