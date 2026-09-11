@@ -43,8 +43,12 @@ namespace PKSim.Starter
             workspace.Project = new PKSimProject();
             var mapper = container.Resolve<IExpressionProfileToExpressionProfileBuildingBlockMapper>();
 
+            if (presenter.Create<T>().IsEmpty())
+               return null;
 
-            return presenter.Create<T>().IsEmpty() ? null : mapper.MapFrom(presenter.ExpressionProfile);
+            var expressionProfileBuildingBlock = mapper.MapFrom(presenter.ExpressionProfile);
+            container.Resolve<IBuildingBlockSnapshotUpdater>().AddSnapshotTo(expressionProfileBuildingBlock, presenter.ExpressionProfile);
+            return expressionProfileBuildingBlock;
          }
       }
 
@@ -59,8 +63,11 @@ namespace PKSim.Starter
             throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(buildingBlock.Species));
 
          var queryResults = expressionProfileProteinDatabaseTask.QueryDatabase(buildingBlock);
+         if (queryResults == null)
+            return null;
 
-         return queryResults == null ? null : queryResultsToExpressionParameter(buildingBlock, queryResults);
+         container.Resolve<IBuildingBlockSnapshotUpdater>().UpdateSnapshotFromQuery(buildingBlock, queryResults);
+         return queryResultsToExpressionParameter(buildingBlock, queryResults);
       }
 
       private static void loadApplicationSettings(IContainer container)
