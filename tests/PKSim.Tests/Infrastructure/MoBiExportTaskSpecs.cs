@@ -12,6 +12,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -29,12 +30,12 @@ namespace PKSim.Infrastructure
       protected ILazyLoadTask _lazyLoadTask;
       protected IDialogCreator _dialogCreator;
       protected ISimulationPersistor _simulationPersistor;
-      protected IProjectRetriever _projectRetriever;
+      protected IPKSimProjectRetriever _projectRetriever;
       protected IObjectIdResetter _objectIdResetter;
       private IJournalRetriever _journalRetriever;
       protected IApplicationSettings _applicationSettings;
       protected IStartableProcessFactory _startableProcessFactory;
-      protected IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      protected ISnapshotUpdater _snapshotUpdater;
       protected IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
       protected Simulation _sim;
       private IModelCoreSimulation _modelCoreSimulation;
@@ -48,12 +49,12 @@ namespace PKSim.Infrastructure
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
-         _projectRetriever = A.Fake<IProjectRetriever>();
+         _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _objectIdResetter = A.Fake<IObjectIdResetter>();
          _journalRetriever = A.Fake<IJournalRetriever>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
-         _modelCoreSimulationSnapshotUpdater = A.Fake<IModelCoreSimulationSnapshotUpdater>();
+         _snapshotUpdater = A.Fake<ISnapshotUpdater>();
          _overwriteParameterSetApplicationTask = A.Fake<IOverwriteParameterSetApplicationTask>();
          _sim = A.Fake<Simulation>();
 
@@ -78,7 +79,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
 
          sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoUpdater,
-            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _modelCoreSimulationSnapshotUpdater, _overwriteParameterSetApplicationTask);
+            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _snapshotUpdater, _overwriteParameterSetApplicationTask);
       }
    }
 
@@ -106,19 +107,22 @@ namespace PKSim.Infrastructure
       private string _fileName;
       private SimulationTransfer _simulationTransfer;
       private DataRepository _observedData1;
+      private PKSimProject _project;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "toto";
-         _observedData1 = new DataRepository();
+         _observedData1 = new DataRepository("OBS");
          A.CallTo(() => _sim.UsedObservedData).Returns(new[] {new UsedObservedData {Id = "OBS"}});
          A.CallTo(() => _sim.IsImported).Returns(false);
          A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, _fileName))
             .Invokes(x => _simulationTransfer = x.GetArgument<SimulationTransfer>(0));
 
-         A.CallTo(() => _projectRetriever.CurrentProject.Favorites).Returns(new Favorites {"FAV1"});
-         A.CallTo(() => _projectRetriever.CurrentProject.ObservedDataBy("OBS")).Returns(_observedData1);
+         _project = new PKSimProject();
+         _project.Favorites.Add("FAV1");
+         _project.AddObservedData(_observedData1);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
       }
 
       protected override void Because()
@@ -139,9 +143,9 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void snapshots_should_be_set_by_the_snapshot_task()
+      public void snapshots_should_be_set_by_the_snapshot_updater_for_the_current_project()
       {
-         A.CallTo(() => _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(A<Simulation>._, A<IModelCoreSimulation>._)).MustHaveHappened();
+         A.CallTo(() => _snapshotUpdater.AddSnapshotsToModelCoreSimulation(_sim, _simulationTransfer.Simulation, _project)).MustHaveHappened();
       }
 
       [Observation]

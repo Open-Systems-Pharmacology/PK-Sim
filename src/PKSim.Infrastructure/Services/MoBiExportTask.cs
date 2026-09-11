@@ -26,12 +26,12 @@ namespace PKSim.Infrastructure.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
       private readonly ISimulationPersistor _simulationPersistor;
-      private readonly IProjectRetriever _projectRetriever;
+      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IObjectIdResetter _objectIdResetter;
       private readonly IJournalRetriever _journalRetriever;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
-      private readonly IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      private readonly ISnapshotUpdater _snapshotUpdater;
       private readonly IOverwriteParameterSetApplicationTask _overwriteParameterSetApplicationTask;
 
       public MoBiExportTask(
@@ -42,12 +42,12 @@ namespace PKSim.Infrastructure.Services
          ILazyLoadTask lazyLoadTask,
          IDialogCreator dialogCreator,
          ISimulationPersistor simulationPersistor,
-         IProjectRetriever projectRetriever,
+         IPKSimProjectRetriever projectRetriever,
          IObjectIdResetter objectIdResetter,
          IJournalRetriever journalRetriever,
          IApplicationSettings applicationSettings,
          IStartableProcessFactory startableProcessFactory,
-         IModelCoreSimulationSnapshotUpdater modelCoreSimulationSnapshotUpdater,
+         ISnapshotUpdater snapshotUpdater,
          IOverwriteParameterSetApplicationTask overwriteParameterSetApplicationTask)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure.Services
          _journalRetriever = journalRetriever;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _modelCoreSimulationSnapshotUpdater = modelCoreSimulationSnapshotUpdater;
+         _snapshotUpdater = snapshotUpdater;
          _overwriteParameterSetApplicationTask = overwriteParameterSetApplicationTask;
       }
 
@@ -136,14 +136,14 @@ namespace PKSim.Infrastructure.Services
             JournalPath = _journalRetriever.JournalFullPath
          };
 
-         var currentProject = _projectRetriever.CurrentProject;
+         var currentProject = _projectRetriever.Current;
          if (currentProject != null)
          {
             simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
             simulationTransfer.Favorites = currentProject.Favorites;
          }
 
-         _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation);
+         _snapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation, currentProject);
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
       }

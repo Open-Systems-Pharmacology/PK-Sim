@@ -24,7 +24,7 @@ namespace PKSim.Starter
 
             var mapper = container.Resolve<IIndividualToIndividualBuildingBlockMapper>();
             var individualBuildingBlock = mapper.MapFrom(presenter.Individual);
-            container.Resolve<IBuildingBlockSnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, presenter.Individual);
+            container.Resolve<ISnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, presenter.Individual);
             return individualBuildingBlock;
          }
       }

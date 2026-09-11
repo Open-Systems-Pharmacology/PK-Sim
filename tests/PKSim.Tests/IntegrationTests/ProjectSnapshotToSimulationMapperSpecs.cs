@@ -19,7 +19,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected ICoreWorkspace _workspace;
       protected DataRepository _observedData;
-      protected IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      protected ISnapshotUpdater _snapshotUpdater;
+      protected PKSimProject _project;
       private ISimulationToModelCoreSimulationMapper _simulationMapper;
       private ISimulationConfigurationTask _simulationConfigurationTask;
       protected IModelCoreSimulation _moBiSimulation;
@@ -34,8 +35,9 @@ namespace PKSim.IntegrationTests
          _simulationMapper = IoC.Resolve<ISimulationToModelCoreSimulationMapper>();
 
          _workspace = IoC.Resolve<ICoreWorkspace>();
-         _modelCoreSimulationSnapshotUpdater = IoC.Resolve<IModelCoreSimulationSnapshotUpdater>();
-         _workspace.Project = new PKSimProject();
+         _snapshotUpdater = IoC.Resolve<ISnapshotUpdater>();
+         _project = new PKSimProject();
+         _workspace.Project = _project;
 
          _observedData = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("S").WithName("obs data");
 
@@ -50,7 +52,7 @@ namespace PKSim.IntegrationTests
          var configuration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
          _moBiSimulation = _simulationMapper.MapFrom(_simulation, configuration, shouldCloneModel: true);
 
-         _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(_simulation, _moBiSimulation);
+         _snapshotUpdater.AddSnapshotsToModelCoreSimulation(_simulation, _moBiSimulation, _project);
       }
    }
 
