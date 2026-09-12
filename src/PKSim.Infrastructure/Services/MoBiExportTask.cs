@@ -137,11 +137,8 @@ namespace PKSim.Infrastructure.Services
          };
 
          var currentProject = _projectRetriever.Current;
-         if (currentProject != null)
-         {
-            simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
-            simulationTransfer.Favorites = currentProject.Favorites;
-         }
+         simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
+         simulationTransfer.Favorites = currentProject.Favorites;
 
          _snapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation, currentProject);
 
