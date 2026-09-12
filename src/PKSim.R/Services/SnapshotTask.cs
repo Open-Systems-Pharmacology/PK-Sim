@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;

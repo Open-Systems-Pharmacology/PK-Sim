@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using OSPSuite.BDDHelper;
@@ -134,6 +134,18 @@ namespace PKSim.R
       {
          _individualSimulation.IndividualValuesCache.ShouldBeNull();
          _individualSimulation.AgingData.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_embed_the_snapshots_in_both_simulations()
+      {
+         _simulations.Each(x =>
+         {
+            x.Configuration.ModuleConfigurations.Single().Module.HasSnapshot.ShouldBeTrue();
+            x.Configuration.Individual.HasSnapshot.ShouldBeTrue();
+            x.Configuration.ExpressionProfiles.Count.ShouldBeGreaterThan(0);
+            x.Configuration.ExpressionProfiles.Each(expressionProfile => expressionProfile.HasSnapshot.ShouldBeTrue());
+         });
       }
    }
 

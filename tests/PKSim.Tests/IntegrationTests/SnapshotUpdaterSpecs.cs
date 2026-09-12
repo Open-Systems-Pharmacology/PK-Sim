@@ -229,6 +229,13 @@ namespace PKSim.IntegrationTests
          _moBiSimulation.Configuration.ExpressionProfiles.Each(x => x.Snapshot.ShouldNotBeEmpty());
       }
 
+      [Observation]
+      public void the_individual_snapshot_should_not_reference_the_expression_profiles()
+      {
+         var individualSnapshot = _jsonSerializer.DeserializeFromBase64String<SnapshotIndividual>(_moBiSimulation.Configuration.Individual.Snapshot).Result;
+         individualSnapshot.ExpressionProfiles.ShouldBeNull();
+      }
+
       protected abstract Simulation CreateSimulation();
    }
 
