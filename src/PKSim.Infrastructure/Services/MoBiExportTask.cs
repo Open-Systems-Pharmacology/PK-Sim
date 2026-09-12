@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -141,8 +141,9 @@ namespace PKSim.Infrastructure.Services
          {
             simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
             simulationTransfer.Favorites = currentProject.Favorites;
-            _snapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation, currentProject);
          }
+
+         _snapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation, currentProject);
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
       }
