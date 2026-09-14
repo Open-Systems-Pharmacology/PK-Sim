@@ -25,11 +25,13 @@ namespace PKSim.IntegrationTests
    public class When_checking_the_changes_in_the_database_for_version_13_0 : concern_for_DatabaseUpdate
    {
       private IRateFormulaRepository _rateFormulaRepository;
+      private IRateObjectPathsRepository _rateObjectPathsRepository;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+         _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
       }
 
       [Observation]
@@ -89,6 +91,27 @@ namespace PKSim.IntegrationTests
       {
          var formula = formulaFor("PARAM_K_i");
          formula.ShouldBeEqualTo("pKa_Acids_Count = 0 ? (pKa_Bases_Count != 0 ? max(0; K_n - PenaltyBases) : 0) : max(0; K_n-PenaltyOthers)");
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730#issuecomment-5662251824
+      [Observation]
+      public void should_use_the_ph_of_the_intrinsic_solubility_in_the_intrinsic_solubility_pka_ph_factor_formulas()
+      {
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F1");
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F2");
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F3");
+      }
+
+      private void verifyPHAliasOfIntrinsicSolubilityFactor(string rate)
+      {
+         const string calcMethod = "CompoundAcidBase_PKSim";
+
+         var objectPaths = _rateObjectPathsRepository.ObjectPathsFor(new RateKey(calcMethod, rate)).ToList();
+         var phObjectPaths = objectPaths.Where(p => p.Alias.Equals("pH")).ToList();
+
+         phObjectPaths.Count.ShouldBeEqualTo(1, $"Expected exactly one 'pH' alias in '{rate}'");
+         phObjectPaths[0].PathAsString.EndsWith(CoreConstantsForSpecs.Parameters.PH_INTRINSIC_SOLUBILITY)
+            .ShouldBeTrue($"'pH' alias in '{rate}' points to '{phObjectPaths[0].PathAsString}'");
       }
 
       [Observation]
