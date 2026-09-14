@@ -86686,15 +86686,15 @@ INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_p
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'Compound type 0','CT0');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'CT_NEUTRAL','CT_NEUTRAL');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'pKa value 0','pKa_0');
-INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F1',139,'pH (intrinsic solubility)','pH');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'Compound type 1','CT1');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'CT_NEUTRAL','CT_NEUTRAL');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'pKa value 1','pKa_1');
-INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F2',139,'pH (intrinsic solubility)','pH');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'Compound type 2','CT2');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'CT_NEUTRAL','CT_NEUTRAL');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'pKa value 2','pKa_2');
-INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'Reference pH','pH');
+INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_F3',139,'pH (intrinsic solubility)','pH');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F1','F1');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F2','F2');
 INSERT INTO tab_rate_generic_parameters VALUES('CompoundAcidBase_PKSim','PARAM_pKa_pH_IntrinsicSolubility_K1',139,'pKa_pH_IntrinsicSolubility_F3','F3');
