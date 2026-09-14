@@ -32,14 +32,14 @@ public static class BuildingBlockCreator
       var individual = individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
 
       var individualBuildingBlock = mapper.MapFrom(individual);
-      Api.ResolveTask<IBuildingBlockSnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, individual);
+      Api.ResolveTask<ISnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, individual);
       return serializer.Serialize(individualBuildingBlock);
    }
 
    public static string CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype)
    {
       Api.InitializeOnce();
-      var (serializer, mapper, snapshotUpdater) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper, IBuildingBlockSnapshotUpdater>();
+      var (serializer, mapper, snapshotUpdater) = Api.ResolveTasks<IPKMLPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper, ISnapshotUpdater>();
       ExpressionProfile expressionProfile;
 
       if (string.Equals(category, TransportProtein))

@@ -47,7 +47,7 @@ namespace PKSim.Starter
                return null;
 
             var expressionProfileBuildingBlock = mapper.MapFrom(presenter.ExpressionProfile);
-            container.Resolve<IBuildingBlockSnapshotUpdater>().AddSnapshotTo(expressionProfileBuildingBlock, presenter.ExpressionProfile);
+            container.Resolve<ISnapshotUpdater>().AddSnapshotTo(expressionProfileBuildingBlock, presenter.ExpressionProfile);
             return expressionProfileBuildingBlock;
          }
       }
@@ -66,7 +66,7 @@ namespace PKSim.Starter
          if (queryResults == null)
             return null;
 
-         container.Resolve<IBuildingBlockSnapshotUpdater>().UpdateSnapshotFromQuery(buildingBlock, queryResults);
+         container.Resolve<ISnapshotUpdater>().UpdateSnapshotFromQuery(buildingBlock, queryResults);
          return queryResultsToExpressionParameter(buildingBlock, queryResults);
       }
 
