@@ -313,7 +313,6 @@ namespace PKSim.Core.Snapshots.Mappers
          updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
-         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
          reconstructChangedParameterPaths(simulation);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
@@ -383,6 +382,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(snapshot, simulation);
 
          await mapCompoundProperties(simulation, snapshot.Compounds, snapshotContext);
+         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
          simulation.EventProperties = await mapEventProperties(snapshot.Events, snapshotContext);
          simulation.ObserverSetProperties = await mapObserverSetProperties(snapshot.ObserverSets, snapshotContext);
          await updateInteractionProperties(simulation, snapshot.Interactions, snapshotContext);
