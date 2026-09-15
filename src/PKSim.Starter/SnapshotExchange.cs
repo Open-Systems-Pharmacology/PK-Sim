@@ -1,9 +1,8 @@
 ﻿using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
-using OSPSuite.Core.Serialization.Xml;
 using PKSim.CLI.Core.Services;
 using PKSim.Core.Services;
-using IContainer = OSPSuite.Utility.Container.IContainer;
+using static PKSim.Starter.ExchangeSerializer;
 
 namespace PKSim.Starter;
 
@@ -15,7 +14,7 @@ public static class SnapshotExchange
       var mapper = container.Resolve<IIndividualSnapshotToIndividualBuildingBlockMapper>();
       var individualBuildingBlock = mapper.MapFrom(individualSnapshot);
       individualBuildingBlock.Snapshot = individualSnapshot;
-      return serialize(individualBuildingBlock, container);
+      return Serialize(individualBuildingBlock, container);
    }
 
    public static object CreateExpressionProfileBuildingBlock(string expressionProfileSnapshot)
@@ -25,7 +24,7 @@ public static class SnapshotExchange
       
       var expressionProfileBuildingBlock = mapper.MapFrom(expressionProfileSnapshot);
       expressionProfileBuildingBlock.Snapshot = expressionProfileSnapshot;
-      return serialize(expressionProfileBuildingBlock, container);
+      return Serialize(expressionProfileBuildingBlock, container);
    }
 
    public static object CreateModule(string projectSnapshot)
@@ -37,7 +36,7 @@ public static class SnapshotExchange
       container.Resolve<IRepresentationInfoUpdater>().UpdateRepresentationInfoIn(module);
       var objectIdResetter = container.Resolve<IObjectIdResetter>();
       objectIdResetter.ResetIdFor(module);
-      return serialize(module, container);
+      return Serialize(module, container);
    }
 
    public static object CreateModuleAndExportInputs(string projectSnapshot, QualificationConfiguration qualificationConfiguration)
@@ -52,13 +51,6 @@ public static class SnapshotExchange
       objectIdResetter.ResetIdFor(module);
       var inputMappings = qualificationInputTask.ExportInputs(project, qualificationConfiguration);
 
-      return (serialize(module, container), inputMappings);
-   }
-
-   // Serialize is required so that PKSimSpatialStructures are changed to MoBiSpatialStructures during exchange
-   private static string serialize<T>(T itemToSerialize, IContainer container)
-   {
-      var pkmlPersistor = container.Resolve<IPKMLPersistor>();
-      return pkmlPersistor.Serialize(itemToSerialize);
+      return (Serialize(module, container), inputMappings);
    }
 }

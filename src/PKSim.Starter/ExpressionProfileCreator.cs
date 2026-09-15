@@ -12,6 +12,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Services;
+using static PKSim.Starter.ExchangeSerializer;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Starter
@@ -48,7 +49,7 @@ namespace PKSim.Starter
 
             var expressionProfileBuildingBlock = mapper.MapFrom(presenter.ExpressionProfile);
             container.Resolve<ISnapshotUpdater>().AddSnapshotTo(expressionProfileBuildingBlock, presenter.ExpressionProfile);
-            return expressionProfileBuildingBlock;
+            return Serialize(expressionProfileBuildingBlock, container);
          }
       }
 

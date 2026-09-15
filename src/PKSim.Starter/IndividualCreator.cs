@@ -4,6 +4,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.Individuals;
+using static PKSim.Starter.ExchangeSerializer;
 
 namespace PKSim.Starter
 {
@@ -25,7 +26,7 @@ namespace PKSim.Starter
             var mapper = container.Resolve<IIndividualToIndividualBuildingBlockMapper>();
             var individualBuildingBlock = mapper.MapFrom(presenter.Individual);
             container.Resolve<ISnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, presenter.Individual);
-            return individualBuildingBlock;
+            return Serialize(individualBuildingBlock, container);
          }
       }
    }
