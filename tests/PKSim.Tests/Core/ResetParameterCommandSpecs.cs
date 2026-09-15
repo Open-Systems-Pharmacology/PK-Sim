@@ -141,6 +141,15 @@ namespace PKSim.Core
          base.Context();
          _parameterToReset.Value = 25;
          _parameterToReset.IsDefault = false;
+         _parameterToReset.ValueOrigin.Method = ValueOriginDeterminationMethods.ManualFit;
+         _parameterToReset.ValueOrigin.Source = ValueOriginSources.ParameterIdentification;
+         _parameterToReset.ValueOrigin.Description = "Fitted to data";
+
+         A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(new ValueOrigin
+         {
+            Method = ValueOriginDeterminationMethods.InVivo,
+            Source = ValueOriginSources.Database
+         });
       }
 
       protected override void Because()
@@ -159,6 +168,14 @@ namespace PKSim.Core
       public void should_restore_the_default_state_of_the_parameter()
       {
          _parameterToReset.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_restore_the_value_origin_of_the_parameter()
+      {
+         _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.ManualFit);
+         _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.ParameterIdentification);
+         _parameterToReset.ValueOrigin.Description.ShouldBeEqualTo("Fitted to data");
       }
    }
 
