@@ -105,6 +105,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateWeightFromSnapshot(snapshot, originData);
          updateHeightFromSnapshot(snapshot, originData);
+         updateBMIFromWeightAndHeight(originData);
 
          await updateDiseaseStateFromSnapshot(snapshot, originData, snapshotContext);
          return originData;
@@ -137,6 +138,24 @@ namespace PKSim.Core.Snapshots.Mappers
             return;
 
          originData.Height = getOriginDataValues(originData, _individualModelTask.MeanHeightFor, snapshot.Height);
+      }
+
+      private void updateBMIFromWeightAndHeight(ModelOriginData originData)
+      {
+         if (!originData.Population.IsHeightDependent)
+            return;
+
+         var weightParameter = _individualModelTask.MeanWeightFor(originData);
+         weightParameter.Value = originData.Weight.Value;
+
+         var heightParameter = _individualModelTask.MeanHeightFor(originData);
+         heightParameter.Value = originData.Height.Value;
+
+         var bmiParameter = _individualModelTask.BMIBasedOn(originData, weightParameter, heightParameter);
+         if (bmiParameter == null)
+            return;
+
+         originData.BMI = new OriginDataParameter(bmiParameter.Value, bmiParameter.DisplayUnit.Name);
       }
 
       private void updateCalculationMethodsFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
