@@ -9,6 +9,7 @@ namespace PKSim.Core.Commands
    {
       protected double _oldValue;
       private bool _oldIsDefault;
+      private bool _oldOriginIsDefault;
       private ValueOrigin _oldValueOrigin;
 
       public ResetParameterCommand(IParameter parameter) : base(parameter)
@@ -19,6 +20,7 @@ namespace PKSim.Core.Commands
       {
          _oldValue = _parameter.Value;
          _oldIsDefault = _parameter.IsDefault;
+         _oldOriginIsDefault = OriginParameterFor(_parameter, context)?.IsDefault ?? _oldIsDefault;
          _oldValueOrigin = _parameter.ValueOrigin.Clone();
          UpdateParameter(context);
          Description = ParameterMessages.ResetParameterValue(parameter, context.DisplayNameFor(parameter), _oldValue);
@@ -61,21 +63,23 @@ namespace PKSim.Core.Commands
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          //inverse of a reset command set the previous value, default state and value origin back into the parameter
-         return new RestoreParameterValueCommand(_parameter, _oldValue, _oldIsDefault, _oldValueOrigin).AsInverseFor(this);
+         return new RestoreParameterValueCommand(_parameter, _oldValue, _oldIsDefault, _oldOriginIsDefault, _oldValueOrigin).AsInverseFor(this);
       }
 
       /// <summary>
-      ///    Sets the value the parameter had before the reset and restores its default state and value origin. Its own
-      ///    inverse resets the parameter again.
+      ///    Sets the value the parameter had before the reset and restores the default state of the parameter and of its
+      ///    origin parameter as well as the value origin. Its own inverse resets the parameter again.
       /// </summary>
       private class RestoreParameterValueCommand : SetParameterValueCommand
       {
          private readonly bool _isDefault;
+         private readonly bool _originIsDefault;
          private readonly ValueOrigin _valueOrigin;
 
-         public RestoreParameterValueCommand(IParameter parameter, double valueToSet, bool isDefault, ValueOrigin valueOrigin) : base(parameter, valueToSet)
+         public RestoreParameterValueCommand(IParameter parameter, double valueToSet, bool isDefault, bool originIsDefault, ValueOrigin valueOrigin) : base(parameter, valueToSet)
          {
             _isDefault = isDefault;
+            _originIsDefault = originIsDefault;
             _valueOrigin = valueOrigin;
          }
 
@@ -85,7 +89,7 @@ namespace PKSim.Core.Commands
             if (parameter == null)
                return;
 
-            parameter.IsDefault = _isDefault;
+            parameter.IsDefault = ReferenceEquals(parameter, _parameter) ? _isDefault : _originIsDefault;
             parameter.UpdateValueOriginFrom(_valueOrigin);
          }
 

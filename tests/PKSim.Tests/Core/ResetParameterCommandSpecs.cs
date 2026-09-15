@@ -179,6 +179,41 @@ namespace PKSim.Core
       }
    }
 
+   public class When_undoing_the_reset_of_a_parameter_whose_origin_parameter_has_a_different_default_state : concern_for_ResetParameterCommand
+   {
+      private IParameter _originParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterToReset.Value = 25;
+         _parameterToReset.IsDefault = false;
+         _parameterToReset.Origin.BuilingBlockId = "BuildingBlockId";
+         _parameterToReset.Origin.ParameterId = "OriginParameterId";
+
+         _originParameter = DomainHelperForSpecs.ConstantParameterWithValue(25).WithName("tralala").WithId("OriginParameterId");
+         _originParameter.IsDefault = true;
+         A.CallTo(() => _executionContext.Get<IParameter>("OriginParameterId")).Returns(_originParameter);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_executionContext);
+      }
+
+      [Observation]
+      public void should_restore_the_default_state_of_the_parameter()
+      {
+         _parameterToReset.IsDefault.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_restore_the_default_state_of_the_origin_parameter()
+      {
+         _originParameter.IsDefault.ShouldBeTrue();
+      }
+   }
+
    public class When_redoing_a_reset_parameter_command : concern_for_ResetParameterCommand
    {
       protected override void Context()
