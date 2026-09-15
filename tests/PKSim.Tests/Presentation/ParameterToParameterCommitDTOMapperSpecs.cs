@@ -1,6 +1,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
@@ -32,7 +33,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", _parameter);
+         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", _parameter, isRemoval: false);
       }
 
       [Observation]
@@ -64,6 +65,30 @@ namespace PKSim.Presentation
       {
          _result.Selected.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_describe_the_change_as_an_update_of_the_value()
+      {
+         _result.IsRemoval.ShouldBeFalse();
+         _result.Change.ShouldBeEqualTo(PKSimConstants.UI.UpdateValueInParameterSet);
+      }
+   }
+
+   public class When_mapping_a_reset_parameter_to_commit_dto : concern_for_ParameterToParameterCommitDTOMapper
+   {
+      private ParameterCommitDTO _result;
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", DomainHelperForSpecs.ConstantParameterWithValue(3.5), isRemoval: true);
+      }
+
+      [Observation]
+      public void should_describe_the_change_as_a_removal_from_the_set()
+      {
+         _result.IsRemoval.ShouldBeTrue();
+         _result.Change.ShouldBeEqualTo(PKSimConstants.UI.RemoveFromParameterSet);
+      }
    }
 
    public class When_mapping_a_null_parameter_to_commit_dto : concern_for_ParameterToParameterCommitDTOMapper
@@ -72,7 +97,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom("Organism|Aspirin|Missing", null);
+         _result = sut.MapFrom("Organism|Aspirin|Missing", null, isRemoval: false);
       }
 
       [Observation]
