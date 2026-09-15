@@ -50,10 +50,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto, Compound compound)
       {
+         var selectedParameters = dto.Parameters.Where(p => p.Selected).ToList();
          return new CompoundCommitInfo
          {
             TemplateCompoundId = compound.Id,
-            ParameterPaths = dto.Parameters.Where(p => p.Selected).Select(p => p.Path).ToList(),
+            ParameterPaths = selectedParameters.Where(p => !p.IsRemoval).Select(p => p.Path).ToList(),
+            ParameterPathsToRemove = selectedParameters.Where(p => p.IsRemoval).Select(p => p.Path).ToList(),
             OverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : dto.SelectedExistingSet?.Name,
             ShouldCreateNew = dto.CreateNew
          };

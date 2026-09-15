@@ -23,9 +23,15 @@ namespace PKSim.Core.Services
       public string TemplateCompoundId { get; init; }
 
       /// <summary>
-      ///    Parameter paths to commit.
+      ///    Parameter paths whose current simulation values are committed to the set.
       /// </summary>
       public IReadOnlyList<string> ParameterPaths { get; init; }
+
+      /// <summary>
+      ///    Parameter paths that the user reset in the simulation and that are removed from the existing set.
+      ///    Only meaningful when <see cref="ShouldCreateNew" /> is false.
+      /// </summary>
+      public IReadOnlyList<string> ParameterPathsToRemove { get; init; } = new List<string>();
 
       /// <summary>
       ///    Name of the OverwriteParameterSet. When <see cref="ShouldCreateNew" /> is true, this is the name for
@@ -72,10 +78,11 @@ namespace PKSim.Core.Services
 
          var command = commitInfo.ShouldCreateNew
             ? createNewSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, parameterValues)
-            : updateExistingSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, simulation, commitInfo.ParameterPaths, parameterCache);
+            : updateExistingSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, commitInfo.ParameterPathsToRemove);
 
          //Only untrack paths that were actually resolved to parameter values
-         command.Add(new SetSimulationParameterTrackingCommand(simulation, parameterValues.Select(pv => pv.Path.PathAsString).ToList(), tracked: false));
+         var committedPaths = parameterValues.Select(pv => pv.Path.PathAsString).Concat(commitInfo.ParameterPathsToRemove).ToList();
+         command.Add(new SetSimulationParameterTrackingCommand(simulation, committedPaths, tracked: false));
 
          command.Run(_executionContext);
 
@@ -102,19 +109,16 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Creates a macro command that updates the existing OverwriteParameterSet (identified by
-      ///    <paramref name="setName" />) in the template compound. Parameters that were previously in the set but have
-      ///    been reset by the user (no longer differ from their original/default value) are removed from the set. Entries
-      ///    the user has not touched since the previous commit are preserved.
+      ///    <paramref name="setName" />) in the template compound. Entries the user has not touched since the previous
+      ///    commit are preserved.
       /// </summary>
       /// <param name="templateCompound">The project template compound whose OverwriteParameterSet will be updated.</param>
       /// <param name="setName">Name of the existing OverwriteParameterSet to update.</param>
       /// <param name="parameterValues">The new parameter values to apply to the set.</param>
-      /// <param name="simulation">The simulation, used to check which paths are still tracked.</param>
-      /// <param name="parameterPaths">The parameter paths being committed, used to determine which paths the user has reset.</param>
-      /// <param name="parameterCache">Cache of simulation parameters, used to compare current values against the set's stored values when detecting resets.</param>
+      /// <param name="pathsToRemove">The parameter paths reset by the user that are removed from the set.</param>
       /// <returns>A macro command containing the update command for the template compound.</returns>
       private PKSimMacroCommand updateExistingSetCommand(Compound templateCompound, string setName,
-         List<ParameterValue> parameterValues, Simulation simulation, IReadOnlyList<string> parameterPaths, PathCache<IParameter> parameterCache)
+         List<ParameterValue> parameterValues, IReadOnlyList<string> pathsToRemove)
       {
          var command = new PKSimMacroCommand
          {
@@ -124,8 +128,6 @@ namespace PKSim.Core.Services
          };
 
          var existingTemplateSet = templateCompound.OverwriteParameterSets.FindByName(setName);
-         var pathsToRemove = pathsResetByUser(existingTemplateSet, parameterPaths, simulation, parameterCache);
-
          command.Add(new UpdateOverwriteParameterSetCommand(existingTemplateSet, templateCompound, parameterValues, pathsToRemove));
 
          return command;
@@ -153,39 +155,6 @@ namespace PKSim.Core.Services
                return parameterValue;
             })
             .Where(pv => pv != null)
-            .ToList();
-      }
-
-      /// <summary>
-      ///    When updating an existing set, find entries the user has reset to the parameter's original value.
-      ///    An entry is considered reset when the user is not committing the path, the path is no longer tracked
-      ///    as changed, and the simulation parameter's current value no longer matches the value stored in the
-      ///    set. Entries the user has not touched (parameter value still matches the set's stored value) are
-      ///    preserved so that they are not stripped from the set on a subsequent update commit.
-      /// </summary>
-      private IReadOnlyList<string> pathsResetByUser(OverwriteParameterSet existingSet, IReadOnlyList<string> parameterPaths,
-         Simulation simulation, PathCache<IParameter> parameterCache)
-      {
-         var committedPaths = new HashSet<string>(parameterPaths);
-
-         return existingSet.ParameterValues
-            .Where(pv =>
-            {
-               var path = pv.Path.PathAsString;
-               //user is committing this path: it will be re-added with a new value, not reset
-               if (committedPaths.Contains(path))
-                  return false;
-               //path is still tracked as changed: user has uncommitted changes for it, not reset
-               if (simulation.ParameterChangeTracker.IsTracked(path))
-                  return false;
-               var parameter = parameterCache[path];
-               //parameter is no longer present in the simulation: preserve the stored entry
-               if (parameter == null)
-                  return false;
-               //parameter's current value no longer matches the value stored in the set: user has reset it
-               return !ValueComparer.AreValuesEqual(parameter.Value, pv.Value.GetValueOrDefault());
-            })
-            .Select(pv => pv.Path.PathAsString)
             .ToList();
       }
    }

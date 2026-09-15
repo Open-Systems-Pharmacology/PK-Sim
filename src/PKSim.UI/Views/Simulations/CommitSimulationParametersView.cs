@@ -51,7 +51,7 @@ namespace PKSim.UI.Views.Simulations
          _parameterGridBinder.BindToSource(dto.Parameters);
          _screenBinder.BindToSource(dto);
          updateCommitOptionsFor(dto);
-         SetOkButtonEnable();
+         parameterSelectionChanged();
       }
 
       public override void InitializeBinding()
@@ -62,6 +62,11 @@ namespace PKSim.UI.Views.Simulations
 
          _parameterGridBinder.Bind(x => x.DisplayPath)
             .WithCaption(PKSimConstants.UI.Parameter)
+            .AsReadOnly();
+
+         _parameterGridBinder.Bind(x => x.Change)
+            .WithCaption(PKSimConstants.UI.Change)
+            .WithFixedWidth(120)
             .AsReadOnly();
 
          _parameterGridBinder.Bind(x => x.Value)
@@ -82,7 +87,7 @@ namespace PKSim.UI.Views.Simulations
          radioGroupCommitMode.SelectedIndexChanged += (s, e) => OnEvent(commitModeChanged);
          cbExistingSet.SelectedIndexChanged += (s, e) => OnEvent(existingSetChanged);
 
-         _parameterGridBinder.Changed += SetOkButtonEnable;
+         _parameterGridBinder.Changed += parameterSelectionChanged;
       }
 
       public override void InitializeResources()
@@ -140,11 +145,37 @@ namespace PKSim.UI.Views.Simulations
          layoutItemNewSetName.Visibility = toVisibility(isCreateNew);
          layoutItemExistingSet.Visibility = toVisibility(!isCreateNew && hasExistingSets);
 
+         var canChooseTargetSet = !_dto.HasSelectedRemovals;
+         radioGroupCommitMode.Properties.Items[CREATE_NEW].Enabled = canChooseTargetSet;
          radioGroupCommitMode.Properties.Items[UPDATE_EXISTING].Enabled = hasExistingSets;
-         radioGroupCommitMode.ToolTip = hasExistingSets ? string.Empty : PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
+         cbExistingSet.Enabled = canChooseTargetSet;
+         radioGroupCommitMode.ToolTip = toolTipForCommitMode(canChooseTargetSet);
+      }
+
+      private string toolTipForCommitMode(bool canChooseTargetSet)
+      {
+         if (!hasExistingSets)
+            return PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
+
+         return canChooseTargetSet ? string.Empty : PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet;
       }
 
       private bool hasExistingSets => _dto?.AvailableExistingSets != null && _dto.AvailableExistingSets.Any();
+
+      private void parameterSelectionChanged()
+      {
+         if (_dto.HasSelectedRemovals)
+            targetSetSelectedInSimulation();
+
+         updateOptionsVisibility();
+         SetOkButtonEnable();
+      }
+
+      private void targetSetSelectedInSimulation()
+      {
+         radioGroupCommitMode.EditValue = UPDATE_EXISTING;
+         cbExistingSet.SelectedItem = _dto.SetSelectedInSimulation?.Name;
+      }
 
       private void commitModeChanged()
       {

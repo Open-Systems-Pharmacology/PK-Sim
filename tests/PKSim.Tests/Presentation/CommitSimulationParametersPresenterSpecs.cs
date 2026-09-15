@@ -211,4 +211,49 @@ namespace PKSim.Presentation
          _result.OverwriteParameterSetName.ShouldBeEqualTo("Existing");
       }
    }
+
+   public class When_showing_commit_dialog_with_a_reset_parameter_to_remove_from_the_set : concern_for_CommitSimulationParametersPresenter
+   {
+      private CompoundCommitInfo _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var existingSet = new OverwriteParameterSet { Name = "Existing" };
+         var dto = new CompoundCommitDTO
+         {
+            CompoundName = "Aspirin",
+            Compound = _simulationCompound,
+            CreateNew = false,
+            SelectedExistingSet = existingSet,
+            SetSelectedInSimulation = existingSet,
+            Parameters = new List<ParameterCommitDTO>
+            {
+               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true },
+               new() { Path = "Organism|Aspirin|Permeability", Value = 7.0, Selected = true, IsRemoval = true },
+               new() { Path = "Organism|Aspirin|Solubility", Value = 1.0, Selected = false, IsRemoval = true }
+            }
+         };
+
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ShowCommitDialog(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_commit_the_value_of_the_changed_parameter()
+      {
+         _result.ParameterPaths.ShouldOnlyContain("Organism|Aspirin|Lipophilicity");
+      }
+
+      [Observation]
+      public void should_remove_the_selected_reset_parameter_from_the_set()
+      {
+         _result.ParameterPathsToRemove.ShouldOnlyContain("Organism|Aspirin|Permeability");
+      }
+   }
 }

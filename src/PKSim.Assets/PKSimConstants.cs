@@ -458,6 +458,7 @@ namespace PKSim.Assets
          public static string DistributionNotFound(string entityName, string data) => $"Cannot create distribution for '{entityName}' with the following data:\n{data}";
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
+         public static readonly string ResetParametersCanOnlyBeRemovedFromSelectedParameterSet = $"Reset parameters can only be removed from the {ObjectTypes.OverwriteParameterSet.ToLower()} selected for the {ObjectTypes.Simulation.ToLower()}.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
          public const string SpeciesIsRequired = "Species is required.";
@@ -1756,6 +1757,9 @@ namespace PKSim.Assets
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
          public static string NoOverwriteParameterSetToUpdateIn(string compoundName) => $"{ObjectTypes.Compound} '{compoundName}' does not define any {ObjectTypes.OverwriteParameterSet.ToLower()} that could be updated.";
+         public static readonly string Change = "Change";
+         public static readonly string UpdateValueInParameterSet = "Update value";
+         public static readonly string RemoveFromParameterSet = "Remove from set";
          public static readonly string Metadata = "Metadata";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;

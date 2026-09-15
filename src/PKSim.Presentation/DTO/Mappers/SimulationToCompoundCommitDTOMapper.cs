@@ -45,9 +45,16 @@ namespace PKSim.Presentation.DTO.Mappers
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
             CreateNew = selectedSetInTemplate == null,
             SelectedExistingSet = selectedSetInTemplate,
+            SetSelectedInSimulation = selectedSetInTemplate,
             NewSetName = templateCompound.Name,
-            Parameters = changedPaths.Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path])).ToList()
+            Parameters = changedPaths.Select(path => mapParameter(simulation, templateCompound.Name, path, parameterCache[path])).ToList()
          };
+      }
+
+      private ParameterCommitDTO mapParameter(Simulation simulation, string compoundName, string path, IParameter parameter)
+      {
+         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter is { IsDefault: true };
+         return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval);
       }
 
       /// <summary>
