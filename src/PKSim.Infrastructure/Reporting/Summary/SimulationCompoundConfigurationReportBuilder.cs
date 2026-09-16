@@ -22,11 +22,11 @@ namespace PKSim.Infrastructure.Reporting.Summary
          //Because the compound might be lazy loaded, it is potentially not available in the compound properties
          var compoundNameToUse = compoundProperties.Compound?.Name ?? compoundName;
 
-         var calculationMethodReport = _reportGenerator.ReportFor(compoundProperties.AllCalculationMethods()).DowncastTo<TablePart>().WithTitle(compoundNameToUse);
+         var compoundPart = _reportGenerator.ReportFor(compoundProperties.AllCalculationMethods()).DowncastTo<TablePart>().WithTitle(compoundNameToUse);
          if (overwriteParameterSet != null)
-            calculationMethodReport.AddIs(PKSimConstants.ObjectTypes.OverwriteParameterSet, overwriteParameterSet.Name);
+            compoundPart.AddIs(PKSimConstants.ObjectTypes.OverwriteParameterSet, overwriteParameterSet.Name);
 
-         reportPart.AddPart(calculationMethodReport);
+         reportPart.AddPart(compoundPart);
       }
    }
 }
