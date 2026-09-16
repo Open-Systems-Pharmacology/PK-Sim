@@ -43,14 +43,14 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_report_the_selected_overwrite_parameter_set_for_that_compound()
       {
-         A.CallTo(() => _reportGenerator.ReportFor(A<CompoundPropertiesCalculationMethods>.That.Matches(x =>
+         A.CallTo(() => _reportGenerator.ReportFor(A<SimulationCompoundConfiguration>.That.Matches(x =>
             x.CompoundName == _midazolam.Name && x.OverwriteParameterSet == _overwriteParameterSet))).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_report_an_overwrite_parameter_set_for_the_other_compound()
       {
-         A.CallTo(() => _reportGenerator.ReportFor(A<CompoundPropertiesCalculationMethods>.That.Matches(x =>
+         A.CallTo(() => _reportGenerator.ReportFor(A<SimulationCompoundConfiguration>.That.Matches(x =>
             x.CompoundName == _aspirin.Name && x.OverwriteParameterSet == null))).MustHaveHappened();
       }
    }

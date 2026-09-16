@@ -6,18 +6,18 @@ using PKSim.Infrastructure.Reporting.Summary.Items;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
-   public class CompoundPropertiesCalculationMethodsReportBuilder : ReportBuilder<CompoundPropertiesCalculationMethods>
+   public class SimulationCompoundConfigurationReportBuilder : ReportBuilder<SimulationCompoundConfiguration>
    {
       private readonly IReportGenerator _reportGenerator;
 
-      public CompoundPropertiesCalculationMethodsReportBuilder(IReportGenerator reportGenerator)
+      public SimulationCompoundConfigurationReportBuilder(IReportGenerator reportGenerator)
       {
          _reportGenerator = reportGenerator;
       }
 
-      protected override void FillUpReport(CompoundPropertiesCalculationMethods compoundPropertiesCalculationMethods, ReportPart reportPart)
+      protected override void FillUpReport(SimulationCompoundConfiguration simulationCompoundConfiguration, ReportPart reportPart)
       {
-         var (compoundName, compoundProperties, overwriteParameterSet) = compoundPropertiesCalculationMethods;
+         var (compoundName, compoundProperties, overwriteParameterSet) = simulationCompoundConfiguration;
 
          //Because the compound might be lazy loaded, it is potentially not available in the compound properties
          var compoundNameToUse = compoundProperties.Compound?.Name ?? compoundName;

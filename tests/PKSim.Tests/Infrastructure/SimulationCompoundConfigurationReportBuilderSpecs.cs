@@ -13,7 +13,7 @@ using PKSim.Infrastructure.Reporting.Summary.Items;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_CompoundPropertiesCalculationMethodsReportBuilder : ContextSpecification<CompoundPropertiesCalculationMethodsReportBuilder>
+   public abstract class concern_for_SimulationCompoundConfigurationReportBuilder : ContextSpecification<SimulationCompoundConfigurationReportBuilder>
    {
       protected IReportGenerator _reportGenerator;
       protected CompoundProperties _compoundProperties;
@@ -27,18 +27,18 @@ namespace PKSim.Infrastructure
          _calculationMethodsPart = new TablePart(PKSimConstants.UI.Category, PKSimConstants.UI.CalculationMethods);
          _calculationMethodsPart.AddIs("Partition coefficients", "Rodgers and Rowland");
          A.CallTo(() => _reportGenerator.ReportFor(A<IEnumerable<CalculationMethod>>._)).Returns(_calculationMethodsPart);
-         sut = new CompoundPropertiesCalculationMethodsReportBuilder(_reportGenerator);
+         sut = new SimulationCompoundConfigurationReportBuilder(_reportGenerator);
       }
 
       protected IReadOnlyList<string> valuesFor(string key) => _result.Rows.First(x => x.Key == key).Value;
    }
 
-   public class When_reporting_the_calculation_methods_of_a_compound_with_a_selected_overwrite_parameter_set : concern_for_CompoundPropertiesCalculationMethodsReportBuilder
+   public class When_reporting_the_calculation_methods_of_a_compound_with_a_selected_overwrite_parameter_set : concern_for_SimulationCompoundConfigurationReportBuilder
    {
       protected override void Because()
       {
          var overwriteParameterSet = new OverwriteParameterSet {Name = "Renal impairment"};
-         _result = sut.Report(new CompoundPropertiesCalculationMethods("Midazolam", _compoundProperties, overwriteParameterSet)).DowncastTo<TablePart>();
+         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties, overwriteParameterSet)).DowncastTo<TablePart>();
       }
 
       [Observation]
@@ -55,11 +55,11 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_reporting_the_calculation_methods_of_a_compound_without_a_selected_overwrite_parameter_set : concern_for_CompoundPropertiesCalculationMethodsReportBuilder
+   public class When_reporting_the_calculation_methods_of_a_compound_without_a_selected_overwrite_parameter_set : concern_for_SimulationCompoundConfigurationReportBuilder
    {
       protected override void Because()
       {
-         _result = sut.Report(new CompoundPropertiesCalculationMethods("Midazolam", _compoundProperties, null)).DowncastTo<TablePart>();
+         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties, null)).DowncastTo<TablePart>();
       }
 
       [Observation]

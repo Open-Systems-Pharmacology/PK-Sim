@@ -29,8 +29,8 @@ namespace PKSim.Infrastructure.Reporting.Summary
          simulation.UsedBuildingBlocksInSimulation(PKSimBuildingBlockType.Compound).ToList().Each((x, index) =>
          {
             var overwriteParameterSet = simulation.OverwriteParameterSetSelections.SelectedSetFor(x.Name);
-            var compoundPropertiesWithName = new CompoundPropertiesCalculationMethods(x.Name, simulation.CompoundPropertiesList[index], overwriteParameterSet);
-            reportPart.AddPart(_reportGenerator.ReportFor(compoundPropertiesWithName));
+            var compoundConfiguration = new SimulationCompoundConfiguration(x.Name, simulation.CompoundPropertiesList[index], overwriteParameterSet);
+            reportPart.AddPart(_reportGenerator.ReportFor(compoundConfiguration));
          });
       }
    }

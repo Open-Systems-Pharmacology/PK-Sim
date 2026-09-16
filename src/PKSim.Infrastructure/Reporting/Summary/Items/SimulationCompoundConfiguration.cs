@@ -2,13 +2,13 @@
 
 namespace PKSim.Infrastructure.Reporting.Summary.Items
 {
-   public class CompoundPropertiesCalculationMethods
+   public class SimulationCompoundConfiguration
    {
       public string CompoundName { get; }
       public CompoundProperties CompoundProperties { get; }
       public OverwriteParameterSet OverwriteParameterSet { get; }
 
-      public CompoundPropertiesCalculationMethods(string compoundName, CompoundProperties compoundProperties, OverwriteParameterSet overwriteParameterSet)
+      public SimulationCompoundConfiguration(string compoundName, CompoundProperties compoundProperties, OverwriteParameterSet overwriteParameterSet)
       {
          CompoundName = compoundName;
          CompoundProperties = compoundProperties;
