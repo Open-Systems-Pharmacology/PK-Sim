@@ -187,14 +187,33 @@ public class When_saving_a_none_selection : concern_for_SimulationCompoundOverwr
    }
 
    [Observation]
-   public void should_remove_the_selection_from_the_simulation()
+   public void should_save_the_selection_without_a_set()
    {
-      A.CallTo(() => _simulation.RemoveOverwriteParameterSetSelection("Aspirin")).MustHaveHappened();
+      A.CallTo(() => _simulation.AddOverwriteParameterSetSelection("Aspirin", null)).MustHaveHappened();
+   }
+}
+
+public class When_editing_a_simulation_whose_compound_was_explicitly_set_to_none : concern_for_SimulationCompoundOverwriteParameterSetSelectionPresenter
+{
+   private SimulationCompoundOverwriteParameterSetSelectionDTO _capturedDto;
+
+   protected override void Context()
+   {
+      base.Context();
+      _compound.AddOverwriteParameterSet(new OverwriteParameterSet { Name = "RenalImpairment", IsDefault = true });
+      _selections.SetSelectionForCompound("Aspirin", null);
+      A.CallTo(() => _view.BindTo(A<SimulationCompoundOverwriteParameterSetSelectionDTO>._))
+         .Invokes(call => _capturedDto = call.GetArgument<SimulationCompoundOverwriteParameterSetSelectionDTO>(0));
+   }
+
+   protected override void Because()
+   {
+      sut.EditSimulation(_simulation, _compound);
    }
 
    [Observation]
-   public void should_not_add_a_selection_to_the_simulation()
+   public void should_keep_the_none_option_selected_instead_of_falling_back_to_the_default_set()
    {
-      A.CallTo(() => _simulation.AddOverwriteParameterSetSelection(A<string>._, A<OverwriteParameterSet>._)).MustNotHaveHappened();
+      _capturedDto.SelectedOverwriteParameterSet.Name.ShouldBeEqualTo(PKSimConstants.UI.None);
    }
 }

@@ -48,17 +48,14 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          if (_dto == null) return;
 
-         if (isNoSelection(_dto.SelectedOverwriteParameterSet))
-            _simulation.RemoveOverwriteParameterSetSelection(_compound.Name);
-         else
-            _simulation.AddOverwriteParameterSetSelection(_compound.Name, _dto.SelectedOverwriteParameterSet);
+         var selectedSet = isNoSelection(_dto.SelectedOverwriteParameterSet) ? null : _dto.SelectedOverwriteParameterSet;
+         _simulation.AddOverwriteParameterSetSelection(_compound.Name, selectedSet);
       }
 
       private OverwriteParameterSet currentSelectionFor(Simulation simulation, Compound compound)
       {
-         var existing = simulation.OverwriteParameterSetSelections.SelectedSetFor(compound.Name);
-         if (existing != null)
-            return existing;
+         if (simulation.OverwriteParameterSetSelections.HasSelectionFor(compound.Name))
+            return simulation.OverwriteParameterSetSelections.SelectedSetFor(compound.Name) ?? _noOverwriteParameterSet;
 
          var defaultSet = compound.OverwriteParameterSets.FirstOrDefault(x => x.IsDefault);
          return defaultSet ?? _noOverwriteParameterSet;

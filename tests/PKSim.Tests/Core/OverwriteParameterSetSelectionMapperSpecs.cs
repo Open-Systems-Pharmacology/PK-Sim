@@ -134,6 +134,37 @@ namespace PKSim.Core
       }
    }
 
+   public class When_round_tripping_a_selection_explicitly_set_to_none_through_snapshot : concern_for_OverwriteParameterSetSelectionMapper
+   {
+      private SnapshotOverwriteParameterSetSelection _snapshot;
+      private ModelOverwriteParameterSetSelection _result;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var original = new ModelOverwriteParameterSetSelection { CompoundName = _compound.Name };
+         _snapshot = await sut.MapToSnapshot(original, _project);
+      }
+
+      protected override async Task Because()
+      {
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
+      }
+
+      [Observation]
+      public void should_restore_the_selection_without_a_set()
+      {
+         _result.CompoundName.ShouldBeEqualTo(_compound.Name);
+         _result.OverwriteParameterSet.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_not_log_an_error()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustNotHaveHappened();
+      }
+   }
+
    public class When_mapping_a_snapshot_with_a_missing_overwrite_parameter_set_to_model : concern_for_OverwriteParameterSetSelectionMapper
    {
       private ModelOverwriteParameterSetSelection _result;

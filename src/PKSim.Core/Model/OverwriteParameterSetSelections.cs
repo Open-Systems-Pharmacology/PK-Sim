@@ -37,6 +37,12 @@ namespace PKSim.Core.Model
       public OverwriteParameterSet SelectedSetFor(string compoundName) =>
          _selections[compoundName]?.OverwriteParameterSet;
 
+      /// <summary>
+      ///    Returns <c>true</c> if a selection was made for <paramref name="compoundName" />, whether it is a set or "None".
+      ///    <see cref="SelectedSetFor" /> returns <c>null</c> for both "None" and "no selection made yet".
+      /// </summary>
+      public bool HasSelectionFor(string compoundName) => _selections.Contains(compoundName);
+
       public OverwriteParameterSetSelections Clone()
       {
          var clone = new OverwriteParameterSetSelections();
