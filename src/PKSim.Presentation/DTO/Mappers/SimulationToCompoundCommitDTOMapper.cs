@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -38,6 +39,9 @@ namespace PKSim.Presentation.DTO.Mappers
 
          var selectedSetInTemplate = selectedSetInTemplateFor(simulation, templateCompound);
 
+         var parameters = changedPaths.Select(path => mapParameter(simulation, templateCompound.Name, path, parameterCache[path])).ToList();
+         parameters.AddRange(unchangedParametersOfAppliedSet(simulation, templateCompound.Name, changedPaths, parameterCache));
+
          return new CompoundCommitDTO
          {
             CompoundName = templateCompound.Name,
@@ -47,14 +51,33 @@ namespace PKSim.Presentation.DTO.Mappers
             SelectedExistingSet = selectedSetInTemplate,
             SetSelectedInSimulation = selectedSetInTemplate,
             NewSetName = templateCompound.Name,
-            Parameters = changedPaths.Select(path => mapParameter(simulation, templateCompound.Name, path, parameterCache[path])).ToList()
+            Parameters = parameters
          };
       }
 
       private ParameterCommitDTO mapParameter(Simulation simulation, string compoundName, string path, IParameter parameter)
       {
          var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter is { IsDefault: true };
-         return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval);
+         return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval, isUnchanged: false);
+      }
+
+      /// <summary>
+      ///    Returns the entries of the set applied to the compound in the simulation that the user did not change. They are
+      ///    carried over into a new set created from the simulation and are listed so that the dialog shows everything the
+      ///    new set will contain. Their value is taken from the simulation, which is the value of the set since the path is
+      ///    not changed.
+      /// </summary>
+      private IEnumerable<ParameterCommitDTO> unchangedParametersOfAppliedSet(Simulation simulation, string compoundName,
+         IReadOnlyList<string> changedPaths, PathCache<IParameter> parameterCache)
+      {
+         var appliedSet = simulation.OverwriteParameterSetSelections.SelectedSetFor(compoundName);
+         if (appliedSet == null)
+            return Enumerable.Empty<ParameterCommitDTO>();
+
+         return appliedSet.ParameterValues
+            .Select(x => x.Path.PathAsString)
+            .Where(path => !changedPaths.Contains(path))
+            .Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path], isRemoval: false, isUnchanged: true));
       }
 
       /// <summary>

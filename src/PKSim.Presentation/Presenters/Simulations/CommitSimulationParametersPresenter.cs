@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto, Compound compound)
       {
-         var selectedParameters = dto.Parameters.Where(p => p.Selected).ToList();
+         var selectedParameters = dto.VisibleParameters.Where(p => p.Selected).ToList();
          return new CompoundCommitInfo
          {
             TemplateCompoundId = compound.Id,

@@ -48,7 +48,7 @@ namespace PKSim.UI.Views.Simulations
       public void BindTo(CompoundCommitDTO dto)
       {
          _dto = dto;
-         _parameterGridBinder.BindToSource(dto.Parameters);
+         bindVisibleParameters();
          _screenBinder.BindToSource(dto);
          updateCommitOptionsFor(dto);
          parameterSelectionChanged();
@@ -115,7 +115,9 @@ namespace PKSim.UI.Views.Simulations
       }
 
       protected override bool IsOkButtonEnable =>
-         base.IsOkButtonEnable && _dto != null && _dto.Parameters.Any(p => p.Selected);
+         base.IsOkButtonEnable && _dto != null && _dto.VisibleParameters.Any(p => p.Selected);
+
+      private void bindVisibleParameters() => _parameterGridBinder.BindToSource(_dto.VisibleParameters.ToList());
 
       private void updateCommitOptionsFor(CompoundCommitDTO compound)
       {
@@ -168,6 +170,7 @@ namespace PKSim.UI.Views.Simulations
          if (_dto == null) return;
 
          _dto.CreateNew = (int)radioGroupCommitMode.EditValue == CREATE_NEW;
+         bindVisibleParameters();
          updateOptionsVisibility();
          // Re-validate since CreateNew change affects NewSetName validation
          _screenBinder.Validate();

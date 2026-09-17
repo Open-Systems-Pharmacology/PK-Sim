@@ -33,7 +33,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", _parameter, isRemoval: false);
+         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", _parameter, isRemoval: false, isUnchanged: false);
       }
 
       [Observation]
@@ -80,7 +80,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", DomainHelperForSpecs.ConstantParameterWithValue(3.5), isRemoval: true);
+         _result = sut.MapFrom("Organism|Aspirin|Lipophilicity", DomainHelperForSpecs.ConstantParameterWithValue(3.5), isRemoval: true, isUnchanged: false);
       }
 
       [Observation]
@@ -97,7 +97,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapFrom("Organism|Aspirin|Missing", null, isRemoval: false);
+         _result = sut.MapFrom("Organism|Aspirin|Missing", null, isRemoval: false, isUnchanged: false);
       }
 
       [Observation]

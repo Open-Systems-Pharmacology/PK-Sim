@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
@@ -118,6 +119,54 @@ namespace PKSim.Presentation
       public void should_be_valid_because_name_is_ignored_in_update_mode()
       {
          sut.IsValid().ShouldBeTrue();
+      }
+   }
+
+   public class When_listing_the_parameters_of_a_compound_commit_dto_holding_every_kind_of_row : ContextSpecification<CompoundCommitDTO>
+   {
+      protected override void Context()
+      {
+         sut = new CompoundCommitDTO
+         {
+            CompoundName = "Aspirin",
+            Compound = new Compound { Name = "Aspirin" },
+            AvailableExistingSets = new List<OverwriteParameterSet>(),
+            NewSetName = "NewSet",
+            Parameters = new List<ParameterCommitDTO>
+            {
+               new() { Path = "Changed" },
+               new() { Path = "Reset", IsRemoval = true },
+               new() { Path = "Untouched", IsUnchanged = true }
+            }
+         };
+      }
+
+      [Observation]
+      public void should_show_the_change_and_the_untouched_entry_when_creating_a_new_set()
+      {
+         sut.CreateNew = true;
+         sut.VisibleParameters.Select(x => x.Path).ShouldOnlyContain("Changed", "Untouched");
+      }
+
+      [Observation]
+      public void should_show_the_change_and_the_reset_when_updating_an_existing_set()
+      {
+         sut.CreateNew = false;
+         sut.VisibleParameters.Select(x => x.Path).ShouldOnlyContain("Changed", "Reset");
+      }
+
+      [Observation]
+      public void should_not_report_a_selected_removal_when_creating_a_new_set()
+      {
+         sut.CreateNew = true;
+         sut.HasSelectedRemovals.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_report_a_selected_removal_when_updating_an_existing_set()
+      {
+         sut.CreateNew = false;
+         sut.HasSelectedRemovals.ShouldBeTrue();
       }
    }
 
