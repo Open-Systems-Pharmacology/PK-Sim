@@ -145,19 +145,11 @@ namespace PKSim.UI.Views.Simulations
          layoutItemNewSetName.Visibility = toVisibility(isCreateNew);
          layoutItemExistingSet.Visibility = toVisibility(!isCreateNew && hasExistingSets);
 
-         var canChooseTargetSet = !_dto.HasSelectedRemovals;
-         radioGroupCommitMode.Properties.Items[CREATE_NEW].Enabled = canChooseTargetSet;
+         var canChooseExistingSet = !_dto.HasSelectedRemovals;
          radioGroupCommitMode.Properties.Items[UPDATE_EXISTING].Enabled = hasExistingSets;
-         cbExistingSet.Enabled = canChooseTargetSet;
-         radioGroupCommitMode.ToolTip = toolTipForCommitMode(canChooseTargetSet);
-      }
-
-      private string toolTipForCommitMode(bool canChooseTargetSet)
-      {
-         if (!hasExistingSets)
-            return PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
-
-         return canChooseTargetSet ? string.Empty : PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet;
+         cbExistingSet.Enabled = canChooseExistingSet;
+         radioGroupCommitMode.ToolTip = hasExistingSets ? string.Empty : PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
+         cbExistingSet.ToolTip = canChooseExistingSet ? string.Empty : PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet;
       }
 
       private bool hasExistingSets => _dto?.AvailableExistingSets != null && _dto.AvailableExistingSets.Any();
@@ -165,16 +157,10 @@ namespace PKSim.UI.Views.Simulations
       private void parameterSelectionChanged()
       {
          if (_dto.HasSelectedRemovals)
-            targetSetSelectedInSimulation();
+            cbExistingSet.SelectedItem = _dto.SetSelectedInSimulation?.Name;
 
          updateOptionsVisibility();
          SetOkButtonEnable();
-      }
-
-      private void targetSetSelectedInSimulation()
-      {
-         radioGroupCommitMode.EditValue = UPDATE_EXISTING;
-         cbExistingSet.SelectedItem = _dto.SetSelectedInSimulation?.Name;
       }
 
       private void commitModeChanged()

@@ -28,6 +28,7 @@ namespace PKSim.Core
       protected IParameter _permeabilityParam;
       protected PathCache<IParameter> _parameterCache;
       protected IObjectBaseFactory _objectBaseFactory;
+      protected ICloner _cloner;
       private int _createdSetCount;
 
       protected override void Context()
@@ -70,7 +71,141 @@ namespace PKSim.Core
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
          A.CallTo(() => _executionContext.TypeFor(_templateCompound)).Returns("Compound");
 
-         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository, _objectBaseFactory);
+         _cloner = A.Fake<ICloner>();
+         A.CallTo(() => _cloner.Clone(A<ParameterValue>._)).ReturnsLazily((ParameterValue pv) => copyOf(pv));
+
+         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository, _objectBaseFactory, _cloner);
+      }
+
+      private static ParameterValue copyOf(ParameterValue parameterValue)
+      {
+         var copy = new ParameterValue
+         {
+            Path = new ObjectPath(parameterValue.Path),
+            Value = parameterValue.Value,
+            Dimension = parameterValue.Dimension,
+            DisplayUnit = parameterValue.DisplayUnit
+         };
+         copy.ValueOrigin.UpdateAllFrom(parameterValue.ValueOrigin);
+         return copy;
+      }
+
+      protected OverwriteParameterSet setAppliedToTheSimulationWith(params (string path, double value)[] values)
+      {
+         var appliedSet = new OverwriteParameterSet { Name = "AppliedSet" };
+         values.Each(x => appliedSet.Add(new ParameterValue { Path = x.path.ToObjectPath(), Value = x.value }));
+         _simulation.AddOverwriteParameterSetSelection(_simulationCompound.Name, appliedSet);
+         return appliedSet;
+      }
+   }
+
+   public abstract class concern_for_committing_to_a_new_set_from_a_simulation_using_a_set : concern_for_CommitSimulationParametersTask
+   {
+      protected OverwriteParameterSet _newSet;
+
+      protected OverwriteParameterSet _appliedSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _appliedSet = setAppliedToTheSimulationWith(
+            ("Organism|Aspirin|Lipophilicity", 1.0),
+            ("Organism|Aspirin|Solubility", 2.0));
+      }
+
+      protected double? valueInNewSetFor(string path) => _newSet.ParameterValueByPath(path)?.Value;
+   }
+
+   public class When_committing_a_change_to_a_new_overwrite_parameter_set_from_a_simulation_using_a_set : concern_for_committing_to_a_new_set_from_a_simulation_using_a_set
+   {
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Permeability" },
+            OverwriteParameterSetName = "MyNewSet",
+            ShouldCreateNew = true
+         });
+
+         _newSet = _templateCompound.OverwriteParameterSets.FindByName("MyNewSet");
+      }
+
+      [Observation]
+      public void should_commit_the_changed_parameter_with_its_value_in_the_simulation()
+      {
+         valueInNewSetFor("Organism|Aspirin|Permeability").ShouldBeEqualTo(7.2);
+      }
+
+      [Observation]
+      public void should_add_the_entries_of_the_applied_set_to_the_new_set()
+      {
+         valueInNewSetFor("Organism|Aspirin|Lipophilicity").ShouldBeEqualTo(1.0);
+         valueInNewSetFor("Organism|Aspirin|Solubility").ShouldBeEqualTo(2.0);
+      }
+
+      [Observation]
+      public void should_not_share_the_entries_of_the_applied_set_with_the_new_set()
+      {
+         _newSet.ParameterValueByPath("Organism|Aspirin|Solubility")
+            .ShouldNotBeEqualTo(_appliedSet.ParameterValueByPath("Organism|Aspirin|Solubility"));
+      }
+   }
+
+   public class When_committing_a_change_to_a_parameter_of_the_applied_set_to_a_new_overwrite_parameter_set : concern_for_committing_to_a_new_set_from_a_simulation_using_a_set
+   {
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "MyNewSet",
+            ShouldCreateNew = true
+         });
+
+         _newSet = _templateCompound.OverwriteParameterSets.FindByName("MyNewSet");
+      }
+
+      [Observation]
+      public void should_take_the_value_of_the_simulation_and_not_the_one_of_the_applied_set()
+      {
+         valueInNewSetFor("Organism|Aspirin|Lipophilicity").ShouldBeEqualTo(3.5);
+      }
+
+      [Observation]
+      public void should_keep_one_entry_per_path()
+      {
+         _newSet.ParameterValues.Count.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_committing_a_removal_to_a_new_overwrite_parameter_set : concern_for_committing_to_a_new_set_from_a_simulation_using_a_set
+   {
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Permeability" },
+            ParameterPathsToRemove = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "MyNewSet",
+            ShouldCreateNew = true
+         });
+
+         _newSet = _templateCompound.OverwriteParameterSets.FindByName("MyNewSet");
+      }
+
+      [Observation]
+      public void should_leave_the_removed_path_out_of_the_new_set()
+      {
+         _newSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_keep_the_other_entries_of_the_applied_set()
+      {
+         valueInNewSetFor("Organism|Aspirin|Solubility").ShouldBeEqualTo(2.0);
       }
    }
 

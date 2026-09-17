@@ -154,9 +154,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_be_valid()
+      public void should_be_valid_because_the_removed_path_is_simply_left_out_of_the_new_set()
       {
-         sut.IsValid().ShouldBeFalse();
+         sut.IsValid().ShouldBeTrue();
       }
    }
 

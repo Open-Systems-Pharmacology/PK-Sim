@@ -60,13 +60,15 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly ICloner _cloner;
 
-      public CommitSimulationParametersTask(IExecutionContext executionContext, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository, IObjectBaseFactory objectBaseFactory)
+      public CommitSimulationParametersTask(IExecutionContext executionContext, IContainerTask containerTask, IBuildingBlockRepository buildingBlockRepository, IObjectBaseFactory objectBaseFactory, ICloner cloner)
       {
          _executionContext = executionContext;
          _containerTask = containerTask;
          _buildingBlockRepository = buildingBlockRepository;
          _objectBaseFactory = objectBaseFactory;
+         _cloner = cloner;
       }
 
       public ICommand CommitParametersToCompound(Simulation simulation, CompoundCommitInfo commitInfo)
@@ -77,7 +79,7 @@ namespace PKSim.Core.Services
          var parameterValues = createParameterValuesFor(commitInfo, parameterCache);
 
          var command = commitInfo.ShouldCreateNew
-            ? createNewSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, parameterValues)
+            ? createNewSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, unionWithSetAppliedTo(simulation, templateCompound.Name, parameterValues, commitInfo.ParameterPathsToRemove))
             : updateExistingSetCommand(templateCompound, commitInfo.OverwriteParameterSetName, parameterValues, commitInfo.ParameterPathsToRemove);
 
          //Only untrack paths that were actually resolved to parameter values
@@ -89,6 +91,27 @@ namespace PKSim.Core.Services
          _executionContext.UpdateBuildingBlockPropertiesInCommand(command, templateCompound);
 
          return command;
+      }
+
+      /// <summary>
+      ///    Returns <paramref name="committedValues" /> together with the entries of the set applied to the compound in
+      ///    <paramref name="simulation" /> that the user neither committed nor removed, so that a new set created from a
+      ///    simulation using a set also contains the values of that set. The entries are taken from the applied set and not
+      ///    from the simulation so that a change the user did not commit keeps the value of the set.
+      /// </summary>
+      private List<ParameterValue> unionWithSetAppliedTo(Simulation simulation, string compoundName, List<ParameterValue> committedValues, IReadOnlyList<string> pathsToRemove)
+      {
+         var appliedSet = simulation.OverwriteParameterSetSelections.SelectedSetFor(compoundName);
+         if (appliedSet == null)
+            return committedValues;
+
+         var pathsAlreadyHandled = committedValues.Select(x => x.Path.PathAsString).Concat(pathsToRemove).ToHashSet();
+
+         var inheritedValues = appliedSet.ParameterValues
+            .Where(x => !pathsAlreadyHandled.Contains(x.Path.PathAsString))
+            .Select(_cloner.Clone);
+
+         return committedValues.Concat(inheritedValues).ToList();
       }
 
       private PKSimMacroCommand createNewSetCommand(Compound templateCompound, string setName, List<ParameterValue> parameterValues)
