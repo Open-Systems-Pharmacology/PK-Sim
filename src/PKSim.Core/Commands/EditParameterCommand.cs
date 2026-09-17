@@ -129,7 +129,8 @@ namespace PKSim.Core.Commands
          if (compoundName == null)
             return;
 
-         if (!isCompoundDependentSimulationParameter(parameter, simulation, compoundName, parameterPath))
+         var isOverwrittenParameterPath = simulation.IsOverwrittenParameterPath(compoundName, parameterPath);
+         if (!isCompoundDependentSimulationParameter(parameter, isOverwrittenParameterPath))
             return;
 
          var tracker = simulation.ParameterChangeTracker;
@@ -137,12 +138,12 @@ namespace PKSim.Core.Commands
          //this is a direct command
          if (!_trackedByThisCommand)
          {
-            UpdateTrackerForParameter(tracker, parameterPath);
+            UpdateTrackerForParameter(tracker, parameterPath, isOverwrittenParameterPath);
          }
          //this is an inverse command => reverse the tracking action
          else
          {
-            ReverseTrackerUpdateForParameter(tracker, parameterPath);
+            ReverseTrackerUpdateForParameter(tracker, parameterPath, isOverwrittenParameterPath);
          }
       }
 
@@ -150,11 +151,10 @@ namespace PKSim.Core.Commands
       ///    A parameter overwritten by the overwrite parameter set applied to the simulation is flagged as a compound
       ///    parameter, but remains a simulation parameter that can only be committed to the compound as part of a set.
       /// </summary>
-      private static bool isCompoundDependentSimulationParameter(IParameter parameter, Simulation simulation, string compoundName, string parameterPath) =>
-         parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation ||
-         simulation.IsOverwrittenParameterPath(compoundName, parameterPath);
+      private static bool isCompoundDependentSimulationParameter(IParameter parameter, bool isOverwrittenParameterPath) =>
+         parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation || isOverwrittenParameterPath;
 
-      protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath, bool isOverwrittenParameterPath)
       {
          Track(tracker, parameterPath);
       }
@@ -168,7 +168,7 @@ namespace PKSim.Core.Commands
             _trackedByThisCommand = true;
       }
 
-      protected virtual void ReverseTrackerUpdateForParameter(SimulationParameterChangeTracker tracker, string parameterPath)
+      protected virtual void ReverseTrackerUpdateForParameter(SimulationParameterChangeTracker tracker, string parameterPath, bool isOverwrittenParameterPath)
       {
          UnTrack(tracker, parameterPath);
       }
