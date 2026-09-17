@@ -31,9 +31,6 @@ namespace PKSim.Core.Model
             _selections.Add(selection);
       }
 
-      public void RemoveSelectionForCompound(string compoundName) =>
-         _selections.Remove(compoundName);
-
       public OverwriteParameterSet SelectedSetFor(string compoundName) =>
          _selections[compoundName]?.OverwriteParameterSet;
 

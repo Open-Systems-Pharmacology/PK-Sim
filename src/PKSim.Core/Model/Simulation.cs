@@ -510,11 +510,6 @@ namespace PKSim.Core.Model
          OverwriteParameterSetSelections.SetSelectionForCompound(compoundName, overwriteParameterSet);
       }
 
-      public virtual void RemoveOverwriteParameterSetSelection(string compoundName)
-      {
-         OverwriteParameterSetSelections.RemoveSelectionForCompound(compoundName);
-      }
-
       /// <summary>
       ///    Returns <c>true</c> if <paramref name="parameterPath" /> is one of the paths of the
       ///    <see cref="OverwriteParameterSet" /> selected for the compound named <paramref name="compoundName" />,

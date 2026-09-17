@@ -100,32 +100,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_removing_a_selection : concern_for_OverwriteParameterSetSelections
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.SetSelectionForCompound("Aspirin", _renalImpairmentSet);
-      }
-
-      protected override void Because()
-      {
-         sut.RemoveSelectionForCompound("Aspirin");
-      }
-
-      [Observation]
-      public void should_no_longer_have_the_selection()
-      {
-         sut.SelectedSetFor("Aspirin").ShouldBeNull();
-      }
-
-      [Observation]
-      public void should_have_no_selections()
-      {
-         sut.Selections.Count.ShouldBeEqualTo(0);
-      }
-   }
-
    public class When_cloning_selections : concern_for_OverwriteParameterSetSelections
    {
       private OverwriteParameterSetSelections _clone;

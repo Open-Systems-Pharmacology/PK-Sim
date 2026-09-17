@@ -783,26 +783,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_removing_an_overwrite_parameter_set_selection : concern_for_IndividualSimulation_with_compound
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.AddOverwriteParameterSetSelection(_compound.Name, _renalImpairmentSet);
-      }
-
-      protected override void Because()
-      {
-         sut.RemoveOverwriteParameterSetSelection(_compound.Name);
-      }
-
-      [Observation]
-      public void should_no_longer_contain_the_selection()
-      {
-         sut.OverwriteParameterSetSelections.Selections.ShouldBeEmpty();
-      }
-   }
-
    public class When_checking_whether_a_parameter_path_is_overwritten_by_the_selected_overwrite_parameter_set : concern_for_IndividualSimulation_with_compound
    {
       protected override void Context()
