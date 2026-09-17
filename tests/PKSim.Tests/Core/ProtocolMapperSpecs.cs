@@ -42,6 +42,7 @@ namespace PKSim.Core
             DosingInterval = DosingIntervals.DI_6_6_12,
             Name = "Simple Protocol",
             Description = "Simple Protocol description",
+            EventKey = "Meal",
          };
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(3).WithName(Constants.Parameters.START_TIME));
          _simpleProtocol.Add(DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(CoreConstants.Parameters.INPUT_DOSE));
@@ -85,6 +86,7 @@ namespace PKSim.Core
          _snapshot.ApplicationType.ShouldBeEqualTo(_simpleProtocol.ApplicationType.Name);
          _snapshot.Name.ShouldBeEqualTo(_simpleProtocol.Name);
          _snapshot.Description.ShouldBeEqualTo(_simpleProtocol.Description);
+         _snapshot.EventKey.ShouldBeEqualTo(_simpleProtocol.EventKey);
       }
 
       [Observation]
@@ -138,6 +140,7 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
          _snapshot.TargetOrgan = "Liver";
          _snapshot.TargetCompartment = "Cells";
+         _snapshot.EventKey = "Snack";
       }
 
       protected override async Task Because()
@@ -152,6 +155,7 @@ namespace PKSim.Core
          _newProtocol.Description.ShouldBeEqualTo(_snapshot.Description);
          _newProtocol.TargetOrgan.ShouldBeEqualTo(_snapshot.TargetOrgan);
          _newProtocol.TargetCompartment.ShouldBeEqualTo(_snapshot.TargetCompartment);
+         _newProtocol.EventKey.ShouldBeEqualTo(_snapshot.EventKey);
       }
 
       [Observation]
