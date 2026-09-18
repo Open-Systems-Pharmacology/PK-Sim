@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
@@ -61,32 +62,31 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          return (from usedEventKey in _protocol.UsedEventKeys
             where !usedEventKey.IsNullOrEmpty()
-            let pkSimEvent = eventUsedInSimulationFor(usedEventKey) ?? defaultEvent()
             select new EventPlaceholderMappingDTO
             {
-               Selection = selectionFrom(pkSimEvent),
+               Selection = selectionFrom(eventUsedInSimulationFor(usedEventKey)),
                EventKey = usedEventKey
             }).ToList();
       }
-
-      private PKSimEvent defaultEvent() => _eventTask.All().FirstOrDefault();
 
       private PKSimEvent eventUsedInSimulationFor(string eventKey) =>
          _eventFromMappingRetriever.TemplateEventUsedBy(_simulation, _protocolProperties.EventMappingWith(eventKey));
 
       public IEnumerable<EventSelectionDTO> AllEventsFor(EventPlaceholderMappingDTO eventPlaceholderMappingDTO)
       {
-         var eventSelections = _eventTask.All().Select(selectionFrom);
-         var hashSet = new HashSet<EventSelectionDTO>(eventSelections);
+         var hashSet = new HashSet<EventSelectionDTO> { noEventSelection };
+         _eventTask.All().Select(selectionFrom).Each(x => hashSet.Add(x));
          if (eventPlaceholderMappingDTO.Selection != null)
             hashSet.Add(eventPlaceholderMappingDTO.Selection);
 
          return hashSet;
       }
 
-      //no selection at all (rather than a blank one) when the project has no event to offer
+      //a placeholder that is left unmapped applies no event at all
+      private static EventSelectionDTO noEventSelection => new EventSelectionDTO { DisplayName = PKSimConstants.UI.NoEvent };
+
       private EventSelectionDTO selectionFrom(PKSimEvent pkSimEvent) => pkSimEvent == null
-         ? null
+         ? noEventSelection
          : new EventSelectionDTO
          {
             BuildingBlock = pkSimEvent,
@@ -120,7 +120,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _protocolProperties.ClearEventPlaceholderMappings();
 
-         //an unmapped placeholder is rejected by validation before we get here; skipping it keeps this safe regardless
+         //an unmapped placeholder applies no event and is simply not saved
          _allEventMappingDTO.Where(dto => dto.Event != null).Each(dto =>
          {
             _eventTask.Load(dto.Event);

@@ -150,7 +150,11 @@ namespace PKSim.Core.Services
             foreach (var schemaItem in _schemaItemsMapper.MapFrom(protocol).Where(item => item.IsEvent))
             {
                var mapping = protocolProperties.EventMappingWith(schemaItem.EventKey);
-               var pkSimEvent = resolveEvent(mapping?.TemplateEventId) ?? throw new NoEventFoundException(protocol, schemaItem.EventKey);
+               //an unmapped placeholder means that no event is applied at this placeholder
+               var pkSimEvent = resolveEvent(mapping?.TemplateEventId);
+               if (pkSimEvent == null)
+                  continue;
+
                eventStartTimeFor(pkSimEvent).AddStartTime(schemaItem.StartTime);
             }
          }
