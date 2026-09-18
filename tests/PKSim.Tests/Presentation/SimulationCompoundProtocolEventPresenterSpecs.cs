@@ -92,6 +92,32 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_the_event_presenter_is_editing_a_simulation_that_already_maps_a_placeholder : concern_for_SimulationCompoundProtocolEventPresenter
+   {
+      private IList<EventPlaceholderMappingDTO> _eventMappingDtoList;
+
+      protected override void Context()
+      {
+         base.Context();
+         _protocolProperties.AddEventPlaceholderMapping(new EventPlaceholderMapping { EventKey = "EVENT_1", TemplateEventId = _event1.Id, Event = _event1 });
+         A.CallTo(() => _protocol.UsedEventKeys).Returns(new[] { "EVENT_1" });
+         A.CallTo(() => _eventFromMappingRetriever.TemplateEventUsedBy(_simulation, A<EventPlaceholderMapping>.That.Matches(x => x.EventKey == "EVENT_1"))).Returns(_event1);
+         A.CallTo(() => _view.BindTo(A<IEnumerable<EventPlaceholderMappingDTO>>._))
+            .Invokes(x => _eventMappingDtoList = x.GetArgument<IEnumerable<EventPlaceholderMappingDTO>>(0).ToList());
+      }
+
+      protected override void Because()
+      {
+         sut.EditSimulation(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_preselect_the_event_already_mapped_by_the_simulation()
+      {
+         _eventMappingDtoList[0].Event.ShouldBeEqualTo(_event1);
+      }
+   }
+
    public class When_the_event_presenter_is_editing_a_protocol_without_event_placeholders : concern_for_SimulationCompoundProtocolEventPresenter
    {
       private IList<EventPlaceholderMappingDTO> _eventMappingDtoList;
@@ -156,9 +182,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_all_available_events()
+      public void should_return_all_available_events_and_an_entry_for_no_event()
       {
-         _result.Select(x => x.BuildingBlock).ShouldOnlyContain(_event1, _event2);
+         _result.Select(x => x.BuildingBlock).ShouldOnlyContain(null, _event1, _event2);
       }
    }
 
@@ -278,19 +304,19 @@ namespace PKSim.Presentation
       {
          _eventMappingDtoList.Count.ShouldBeEqualTo(1);
          _eventMappingDtoList[0].EventKey.ShouldBeEqualTo("EVENT_1");
-         _eventMappingDtoList[0].Selection.ShouldBeNull();
+         _eventMappingDtoList[0].Event.ShouldBeNull();
       }
 
       [Observation]
-      public void should_mark_the_mapping_as_invalid()
+      public void should_mark_the_mapping_as_valid()
       {
-         _eventMappingDtoList[0].IsValid().ShouldBeFalse();
+         _eventMappingDtoList[0].IsValid().ShouldBeTrue();
       }
 
       [Observation]
-      public void should_not_offer_any_event_for_selection()
+      public void should_only_offer_the_entry_for_no_event()
       {
-         sut.AllEventsFor(_eventMappingDtoList[0]).ShouldBeEmpty();
+         sut.AllEventsFor(_eventMappingDtoList[0]).Select(x => x.BuildingBlock).ShouldOnlyContain(new PKSimEvent[] { null });
       }
 
       [Observation]

@@ -658,9 +658,6 @@ namespace PKSim.Assets
          public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) =>
             $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
 
-         public static string NoEventFoundForPlaceholder(string protocolName, string eventKey) =>
-            $"No event found for placeholder '{eventKey}' in administration protocol '{protocolName}'.";
-
          public static string NoEventFoundForSimulationEvent(string templateEventId) =>
             $"No event found for simulation event with template id '{templateEventId}'.";
 

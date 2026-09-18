@@ -1,6 +1,5 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
 
@@ -14,16 +13,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_validating_an_event_placeholder_mapping_dto_without_a_selection : concern_for_EventPlaceholderMappingDTO
-   {
-      [Observation]
-      public void should_not_be_valid()
-      {
-         sut.IsValid().ShouldBeFalse();
-      }
-   }
-
-   public class When_validating_an_event_placeholder_mapping_dto_with_a_null_building_block : concern_for_EventPlaceholderMappingDTO
+   public class When_reading_the_event_of_an_event_placeholder_mapping_dto_without_a_selected_event : concern_for_EventPlaceholderMappingDTO
    {
       protected override void Context()
       {
@@ -32,30 +22,27 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_be_valid()
+      public void should_not_return_an_event()
       {
-         sut.IsValid().ShouldBeFalse();
+         sut.Event.ShouldBeNull();
       }
    }
 
-   public class When_validating_an_event_placeholder_mapping_dto_with_a_valid_event : concern_for_EventPlaceholderMappingDTO
+   public class When_reading_the_event_of_an_event_placeholder_mapping_dto_with_a_selected_event : concern_for_EventPlaceholderMappingDTO
    {
+      private PKSimEvent _event;
+
       protected override void Context()
       {
          base.Context();
-         sut.Selection = new EventSelectionDTO { BuildingBlock = new PKSimEvent() };
-      }
-
-      [Observation]
-      public void should_be_valid()
-      {
-         sut.IsValid().ShouldBeTrue();
+         _event = new PKSimEvent();
+         sut.Selection = new EventSelectionDTO { BuildingBlock = _event };
       }
 
       [Observation]
       public void should_expose_the_event_from_the_selection()
       {
-         sut.Event.ShouldNotBeNull();
+         sut.Event.ShouldBeEqualTo(_event);
       }
    }
 }
