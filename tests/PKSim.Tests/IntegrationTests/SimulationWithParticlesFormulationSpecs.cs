@@ -655,29 +655,6 @@ namespace PKSim.IntegrationTests
          }
       }
 
-      [Observation]
-      [Ignore("TODO Either adjust the values or remove the test completely")]
-      public void values_in_lumen_segments_should_be_equal()
-      {
-         for (var segmentIdx = 0; segmentIdx < NumberOfLumenSegments; segmentIdx++)
-         {
-            compareSimulatedValues(_dissolvedDrugLumen[segmentIdx], _prototypeSimulationDissolvedDrugLumen[segmentIdx], $"dissolved drug in {_lumenSegments[segmentIdx]}");
-         }
-      }
-
-      [Observation]
-      [Ignore("TODO Either adjust the values or remove the test completely")]
-      public void fraction_absorbed_values_should_be_equal()
-      {
-         compareSimulatedValues(_fractionAbsorbed, _prototypeSimulationFractionAbsorbed, "fraction absorbed into mucosa");
-      }
-
-      [Observation]
-      [Ignore("TODO Either adjust the values or remove the test completely")]
-      public void peripheral_venous_blood_plasma_values_should_be_equal()
-      {
-         compareSimulatedValues(_peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls, "peripheral venous blood (plasma)");
-      }
    }
 
    public class when_running_particles_simulation_with_two_bins_without_precipitation : concern_for_SimulationWithParticlesFormulation
