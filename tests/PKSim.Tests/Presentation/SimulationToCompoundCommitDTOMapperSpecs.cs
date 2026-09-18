@@ -391,7 +391,19 @@ namespace PKSim.Presentation
       [Observation]
       public void should_map_the_parameter_as_an_update_of_the_set()
       {
-         _result.Parameters.Single().IsRemoval.ShouldBeFalse();
+         _result.Parameters.Single(p => p.Path == "Organism|Aspirin|Lipophilicity").IsRemoval.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_list_the_entry_of_the_selected_set_as_unchanged()
+      {
+         _result.Parameters.Single(p => p.Path == "Organism|Aspirin|Permeability").IsUnchanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_list_the_reset_parameter_and_the_entry_of_the_selected_set()
+      {
+         _result.Parameters.Select(p => p.Path).ShouldOnlyContain("Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Permeability");
       }
    }
 
