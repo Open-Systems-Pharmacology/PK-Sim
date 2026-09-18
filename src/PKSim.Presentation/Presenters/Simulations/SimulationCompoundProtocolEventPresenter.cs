@@ -83,7 +83,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          return hashSet;
       }
 
-      //a placeholder that is left unmapped applies no event at all
       private static EventSelectionDTO noEventSelection => new EventSelectionDTO { DisplayName = PKSimConstants.UI.NoEvent };
 
       private EventSelectionDTO selectionFrom(PKSimEvent pkSimEvent) => pkSimEvent == null
@@ -124,7 +123,6 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _protocolProperties.ClearEventPlaceholderMappings();
 
-         //an unmapped placeholder applies no event and is simply not saved
          _allEventMappingDTO.Where(dto => dto.Event != null).Each(dto =>
          {
             _eventTask.Load(dto.Event);

@@ -25,8 +25,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       void PlotProtocol(Protocol protocol);
 
       /// <summary>
-      ///    Plots the given protocols. Event placeholders listed in <paramref name="unmappedEventKeys" /> apply no event
-      ///    and are not plotted.
+      ///    Plots the given protocols. Event placeholders listed in <paramref name="unmappedEventKeys" /> are not plotted.
       /// </summary>
       void PlotProtocols(ICache<Compound, Protocol> protocols, ICache<Compound, IReadOnlyList<string>> unmappedEventKeys = null);
       string DescriptionFor(SchemaItemDTO schemaItemDTO);
