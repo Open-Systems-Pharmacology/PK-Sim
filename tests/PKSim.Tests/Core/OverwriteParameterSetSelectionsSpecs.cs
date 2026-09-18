@@ -72,29 +72,31 @@ namespace PKSim.Core
       }
    }
 
-   public class When_removing_a_selection : concern_for_OverwriteParameterSetSelections
+   public class When_querying_whether_a_selection_was_made : concern_for_OverwriteParameterSetSelections
    {
       protected override void Context()
       {
          base.Context();
          sut.SetSelectionForCompound("Aspirin", _renalImpairmentSet);
-      }
-
-      protected override void Because()
-      {
-         sut.RemoveSelectionForCompound("Aspirin");
+         sut.SetSelectionForCompound("Caffeine", null);
       }
 
       [Observation]
-      public void should_no_longer_have_the_selection()
+      public void should_report_a_selection_for_a_compound_with_a_set()
       {
-         sut.SelectedSetFor("Aspirin").ShouldBeNull();
+         sut.HasSelectionFor("Aspirin").ShouldBeTrue();
       }
 
       [Observation]
-      public void should_have_no_selections()
+      public void should_report_a_selection_for_a_compound_explicitly_set_to_none()
       {
-         sut.Selections.Count.ShouldBeEqualTo(0);
+         sut.HasSelectionFor("Caffeine").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_report_a_selection_for_a_compound_that_was_never_configured()
+      {
+         sut.HasSelectionFor("Unknown").ShouldBeFalse();
       }
    }
 

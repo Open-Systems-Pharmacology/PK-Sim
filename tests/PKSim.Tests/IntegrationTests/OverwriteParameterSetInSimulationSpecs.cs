@@ -72,4 +72,56 @@ namespace PKSim.IntegrationTests
          _simulation.UsedBuildingBlockByTemplateId(_compound.Id).Altered.ShouldBeFalse();
       }
    }
+
+   public class When_applying_an_overwrite_parameter_set_supplying_a_parameter_changed_in_the_simulation : ContextForSimulationIntegration<IExecutionContext>
+   {
+      private Compound _compound;
+      private string _parameterPath;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         sut = IoC.Resolve<IExecutionContext>();
+
+         var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, _compound, protocol).DowncastTo<IndividualSimulation>();
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+
+         var compoundParameter = firstValidCompoundParameter();
+         _parameterPath = compoundParameter.Key;
+
+         //the user changes the parameter in the simulation without committing it
+         new SetParameterValueCommand(compoundParameter.Value, compoundParameter.Value.Value + 1.0).Run(sut);
+
+         var overwriteParameterSet = new OverwriteParameterSet { Name = "TestSet" };
+         overwriteParameterSet.Add(new ParameterValue { Path = _parameterPath.ToObjectPath(), Value = compoundParameter.Value.Value });
+         _simulation.AddOverwriteParameterSetSelection(_compound.Name, overwriteParameterSet);
+      }
+
+      private KeyValuePair<string, IParameter> firstValidCompoundParameter()
+      {
+         return parameterCache().KeyValues
+            .First(kv => kv.Value.BuildingBlockType == PKSimBuildingBlockType.Simulation &&
+                         _simulation.CompoundNameForParameterPath(kv.Key) == _compound.Name &&
+                         !double.IsNaN(kv.Value.Value));
+      }
+
+      private PathCache<IParameter> parameterCache() => IoC.Resolve<IContainerTask>().CacheAllChildren<IParameter>(_simulation.Model.Root);
+
+      protected override void Because()
+      {
+         //configuring the simulation rebuilds the model and applies the selected overwrite parameter set
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+      }
+
+      [Observation]
+      public void should_not_report_the_change_as_uncommitted_anymore()
+      {
+         _simulation.ParameterChangeTracker.IsTracked(_parameterPath).ShouldBeFalse();
+         _simulation.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
 }
