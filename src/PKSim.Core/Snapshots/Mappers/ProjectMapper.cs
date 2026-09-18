@@ -34,6 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       private readonly IStartableWarmup _startableWarmup;
+      private readonly IChartTask _chartTask;
 
       public ProjectMapper(
          SimulationMapper simulationMapper,
@@ -49,7 +50,8 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationRunner simulationRunner,
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
-         IStartableWarmup startableWarmup
+         IStartableWarmup startableWarmup,
+         IChartTask chartTask
       ) : base(creationMetaDataFactory, logger, executionContext, classificationSnapshotTask, parameterIdentificationMapper)
       {
          _simulationMapper = simulationMapper;
@@ -61,6 +63,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _startableWarmup = startableWarmup;
+         _chartTask = chartTask;
       }
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
@@ -174,6 +177,7 @@ namespace PKSim.Core.Snapshots.Mappers
             var (simulation, snapshot) = simulationWithSnapshot;
             simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, simulationContext));
             simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, simulationContext));
+            _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);
          }
       }
 
