@@ -1760,6 +1760,7 @@ namespace PKSim.Assets
          public static readonly string Change = "Change";
          public static readonly string UpdateValueInParameterSet = "Update value";
          public static readonly string RemoveFromParameterSet = "Remove from set";
+         public static readonly string UnchangedInParameterSet = "Unchanged";
          public static readonly string Metadata = "Metadata";
          public static readonly string CompoundParameterInSimulationSimple = BasicPharmacochemistry;
          public static readonly string CompoundParameterInSimulationAdvanced = AdvancedParameterTabCaption;

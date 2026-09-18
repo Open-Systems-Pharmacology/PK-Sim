@@ -19,11 +19,19 @@ namespace PKSim.Presentation.DTO.Simulations
 
       /// <summary>
       ///    The set of the project compound selected for the compound in the simulation, or <c>null</c> if none is
-      ///    selected. Removals of reset parameters can only be committed to this set.
+      ///    selected. An existing set can only be updated with removals of reset parameters when it is this set.
       /// </summary>
       public OverwriteParameterSet SetSelectedInSimulation { get; init; }
 
-      public bool HasSelectedRemovals => Parameters.Any(p => p.Selected && p.IsRemoval);
+      /// <summary>
+      ///    The parameters the dialog shows for the commit mode currently selected. A new set is built from everything it
+      ///    will contain, so the entries carried over from the set applied to the simulation are listed and the paths the
+      ///    user reset are not. An existing set is patched with the changes only.
+      /// </summary>
+      public IReadOnlyList<ParameterCommitDTO> VisibleParameters =>
+         Parameters.Where(x => CreateNew ? !x.IsRemoval : !x.IsUnchanged).ToList();
+
+      public bool HasSelectedRemovals => VisibleParameters.Any(p => p.Selected && p.IsRemoval);
 
       public CompoundCommitDTO()
       {
@@ -34,7 +42,7 @@ namespace PKSim.Presentation.DTO.Simulations
       {
          private static IBusinessRule removalsTargetSetSelectedInSimulation { get; } = CreateRule.For<CompoundCommitDTO>()
             .Property(x => x.SelectedExistingSet)
-            .WithRule((dto, selectedSet) => !dto.HasSelectedRemovals || (!dto.CreateNew && selectedSet == dto.SetSelectedInSimulation))
+            .WithRule((dto, selectedSet) => !dto.HasSelectedRemovals || selectedSet == dto.SetSelectedInSimulation)
             .WithError(PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet);
 
          private static IBusinessRule newSetNameNotEmpty { get; } = CreateRule.For<CompoundCommitDTO>()

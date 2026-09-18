@@ -5,12 +5,12 @@ namespace PKSim.Presentation.DTO.Mappers
 {
    public interface IParameterToParameterCommitDTOMapper
    {
-      ParameterCommitDTO MapFrom(string path, IParameter parameter, bool isRemoval);
+      ParameterCommitDTO MapFrom(string path, IParameter parameter, bool isRemoval, bool isUnchanged);
    }
 
    public class ParameterToParameterCommitDTOMapper : IParameterToParameterCommitDTOMapper
    {
-      public ParameterCommitDTO MapFrom(string path, IParameter parameter, bool isRemoval)
+      public ParameterCommitDTO MapFrom(string path, IParameter parameter, bool isRemoval, bool isUnchanged)
       {
          return new ParameterCommitDTO
          {
@@ -19,7 +19,8 @@ namespace PKSim.Presentation.DTO.Mappers
             Value = parameter?.ValueInDisplayUnit ?? double.NaN,
             Unit = parameter?.DisplayUnit?.Name,
             ValueOrigin = parameter?.ValueOrigin?.Display,
-            IsRemoval = isRemoval
+            IsRemoval = isRemoval,
+            IsUnchanged = isUnchanged
          };
       }
    }

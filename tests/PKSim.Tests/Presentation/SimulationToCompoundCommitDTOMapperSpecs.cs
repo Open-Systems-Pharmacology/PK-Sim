@@ -53,12 +53,99 @@ namespace PKSim.Presentation
          _parameterCache.Add("Organism|Aspirin|Permeability", _permeability);
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
 
-         A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Lipophilicity", _lipophilicity, A<bool>._))
-            .ReturnsLazily(x => new ParameterCommitDTO { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, IsRemoval = x.GetArgument<bool>(2) });
-         A.CallTo(() => _parameterCommitDTOMapper.MapFrom("Organism|Aspirin|Permeability", _permeability, A<bool>._))
-            .ReturnsLazily(x => new ParameterCommitDTO { Path = "Organism|Aspirin|Permeability", Value = 7.2, IsRemoval = x.GetArgument<bool>(2) });
+         A.CallTo(() => _parameterCommitDTOMapper.MapFrom(A<string>._, A<IParameter>._, A<bool>._, A<bool>._))
+            .ReturnsLazily(x => new ParameterCommitDTO
+            {
+               Path = x.GetArgument<string>(0),
+               Value = x.GetArgument<IParameter>(1)?.Value ?? double.NaN,
+               IsRemoval = x.GetArgument<bool>(2),
+               IsUnchanged = x.GetArgument<bool>(3)
+            });
 
          sut = new SimulationToCompoundCommitDTOMapper(_containerTask, _parameterCommitDTOMapper);
+      }
+   }
+
+   public class When_mapping_a_simulation_that_has_an_overwrite_parameter_set_applied : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+      private IParameter _solubility;
+
+      protected override void Context()
+      {
+         base.Context();
+         _solubility = DomainHelperForSpecs.ConstantParameterWithValue(9.9).WithName("Solubility");
+         _parameterCache.Add("Organism|Aspirin|Solubility", _solubility);
+
+         var appliedSet = new OverwriteParameterSet { Name = "AppliedSet" };
+         appliedSet.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Value = 1.0 });
+         appliedSet.Add(new ParameterValue { Path = "Organism|Aspirin|Solubility".ToObjectPath(), Value = 9.9 });
+         _templateCompound.AddOverwriteParameterSet(appliedSet);
+         _simulation.AddOverwriteParameterSetSelection(_templateCompound.Name, appliedSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _templateCompound);
+      }
+
+      [Observation]
+      public void should_list_the_changed_parameter_as_a_change()
+      {
+         var changed = _result.Parameters.Single(x => x.Path == "Organism|Aspirin|Permeability");
+         changed.IsUnchanged.ShouldBeFalse();
+         changed.IsRemoval.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_list_the_untouched_entries_of_the_applied_set_as_unchanged()
+      {
+         var unchangedPaths = _result.Parameters.Where(x => x.IsUnchanged).Select(x => x.Path).ToList();
+         unchangedPaths.ShouldOnlyContain("Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Solubility");
+      }
+
+      [Observation]
+      public void should_show_the_entries_of_the_applied_set_when_creating_a_new_set()
+      {
+         _result.CreateNew = true;
+         _result.VisibleParameters.Count.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_not_show_the_entries_of_the_applied_set_when_updating_an_existing_set()
+      {
+         _result.CreateNew = false;
+         _result.VisibleParameters.Select(x => x.Path).ShouldOnlyContain("Organism|Aspirin|Permeability");
+      }
+   }
+
+   public class When_mapping_a_simulation_whose_applied_set_contains_a_changed_parameter : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var appliedSet = new OverwriteParameterSet { Name = "AppliedSet" };
+         appliedSet.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Value = 1.0 });
+         _templateCompound.AddOverwriteParameterSet(appliedSet);
+         _simulation.AddOverwriteParameterSetSelection(_templateCompound.Name, appliedSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _templateCompound);
+      }
+
+      [Observation]
+      public void should_list_the_path_once_as_a_change()
+      {
+         var lipophilicity = _result.Parameters.Single(x => x.Path == "Organism|Aspirin|Lipophilicity");
+         lipophilicity.IsUnchanged.ShouldBeFalse();
       }
    }
 
