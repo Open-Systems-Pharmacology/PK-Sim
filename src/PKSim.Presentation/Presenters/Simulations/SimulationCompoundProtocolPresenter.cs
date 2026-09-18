@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
@@ -14,6 +15,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       bool FormulationChanged { get; }
       Protocol SelectedProtocol { get; }
       Compound Compound { get; }
+      IReadOnlyList<string> UnmappedEventKeys { get; }
       bool AllowEmptyProtocolSelection { get; set; }
       void UpdateSelectedFormulation(Formulation templateFormulation);
    }
@@ -108,6 +110,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       public override bool CanClose => base.CanClose && _simulationCompoundProtocolFormulationPresenter.CanClose && _simulationCompoundProtocolEventPresenter.CanClose;
 
       public Protocol SelectedProtocol => _protocolSelectionDTO.BuildingBlock;
+
+      public IReadOnlyList<string> UnmappedEventKeys => _simulationCompoundProtocolEventPresenter.UnmappedEventKeys;
 
       public bool AllowEmptyProtocolSelection
       {

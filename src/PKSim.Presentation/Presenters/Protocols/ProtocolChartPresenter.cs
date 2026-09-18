@@ -23,7 +23,12 @@ namespace PKSim.Presentation.Presenters.Protocols
       ICanExportCharts
    {
       void PlotProtocol(Protocol protocol);
-      void PlotProtocols(ICache<Compound, Protocol> protocols);
+
+      /// <summary>
+      ///    Plots the given protocols. Event placeholders listed in <paramref name="unmappedEventKeys" /> apply no event
+      ///    and are not plotted.
+      /// </summary>
+      void PlotProtocols(ICache<Compound, Protocol> protocols, ICache<Compound, IReadOnlyList<string>> unmappedEventKeys = null);
       string DescriptionFor(SchemaItemDTO schemaItemDTO);
       SchemaItemDTO SchemaItemDTOFrom(object tag);
    }
@@ -59,7 +64,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          PlotProtocols(cache);
       }
 
-      public void PlotProtocols(ICache<Compound, Protocol> protocols)
+      public void PlotProtocols(ICache<Compound, Protocol> protocols, ICache<Compound, IReadOnlyList<string>> unmappedEventKeys = null)
       {
          if (!protocols.Any())
          {
@@ -71,7 +76,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          //a good value for the bar witdh is 10 kernel unit [min]
          var timeUnit = longestProtocol.TimeUnit;
          _view.BarWidth = _dimensionRepository.Time.BaseUnitValueToUnitValue(timeUnit, 10);
-         _protocolChartData = dataToPlotFrom(protocols, timeUnit);
+         _protocolChartData = dataToPlotFrom(protocols, timeUnit, unmappedEventKeys);
          _view.XAxisTitle = Constants.NameWithUnitFor(PKSimConstants.UI.Time, timeUnit);
          _view.YAxisTitle = Constants.NameWithUnitFor(PKSimConstants.UI.Dose, _protocolChartData.YAxisUnit);
          _view.Y2AxisTitle = Constants.NameWithUnitFor(PKSimConstants.UI.Dose, _protocolChartData.Y2AxisUnit);
@@ -100,17 +105,22 @@ namespace PKSim.Presentation.Presenters.Protocols
          return _protocolChartData.SchemaItemFor(tag);
       }
 
-      private IProtocolChartData dataToPlotFrom(ICache<Compound, Protocol> protocols, Unit timeUnit)
+      private IProtocolChartData dataToPlotFrom(ICache<Compound, Protocol> protocols, Unit timeUnit, ICache<Compound, IReadOnlyList<string>> unmappedEventKeys)
       {
          var endTime = protocols.Max(x => x.EndTime);
          var allSchemaItemsCache = new Cache<Compound, IReadOnlyList<SchemaItemDTO>>();
-         protocols.KeyValues.Each(kv => allSchemaItemsCache[kv.Key] = schemaItemsDTOFrom(kv.Value));
+         protocols.KeyValues.Each(kv => allSchemaItemsCache[kv.Key] = schemaItemsDTOFrom(kv.Value, unmappedEventKeysFor(unmappedEventKeys, kv.Key)));
          return new ProtocolChartData(allSchemaItemsCache, _dimensionRepository.Time, timeUnit, endTime);
       }
 
-      private IReadOnlyList<SchemaItemDTO> schemaItemsDTOFrom(Protocol protocol)
+      private static IReadOnlyList<string> unmappedEventKeysFor(ICache<Compound, IReadOnlyList<string>> unmappedEventKeys, Compound compound) =>
+         unmappedEventKeys != null && unmappedEventKeys.Contains(compound) ? unmappedEventKeys[compound] : new string[0];
+
+      private IReadOnlyList<SchemaItemDTO> schemaItemsDTOFrom(Protocol protocol, IReadOnlyList<string> unmappedEventKeys)
       {
-         return _schemaItemsMapper.MapFrom(protocol).MapAllUsing(_schemaItemDTOMapper);
+         return _schemaItemsMapper.MapFrom(protocol)
+            .Where(x => !x.IsEvent || !unmappedEventKeys.Contains(x.EventKey))
+            .MapAllUsing(_schemaItemDTOMapper);
       }
 
       public void ExportToPng()

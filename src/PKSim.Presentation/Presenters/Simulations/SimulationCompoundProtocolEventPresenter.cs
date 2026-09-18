@@ -19,6 +19,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       void CreateEventFor(EventPlaceholderMappingDTO eventPlaceholderMappingDTO);
       Task LoadEventForAsync(EventPlaceholderMappingDTO eventPlaceholderMappingDTO);
       bool EventVisible { get; }
+      IReadOnlyList<string> UnmappedEventKeys { get; }
    }
 
    public class SimulationCompoundProtocolEventPresenter : AbstractSubPresenter<ISimulationCompoundProtocolEventView, ISimulationCompoundProtocolEventPresenter>,
@@ -107,6 +108,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public bool EventVisible => _view.EventVisible;
+
+      public IReadOnlyList<string> UnmappedEventKeys =>
+         _allEventMappingDTO.Where(x => x.Event == null).Select(x => x.EventKey).ToList();
 
       private void updateEventInMapping(EventPlaceholderMappingDTO eventPlaceholderMappingDTO, PKSimEvent pkSimEvent)
       {

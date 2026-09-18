@@ -74,6 +74,16 @@ namespace PKSim.Presentation.Presenters.Simulations
          }
       }
 
+      private ICache<Compound, IReadOnlyList<string>> unmappedEventKeysByCompounds
+      {
+         get
+         {
+            var cache = new Cache<Compound, IReadOnlyList<string>>();
+            allSubPresentersWithDefinedProtocol.Each(p => cache[p.Compound] = p.UnmappedEventKeys);
+            return cache;
+         }
+      }
+
       private IEnumerable<ISimulationCompoundProtocolPresenter> allSubPresentersWithDefinedProtocol
       {
          get { return AllSubCompoundPresenters().Where(x => x.SelectedProtocol != null); }
@@ -102,7 +112,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void updateCharts()
       {
-         _protocolChartPresenter.PlotProtocols(selectedProtocolsByCompounds);
+         _protocolChartPresenter.PlotProtocols(selectedProtocolsByCompounds, unmappedEventKeysByCompounds);
       }
 
       private void updateWarnings()
