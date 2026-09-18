@@ -97,7 +97,6 @@ namespace PKSim.Core
       protected ModelOutputMapping _outputMapping;
       protected OutputMappingMapper _outputMappingMapper;
       protected SnapshotOutputMapping _snapshotOutputMapping;
-      protected IChartTask _chartTask;
       protected OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       protected override Task Context()
@@ -124,7 +123,6 @@ namespace PKSim.Core
          _logger = A.Fake<IOSPSuiteLogger>();
          _containerTask = A.Fake<IContainerTask>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _chartTask = A.Fake<IChartTask>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
@@ -134,7 +132,7 @@ namespace PKSim.Core
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationParameterOriginIdUpdater,
-            _logger, _containerTask, _entityPathResolver, _chartTask
+            _logger, _containerTask, _entityPathResolver
          );
 
          _project = new PKSimProject();
@@ -669,12 +667,6 @@ namespace PKSim.Core
       public void should_update_the_altered_flag_for_each_altered_building_block()
       {
          _simulation.UsedBuildingBlockInSimulation<Individual>().Altered.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_have_updated_the_reference_to_observed_data_in_all_charts()
-      {
-         A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, _project)).MustHaveHappened();
       }
 
       [Observation]
