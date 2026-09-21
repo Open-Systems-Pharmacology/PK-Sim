@@ -42,7 +42,7 @@ namespace PKSim.IntegrationTests
 
       protected Simulation _simulation;
       protected Compound _compound;
-      protected string[] _lumenSegments = Constants.Compartment.AllLumenSegments.ToArray();
+      protected readonly string[] _lumenSegments = Constants.Compartment.AllLumenSegments.ToArray();
 
       public override void GlobalContext()
       {
@@ -85,31 +85,31 @@ namespace PKSim.IntegrationTests
          _compound.Parameter(CoreConstants.Parameters.ParameterPKa(index)).Value = pKa;
       }
 
-      protected IContainer Lumen => _simulation.Model.Root.Container(Constants.ORGANISM).Container(CoreConstants.Organ.LUMEN);
+      private IContainer Lumen => _simulation.Model.Root.Container(Constants.ORGANISM).Container(CoreConstants.Organ.LUMEN);
 
       protected IContainer CompoundInSimulation => _simulation.Model.Root.EntityAt<IContainer>(_compound.Name);
 
-      protected IContainer DrugIn(string segment) => Lumen.Container(segment).Container(_compound.Name);
+      private IContainer DrugIn(string segment) => Lumen.Container(segment).Container(_compound.Name);
 
       protected IParameter TotalSolubility(string segment) => DrugIn(segment).Parameter(CoreConstants.Parameters.SOLUBILITY);
 
-      protected IParameter AqueousSolubility(string segment) => DrugIn(segment).Parameter(SOLUBILITY_AQUEOUS);
+      protected IParameter AqueousSolubility(string segment) => DrugIn(segment).Parameter(Parameters.SOLUBILITY_AQUEOUS);
 
-      protected IParameter SolubilityIncreaseFromIonization(string segment) => DrugIn(segment).Parameter(SOLUBILITY_INCREASE_FROM_IONIZATION);
+      protected IParameter SolubilityIncreaseFromIonization(string segment) => DrugIn(segment).Parameter(Parameters.SOLUBILITY_INCREASE_FROM_IONIZATION);
 
       protected IParameter SolubilityTable(string segment) => DrugIn(segment).Parameter(CoreConstants.Parameters.SOLUBILITY_TABLE);
 
-      protected IParameter FractionUnboundLumen(string segment) => DrugIn(segment).Parameter(FRACTION_UNBOUND_DRUG_LUMEN);
+      protected IParameter FractionUnboundLumen(string segment) => DrugIn(segment).Parameter(Parameters.FRACTION_UNBOUND_DRUG_LUMEN);
 
       protected IParameter SegmentPH(string segment) => Lumen.Container(segment).Parameter(CoreConstants.Parameters.PH);
 
-      protected IParameter BileSaltConcentration(string segment) => Lumen.Container(segment).Parameter(BILE_SALT_CONCENTRATION);
+      protected IParameter BileSaltConcentration(string segment) => Lumen.Container(segment).Parameter(Parameters.BILE_SALT_CONCENTRATION);
 
       protected IParameter IntrinsicSolubility => CompoundInSimulation.Parameter(Parameters.SOLUBILITY_INTRINSIC);
 
       protected IParameter CriticalMicellarConcentration => CompoundInSimulation.Parameter(CoreConstants.Parameters.CRITICAL_MICELLAR_CONCENTRATION);
 
-      protected IParameter UseBileSaltMicellization => CompoundInSimulation.Parameter(USE_BILE_SALT_MICELLIZATION);
+      protected IParameter UseBileSaltMicellization => CompoundInSimulation.Parameter(Parameters.USE_BILE_SALT_MICELLIZATION);
 
       /// <summary>
       ///    Segments in which the bile salt concentration exceeds the critical micellar concentration and the
@@ -121,11 +121,6 @@ namespace PKSim.IntegrationTests
       protected IEnumerable<string> SegmentsWithoutMicellization =>
          _lumenSegments.Where(segment => BileSaltConcentration(segment).Value <= CriticalMicellarConcentration.Value);
 
-      protected const string SOLUBILITY_AQUEOUS = "Solubility (aqueous)";
-      protected const string SOLUBILITY_INCREASE_FROM_IONIZATION = "Solubility increase from ionization";
-      protected const string FRACTION_UNBOUND_DRUG_LUMEN = "Fraction unbound drug intestinal lumen";
-      protected const string BILE_SALT_CONCENTRATION = "Bile Salt concentration";
-      protected const string USE_BILE_SALT_MICELLIZATION = "Use bile salt micellization";
    }
 
    public class When_calculating_the_solubility_in_the_intestinal_lumen : concern_for_intestinal_solubility
@@ -365,7 +360,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_define_the_switch_as_visible_and_editable_in_the_advanced_solubility_group()
       {
-         var parameter = _compound.Parameter(USE_BILE_SALT_MICELLIZATION);
+         var parameter = _compound.Parameter(Parameters.USE_BILE_SALT_MICELLIZATION);
          parameter.ShouldNotBeNull();
          parameter.Visible.ShouldBeTrue();
          parameter.Editable.ShouldBeTrue();

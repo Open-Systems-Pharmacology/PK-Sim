@@ -84,6 +84,12 @@ namespace PKSim
          public const string PH_INTRINSIC_SOLUBILITY = "pH (intrinsic solubility)";
          public const string INTRINSIC_SOLUBILITY_PKA_PH_FACTOR = "IntrinsicSolubility_pKa_pH_Factor";
          public const string SOLUBILITY_INTRINSIC = "Solubility (intrinsic)";
+         public const string SOLUBILITY_AQUEOUS = "Solubility (aqueous)";
+         public const string SOLUBILITY_INCREASE_FROM_IONIZATION = "Solubility increase from ionization";
+         public const string SOLUBILITY_TABLE = "Solubility (table)";
+         public const string FRACTION_UNBOUND_DRUG_LUMEN = "Fraction unbound drug intestinal lumen";
+         public const string BILE_SALT_CONCENTRATION = "Bile Salt concentration";
+         public const string USE_BILE_SALT_MICELLIZATION = "Use bile salt micellization";
       }
 
       public static class ContainerName
