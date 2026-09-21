@@ -303,6 +303,16 @@ namespace PKSim.IntegrationTests
                  select $"{binSolidDrugPath}|ParticlesDrugRelease{segment}|{parameter}").ToArray();
       }
 
+      /// <summary>
+      /// Path of a parameter of the particles dissolution process of one particles bin in one lumen segment,
+      /// e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Particle radius"
+      /// </summary>
+      protected string BinParameterPerSegmentPath(int binIdx, string segment, string parameterName)
+      {
+         var binSolidDrugPath = binSolidDrugPathFor(binPathFor(binIdx), _compound.Name);
+         return $"{binSolidDrugPath}|ParticlesDrugRelease{segment}|{parameterName}";
+      }
+
       protected IParameter MoleculeProperties(string parameterName)
       {
          return _simulation.Model.Root.Container(_compound.Name).Parameter(parameterName);
@@ -521,140 +531,6 @@ namespace PKSim.IntegrationTests
             diff.ShouldBeGreaterThanOrEqualTo(0);
          }
       }
-   }
-
-   public class when_comparing_with_prototype_simulation_in_mobi : concern_for_SimulationWithParticlesFormulation
-   {
-      private float[][] _prototypeSimulationDissolvedDrugLumen; //dissolved drug[lumen segment][time] in the prototype simulation
-      private float[] _fractionAbsorbed, _prototypeSimulationFractionAbsorbed;
-      private float[] _peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls;
-
-      private IndividualSimulation _prototypeSimulation;
-
-      public override void GlobalContext()
-      {
-         base.GlobalContext();
-
-         //load prototype simulation
-         var importSimulationTask = IoC.Resolve<IImportSimulationTask>();
-         var pkmlFilePrototypeSimulation = DomainHelperForSpecs.DataFilePathFor("PrototypeParticlesDissolution_722.pkml");
-         _prototypeSimulation = importSimulationTask.ImportIndividualSimulation(pkmlFilePrototypeSimulation);
-
-         //add output paths
-         var compoundName = _compound.Name;
-         var lumenPaths = LumenPaths(compoundName);
-         addOutputs(_prototypeSimulation, lumenPaths);
-
-         RunSimulation(_prototypeSimulation).Wait();
-
-         //fill simulation output times and values required for all further tests
-         fillSimulationOutputs(lumenPaths);
-      }
-
-      private void fillSimulationOutputs(string[] lumenPaths)
-      {
-         _prototypeSimulationDissolvedDrugLumen = new float[NumberOfLumenSegments][];
-         for (var segmentIdx = 0; segmentIdx < NumberOfLumenSegments; segmentIdx++)
-            _prototypeSimulationDissolvedDrugLumen[segmentIdx] = ValuesFor(_prototypeSimulation, lumenPaths[segmentIdx]);
-
-         _fractionAbsorbed = ValuesFor(_simulation, fractionAbsorbedPath);
-         _prototypeSimulationFractionAbsorbed = ValuesFor(_prototypeSimulation, fractionAbsorbedPath);
-
-         _peripheralVenousBloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
-         _prototypeSimulationPeripheralVenousBloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
-      }
-
-      private void addOutputs(IndividualSimulation prototypeSimulation, string[] lumenPaths)
-      {
-         foreach (var path in lumenPaths)
-         {
-            AddOutputTo(prototypeSimulation, path);
-         }
-
-         var allPaths = new[] {fractionAbsorbedPath, peripheralVenPlsPath};
-         foreach (var path in allPaths)
-         {
-            AddOutputTo(_simulation,path,QuantityType.Observer);
-            AddOutputTo(_prototypeSimulation, path, QuantityType.Observer);
-         }
-      }
-
-      private string fractionAbsorbedPath => $"Organism|Lumen|{_compound.Name}|Fraction of oral drug mass absorbed into mucosa";
-
-      private string peripheralVenPlsPath => $"Organism|PeripheralVenousBlood|{_compound.Name}|Plasma (Peripheral Venous Blood)";
-
-      protected override double ComparisonTolerance => 1e-1;
-
-      protected override int NumberOfBins => 1;
-
-      protected override bool DisableIntestinalAbsorptionAndLuminalFlow => false;
-
-      protected override void SetupBuildingBlocks()
-      {
-         _compound.Name = "Aciclovir";
-         _formulation.Name = "IR tablet";
-         _protocol.Name = "5mg tablet";
-
-         var cloneManager = IoC.Resolve<ICloneManager>();
-         var compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
-
-         var transportProcess = cloneManager.Clone(compoundProcessRepository.ProcessByName("TubularSecretion_FirstOrder"))
-            .WithName("Renal Clearances-Literatur TS");
-         transportProcess.Parameter("Volume (kidney)").Value = 0.4377;
-         transportProcess.Parameter("Tubular secretion").Value = 0.412;
-         _compound.AddProcess(transportProcess);
-
-         transportProcess = cloneManager.Clone(compoundProcessRepository.ProcessByName("GlomerularFiltration"))
-            .WithName("Glomerular Filtration-Literature GFR");
-         transportProcess.Parameter("GFR fraction").Value = 1;
-         _compound.AddProcess(transportProcess);
-
-         _formulation.Parameter("Particle radius (mean)").Value = 0.0001;
-      }
-
-      protected override void SetupProcesses()
-      {
-         foreach (var process in _compound.AllProcesses<SystemicProcess>())
-         {
-            var interactionSelection = new InteractionSelection { CompoundName = _compound.Name, ProcessName = process.Name };
-            _simulation.InteractionProperties.AddInteraction(interactionSelection);
-         }
-      }
-
-      protected override void SetupSimulation()
-      {
-         PrecipitatedDrugSoluble = true;
-
-         MoleculeProperties(CoreConstants.Parameters.LIPOPHILICITY).Value = -0.097;
-         MoleculeProperties(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = 0.85;
-         MoleculeProperties(CoreConstants.Parameters.MOLECULAR_WEIGHT).Value = 2.2521E-07;
-         MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA1).Value = 9.20;
-         MoleculeProperties(Constants.Parameters.COMPOUND_TYPE1).Value = CoreConstants.Compound.COMPOUND_TYPE_ACID;
-         MoleculeProperties(CoreConstants.Parameters.PARAMETER_PKA2).Value = 2.20;
-         MoleculeProperties(Constants.Parameters.COMPOUND_TYPE2).Value = CoreConstants.Compound.COMPOUND_TYPE_BASE;
-         MoleculeProperties(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = 1E-05;
-         MoleculeProperties("Reference pH").Value = 7;
-
-         Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-            .Parameter(Parameters.DRUG_MASS).Value = 22.2015;
-      }
-
-      private void compareSimulatedValues(float[] newValues, float[] prototypeValues, string location)
-      {
-         var threshold = 100*_simulation.Solver.AbsTol;
-
-         for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
-         {
-            var newValue = newValues[timeIdx];
-            var prototypeValue = prototypeValues[timeIdx];
-
-            if (newValue < threshold || prototypeValue < threshold)
-               continue;
-
-            newValue.ShouldBeEqualTo(prototypeValue, ComparisonTolerance,$"At Times[{timeIdx}]={_times[timeIdx]}: {location}");
-         }
-      }
-
    }
 
    public class when_running_particles_simulation_with_two_bins_without_precipitation : concern_for_SimulationWithParticlesFormulation
@@ -1139,6 +1015,167 @@ namespace PKSim.IntegrationTests
       public void precipitation_should_not_occur()
       {
          CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   /// <summary>
+   /// The diffusion layer thickness (unbound) is calculated as
+   ///   hu = Max(UseHydrodynamicModel = 1 ? 2*r/Sh : (UseHintzJohnson = 1 ? min(r ; h_limit) : h_limit) ; ParticleRadiusDissolved)
+   /// The outer Max is a floor which keeps hu strictly positive while the particle radius r approaches zero.
+   /// Without it the dissolution rate, which is proportional to 1/hu, diverges at the end of the dissolution.
+   /// <para />
+   /// The floor is only observable when "Immediately dissolve particles smaller than" is greater than zero
+   /// and smaller than the start particle radius: the particles then really dissolve and r drops below the floor
+   /// during the simulation instead of being dissolved immediately at t=0.
+   /// </summary>
+   public abstract class concern_for_diffusion_layer_thickness_floor : concern_for_SimulationWithParticlesFormulation
+   {
+      protected const string DIFFUSION_LAYER_THICKNESS_UNBOUND = "Diffusion layer thickness (unbound)";
+      protected const string PARTICLE_RADIUS = "Particle radius";
+
+      protected override int NumberOfBins => 1;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation, the floor of the diffusion layer thickness is independent of it
+         PrecipitatedDrugSoluble = true;
+
+         ParticleRadiusDissolved = ParticleRadiusDissolvedFraction * StartParticleRadius(0).Value;
+
+         //the diffusion layer thickness and the particle radius are read only process parameters
+         //and therefore have to be requested explicitly as simulation outputs
+         foreach (var segment in _lumenSegments)
+         {
+            AddOutputTo(_simulation, BinParameterPerSegmentPath(0, segment, DIFFUSION_LAYER_THICKNESS_UNBOUND), QuantityType.Parameter);
+            AddOutputTo(_simulation, BinParameterPerSegmentPath(0, segment, PARTICLE_RADIUS), QuantityType.Parameter);
+         }
+      }
+
+      protected abstract double ParticleRadiusDissolvedFraction { get; }
+
+      protected float[] DiffusionLayerThicknessIn(string segment) =>
+         ValuesFor(_simulation, BinParameterPerSegmentPath(0, segment, DIFFUSION_LAYER_THICKNESS_UNBOUND));
+
+      protected float[] ParticleRadiusIn(string segment) =>
+         ValuesFor(_simulation, BinParameterPerSegmentPath(0, segment, PARTICLE_RADIUS));
+   }
+
+   public class when_running_particles_simulation_with_a_particle_radius_dissolved_below_the_start_particle_radius : concern_for_diffusion_layer_thickness_floor
+   {
+      //small enough to let the particles dissolve for a while, large enough to be reached before the end of the simulation
+      protected override double ParticleRadiusDissolvedFraction => 0.1;
+
+      [Observation]
+      public void diffusion_layer_thickness_should_never_fall_below_the_particle_radius_dissolved()
+      {
+         var floor = ParticleRadiusDissolved;
+
+         foreach (var segment in _lumenSegments)
+         {
+            var diffusionLayerThickness = DiffusionLayerThicknessIn(segment);
+
+            for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
+            {
+               //allow for the float precision of the simulation results
+               diffusionLayerThickness[timeIdx].ShouldBeGreaterThanOrEqualTo((floor * (1 - 1e-5)).ToFloat());
+            }
+         }
+      }
+
+      [Observation]
+      public void diffusion_layer_thickness_should_reach_the_particle_radius_dissolved()
+      {
+         //makes sure that the floor is really binding in this scenario and the test above is not vacuous:
+         //without the floor the diffusion layer thickness would drop to zero together with the particle radius
+         var floor = ParticleRadiusDissolved;
+         var floorIsBinding = false;
+
+         foreach (var segment in _lumenSegments)
+         {
+            var diffusionLayerThickness = DiffusionLayerThicknessIn(segment);
+            var particleRadius = ParticleRadiusIn(segment);
+
+            for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
+            {
+               if (particleRadius[timeIdx] >= floor)
+                  continue;
+
+               diffusionLayerThickness[timeIdx].ShouldBeEqualTo(floor.ToFloat(), 1e-5,
+                  $"{segment} at time[{timeIdx}]={_times[timeIdx]}: particle radius {particleRadius[timeIdx]} is below the floor");
+               floorIsBinding = true;
+            }
+         }
+
+         floorIsBinding.ShouldBeTrue("The particle radius never fell below 'Immediately dissolve particles smaller than'");
+      }
+
+      [Observation]
+      public void diffusion_layer_thickness_should_not_exceed_the_particle_radius_while_the_floor_is_not_binding()
+      {
+         //with the hydrodynamic model enabled hu = 2*r/Sh and the Sherwood number is at least 2 (Ranz-Marshall),
+         //so the diffusion layer thickness can never exceed the particle radius as long as the floor is not binding
+         var floor = ParticleRadiusDissolved;
+
+         foreach (var segment in _lumenSegments)
+         {
+            var diffusionLayerThickness = DiffusionLayerThicknessIn(segment);
+            var particleRadius = ParticleRadiusIn(segment);
+
+            for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
+            {
+               if (particleRadius[timeIdx] <= floor)
+                  continue;
+
+               diffusionLayerThickness[timeIdx].ShouldBeSmallerThan(particleRadius[timeIdx] * (1 + 1e-5f));
+            }
+         }
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_without_a_particle_radius_dissolved : concern_for_diffusion_layer_thickness_floor
+   {
+      //without a floor the diffusion layer thickness follows the particle radius down to zero
+      protected override double ParticleRadiusDissolvedFraction => 0;
+
+      [Observation]
+      public void diffusion_layer_thickness_should_never_become_negative()
+      {
+         foreach (var segment in _lumenSegments)
+         {
+            var diffusionLayerThickness = DiffusionLayerThicknessIn(segment);
+
+            for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
+               diffusionLayerThickness[timeIdx].ShouldBeGreaterThanOrEqualTo(0f);
+         }
+      }
+
+      [Observation]
+      public void diffusion_layer_thickness_should_never_exceed_the_particle_radius()
+      {
+         //the floor is inactive, so hu = 2*r/Sh with a Sherwood number of at least 2 (Ranz-Marshall)
+         //and the diffusion layer thickness vanishes together with the particle radius
+         foreach (var segment in _lumenSegments)
+         {
+            var diffusionLayerThickness = DiffusionLayerThicknessIn(segment);
+            var particleRadius = ParticleRadiusIn(segment);
+
+            for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
+            {
+               diffusionLayerThickness[timeIdx].ShouldBeSmallerThanOrEqualTo(particleRadius[timeIdx] * (1 + 1e-5f));
+            }
+         }
       }
 
       [Observation]
