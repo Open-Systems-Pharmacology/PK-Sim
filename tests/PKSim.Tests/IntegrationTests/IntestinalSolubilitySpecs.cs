@@ -21,6 +21,10 @@ namespace PKSim.IntegrationTests
    ///    Verifies the solubility chain of the intestinal lumen in a fully built simulation:
    ///    <para />
    ///    Solubility           = Saq + SolubilityTable + (UseBileSaltMicellization = 1 ? Max(BS_C - CMC; 0)*(S0/CW*10^K_n + Si/CW*10^K_i) : 0)
+   ///    In cases where solubility table is NOT set, SolubilityTable must be zero, so the check is
+   ///      Solubility == Saq + (UseBileSaltMicellization = 1 ? Max(BS_C - CMC; 0)*(S0/CW*10^K_n + Si/CW*10^K_i) : 0)
+   ///    In cases where solubility table is set, all other terms must be zero, so the check is
+   ///      Solubility == SolubilityTable
    ///    <para />
    ///    Solubility (aqueous) = S0_ref * Solubility_pKa_REFpH_Factor / Solubility_pKa_pH_Factor
    ///    <para />
@@ -33,7 +37,6 @@ namespace PKSim.IntegrationTests
    //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730
    public abstract class concern_for_intestinal_solubility : ContextForIntegration<ISimulationConstructor>
    {
-      //di-base, verified against the MATLAB export of the PBBM test model
       private const double _pKaBase0 = 8;
       private const double _pKaBase1 = 1;
       private const double _solubilityGainPerCharge = 2500;
@@ -166,7 +169,7 @@ namespace PKSim.IntegrationTests
       {
          foreach (var segment in _lumenSegments)
          {
-            var expected = AqueousSolubility(segment).Value + SolubilityTable(segment).Value + micellizationTermFor(segment);
+            var expected = AqueousSolubility(segment).Value + micellizationTermFor(segment);
             TotalSolubility(segment).Value.ShouldBeEqualTo(expected, 1e-9, $"Unexpected solubility in '{segment}'");
          }
       }
@@ -183,7 +186,7 @@ namespace PKSim.IntegrationTests
 
          foreach (var segment in SegmentsWithoutMicellization)
          {
-            var expected = AqueousSolubility(segment).Value + SolubilityTable(segment).Value;
+            var expected = AqueousSolubility(segment).Value;
             TotalSolubility(segment).Value.ShouldBeEqualTo(expected, 1e-9, $"Unexpected solubility in '{segment}'");
          }
       }
@@ -334,7 +337,7 @@ namespace PKSim.IntegrationTests
       {
          foreach (var segment in _lumenSegments)
          {
-            var expected = AqueousSolubility(segment).Value + SolubilityTable(segment).Value;
+            var expected = AqueousSolubility(segment).Value;
             TotalSolubility(segment).Value.ShouldBeEqualTo(expected, 1e-9, $"Unexpected solubility in '{segment}'");
          }
       }
@@ -396,14 +399,14 @@ namespace PKSim.IntegrationTests
       {
          BileSaltConcentration(_segment).Value = CriticalMicellarConcentration.Value;
 
-         var expected = AqueousSolubility(_segment).Value + SolubilityTable(_segment).Value;
+         var expected = AqueousSolubility(_segment).Value;
          TotalSolubility(_segment).Value.ShouldBeEqualTo(expected, 1e-9);
       }
 
       [Observation]
       public void should_not_increase_the_solubility_below_the_critical_micellar_concentration()
       {
-         var expected = AqueousSolubility(_segment).Value + SolubilityTable(_segment).Value;
+         var expected = AqueousSolubility(_segment).Value;
 
          foreach (var fraction in new[] {0.0, 0.25, 0.5, 0.75, 0.999})
          {
@@ -445,7 +448,7 @@ namespace PKSim.IntegrationTests
       private static readonly double[] _tablePHValues = {0, 2, 4, 6, 8, 10, 12, 14};
       private static readonly double[] _tableSolubilityValues = {8e-06, 7e-06, 6e-06, 5e-06, 4e-06, 3e-06, 2e-06, 1e-06}; //[kg/l]
 
-      protected TableFormula _solubilityTableFormula;
+      private TableFormula _solubilityTableFormula;
 
       protected override void ConfigureSolubilityAlternatives(ParameterAlternativeGroup solubilityAlternativeGroup)
       {
