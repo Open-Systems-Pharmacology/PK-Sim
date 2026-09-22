@@ -10346,7 +10346,7 @@ INSERT INTO tab_container_parameters VALUES(4805,'GENERAL','MoleculeProperties',
 INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Gallbladder ejection fraction',1,0,1,1,'GALLBLADDER_EMPTYING',2,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Gallbladder ejection half-time',1,0,1,1,'GALLBLADDER_EMPTYING',1,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Gallbladder emptying active',0,1,0,0,'GALLBLADDER_EMPTYING',4,'LOCAL','SIMULATION',0,0);
-INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Time to complete gallbladder refilling',1,0,1,1,'GALLBLADDER_EMPTYING',3,'LOCAL','SIMULATION',0,0);
+INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Time to complete gallbladder emptying',1,0,1,1,'GALLBLADDER_EMPTYING',3,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4838,'ORGAN','Gallbladder','Volume',1,1,0,0,'ORGAN_VOLUMES',666,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4839,'PROCESS','HepatocytesHalfTime','CLspec/[Enzyme]',0,1,0,0,'COMPOUNDPROCESS_SIMULATION_PARAMETERS',14,'GLOBAL','COMPOUND',0,0);
 INSERT INTO tab_container_parameters VALUES(4839,'PROCESS','HepatocytesHalfTime','Enzyme concentration',0,1,0,0,'COMPOUNDPROCESS_SIMULATION_PARAMETERS',13,'GLOBAL','COMPOUND',0,0);
@@ -53669,7 +53669,7 @@ INSERT INTO tab_container_parameter_rates VALUES(4722,'GENERAL','MoleculePropert
 INSERT INTO tab_container_parameter_rates VALUES(4722,'GENERAL','MoleculeProperties','Mass transfer rate (mucosa to portal vein blood cells)','MassTransferLink_PKSim','PARAM_MassTransferMucosaToPveBloodCells',0.0,1,NULL,1,35);
 INSERT INTO tab_container_parameter_rates VALUES(4805,'GENERAL','MoleculeProperties','Oral mass absorbed','DynamicSumFormulas','PARAM_OralMassAbsorbed',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(4838,'ORGAN','Gallbladder','Gallbladder emptying active','Lumen_PKSim','Zero_Rate',0.0,1,1.0,1,NULL);
-INSERT INTO tab_container_parameter_rates VALUES(4838,'ORGAN','Gallbladder','Time to complete gallbladder refilling','Individual_PKSim','PARAM_GallbladderRefillTime',0.0,1,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates VALUES(4838,'ORGAN','Gallbladder','Time to complete gallbladder emptying','Individual_PKSim','PARAM_GallbladderRefillTime',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(4838,'ORGAN','Gallbladder','Volume','CompartmentsVolume_2Poren','VOLUME_One',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(4838,'ORGAN','Gallbladder','Volume','CompartmentsVolume_4Comp','VOLUME_One',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates VALUES(4839,'PROCESS','HepatocytesHalfTime','CLspec/[Enzyme]','LinksCommon','PARAM_CLSpecPerEnzyme_From_CLSpec',0.0,1,NULL,1,NULL);
@@ -71081,7 +71081,7 @@ INSERT INTO tab_parameters VALUES('Thickness of gut wall','Thickness of gut wall
 INSERT INTO tab_parameters VALUES('Thickness_p1','Thickness_p1','Parameter to calculate the thickness of gut wall depending on the body height.','Length',NULL);
 INSERT INTO tab_parameters VALUES('Thickness_p2','Thickness_p2','Parameter to calculate the thickness of gut wall depending on the body height.','Length',NULL);
 INSERT INTO tab_parameters VALUES('Thickness_p3','Thickness_p3','Parameter to calculate the thickness of gut wall depending on the body height.','Inversed length',NULL);
-INSERT INTO tab_parameters VALUES('Time to complete gallbladder refilling','Time to complete gallbladder refilling','Time to complete gallbladder refilling','Time','min');
+INSERT INTO tab_parameters VALUES('Time to complete gallbladder emptying','Time to complete gallbladder emptying','Time to complete gallbladder emptying','Time','min');
 INSERT INTO tab_parameters VALUES('TM50 for GFR','TM50 for GFR','TM50 for GFR calculation','Age in weeks',NULL);
 INSERT INTO tab_parameters VALUES('Total amount of drug in tissue','Total amount of drug in tissue','Total amount of drug in tissue','Amount',NULL);
 INSERT INTO tab_parameters VALUES('Total drug mass','Total drug mass','Total drug mass','Amount',NULL);
@@ -82341,8 +82341,8 @@ INSERT INTO tab_rate_container_parameters VALUES('EndosomalSpaceBindingFormulas'
 INSERT INTO tab_rate_container_parameters VALUES('EndosomalSpaceBindingFormulas','STARTAMOUNT_LigandEndoComplex_Interstitial',190,'COMPARTMENT','Plasma','Start concentration of free endogenous IgG (plasma)','Cpl');
 INSERT INTO tab_rate_container_parameters VALUES('EndosomalSpaceBindingFormulas','STARTAMOUNT_LigandEndoComplex_Plasma',188,'COMPARTMENT','Endosome','Start concentration of free FcRn (endosome)','FcRnEnd');
 INSERT INTO tab_rate_container_parameters VALUES('EndosomalSpaceBindingFormulas','STARTAMOUNT_LigandEndoComplex_Plasma',190,'COMPARTMENT','Plasma','Start concentration of free endogenous IgG (plasma)','Cpl');
-INSERT INTO tab_rate_container_parameters VALUES('Events','EHC_Standalone_Stop_Event_Condition',4838,'ORGAN','Gallbladder','Time to complete gallbladder refilling','GallbladderRefillTime');
-INSERT INTO tab_rate_container_parameters VALUES('Events','EHC_Stop_Event_Condition',4838,'ORGAN','Gallbladder','Time to complete gallbladder refilling','GallbladderRefillTime');
+INSERT INTO tab_rate_container_parameters VALUES('Events','EHC_Standalone_Stop_Event_Condition',4838,'ORGAN','Gallbladder','Time to complete gallbladder emptying','GallbladderRefillTime');
+INSERT INTO tab_rate_container_parameters VALUES('Events','EHC_Stop_Event_Condition',4838,'ORGAN','Gallbladder','Time to complete gallbladder emptying','GallbladderRefillTime');
 INSERT INTO tab_rate_container_parameters VALUES('Events','PARAM_InverseGastricEmptyingTime',4482,'COMPARTMENT','Stomach','Gastric emptying time','GET');
 INSERT INTO tab_rate_container_parameters VALUES('Events','PARAM_Meal_alpha',4482,'COMPARTMENT','Stomach','GET_alpha (Weibull function) variability factor','Variability_Factor');
 INSERT INTO tab_rate_container_parameters VALUES('Events','PARAM_Meal_beta',4482,'COMPARTMENT','Stomach','GET_beta (Weibull function) variability factor','Variability_Factor');

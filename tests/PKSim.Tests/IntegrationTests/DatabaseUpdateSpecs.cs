@@ -125,6 +125,25 @@ namespace PKSim.IntegrationTests
          allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) of container")).ShouldBeTrue();
       }
 
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/867
+      [Observation]
+      public void should_rename_the_gallbladder_refilling_time_parameter_into_gallbladder_emptying_time()
+      {
+         const string oldParameterName = "Time to complete gallbladder refilling";
+         const string newParameterName = "Time to complete gallbladder emptying";
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         var allGallbladderParameters = parameterRateRepository.All()
+            .Where(p => p.ContainerName.Equals(GALLBLADDER)).ToList();
+
+         allGallbladderParameters.Any(p => p.ParameterName.Equals(oldParameterName)).ShouldBeFalse();
+         allGallbladderParameters.Any(p => p.ParameterName.Equals(newParameterName)).ShouldBeTrue();
+
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         var parameterInfo = representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, newParameterName);
+         parameterInfo.DisplayName.ShouldBeEqualTo(newParameterName);
+      }
+
       [Observation]
       public void should_add_descriptions_for_the_new_PBBM_parameters()
       {
