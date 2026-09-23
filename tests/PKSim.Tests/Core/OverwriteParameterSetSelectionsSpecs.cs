@@ -133,4 +133,32 @@ namespace PKSim.Core
          sut.SelectedSetFor("Aspirin").ShouldBeEqualTo(_renalImpairmentSet);
       }
    }
+
+   public class When_removing_the_selection_for_a_compound : concern_for_OverwriteParameterSetSelections
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.SetSelectionForCompound("Aspirin", _renalImpairmentSet);
+         sut.SetSelectionForCompound("Caffeine", null);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveSelectionForCompound("Aspirin");
+      }
+
+      [Observation]
+      public void should_not_report_a_selection_for_the_compound_anymore()
+      {
+         sut.HasSelectionFor("Aspirin").ShouldBeFalse();
+         sut.SelectedSetFor("Aspirin").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_keep_the_selections_of_the_other_compounds()
+      {
+         sut.HasSelectionFor("Caffeine").ShouldBeTrue();
+      }
+   }
 }

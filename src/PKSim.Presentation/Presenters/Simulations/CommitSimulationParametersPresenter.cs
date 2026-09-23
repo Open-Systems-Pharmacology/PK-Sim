@@ -52,11 +52,12 @@ namespace PKSim.Presentation.Presenters.Simulations
       private CompoundCommitInfo commitInfoFrom(CompoundCommitDTO dto, Compound compound)
       {
          var selectedParameters = dto.VisibleParameters.Where(p => p.Selected).ToList();
+         var removedParameters = dto.CreateNew ? dto.Parameters : selectedParameters;
          return new CompoundCommitInfo
          {
             TemplateCompoundId = compound.Id,
             ParameterPaths = selectedParameters.Where(p => !p.IsRemoval).Select(p => p.Path).ToList(),
-            ParameterPathsToRemove = selectedParameters.Where(p => p.IsRemoval).Select(p => p.Path).ToList(),
+            ParameterPathsToRemove = removedParameters.Where(p => p.IsRemoval).Select(p => p.Path).ToList(),
             OverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : dto.SetSelectedInSimulation.Name,
             ShouldCreateNew = dto.CreateNew
          };
