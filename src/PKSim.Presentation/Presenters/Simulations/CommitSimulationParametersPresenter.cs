@@ -12,10 +12,11 @@ namespace PKSim.Presentation.Presenters.Simulations
    public interface ICommitSimulationParametersPresenter : IDisposablePresenter
    {
       /// <summary>
-      ///    Shows a modal dialog allowing the user to select which tracked parameter changes
-      ///    should be committed to the compound overwrite parameter set for <paramref name="compound" />.
-      ///    Returns a <see cref="CompoundCommitInfo" /> with the user's selections,
-      ///    or <c>null</c> if the user cancels or no parameters have uncommitted changes.
+      ///    Shows a modal dialog listing the tracked parameter changes of <paramref name="compound" /> and letting the user
+      ///    select the ones to commit and choose whether to update the overwrite parameter set selected in the simulation or
+      ///    to create a new one.
+      ///    Returns a <see cref="CompoundCommitInfo" /> describing the commit, or <c>null</c> if the user cancels or no
+      ///    parameters have uncommitted changes.
       /// </summary>
       CompoundCommitInfo ShowCommitDialog(Simulation simulation, Compound compound);
    }
@@ -56,7 +57,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             TemplateCompoundId = compound.Id,
             ParameterPaths = selectedParameters.Where(p => !p.IsRemoval).Select(p => p.Path).ToList(),
             ParameterPathsToRemove = selectedParameters.Where(p => p.IsRemoval).Select(p => p.Path).ToList(),
-            OverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : dto.SelectedExistingSet?.Name,
+            OverwriteParameterSetName = dto.CreateNew ? dto.NewSetName : dto.SetSelectedInSimulation.Name,
             ShouldCreateNew = dto.CreateNew
          };
       }
