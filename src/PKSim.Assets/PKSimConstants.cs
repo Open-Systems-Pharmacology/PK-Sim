@@ -102,6 +102,10 @@ namespace PKSim.Assets
          public static readonly string UpdateBuildingBlockInfoCommandDescription = "Building block info updated in simulation.";
          public static readonly string SetUsedBuildingBlockAlteredFlagCommandDescription = "Set altered flag for {0} '{1}' to {2} in simulation '{3}'";
          public static readonly string SetUsedBuildingBlockVersionCommandDescription = "Set version for {0} '{1}' to {2} in simulation '{3}'";
+
+         public static string SynchronizeUsedBuildingBlockVersionCommandDescription(string buildingBlockType, string buildingBlockName, string simulationName) =>
+            $"Synchronize version of {buildingBlockType} '{buildingBlockName}' in simulation '{simulationName}' with its template";
+
          public static readonly string PerformScalingDescription = "Scaling individual parameters";
          public static readonly string CreateIndividualDescripton = "Create and add individual to project";
          public static readonly string CreateBuildingBlockDescripton = "Create and add {0} to project";
