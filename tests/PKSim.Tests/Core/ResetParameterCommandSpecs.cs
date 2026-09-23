@@ -399,4 +399,41 @@ namespace PKSim.Core
          _simulation.ParameterChangeTracker.IsTracked(PARAMETER_PATH).ShouldBeTrue();
       }
    }
+
+   public class When_resetting_a_parameter_applied_from_an_overwrite_parameter_set_that_is_no_longer_selected : concern_for_ResetParameterCommand
+   {
+      private IndividualSimulation _simulation;
+      private const string PARAMETER_PATH = "Aspirin|tralala";
+
+      protected override void Context()
+      {
+         base.Context();
+         var entityPathResolver = A.Fake<IEntityPathResolver>();
+
+         //the overwrite parameter set application flagged the parameter as a compound parameter without linking it to the compound building block
+         _parameterToReset.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         _parameterToReset.Value = 25;
+
+         var compound = new Compound { Name = "Aspirin" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", null);
+         _simulation.ParameterChangeTracker.Track(PARAMETER_PATH);
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(entityPathResolver);
+         A.CallTo(() => entityPathResolver.PathFor(_parameterToReset)).Returns(PARAMETER_PATH);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_untrack_the_parameter_path()
+      {
+         _simulation.ParameterChangeTracker.IsTracked(PARAMETER_PATH).ShouldBeFalse();
+      }
+   }
 }
