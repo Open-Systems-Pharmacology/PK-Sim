@@ -26,7 +26,7 @@ namespace PKSim.UI.Views.Simulations
       private CompoundCommitDTO _dto;
 
       private const int CREATE_NEW = 0;
-      private const int UPDATE_EXISTING = 1;
+      private const int UPDATE_SELECTED = 1;
 
       public CommitSimulationParametersView(Shell shell) : base(shell)
       {
@@ -51,7 +51,7 @@ namespace PKSim.UI.Views.Simulations
          bindVisibleParameters();
          _screenBinder.BindToSource(dto);
          updateCommitOptionsFor(dto);
-         parameterSelectionChanged();
+         SetOkButtonEnable();
       }
 
       public override void InitializeBinding()
@@ -85,9 +85,8 @@ namespace PKSim.UI.Views.Simulations
          RegisterValidationFor(_screenBinder, statusChangedNotify: SetOkButtonEnable);
 
          radioGroupCommitMode.SelectedIndexChanged += (s, e) => OnEvent(commitModeChanged);
-         cbExistingSet.SelectedIndexChanged += (s, e) => OnEvent(existingSetChanged);
 
-         _parameterGridBinder.Changed += parameterSelectionChanged;
+         _parameterGridBinder.Changed += SetOkButtonEnable;
       }
 
       public override void InitializeResources()
@@ -99,19 +98,16 @@ namespace PKSim.UI.Views.Simulations
          ClientSize = new Size(700, 460);
 
          radioGroupCommitMode.Properties.AllowMouseWheel = false;
-         cbExistingSet.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
          radioGroupCommitMode.Properties.Items.AddRange([
             new RadioGroupItem(CREATE_NEW, PKSimConstants.Command.CreateNewParameterSet),
-            new RadioGroupItem(UPDATE_EXISTING, PKSimConstants.Command.UpdateExistingParameterSet)
+            new RadioGroupItem(UPDATE_SELECTED, PKSimConstants.Command.UpdateParameterSet)
          ]);
 
          layoutItemNewSetName.Text = PKSimConstants.UI.Name.FormatForLabel();
-         layoutItemExistingSet.Text = PKSimConstants.Command.ParameterSet.FormatForLabel();
          layoutGroupOptions.Text = PKSimConstants.Command.CommitOptions;
 
          layoutItemCommitMode.AdjustControlHeight(54);
          layoutItemNewSetName.AdjustControlHeight(24);
-         layoutItemExistingSet.AdjustControlHeight(24);
       }
 
       protected override bool IsOkButtonEnable =>
@@ -121,21 +117,18 @@ namespace PKSim.UI.Views.Simulations
 
       private void updateCommitOptionsFor(CompoundCommitDTO compound)
       {
-         radioGroupCommitMode.EditValue = compound.CreateNew ? CREATE_NEW : UPDATE_EXISTING;
+         radioGroupCommitMode.Properties.Items[CREATE_NEW].Enabled = compound.CanCreateNewSet;
 
-         cbExistingSet.Properties.Items.Clear();
-         if (compound.AvailableExistingSets != null && compound.AvailableExistingSets.Any())
-         {
-            foreach (var set in compound.AvailableExistingSets)
-            {
-               cbExistingSet.Properties.Items.Add(set.Name);
-            }
+         var updateItem = radioGroupCommitMode.Properties.Items[UPDATE_SELECTED];
+         updateItem.Enabled = compound.CanUpdateSetSelectedInSimulation;
+         updateItem.Description = compound.CanUpdateSetSelectedInSimulation
+            ? PKSimConstants.Command.UpdateParameterSetNamed(compound.SetSelectedInSimulation.Name)
+            : PKSimConstants.Command.UpdateParameterSet;
+         radioGroupCommitMode.ToolTip = compound.CanUpdateSetSelectedInSimulation
+            ? string.Empty
+            : PKSimConstants.Error.NoOverwriteParameterSetSelectedForCompoundInSimulation(compound.CompoundName);
 
-            var selectedSet = compound.SelectedExistingSet ?? compound.AvailableExistingSets.FirstOrDefault();
-            compound.SelectedExistingSet = selectedSet;
-            cbExistingSet.SelectedItem = selectedSet?.Name;
-         }
-
+         radioGroupCommitMode.EditValue = compound.CreateNew ? CREATE_NEW : UPDATE_SELECTED;
          updateOptionsVisibility();
       }
 
@@ -143,26 +136,7 @@ namespace PKSim.UI.Views.Simulations
       {
          if (_dto == null) return;
 
-         var isCreateNew = _dto.CreateNew;
-         layoutItemNewSetName.Visibility = toVisibility(isCreateNew);
-         layoutItemExistingSet.Visibility = toVisibility(!isCreateNew && hasExistingSets);
-
-         var canChooseExistingSet = !_dto.HasSelectedRemovals;
-         radioGroupCommitMode.Properties.Items[UPDATE_EXISTING].Enabled = hasExistingSets;
-         cbExistingSet.Enabled = canChooseExistingSet;
-         radioGroupCommitMode.ToolTip = hasExistingSets ? string.Empty : PKSimConstants.UI.NoOverwriteParameterSetToUpdateIn(_dto.CompoundName);
-         cbExistingSet.ToolTip = canChooseExistingSet ? string.Empty : PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet;
-      }
-
-      private bool hasExistingSets => _dto?.AvailableExistingSets != null && _dto.AvailableExistingSets.Any();
-
-      private void parameterSelectionChanged()
-      {
-         if (_dto.HasSelectedRemovals)
-            cbExistingSet.SelectedItem = _dto.SetSelectedInSimulation?.Name;
-
-         updateOptionsVisibility();
-         SetOkButtonEnable();
+         layoutItemNewSetName.Visibility = toVisibility(_dto.CreateNew);
       }
 
       private void commitModeChanged()
@@ -175,15 +149,6 @@ namespace PKSim.UI.Views.Simulations
          // Re-validate since CreateNew change affects NewSetName validation
          _screenBinder.Validate();
          SetOkButtonEnable();
-      }
-
-      private void existingSetChanged()
-      {
-         if (_dto == null) return;
-
-         var selectedName = cbExistingSet.SelectedItem as string;
-         _dto.SelectedExistingSet = _dto.AvailableExistingSets?
-            .FirstOrDefault(s => s.Name == selectedName);
       }
 
       private static DevExpress.XtraLayout.Utils.LayoutVisibility toVisibility(bool visible)

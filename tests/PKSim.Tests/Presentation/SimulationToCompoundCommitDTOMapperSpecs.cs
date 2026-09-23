@@ -255,7 +255,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_select_the_set_of_the_template_compound()
       {
-         _result.SelectedExistingSet.ShouldBeEqualTo(_setInTemplateCompound);
+         _result.SetSelectedInSimulation.ShouldBeEqualTo(_setInTemplateCompound);
       }
    }
 
@@ -285,7 +285,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_select_an_existing_set()
       {
-         _result.SelectedExistingSet.ShouldBeNull();
+         _result.SetSelectedInSimulation.ShouldBeNull();
       }
    }
 
@@ -317,13 +317,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_select_the_existing_set()
-      {
-         _result.SelectedExistingSet.ShouldBeEqualTo(_existingSet);
-      }
-
-      [Observation]
-      public void should_remember_the_set_selected_in_the_simulation_as_the_target_of_removals()
+      public void should_remember_the_set_selected_in_the_simulation_as_the_set_to_update()
       {
          _result.SetSelectedInSimulation.ShouldBeEqualTo(_existingSet);
       }
