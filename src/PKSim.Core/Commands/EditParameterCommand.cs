@@ -152,7 +152,14 @@ namespace PKSim.Core.Commands
       ///    parameter, but remains a simulation parameter that can only be committed to the compound as part of a set.
       /// </summary>
       private static bool isCompoundDependentSimulationParameter(IParameter parameter, bool isOverwrittenParameterPath) =>
-         parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation || isOverwrittenParameterPath;
+         parameter.BuildingBlockType == PKSimBuildingBlockType.Simulation || isOverwrittenParameterPath || isAppliedFromOverwriteParameterSet(parameter);
+
+      /// <summary>
+      ///    A parameter applied from an overwrite parameter set that is no longer selected keeps the compound flag but has no
+      ///    counterpart in the compound building block.
+      /// </summary>
+      private static bool isAppliedFromOverwriteParameterSet(IParameter parameter) =>
+         parameter.BuildingBlockType == PKSimBuildingBlockType.Compound && string.IsNullOrEmpty(parameter.Origin.BuilingBlockId);
 
       protected virtual void UpdateTrackerForParameter(SimulationParameterChangeTracker tracker, string parameterPath, bool isOverwrittenParameterPath)
       {
