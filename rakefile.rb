@@ -108,7 +108,7 @@ end
 task :create_local_nuget_r do
 	nuget_repo = "../OSPSuite.Core/nuget_repo"
 	FileUtils.rm_f Dir.glob("#{nuget_repo}/PKSim.*.nupkg")
-	version_id = "13.0.0-" + generate_code(5)
+	version_id = "13.1.0-" + generate_code(5)
 	puts("Your PKSim version is " + version_id.red)
 	abort("dotnet pack failed") unless system("dotnet", "pack", "PKSim.sln", "--no-build", "--no-restore", "-o", nuget_repo, "-p:PackageVersion=" + version_id, "--configuration", "Debug")
 	update_ospsuite_r_pksim(version_id)
@@ -123,7 +123,7 @@ task :postclean do |t, args|
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.0')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.1')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml

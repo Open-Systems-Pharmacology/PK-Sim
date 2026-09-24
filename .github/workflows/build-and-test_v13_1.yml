@@ -1,12 +1,12 @@
-name: Build and Test 13.0
+name: Build and Test 13.1
 
 on:
   pull_request:
     branches:
-    - develop
+    - V13.1
   push:
     branches:
-    - develop
+    - V13.1
 
 permissions:
   contents: read
@@ -18,5 +18,5 @@ jobs:
     uses: Open-Systems-Pharmacology/Workflows/.github/workflows/test-csharp.yml@main
     secrets: inherit
     with:
-      temp-version: "13.0.9999"
+      temp-version: "13.1.9999"
       build-arguments: "/p:ExcludeDesigner=true"

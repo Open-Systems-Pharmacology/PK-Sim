@@ -1,10 +1,8 @@
-name: Build Nightly 13.0
+name: Build Nightly 13.1
 run-name: Nightly build ${{ github.run_number }}
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'
 
 permissions:
   contents: read
@@ -52,10 +50,8 @@ jobs:
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
 
       - name: define env variables
-        # offset the run number past 13.0.157, the last version published from the develop workflow
-        # drop the offset when the version is bumped to the next release
         run: |
-          echo "APP_VERSION=13.0.$(${{ github.run_number }} + 90)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "APP_VERSION=13.1.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
         env:

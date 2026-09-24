@@ -1,4 +1,4 @@
-name: Code Coverage v13
+name: Code Coverage v13.1
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
           nuget restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=13.0.9999 -p:ExcludeDesigner=true
+        run: dotnet build PKSim.sln /p:Version=13.1.9999 -p:ExcludeDesigner=true
 
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main
