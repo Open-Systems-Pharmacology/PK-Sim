@@ -21,9 +21,12 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected IContainerTask _containerTask;
       protected PKSim.Core.Repositories.IBuildingBlockRepository _buildingBlockRepository;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
+      protected ICloneManager _cloneManager;
       protected IndividualSimulation _simulation;
       protected Compound _simulationCompound;
       protected Compound _templateCompound;
+      protected UsedBuildingBlock _usedCompound;
       protected IParameter _lipophilicityParam;
       protected IParameter _permeabilityParam;
       protected PathCache<IParameter> _parameterCache;
@@ -35,11 +38,16 @@ namespace PKSim.Core
          _executionContext = A.Fake<IExecutionContext>();
          _containerTask = A.Fake<IContainerTask>();
          _buildingBlockRepository = A.Fake<PKSim.Core.Repositories.IBuildingBlockRepository>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _cloneManager = A.Fake<ICloneManager>();
          A.CallTo(() => _objectBaseFactory.Create<OverwriteParameterSet>()).ReturnsLazily(() => new OverwriteParameterSet { Id = $"NewSetId{_createdSetCount++}" });
+         A.CallTo(() => _executionContext.CloneManager).Returns(_cloneManager);
+         A.CallTo(() => _cloneManager.Clone(A<OverwriteParameterSet>._)).ReturnsLazily(x => cloneOf(x.GetArgument<OverwriteParameterSet>(0)));
+         A.CallTo(() => _cloneManager.Clone(A<ParameterValue>._)).ReturnsLazily(x => cloneOf(x.GetArgument<ParameterValue>(0)));
 
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
-         _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId" };
+         _templateCompound = new Compound { Name = "Aspirin", Id = "TemplateCompId", Version = 7 };
 
          _lipophilicityParam = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
          _permeabilityParam = DomainHelperForSpecs.ConstantParameterWithValue(7.2).WithName("Permeability");
@@ -60,8 +68,10 @@ namespace PKSim.Core
             Model = new OSPSuite.Core.Domain.Model { Root = root }
          };
 
-         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _simulationCompound });
+         _usedCompound = new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _simulationCompound, Version = 3 };
+         _simulation.AddUsedBuildingBlock(_usedCompound);
          A.CallTo(() => _buildingBlockRepository.ById<Compound>("TemplateCompId")).Returns(_templateCompound);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_usedCompound)).Returns(BuildingBlockStatus.Green);
 
          _parameterCache = new PathCacheForSpecs<IParameter>();
          _parameterCache.Add("Organism|Aspirin|Lipophilicity", _lipophilicityParam);
@@ -70,8 +80,24 @@ namespace PKSim.Core
          A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(root)).Returns(_parameterCache);
          A.CallTo(() => _executionContext.TypeFor(_templateCompound)).Returns("Compound");
 
-         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository, _objectBaseFactory);
+         sut = new CommitSimulationParametersTask(_executionContext, _containerTask, _buildingBlockRepository, _objectBaseFactory, _buildingBlockInProjectManager);
       }
+
+      private OverwriteParameterSet cloneOf(OverwriteParameterSet overwriteParameterSet)
+      {
+         var clone = new OverwriteParameterSet { Id = $"CloneOf{overwriteParameterSet.Id}" };
+         clone.UpdatePropertiesFrom(overwriteParameterSet, _cloneManager);
+         return clone;
+      }
+
+      private static ParameterValue cloneOf(ParameterValue parameterValue) =>
+         new() { Path = parameterValue.Path, Value = parameterValue.Value, Dimension = parameterValue.Dimension, DisplayUnit = parameterValue.DisplayUnit };
+
+      protected OverwriteParameterSet setInSimulationCompound(string name) => _simulationCompound.OverwriteParameterSets.FindByName(name);
+
+      protected OverwriteParameterSet setInTemplateCompound(string name) => _templateCompound.OverwriteParameterSets.FindByName(name);
+
+      protected OverwriteParameterSet selectedSet => _simulation.OverwriteParameterSetSelections.SelectedSetFor(_templateCompound.Name);
    }
 
    public class When_committing_parameters_to_a_new_overwrite_parameter_set : concern_for_CommitSimulationParametersTask
@@ -110,9 +136,18 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_add_the_overwrite_parameter_set_to_the_compound_used_in_the_simulation()
+      public void should_add_a_copy_of_the_overwrite_parameter_set_to_the_compound_used_in_the_simulation()
       {
-         _simulationCompound.OverwriteParameterSets.ShouldBeEmpty();
+         var setInSimulation = setInSimulationCompound("MyNewSet");
+         setInSimulation.ShouldNotBeNull();
+         setInSimulation.ShouldNotBeEqualTo(setInTemplateCompound("MyNewSet"));
+         setInSimulation.ParameterValueByPath("Organism|Aspirin|Permeability").Value.ShouldBeEqualTo(7.2);
+      }
+
+      [Observation]
+      public void should_keep_the_compound_used_in_the_simulation_in_sync_with_the_template_compound()
+      {
+         _usedCompound.Version.ShouldBeEqualTo(_templateCompound.Version);
       }
 
       [Observation]
@@ -169,6 +204,39 @@ namespace PKSim.Core
       }
    }
 
+   public class When_committing_parameters_to_a_new_set_while_the_compound_used_in_the_simulation_is_out_of_sync : concern_for_CommitSimulationParametersTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_usedCompound)).Returns(BuildingBlockStatus.Red);
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            OverwriteParameterSetName = "MyNewSet",
+            ShouldCreateNew = true
+         });
+      }
+
+      [Observation]
+      public void should_leave_the_compound_used_in_the_simulation_out_of_sync()
+      {
+         _usedCompound.Version.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_still_add_the_set_to_the_compound_used_in_the_simulation()
+      {
+         setInSimulationCompound("MyNewSet").ShouldNotBeNull();
+      }
+   }
+
    public class When_committing_parameters_to_an_existing_overwrite_parameter_set : concern_for_CommitSimulationParametersTask
    {
       private ICommand _result;
@@ -178,11 +246,10 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         //the compound in the simulation still holds the set as it was brought over from the template. It should not
-         //be touched by the commit
          _simulationExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId1" };
          _simulationExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
          _simulationCompound.AddOverwriteParameterSet(_simulationExistingSet);
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", _simulationExistingSet);
 
          _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
          _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|OldParam".ToObjectPath(), Value = 1.0 });
@@ -215,9 +282,21 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_update_the_set_in_the_compound_used_in_the_simulation()
+      public void should_update_the_set_in_the_compound_used_in_the_simulation_as_well()
       {
-         _simulationExistingSet.ParameterValues.Any(pv => pv.Path.PathAsString == "Organism|Aspirin|Lipophilicity").ShouldBeFalse();
+         _simulationExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").Value.ShouldBeEqualTo(3.5);
+      }
+
+      [Observation]
+      public void should_keep_the_selection_on_the_set_of_the_compound_used_in_the_simulation()
+      {
+         selectedSet.ShouldBeEqualTo(_simulationExistingSet);
+      }
+
+      [Observation]
+      public void should_keep_the_compound_used_in_the_simulation_in_sync_with_the_template_compound()
+      {
+         _usedCompound.Version.ShouldBeEqualTo(_templateCompound.Version);
       }
 
       [Observation]
