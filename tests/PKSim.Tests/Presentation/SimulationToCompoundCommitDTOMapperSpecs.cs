@@ -32,8 +32,11 @@ namespace PKSim.Presentation
          _simulationCompound = new Compound { Name = "Aspirin", Id = "SimCompId" };
 
          var root = new Container { Name = "Sim" };
+         //the calculated values differ from the current values, i.e. both parameters were changed
          _lipophilicity = DomainHelperForSpecs.ConstantParameterWithValue(3.5).WithName("Lipophilicity");
+         _lipophilicity.DefaultValue = 1.0;
          _permeability = DomainHelperForSpecs.ConstantParameterWithValue(7.2).WithName("Permeability");
+         _permeability.DefaultValue = 1.0;
          root.Add(_lipophilicity);
          root.Add(_permeability);
 
@@ -343,8 +346,7 @@ namespace PKSim.Presentation
          _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", existingSet);
 
          //Lipophilicity was reset to its calculated value, Permeability was changed by the user
-         _lipophilicity.IsDefault = true;
-         _permeability.IsDefault = false;
+         _lipophilicity.Value = _lipophilicity.DefaultValue.Value;
          _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
          _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
       }
@@ -379,7 +381,7 @@ namespace PKSim.Presentation
          _templateCompound.AddOverwriteParameterSet(existingSet);
          _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", existingSet);
 
-         _lipophilicity.IsDefault = true;
+         _lipophilicity.Value = _lipophilicity.DefaultValue.Value;
          _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
       }
 
@@ -437,6 +439,36 @@ namespace PKSim.Presentation
       public void should_offer_the_sets_defined_in_the_project_compound()
       {
          _result.AvailableExistingSets.ShouldOnlyContain(_setInProjectCompound);
+      }
+   }
+
+   public class When_mapping_a_simulation_where_the_user_only_changed_the_value_origin_of_a_parameter_applied_from_the_selected_set : concern_for_SimulationToCompoundCommitDTOMapper
+   {
+      private CompoundCommitDTO _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var existingSet = new OverwriteParameterSet { Name = "ExistingSet" };
+         existingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Value = 3.5 });
+         _templateCompound.AddOverwriteParameterSet(existingSet);
+         _simulation.OverwriteParameterSetSelections.SetSelectionForCompound("Aspirin", existingSet);
+
+         //the applied value is still in place and the parameter was never flagged as changed
+         _lipophilicity.IsDefault = true;
+         _lipophilicity.IsFixedValue = false;
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_simulation, _templateCompound);
+      }
+
+      [Observation]
+      public void should_map_the_parameter_as_an_update_of_the_set()
+      {
+         _result.Parameters.Single(p => p.Path == "Organism|Aspirin|Lipophilicity").IsRemoval.ShouldBeFalse();
       }
    }
 }

@@ -57,7 +57,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private ParameterCommitDTO mapParameter(Simulation simulation, string compoundName, string path, IParameter parameter)
       {
-         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter is { IsDefault: true };
+         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter != null && !parameter.ValueDiffersFromDefault();
          return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval, isUnchanged: false);
       }
 
