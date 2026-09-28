@@ -48,7 +48,6 @@ namespace PKSim.Presentation.DTO.Mappers
             Compound = templateCompound,
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
             CreateNew = selectedSetInTemplate == null,
-            SelectedExistingSet = selectedSetInTemplate,
             SetSelectedInSimulation = selectedSetInTemplate,
             NewSetName = templateCompound.Name,
             Parameters = parameters

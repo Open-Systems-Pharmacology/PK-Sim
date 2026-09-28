@@ -322,9 +322,9 @@ namespace PKSim.Assets
 
          public static readonly string CommitSimulationParametersDescription = "Commit simulation parameters to compound";
          public static readonly string CreateNewParameterSet = "Create New Parameter Set";
-         public static readonly string UpdateExistingParameterSet = "Update Existing Parameter Set";
+         public static readonly string UpdateParameterSet = "Update Parameter Set";
+         public static string UpdateParameterSetNamed(string overwriteParameterSetName) => $"Update Parameter Set '{overwriteParameterSetName}'";
          public static readonly string CommitOptions = "Commit Options";
-         public static readonly string ParameterSet = "Parameter Set";
 
          public static string RemoveEntityFromContainer(string entityType, string entityName, string containerType, string containerName)
          {
@@ -458,7 +458,8 @@ namespace PKSim.Assets
          public static string DistributionNotFound(string entityName, string data) => $"Cannot create distribution for '{entityName}' with the following data:\n{data}";
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
-         public static readonly string ResetParametersCanOnlyBeRemovedFromSelectedParameterSet = $"Reset parameters can only be removed from the {ObjectTypes.OverwriteParameterSet.ToLower()} selected for the {ObjectTypes.Simulation.ToLower()}.";
+         public static string NoOverwriteParameterSetSelectedForCompoundInSimulation(string compoundName) =>
+            $"No {ObjectTypes.OverwriteParameterSet.ToLower()} is selected for {ObjectTypes.Compound.ToLower()} '{compoundName}' in the {ObjectTypes.Simulation.ToLower()}. Only a new {ObjectTypes.OverwriteParameterSet.ToLower()} can be created.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
          public const string SpeciesIsRequired = "Species is required.";
@@ -1753,7 +1754,6 @@ namespace PKSim.Assets
          public static readonly string DissociationConstants = "Dissociation Constants";
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
-         public static string NoOverwriteParameterSetToUpdateIn(string compoundName) => $"{ObjectTypes.Compound} '{compoundName}' does not define any {ObjectTypes.OverwriteParameterSet.ToLower()} that could be updated.";
          public static readonly string Change = "Change";
          public static readonly string UpdateValueInParameterSet = "Update value";
          public static readonly string RemoveFromParameterSet = "Remove from set";

@@ -188,7 +188,7 @@ namespace PKSim.Presentation
             CompoundName = "Aspirin",
             Compound = _simulationCompound,
             CreateNew = false,
-            SelectedExistingSet = _existingSet,
+            SetSelectedInSimulation = _existingSet,
             Parameters = new List<ParameterCommitDTO>
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true }
@@ -225,7 +225,6 @@ namespace PKSim.Presentation
             CompoundName = "Aspirin",
             Compound = _simulationCompound,
             CreateNew = false,
-            SelectedExistingSet = existingSet,
             SetSelectedInSimulation = existingSet,
             Parameters = new List<ParameterCommitDTO>
             {
