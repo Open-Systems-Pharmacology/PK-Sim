@@ -88,6 +88,7 @@ namespace PKSim.Core
       protected SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       protected IStartableWarmup _startableWarmup;
+      protected IChartTask _chartTask;
 
 
       protected override Task Context()
@@ -108,6 +109,7 @@ namespace PKSim.Core
          _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _startableWarmup = A.Fake<IStartableWarmup>();
+         _chartTask = new ChartTask(A.Fake<OSPSuite.Core.Domain.Services.IProjectRetriever>());
          A.CallTo(() => _startableWarmup.AwaitCompletion()).Returns(true);
 
          sut = new ProjectMapper(
@@ -124,7 +126,8 @@ namespace PKSim.Core
             _simulationRunner,
             _simulationTimeProfileChartMapper,
             _populationAnalysisChartMapper,
-            _startableWarmup);
+            _startableWarmup,
+            _chartTask);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
@@ -464,6 +467,43 @@ namespace PKSim.Core
       public void should_log_an_error_for_simulation_that_could_not_be_loaded_from_snapshot()
       {
          A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_project_snapshot_with_a_simulation_using_observed_data : concern_for_ProjectMapper
+   {
+      private SimulationTimeProfileChart _chart;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _chart = new SimulationTimeProfileChart();
+         var chartSnapshot = new OSPSuite.Core.Snapshots.CurveChart();
+         _simulationSnapshot = new Simulation { IndividualAnalyses = new[] { chartSnapshot } };
+         _snapshot = new Project
+         {
+            ObservedData = new[] { _observedDataSnapshot },
+            Simulations = new[] { _simulationSnapshot }
+         };
+
+         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot, A<SnapshotContext>._)).Returns(_observedData);
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).ReturnsLazily(() =>
+         {
+            _simulation.AddUsedObservedData(_observedData);
+            return (ModelSimulation) _simulation;
+         });
+         A.CallTo(() => _simulationTimeProfileChartMapper.MapToModel(chartSnapshot, A<SimulationAnalysisContext>._)).Returns(_chart);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
+      }
+
+      [Observation]
+      public void should_have_added_the_observed_data_used_by_the_simulation_to_its_charts()
+      {
+         _chart.AllObservedData().ShouldContain(_observedData);
       }
    }
 

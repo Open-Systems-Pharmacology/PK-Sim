@@ -121,6 +121,34 @@ namespace PKSim.Core
       }
    }
 
+   public class When_applying_an_overwrite_parameter_set_to_a_simulation_with_uncommitted_changes : concern_for_OverwriteParameterSetApplicationTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", overwriteParameterSetWith(("Organism|Aspirin|Lipophilicity", 5.0)));
+      }
+
+      protected override void Because()
+      {
+         sut.ApplyOverwriteParameterSetsTo(_simulation);
+      }
+
+      [Observation]
+      public void should_untrack_the_paths_supplied_by_the_set()
+      {
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|Lipophilicity").ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_keep_tracking_the_paths_that_the_set_does_not_supply()
+      {
+         _simulation.ParameterChangeTracker.IsTracked("Organism|Aspirin|Permeability").ShouldBeTrue();
+      }
+   }
+
    public class When_applying_an_overwrite_parameter_set_whose_entry_defines_a_value_origin : concern_for_OverwriteParameterSetApplicationTask
    {
       protected override void Context()

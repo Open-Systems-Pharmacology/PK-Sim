@@ -7,6 +7,7 @@ using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.R.Services;
 
 namespace PKSim.R
@@ -54,6 +55,28 @@ namespace PKSim.R
       public void should_return_simulations_that_wrap_a_model_core_simulation()
       {
          _simulations.All(x => x.CoreSimulation is ModelCoreSimulation).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_embed_the_project_snapshot_in_the_module()
+      {
+         _simulations.Each(x => x.Configuration.ModuleConfigurations.Single().Module.HasSnapshot.ShouldBeTrue());
+      }
+
+      [Observation]
+      public void should_embed_the_individual_snapshot_in_the_individual_building_block()
+      {
+         _simulations.Each(x => x.Configuration.Individual.HasSnapshot.ShouldBeTrue());
+      }
+
+      [Observation]
+      public void should_embed_the_expression_profile_snapshots_in_the_expression_profile_building_blocks()
+      {
+         _simulations.Each(x =>
+         {
+            x.Configuration.ExpressionProfiles.Count.ShouldBeGreaterThan(0);
+            x.Configuration.ExpressionProfiles.Each(expressionProfile => expressionProfile.HasSnapshot.ShouldBeTrue());
+         });
       }
    }
 
@@ -111,6 +134,18 @@ namespace PKSim.R
       {
          _individualSimulation.IndividualValuesCache.ShouldBeNull();
          _individualSimulation.AgingData.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_embed_the_snapshots_in_both_simulations()
+      {
+         _simulations.Each(x =>
+         {
+            x.Configuration.ModuleConfigurations.Single().Module.HasSnapshot.ShouldBeTrue();
+            x.Configuration.Individual.HasSnapshot.ShouldBeTrue();
+            x.Configuration.ExpressionProfiles.Count.ShouldBeGreaterThan(0);
+            x.Configuration.ExpressionProfiles.Each(expressionProfile => expressionProfile.HasSnapshot.ShouldBeTrue());
+         });
       }
    }
 

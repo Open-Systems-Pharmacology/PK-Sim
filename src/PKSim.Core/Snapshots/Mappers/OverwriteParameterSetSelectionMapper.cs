@@ -39,6 +39,9 @@ public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOver
          return Task.FromResult<ModelOverwriteParameterSetSelection>(null);
       }
 
+      if (string.IsNullOrEmpty(snapshot.OverwriteParameterSetName))
+         return Task.FromResult(new ModelOverwriteParameterSetSelection { CompoundName = snapshot.CompoundName });
+
       var overwriteParameterSet = compound.OverwriteParameterSets.FirstOrDefault(x => x.IsNamed(snapshot.OverwriteParameterSetName));
       if (overwriteParameterSet == null)
       {

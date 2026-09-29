@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -25,7 +26,7 @@ namespace PKSim.Presentation
       protected ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       protected Simulation _simulation;
       protected Compound _compound1;
-      private Compound _compound2;
+      protected Compound _compound2;
       protected ISimulationCompoundProtocolPresenter _subPresenter1;
       protected ISimulationCompoundProtocolPresenter _subPresenter2;
 
@@ -58,12 +59,21 @@ namespace PKSim.Presentation
    public class When_editing_the_protocols_defined_for_a_given_simulation : concern_for_SimulationCompoundProtocolCollectorPresenter
    {
       private ICache<Compound, Protocol> _allProtocols;
+      private ICache<Compound, IReadOnlyList<string>> _allUnmappedEventKeys;
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _protocolChartPresenter.PlotProtocols((A<ICache<Compound,Protocol>>._)))
-            .Invokes(x => _allProtocols = x.GetArgument<ICache<Compound, Protocol>>(0));
+         A.CallTo(() => _subPresenter1.Compound).Returns(_compound1);
+         A.CallTo(() => _subPresenter2.Compound).Returns(_compound2);
+         A.CallTo(() => _subPresenter1.UnmappedEventKeys).Returns(new[] {"EVENT_1"});
+         A.CallTo(() => _subPresenter2.UnmappedEventKeys).Returns(new string[0]);
+         A.CallTo(() => _protocolChartPresenter.PlotProtocols(A<ICache<Compound, Protocol>>._, A<ICache<Compound, IReadOnlyList<string>>>._))
+            .Invokes(x =>
+            {
+               _allProtocols = x.GetArgument<ICache<Compound, Protocol>>(0);
+               _allUnmappedEventKeys = x.GetArgument<ICache<Compound, IReadOnlyList<string>>>(1);
+            });
       }
 
       protected override void Because()
@@ -75,6 +85,13 @@ namespace PKSim.Presentation
       public void should_display_the_chart_corresponding_to_all_protocols_selected()
       {
          _allProtocols.ShouldOnlyContain(_subPresenter1.SelectedProtocol, _subPresenter2.SelectedProtocol);
+      }
+
+      [Observation]
+      public void should_tell_the_chart_which_event_placeholders_are_left_unmapped()
+      {
+         _allUnmappedEventKeys[_compound1].ShouldOnlyContain("EVENT_1");
+         _allUnmappedEventKeys[_compound2].ShouldBeEmpty();
       }
    }
 

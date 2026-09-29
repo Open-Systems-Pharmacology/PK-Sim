@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Snapshots;
@@ -51,6 +52,12 @@ internal class CreateExchangeIndividual : ContextForStaticIntegration
    {
       _result.ShouldNotBeNull();
    }
+
+   [Observation]
+   public void the_building_block_contains_a_snapshot()
+   {
+      Regex.IsMatch(_result, "<Snapshot>[^<]+</Snapshot>").ShouldBeTrue();
+   }
 }
 
 internal class CreateExchangeMetabolizingEnzyme : ContextForStaticIntegration
@@ -66,6 +73,12 @@ internal class CreateExchangeMetabolizingEnzyme : ContextForStaticIntegration
    public void an_exchangeable_string_is_created()
    {
       _result.ShouldNotBeNull();
+   }
+
+   [Observation]
+   public void the_building_block_contains_a_snapshot()
+   {
+      Regex.IsMatch(_result, "<Snapshot>[^<]+</Snapshot>").ShouldBeTrue();
    }
 }
 

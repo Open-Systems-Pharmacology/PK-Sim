@@ -17,6 +17,22 @@ namespace PKSim.Presentation.DTO.Simulations
       public string NewSetName { get; set; }
       public OverwriteParameterSet SelectedExistingSet { get; set; }
 
+      /// <summary>
+      ///    The set of the project compound selected for the compound in the simulation, or <c>null</c> if none is
+      ///    selected. An existing set can only be updated with removals of reset parameters when it is this set.
+      /// </summary>
+      public OverwriteParameterSet SetSelectedInSimulation { get; init; }
+
+      /// <summary>
+      ///    The parameters the dialog shows for the commit mode currently selected. A new set is built from everything it
+      ///    will contain, so the entries carried over from the set applied to the simulation are listed and the paths the
+      ///    user reset are not. An existing set is patched with the changes only.
+      /// </summary>
+      public IReadOnlyList<ParameterCommitDTO> VisibleParameters =>
+         Parameters.Where(x => CreateNew ? !x.IsRemoval : !x.IsUnchanged).ToList();
+
+      public bool HasSelectedRemovals => VisibleParameters.Any(p => p.Selected && p.IsRemoval);
+
       public CompoundCommitDTO()
       {
          Rules.AddRange(AllRules.All());
@@ -24,6 +40,11 @@ namespace PKSim.Presentation.DTO.Simulations
 
       private static class AllRules
       {
+         private static IBusinessRule removalsTargetSetSelectedInSimulation { get; } = CreateRule.For<CompoundCommitDTO>()
+            .Property(x => x.SelectedExistingSet)
+            .WithRule((dto, selectedSet) => !dto.HasSelectedRemovals || selectedSet == dto.SetSelectedInSimulation)
+            .WithError(PKSimConstants.Error.ResetParametersCanOnlyBeRemovedFromSelectedParameterSet);
+
          private static IBusinessRule newSetNameNotEmpty { get; } = CreateRule.For<CompoundCommitDTO>()
             .Property(x => x.NewSetName)
             .WithRule((dto, name) => !dto.CreateNew || !string.IsNullOrWhiteSpace(name))
@@ -41,6 +62,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
          public static IEnumerable<IBusinessRule> All()
          {
+            yield return removalsTargetSetSelectedInSimulation;
             yield return newSetNameNotEmpty;
             yield return newSetNameNotExisting;
             yield return existingSetMustBeSelected;

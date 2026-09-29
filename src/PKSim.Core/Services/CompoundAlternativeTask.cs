@@ -272,7 +272,7 @@ namespace PKSim.Core.Services
          compoundForCalculation.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = refPh.Value;
          compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).Value = gainPerCharge.Value;
 
-         double solFactorRefpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+         double solFactorRefpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_PKA_PH_FACTOR).Value;
          var allPh = new List<double>();
          int ph = 0;
          while (ph <= 13)
@@ -285,7 +285,7 @@ namespace PKSim.Core.Services
          foreach (var pH in allPh)
          {
             compoundForCalculation.Parameter(CoreConstants.Parameters.REFERENCE_PH).Value = pH;
-            double solFactorAtpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR).Value;
+            double solFactorAtpH = compoundForCalculation.Parameter(CoreConstants.Parameters.SOLUBILITY_PKA_PH_FACTOR).Value;
             formula.AddPoint(pH, refSolubilityValue * solFactorRefpH / solFactorAtpH);
          }
 

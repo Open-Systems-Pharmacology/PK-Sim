@@ -31,11 +31,13 @@ namespace PKSim.Core.Model
             _selections.Add(selection);
       }
 
-      public void RemoveSelectionForCompound(string compoundName) =>
-         _selections.Remove(compoundName);
-
       public OverwriteParameterSet SelectedSetFor(string compoundName) =>
          _selections[compoundName]?.OverwriteParameterSet;
+
+      /// <summary>
+      ///    Returns <c>true</c> if a selection was made for <paramref name="compoundName" />, whether it is a set or "None".
+      /// </summary>
+      public bool HasSelectionFor(string compoundName) => _selections.Contains(compoundName);
 
       public OverwriteParameterSetSelections Clone()
       {

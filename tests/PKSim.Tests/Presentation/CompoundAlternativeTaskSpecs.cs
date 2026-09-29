@@ -225,7 +225,7 @@ namespace PKSim.Presentation
          var refPh = DomainHelperForSpecs.ConstantParameterWithValue(_refPhValue).WithName(CoreConstants.Parameters.REFERENCE_PH).WithDimension(DomainHelperForSpecs.NoDimension());
          var solubilty = DomainHelperForSpecs.ConstantParameterWithValue(_solValue).WithName(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).WithDimension(solDim);
          var gainPerCharge = DomainHelperForSpecs.ConstantParameterWithValue(_gainPerChargeValue).WithName(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE).WithDimension(DomainHelperForSpecs.NoDimension());
-         _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameters.SOLUBILITY_P_KA__P_H_FACTOR);
+         _solubility_pKa_pH_Factor = new PKSimParameter().WithName(CoreConstants.Parameters.SOLUBILITY_PKA_PH_FACTOR);
          _solubility_pKa_pH_Factor.Formula = new ExplicitFormula("10 * (pH +1)");
          _solubility_pKa_pH_Factor.Formula.AddObjectPath(new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, CoreConstants.Parameters.REFERENCE_PH}).WithAlias("pH"));
 

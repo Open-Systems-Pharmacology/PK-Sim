@@ -463,6 +463,8 @@ namespace PKSim.Core.Model
          Settings = originalSimulation.Settings;
          Version = originalSimulation.Version;
          StructureVersion = originalSimulation.StructureVersion;
+         OverwriteParameterSetSelections = originalSimulation.OverwriteParameterSetSelections.Clone();
+         ParameterChangeTracker = originalSimulation.ParameterChangeTracker.Clone();
          originalSimulation.UsedObservedData.Each(AddUsedObservedData);
       }
 
@@ -506,11 +508,6 @@ namespace PKSim.Core.Model
             return;
 
          OverwriteParameterSetSelections.SetSelectionForCompound(compoundName, overwriteParameterSet);
-      }
-
-      public virtual void RemoveOverwriteParameterSetSelection(string compoundName)
-      {
-         OverwriteParameterSetSelections.RemoveSelectionForCompound(compoundName);
       }
 
       /// <summary>

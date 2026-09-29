@@ -25,11 +25,13 @@ namespace PKSim.IntegrationTests
    public class When_checking_the_changes_in_the_database_for_version_13_0 : concern_for_DatabaseUpdate
    {
       private IRateFormulaRepository _rateFormulaRepository;
+      private IRateObjectPathsRepository _rateObjectPathsRepository;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
+         _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
       }
 
       [Observation]
@@ -61,11 +63,20 @@ namespace PKSim.IntegrationTests
       }
 
       //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3721
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730
       [Observation]
-      public void should_remove_the_discontinuity_jump_in_the_solubility_formula()
+      public void should_remove_the_discontinuity_jump_in_the_solubility_formula_and_make_the_bile_salt_micellization_switchable()
       {
          var formula = formulaFor("PARAM_IntestinalSolubility");
-         formula.ShouldBeEqualTo("Saq + Max(BS_C - CMC; 0)*S0/CW*10^K_n + Max(BS_C - CMC; 0)*Si/CW*10^K_i + SolubilityTable");
+         formula.ShouldBeEqualTo("Saq + SolubilityTable + (UseBileSaltMicellization = 1 ? Max(BS_C - CMC; 0)*(S0/CW*10^K_n + Si/CW*10^K_i) : 0)");
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730
+      [Observation]
+      public void should_adjust_the_solubility_increase_from_ionization_formula()
+      {
+         var formula = formulaFor("PARAM_IntestinalSolubilityIonization");
+         formula.ShouldBeEqualTo("Max(Saq - S0; 0)");
       }
 
       [Observation]
@@ -82,6 +93,27 @@ namespace PKSim.IntegrationTests
          formula.ShouldBeEqualTo("pKa_Acids_Count = 0 ? (pKa_Bases_Count != 0 ? max(0; K_n - PenaltyBases) : 0) : max(0; K_n-PenaltyOthers)");
       }
 
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3730#issuecomment-5662251824
+      [Observation]
+      public void should_use_the_ph_of_the_intrinsic_solubility_in_the_intrinsic_solubility_pka_ph_factor_formulas()
+      {
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F1");
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F2");
+         verifyPHAliasOfIntrinsicSolubilityFactor("PARAM_pKa_pH_IntrinsicSolubility_F3");
+      }
+
+      private void verifyPHAliasOfIntrinsicSolubilityFactor(string rate)
+      {
+         const string calcMethod = "CompoundAcidBase_PKSim";
+
+         var objectPaths = _rateObjectPathsRepository.ObjectPathsFor(new RateKey(calcMethod, rate)).ToList();
+         var phObjectPaths = objectPaths.Where(p => p.Alias.Equals("pH")).ToList();
+
+         phObjectPaths.Count.ShouldBeEqualTo(1, $"Expected exactly one 'pH' alias in '{rate}'");
+         phObjectPaths[0].PathAsString.EndsWith(CoreConstantsForSpecs.Parameters.PH_INTRINSIC_SOLUBILITY)
+            .ShouldBeTrue($"'pH' alias in '{rate}' points to '{phObjectPaths[0].PathAsString}'");
+      }
+
       [Observation]
       public void should_rename_the_local_kd_fcrn_parameter_of_the_molecule_properties()
       {
@@ -91,6 +123,25 @@ namespace PKSim.IntegrationTests
 
          allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) in endosomal space of container")).ShouldBeFalse();
          allMoleculePropertiesParameters.Any(p => p.ParameterName.Equals("Kd (FcRn) of container")).ShouldBeTrue();
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/867
+      [Observation]
+      public void should_rename_the_gallbladder_refilling_time_parameter_into_gallbladder_emptying_time()
+      {
+         const string oldParameterName = "Time to complete gallbladder refilling";
+         const string newParameterName = "Time to complete gallbladder emptying";
+
+         var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
+         var allGallbladderParameters = parameterRateRepository.All()
+            .Where(p => p.ContainerName.Equals(GALLBLADDER)).ToList();
+
+         allGallbladderParameters.Any(p => p.ParameterName.Equals(oldParameterName)).ShouldBeFalse();
+         allGallbladderParameters.Any(p => p.ParameterName.Equals(newParameterName)).ShouldBeTrue();
+
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         var parameterInfo = representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, newParameterName);
+         parameterInfo.DisplayName.ShouldBeEqualTo(newParameterName);
       }
 
       [Observation]

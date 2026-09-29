@@ -379,6 +379,8 @@ namespace PKSim.Core
    public class When_mapping_snapshot_origin_data_to_origin_data : concern_for_OriginDataMapper
    {
       private Model.OriginData _newOriginData;
+      private IParameter _meanWeightParameter;
+      private IParameter _meanHeightParameter;
 
       protected override async Task Context()
       {
@@ -386,13 +388,17 @@ namespace PKSim.Core
 
          _snapshot = await sut.MapToSnapshot(_originData);
 
-         var meanWeightParameter = A.Fake<IParameter>();
-         A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
-         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight.Value);
+         _meanWeightParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(_meanWeightParameter);
+         A.CallTo(() => _meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight.Value);
 
-         var meanHeightParameter = A.Fake<IParameter>();
-         A.CallTo(() => _individualModelTask.MeanHeightFor(A<Model.OriginData>._)).Returns(meanHeightParameter);
-         A.CallTo(() => meanHeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value.Value)).Returns(_originData.Height.Value);
+         _meanHeightParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanHeightFor(A<Model.OriginData>._)).Returns(_meanHeightParameter);
+         A.CallTo(() => _meanHeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Height.Value.Value)).Returns(_originData.Height.Value);
+
+         var bmiParameter = DomainHelperForSpecs.ConstantParameterWithValue(23.04);
+         bmiParameter.Dimension = new Dimension(new BaseDimensionRepresentation(), "BMI", "kg/m²");
+         A.CallTo(() => _individualModelTask.BMIBasedOn(A<Model.OriginData>._, _meanWeightParameter, _meanHeightParameter)).Returns(bmiParameter);
 
          var meanAgeParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanAgeFor(A<Model.OriginData>._)).Returns(meanAgeParameter);
@@ -418,6 +424,15 @@ namespace PKSim.Core
          _newOriginData.Height.Value.ShouldBeEqualTo(_originData.Height.Value);
          _newOriginData.Age.Value.ShouldBeEqualTo(_originData.Age.Value);
          _newOriginData.GestationalAge.Value.ShouldBeEqualTo(_originData.GestationalAge.Value);
+      }
+
+      [Observation]
+      public void should_calculate_the_bmi_based_on_the_weight_and_height_of_the_individual()
+      {
+         _meanWeightParameter.Value.ShouldBeEqualTo(_originData.Weight.Value);
+         _meanHeightParameter.Value.ShouldBeEqualTo(_originData.Height.Value);
+         _newOriginData.BMI.Value.ShouldBeEqualTo(23.04);
+         _newOriginData.BMI.Unit.ShouldBeEqualTo("kg/m²");
       }
 
       [Observation]

@@ -1,14 +1,12 @@
-name: Build Nightly 13.0
-run-name: Version 13.0.${{ github.run_number }}
+name: Build Nightly 13.1
+run-name: Nightly build ${{ github.run_number }}
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'
 
 permissions:
   contents: read
-  packages: read
+  packages: write
 
 jobs:
   get-latest-commit-timespan:
@@ -53,7 +51,7 @@ jobs:
 
       - name: define env variables
         run: |
-          echo "APP_VERSION=13.0.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "APP_VERSION=13.1.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
         env:
@@ -63,6 +61,9 @@ jobs:
 
       - name : Test
         run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=${{ github.workspace }}/testLog_Windows.html"
+
+      - name: Pack the project
+        run: dotnet pack .\PKSim.sln --no-build --no-restore -o ./ -p:PackageVersion=${{env.APP_VERSION}} --configuration=Debug
 
       - name: Sign PKSim.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
@@ -127,6 +128,9 @@ jobs:
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
           path: setup\PK-Sim ${{env.APP_VERSION}}
+
+      - name: Publish to GitHub registry
+        run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
   cleanup-job:
     needs: build-nightly

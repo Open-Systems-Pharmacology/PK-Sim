@@ -1,9 +1,13 @@
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -144,5 +148,54 @@ namespace PKSim.IntegrationTests
 
       [Observation]
       public void should_apply_the_snapshot_value_to_the_parameter_nested_under_the_formulation_container() => _startTimeParameter.Value.ShouldBeEqualTo(30);
+   }
+
+   public class When_loading_a_snapshot_of_a_simulation_selecting_an_overwrite_parameter_set : ContextForSimulationIntegration<SimulationMapper>
+   {
+      private Compound _compound;
+      private Individual _individual;
+      private Protocol _protocol;
+      private PKSimProject _project;
+      private string _overwrittenParameterPath;
+      private IndividualSimulation _mappedSimulation;
+      private const double _overwriteValue = 42;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         var workspace = IoC.Resolve<ICoreWorkspace>();
+         workspace.Project = new PKSimProject();
+         _project = workspace.Project;
+         _project.AddBuildingBlock(_compound);
+         _project.AddBuildingBlock(_individual);
+         _project.AddBuildingBlock(_protocol);
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+         _project.AddBuildingBlock(_simulation);
+
+         var lipophilicity = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.LIPOPHILICITY)).First();
+         _overwrittenParameterPath = IoC.Resolve<IEntityPathResolver>().PathFor(lipophilicity);
+
+         var overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         overwriteParameterSet.Add(new ParameterValue { Path = _overwrittenParameterPath.ToObjectPath(), Value = _overwriteValue });
+         _compound.AddOverwriteParameterSet(overwriteParameterSet);
+         _simulation.AddOverwriteParameterSetSelection(_compound.Name, overwriteParameterSet);
+      }
+
+      protected override void Because()
+      {
+         var snapshot = sut.MapToSnapshot(_simulation, _project).Result;
+         var simulationContext = new SimulationContext(run: false, new SnapshotContext(_project, SnapshotVersions.Current));
+         _mappedSimulation = sut.MapToModel(snapshot, simulationContext).Result as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_apply_the_values_of_the_selected_overwrite_parameter_set_to_the_simulation()
+      {
+         var allParameters = IoC.Resolve<IContainerTask>().CacheAllChildren<IParameter>(_mappedSimulation.Model.Root);
+         allParameters[_overwrittenParameterPath].Value.ShouldBeEqualTo(_overwriteValue);
+      }
    }
 }

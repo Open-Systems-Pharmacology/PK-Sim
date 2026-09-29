@@ -21,6 +21,8 @@ namespace PKSim.Core.Services
       ///    population simulation keeps the overwritten value fixed; any advanced parameter already defined for such a
       ///    path in a <see cref="PopulationSimulation" /> is removed so it cannot override the value at run time.
       ///    Compounds whose selection is "None" are skipped.
+      ///    Applied paths are untracked in the <see cref="Simulation.ParameterChangeTracker" /> since their value comes
+      ///    from the set and is no longer an uncommitted change of the simulation.
       ///    Throws a <see cref="CannotApplyOverwriteParameterSetException" /> if any path cannot be resolved in the
       ///    simulation, in which case no value is applied.
       /// </summary>
@@ -54,7 +56,11 @@ namespace PKSim.Core.Services
          var resolvedValues = resolveOverwriteValues(simulation);
          applyValues(resolvedValues);
          removeAdvancedParametersFor(simulation, resolvedValues);
+         untrackAppliedPathsIn(simulation, resolvedValues);
       }
+
+      private static void untrackAppliedPathsIn(Simulation simulation, IReadOnlyList<(IParameter parameter, ParameterValue parameterValue)> resolvedValues) =>
+         resolvedValues.Each(x => simulation.ParameterChangeTracker.Untrack(x.parameterValue.Path));
 
       private static void applyValues(IReadOnlyList<(IParameter parameter, ParameterValue parameterValue)> resolvedValues) =>
          resolvedValues.Each(x => applyValue(x.parameter, x.parameterValue));

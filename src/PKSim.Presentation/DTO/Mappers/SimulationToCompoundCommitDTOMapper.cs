@@ -1,61 +1,83 @@
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
    public interface ISimulationToCompoundCommitDTOMapper
    {
-      CompoundCommitDTO MapFrom(Simulation simulation, Compound compound);
+      CompoundCommitDTO MapFrom(Simulation simulation, Compound templateCompound);
    }
 
    public class SimulationToCompoundCommitDTOMapper : ISimulationToCompoundCommitDTOMapper
    {
       private readonly IContainerTask _containerTask;
-      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IParameterToParameterCommitDTOMapper _parameterCommitDTOMapper;
 
       public SimulationToCompoundCommitDTOMapper(
          IContainerTask containerTask,
-         IBuildingBlockInProjectManager buildingBlockInProjectManager,
          IParameterToParameterCommitDTOMapper parameterCommitDTOMapper)
       {
          _containerTask = containerTask;
-         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _parameterCommitDTOMapper = parameterCommitDTOMapper;
       }
 
-      public CompoundCommitDTO MapFrom(Simulation simulation, Compound compound)
+      public CompoundCommitDTO MapFrom(Simulation simulation, Compound templateCompound)
       {
-         var templateCompound = templateCompoundFor(simulation, compound.Name);
-         if (templateCompound == null)
-            return null;
-
          var parameterCache = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
 
          var changedPaths = simulation.ParameterChangeTracker.ChangedPaths
             .Select(p => p.PathAsString)
-            .Where(path => simulation.CompoundNameForParameterPath(path) == compound.Name)
+            .Where(path => simulation.CompoundNameForParameterPath(path) == templateCompound.Name)
             .ToList();
 
          if (!changedPaths.Any())
             return null;
 
-         var selectedSetInTemplate = selectedSetInTemplateFor(simulation, compound.Name, templateCompound);
+         var selectedSetInTemplate = selectedSetInTemplateFor(simulation, templateCompound);
+
+         var parameters = changedPaths.Select(path => mapParameter(simulation, templateCompound.Name, path, parameterCache[path])).ToList();
+         parameters.AddRange(unchangedParametersOfAppliedSet(simulation, templateCompound.Name, changedPaths, parameterCache));
 
          return new CompoundCommitDTO
          {
-            CompoundName = compound.Name,
+            CompoundName = templateCompound.Name,
             Compound = templateCompound,
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
             CreateNew = selectedSetInTemplate == null,
             SelectedExistingSet = selectedSetInTemplate,
-            NewSetName = compound.Name,
-            Parameters = changedPaths.Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path])).ToList()
+            SetSelectedInSimulation = selectedSetInTemplate,
+            NewSetName = templateCompound.Name,
+            Parameters = parameters
          };
+      }
+
+      private ParameterCommitDTO mapParameter(Simulation simulation, string compoundName, string path, IParameter parameter)
+      {
+         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter is { IsDefault: true };
+         return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval, isUnchanged: false);
+      }
+
+      /// <summary>
+      ///    Returns the entries of the set applied to the compound in the simulation that the user did not change. They are
+      ///    carried over into a new set created from the simulation and are listed so that the dialog shows everything the
+      ///    new set will contain. Their value is taken from the simulation, which is the value of the set since the path is
+      ///    not changed.
+      /// </summary>
+      private IEnumerable<ParameterCommitDTO> unchangedParametersOfAppliedSet(Simulation simulation, string compoundName,
+         IReadOnlyList<string> changedPaths, PathCache<IParameter> parameterCache)
+      {
+         var appliedSet = simulation.OverwriteParameterSetSelections.SelectedSetFor(compoundName);
+         if (appliedSet == null)
+            return Enumerable.Empty<ParameterCommitDTO>();
+
+         return appliedSet.ParameterValues
+            .Select(x => x.Path.PathAsString)
+            .Where(path => !changedPaths.Contains(path))
+            .Select(path => _parameterCommitDTOMapper.MapFrom(path, parameterCache[path], isRemoval: false, isUnchanged: true));
       }
 
       /// <summary>
@@ -64,19 +86,10 @@ namespace PKSim.Presentation.DTO.Mappers
       ///    configuration, and the set of the template compound when it was restored from a snapshot, so the two cannot be
       ///    compared by reference.
       /// </summary>
-      private OverwriteParameterSet selectedSetInTemplateFor(Simulation simulation, string compoundName, Compound templateCompound)
+      private OverwriteParameterSet selectedSetInTemplateFor(Simulation simulation, Compound templateCompound)
       {
-         var selection = simulation.OverwriteParameterSetSelections.SelectedSetFor(compoundName);
+         var selection = simulation.OverwriteParameterSetSelections.SelectedSetFor(templateCompound.Name);
          return selection == null ? null : templateCompound.OverwriteParameterSets.FindByName(selection.Name);
-      }
-
-      private Compound templateCompoundFor(Simulation simulation, string compoundName)
-      {
-         var simulationCompound = simulation.Compounds.FindByName(compoundName);
-         if (simulationCompound == null)
-            return null;
-
-         return _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Compound>(simulation, simulationCompound);
       }
    }
 }

@@ -275,16 +275,115 @@ namespace PKSim.Core
       }
    }
 
-   public class When_committing_to_an_existing_set_after_user_has_reset_a_parameter_in_that_set : concern_for_CommitSimulationParametersTask
+   public class When_committing_the_removal_of_a_reset_parameter_together_with_a_changed_parameter_to_an_existing_set : concern_for_CommitSimulationParametersTask
    {
       private OverwriteParameterSet _templateExistingSet;
 
       protected override void Context()
       {
          base.Context();
-         //Permeability is in the existing set with stored value 99.0. The simulation's Permeability parameter is
-         //at 7.2 — different from the stored value and not tracked — which models a parameter the user has reset
-         //since the previous commit.
+         _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 99.0 });
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Lipophilicity");
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
+      }
+
+      protected override void Because()
+      {
+         sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new[] { "Organism|Aspirin|Lipophilicity" },
+            ParameterPathsToRemove = new[] { "Organism|Aspirin|Permeability" },
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
+         });
+      }
+
+      [Observation]
+      public void should_remove_the_reset_entry_from_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_add_the_newly_committed_entry_to_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_clear_the_removed_path_from_the_tracker()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+   }
+
+   public class When_committing_only_the_removal_of_a_reset_parameter_to_an_existing_set : concern_for_CommitSimulationParametersTask
+   {
+      private ICommand _result;
+      private OverwriteParameterSet _templateExistingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 99.0 });
+         _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Lipophilicity".ToObjectPath(), Value = 2.0 });
+         _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
+
+         _simulation.ParameterChangeTracker.Track("Organism|Aspirin|Permeability");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CommitParametersToCompound(_simulation, new CompoundCommitInfo
+         {
+            TemplateCompoundId = _templateCompound.Id,
+            ParameterPaths = new string[0],
+            ParameterPathsToRemove = new[] { "Organism|Aspirin|Permeability" },
+            OverwriteParameterSetName = "ExistingSet",
+            ShouldCreateNew = false
+         });
+      }
+
+      [Observation]
+      public void should_remove_the_reset_entry_from_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_preserve_the_other_entries_of_the_template_set()
+      {
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_clear_the_removed_path_from_the_tracker()
+      {
+         _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_describe_the_commit_as_an_update_of_the_set()
+      {
+         _result.CommandType.ShouldBeEqualTo(PKSimConstants.Command.CommandTypeUpdate);
+         _result.Description.ShouldBeEqualTo(PKSimConstants.Command.CommitSimulationParametersToCompound("ExistingSet", _templateCompound.Name));
+      }
+   }
+
+   public class When_committing_to_an_existing_set_holding_an_untracked_entry_whose_value_differs_from_the_simulation : concern_for_CommitSimulationParametersTask
+   {
+      private OverwriteParameterSet _templateExistingSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         //Permeability is in the existing set with a value that differs from the simulation parameter but is not
+         //tracked: the set was edited in the compound after being applied. The commit must not infer a reset from that.
          _templateExistingSet = new OverwriteParameterSet { Name = "ExistingSet", Id = "SetId2" };
          _templateExistingSet.Add(new ParameterValue { Path = "Organism|Aspirin|Permeability".ToObjectPath(), Value = 99.0 });
          _templateCompound.AddOverwriteParameterSet(_templateExistingSet);
@@ -304,15 +403,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_remove_the_reset_entry_from_the_template_set()
+      public void should_preserve_the_untracked_entry_in_the_template_set()
       {
-         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").ShouldBeNull();
-      }
-
-      [Observation]
-      public void should_add_the_newly_committed_entry_to_the_template_set()
-      {
-         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Lipophilicity").ShouldNotBeNull();
+         _templateExistingSet.ParameterValueByPath("Organism|Aspirin|Permeability").Value.ShouldBeEqualTo(99.0);
       }
    }
 

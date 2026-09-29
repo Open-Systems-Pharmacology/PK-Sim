@@ -200,7 +200,6 @@ namespace PKSim.Core
    public class When_creating_event_building_block_with_no_event_mapping_for_key : concern_for_EventBuildingBlockCreator
    {
       private Protocol _protocol;
-      private NoEventFoundException _exception;
 
       protected override void Context()
       {
@@ -217,21 +216,18 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _exception = exceptionThrownBy(() => sut.CreateFor(_simulation));
+         _result = sut.CreateFor(_simulation);
       }
 
       [Observation]
-      public void should_throw_an_exception_naming_the_protocol_and_the_placeholder()
+      public void should_only_create_the_event_group_of_the_protocol()
       {
-         _exception.ShouldNotBeNull();
-         _exception.Message.ShouldBeEqualTo(PKSimConstants.Error.NoEventFoundForPlaceholder("MyProtocol", "EVENT_1"));
+         _result.OfType<EventGroupBuilder>().Select(x => x.Name).ShouldOnlyContain("MyProtocol");
       }
    }
 
    public class When_creating_event_building_block_with_a_placeholder_mapped_to_an_event_not_used_by_the_simulation : concern_for_EventBuildingBlockCreator
    {
-      private NoEventFoundException _exception;
-
       protected override void Context()
       {
          base.Context();
@@ -248,14 +244,13 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _exception = exceptionThrownBy(() => sut.CreateFor(_simulation));
+         _result = sut.CreateFor(_simulation);
       }
 
       [Observation]
-      public void should_throw_an_exception_naming_the_protocol_and_the_placeholder()
+      public void should_only_create_the_event_group_of_the_protocol()
       {
-         _exception.ShouldNotBeNull();
-         _exception.Message.ShouldBeEqualTo(PKSimConstants.Error.NoEventFoundForPlaceholder("MyProtocol", "EVENT_1"));
+         _result.OfType<EventGroupBuilder>().Select(x => x.Name).ShouldOnlyContain("MyProtocol");
       }
    }
 

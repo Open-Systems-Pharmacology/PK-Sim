@@ -1,8 +1,10 @@
 ﻿using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.Individuals;
+using static PKSim.Starter.ExchangeSerializer;
 
 namespace PKSim.Starter
 {
@@ -22,7 +24,9 @@ namespace PKSim.Starter
                return null;
 
             var mapper = container.Resolve<IIndividualToIndividualBuildingBlockMapper>();
-            return mapper.MapFrom(presenter.Individual);
+            var individualBuildingBlock = mapper.MapFrom(presenter.Individual);
+            container.Resolve<ISnapshotUpdater>().AddSnapshotTo(individualBuildingBlock, presenter.Individual);
+            return Serialize(individualBuildingBlock, container);
          }
       }
    }

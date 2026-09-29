@@ -58,7 +58,7 @@ namespace PKSim.Core
       protected PKSimProject _project;
       protected ISimulationFactory _simulationFactory;
       protected IExecutionContext _executionContext;
-      private ISimulationModelCreator _simulationModelCreator;
+      protected ISimulationModelCreator _simulationModelCreator;
       protected ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       protected EventMappingMapper _eventMappingMapper;
       protected Individual _individual;
@@ -97,7 +97,6 @@ namespace PKSim.Core
       protected ModelOutputMapping _outputMapping;
       protected OutputMappingMapper _outputMappingMapper;
       protected SnapshotOutputMapping _snapshotOutputMapping;
-      protected IChartTask _chartTask;
       protected OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       protected override Task Context()
@@ -124,7 +123,6 @@ namespace PKSim.Core
          _logger = A.Fake<IOSPSuiteLogger>();
          _containerTask = A.Fake<IContainerTask>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _chartTask = A.Fake<IChartTask>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
@@ -134,7 +132,7 @@ namespace PKSim.Core
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationParameterOriginIdUpdater,
-            _logger, _containerTask, _entityPathResolver, _chartTask
+            _logger, _containerTask, _entityPathResolver
          );
 
          _project = new PKSimProject();
@@ -672,12 +670,6 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_updated_the_reference_to_observed_data_in_all_charts()
-      {
-         A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, _project)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_have_reconstructed_the_changed_parameter_paths_from_the_simulation_model()
       {
          _simulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(1);
@@ -767,6 +759,77 @@ namespace PKSim.Core
          _snapshot.OverwriteParameterSetSelections.Length.ShouldBeEqualTo(1);
          _snapshot.OverwriteParameterSetSelections[0].CompoundName.ShouldBeEqualTo(_compound.Name);
          _snapshot.OverwriteParameterSetSelections[0].OverwriteParameterSetName.ShouldBeEqualTo("MySet");
+      }
+   }
+
+   public class When_mapping_a_simulation_snapshot_with_overwrite_parameter_set_selections_to_simulation : concern_for_SimulationMapper
+   {
+      private OverwriteParameterSet _overwriteParameterSet;
+      private OverwriteParameterSetSelection _snapshotOverwriteParameterSetSelection;
+      private OverwriteParameterSet _selectedSetWhenModelWasCreated;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _overwriteParameterSet = new OverwriteParameterSet { Name = "MySet" };
+         _compound.AddOverwriteParameterSet(_overwriteParameterSet);
+         _individualSimulation.AddOverwriteParameterSetSelection(_compound.Name, _overwriteParameterSet);
+
+         _snapshotOverwriteParameterSetSelection = new OverwriteParameterSetSelection
+         {
+            CompoundName = _compound.Name,
+            OverwriteParameterSetName = _overwriteParameterSet.Name
+         };
+
+         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToSnapshot(
+               A<Model.OverwriteParameterSetSelection>.That.Matches(x => x.CompoundName == _compound.Name), _project))
+            .Returns(_snapshotOverwriteParameterSetSelection);
+
+         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToModel(_snapshotOverwriteParameterSetSelection, A<SnapshotContext>._))
+            .Returns(new Model.OverwriteParameterSetSelection
+            {
+               CompoundName = _compound.Name,
+               OverwriteParameterSet = _overwriteParameterSet
+            });
+
+         _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
+
+         var individualSimulation = new IndividualSimulation
+         {
+            Properties = _simulationProperties,
+            Settings = _settings,
+            Model = _model
+         };
+
+         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
+         {
+            Name = _individual.Name,
+            BuildingBlock = _individual
+         });
+
+         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
+         {
+            Name = _compound.Name,
+            BuildingBlock = _compound
+         });
+
+         A.CallTo(() => _simulationFactory.CreateFrom(_individual, A<IReadOnlyList<Compound>>._, A<ModelProperties>._, null)).Returns(individualSimulation);
+
+         //the values of the selected set are applied to the simulation parameters while the model is created,
+         //so the selection has to be known by then
+         A.CallTo(() => _simulationModelCreator.CreateModelFor(A<Model.Simulation>._, A<bool>._, A<bool>._))
+            .Invokes(x => _selectedSetWhenModelWasCreated = x.GetArgument<Model.Simulation>(0).OverwriteParameterSetSelections.SelectedSetFor(_compound.Name));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.MapToModel(_snapshot, new SimulationContext(run: false, new SnapshotContext(_project, SnapshotVersions.Current)));
+      }
+
+      [Observation]
+      public void should_have_selected_the_overwrite_parameter_set_before_creating_the_model()
+      {
+         _selectedSetWhenModelWasCreated.ShouldBeEqualTo(_overwriteParameterSet);
       }
    }
 }

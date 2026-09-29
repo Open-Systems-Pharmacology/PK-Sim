@@ -43,7 +43,6 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOSPSuiteLogger _logger;
       private readonly IContainerTask _containerTask;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IChartTask _chartTask;
       private readonly OverwriteParameterSetSelectionMapper _overwriteParameterSetSelectionMapper;
 
       public SimulationMapper(
@@ -68,8 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
          IOSPSuiteLogger logger,
          IContainerTask containerTask,
-         IEntityPathResolver entityPathResolver,
-         IChartTask chartTask)
+         IEntityPathResolver entityPathResolver)
       {
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
@@ -93,7 +91,6 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
          _containerTask = containerTask;
          _entityPathResolver = entityPathResolver;
-         _chartTask = chartTask;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -313,11 +310,9 @@ namespace PKSim.Core.Snapshots.Mappers
          updateUsedObservedData(simulation, snapshot.ObservedData, project);
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
-         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
          reconstructChangedParameterPaths(simulation);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
-         _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);
          return simulation;
       }
 
@@ -383,6 +378,7 @@ namespace PKSim.Core.Snapshots.Mappers
          MapSnapshotPropertiesToModel(snapshot, simulation);
 
          await mapCompoundProperties(simulation, snapshot.Compounds, snapshotContext);
+         await updateOverwriteParameterSetSelections(simulation, snapshot.OverwriteParameterSetSelections, snapshotContext);
          simulation.EventProperties = await mapEventProperties(snapshot.Events, snapshotContext);
          simulation.ObserverSetProperties = await mapObserverSetProperties(snapshot.ObserverSets, snapshotContext);
          await updateInteractionProperties(simulation, snapshot.Interactions, snapshotContext);
