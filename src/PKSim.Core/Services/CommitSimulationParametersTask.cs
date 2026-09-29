@@ -28,8 +28,8 @@ namespace PKSim.Core.Services
       public IReadOnlyList<string> ParameterPaths { get; init; }
 
       /// <summary>
-      ///    Parameter paths that the user reset in the simulation and that are removed from the existing set.
-      ///    Only meaningful when <see cref="ShouldCreateNew" /> is false.
+      ///    Parameter paths that the user reset in the simulation. They are removed from the existing set, or left out of a
+      ///    new set.
       /// </summary>
       public IReadOnlyList<string> ParameterPathsToRemove { get; init; } = new List<string>();
 
@@ -49,8 +49,9 @@ namespace PKSim.Core.Services
    {
       /// <summary>
       ///    Creates and executes a command that commits the specified parameter changes to the project compound and to the
-      ///    compound used in the simulation and clears the committed paths from the tracker. The compound used in the
-      ///    simulation keeps its synchronization status.
+      ///    compound used in the simulation and clears the committed paths from the tracker. A new set is selected for the
+      ///    compound in the simulation, and the entries of the previously selected set that it does not hold become tracked
+      ///    changes. The compound used in the simulation keeps its synchronization status.
       /// </summary>
       ICommand CommitParametersToCompound(Simulation simulation, CompoundCommitInfo commitInfo);
    }
@@ -83,6 +84,7 @@ namespace PKSim.Core.Services
          var usedCompound = simulation.UsedBuildingBlockByTemplateId(templateCompound.Id);
          var simulationCompound = usedCompound.BuildingBlock.DowncastTo<Compound>();
          var isInSyncWithTemplate = _buildingBlockInProjectManager.StatusFor(usedCompound) == BuildingBlockStatus.Green;
+         var previouslySelectedSet = simulation.OverwriteParameterSetSelections.SelectedSetFor(templateCompound.Name);
 
          var parameterCache = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
          var parameterValues = createParameterValuesFor(commitInfo, parameterCache);
@@ -97,6 +99,12 @@ namespace PKSim.Core.Services
          //Only untrack paths that were actually resolved to parameter values
          var committedPaths = parameterValues.Select(pv => pv.Path.PathAsString).Concat(commitInfo.ParameterPathsToRemove).ToList();
          command.Add(new SetSimulationParameterTrackingCommand(simulation, committedPaths, tracked: false));
+
+         if (commitInfo.ShouldCreateNew)
+         {
+            command.Add(new SetOverwriteParameterSetSelectionCommand(simulation, templateCompound.Name, commitInfo.OverwriteParameterSetName));
+            command.Add(new SetSimulationParameterTrackingCommand(simulation, pathsLeftOutOfNewSet(previouslySelectedSet, commitInfo), tracked: true));
+         }
 
          command.Run(_executionContext);
 
@@ -148,6 +156,23 @@ namespace PKSim.Core.Services
          command.Add(new ReplaceOverwriteParameterSetsInCompoundCommand(simulationCompound, templateCompound.OverwriteParameterSets));
 
          return command;
+      }
+
+      /// <summary>
+      ///    Returns the paths of <paramref name="previouslySelectedSet" /> that the new set neither holds nor drops as a reset.
+      ///    The simulation still holds the value the previous set supplied, which the new set selected in its place does not
+      ///    store.
+      /// </summary>
+      private static IReadOnlyList<string> pathsLeftOutOfNewSet(OverwriteParameterSet previouslySelectedSet, CompoundCommitInfo commitInfo)
+      {
+         if (previouslySelectedSet == null)
+            return new List<string>();
+
+         return previouslySelectedSet.ParameterValues
+            .Select(pv => pv.Path.PathAsString)
+            .Except(commitInfo.ParameterPaths)
+            .Except(commitInfo.ParameterPathsToRemove)
+            .ToList();
       }
 
       private List<ParameterValue> createParameterValuesFor(CompoundCommitInfo info, PathCache<IParameter> parameterCache)

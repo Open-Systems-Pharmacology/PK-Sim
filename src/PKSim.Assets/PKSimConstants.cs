@@ -316,6 +316,9 @@ namespace PKSim.Assets
          public static string SetSimulationParameterTracking(int parameterCount, bool tracked, string simulationName) =>
             $"Mark {parameterCount} parameter(s) as {(tracked ? "uncommitted" : "committed")} in {ObjectTypes.Simulation.ToLower()} '{simulationName}'";
 
+         public static string SelectOverwriteParameterSetForCompoundInSimulation(string overwriteParameterSetName, string compoundName, string simulationName) =>
+            $"Select {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' for {ObjectTypes.Compound.ToLower()} '{compoundName}' in {ObjectTypes.Simulation.ToLower()} '{simulationName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
