@@ -59,7 +59,6 @@ jobs:
         env:
           DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
         run: |
-          rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
           dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test

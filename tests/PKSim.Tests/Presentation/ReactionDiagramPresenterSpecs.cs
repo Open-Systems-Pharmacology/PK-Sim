@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
@@ -17,7 +18,7 @@ namespace PKSim.Presentation
       protected IDiagramLayoutTask _diagramLayoutTask;
       protected ISimulationToSimulationReactionDiagramDTOMapper _mapper;
       protected SimulationReactionDiagramDTO _simulationReactionDiagramDTO;
-      private IDiagramModelFactory _diagramModelFactory;
+      protected IDiagramModelFactory _diagramModelFactory;
 
       protected override void Context()
       {
@@ -30,8 +31,7 @@ namespace PKSim.Presentation
             DiagramManager = A.Fake<IDiagramManager<SimulationReactionDiagramDTO>>()
          };
 
-         sut = new ReactionDiagramPresenter(A.Fake<IReactionDiagramView>(), A.Fake<IContainerBaseLayouter>(), A.Fake<IDialogCreator>(), _diagramModelFactory,
-            A.Fake<IUserSettings>(), _diagramLayoutTask, _mapper);
+         sut = new ReactionDiagramPresenter(A.Fake<IReactionDiagramView>(), A.Fake<IContainerBaseLayouter>(), A.Fake<IDialogCreator>(), _diagramModelFactory, A.Fake<IUserSettings>(), _diagramLayoutTask, _mapper);
 
          A.CallTo(_mapper).WithReturnType<SimulationReactionDiagramDTO>().Returns(_simulationReactionDiagramDTO);
       }
@@ -93,6 +93,30 @@ namespace PKSim.Presentation
       public void layout_task_must_have_performed_a_layout_for_the_diagram()
       {
          A.CallTo(() => _diagramLayoutTask.LayoutReactionDiagram(A<IDiagramModel>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_building_block_dto_without_a_diagram_model : concern_for_ReactionDiagramPresenter
+   {
+      private IDiagramModel _diagramModel;
+
+      protected override void Context()
+      {
+         base.Context();
+         _diagramModel = A.Fake<IDiagramModel>();
+         _simulationReactionDiagramDTO.DiagramModel = null;
+         A.CallTo(() => _diagramModelFactory.Create()).Returns(_diagramModel);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulationReactionDiagramDTO);
+      }
+
+      [Observation]
+      public void should_create_the_diagram_model_with_the_reaction_diagram_model_factory()
+      {
+         _simulationReactionDiagramDTO.DiagramModel.ShouldBeEqualTo(_diagramModel);
       }
    }
 }
