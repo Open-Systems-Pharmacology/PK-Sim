@@ -136,7 +136,34 @@ public class When_editing_a_simulation_with_an_existing_selection_that_is_not_th
    }
 }
 
-public class When_saving_a_real_overwrite_parameter_set_selection : concern_for_SimulationCompoundOverwriteParameterSetSelectionPresenter
+public class When_editing_a_simulation_whose_selection_holds_the_set_of_another_instance_of_the_compound : concern_for_SimulationCompoundOverwriteParameterSetSelectionPresenter
+{
+   private SimulationCompoundOverwriteParameterSetSelectionDTO _capturedDto;
+   private OverwriteParameterSet _setOfCompound;
+
+   protected override void Context()
+   {
+      base.Context();
+      _setOfCompound = new OverwriteParameterSet { Name = "HepaticImpairment", Id = "SetOfCompoundId" };
+      _compound.AddOverwriteParameterSet(_setOfCompound);
+      _selections.SetSelectionForCompound("Aspirin", new OverwriteParameterSet { Name = "HepaticImpairment", Id = "SetOfOtherCompoundId" });
+      A.CallTo(() => _view.BindTo(A<SimulationCompoundOverwriteParameterSetSelectionDTO>._))
+         .Invokes(call => _capturedDto = call.GetArgument<SimulationCompoundOverwriteParameterSetSelectionDTO>(0));
+   }
+
+   protected override void Because()
+   {
+      sut.EditSimulation(_simulation, _compound);
+   }
+
+   [Observation]
+   public void should_select_the_set_of_the_compound_with_the_same_name()
+   {
+      _capturedDto.SelectedOverwriteParameterSet.ShouldBeEqualTo(_setOfCompound);
+   }
+}
+
+public class When_saving_a_real_overwrite_parameter_set_selection: concern_for_SimulationCompoundOverwriteParameterSetSelectionPresenter
 {
    private OverwriteParameterSet _userSelectedSet;
    private SimulationCompoundOverwriteParameterSetSelectionDTO _capturedDto;
