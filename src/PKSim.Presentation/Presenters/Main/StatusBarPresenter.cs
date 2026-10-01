@@ -145,7 +145,8 @@ namespace PKSim.Presentation.Presenters.Main
             .WithCaption($"{countMessage} {eventToHandle.Message}")
             .And.Visible(true);
 
-         setProgressBarVisibility();
+         if (_interactiveSimulationRunner.ActiveSimulationsCount > 0)
+            setProgressBarVisibility();
       }
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
