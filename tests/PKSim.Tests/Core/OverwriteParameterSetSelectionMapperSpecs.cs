@@ -3,6 +3,7 @@ using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -19,6 +20,8 @@ namespace PKSim.Core
       protected PKSimProject _project;
       protected Compound _compound;
       protected OverwriteParameterSet _overwriteParameterSet;
+      protected OverwriteParameterSet _overwriteParameterSetInSimulation;
+      protected SnapshotContextWithSimulation _snapshotContext;
 
       protected override Task Context()
       {
@@ -32,6 +35,14 @@ namespace PKSim.Core
 
          _project = new PKSimProject();
          _project.AddBuildingBlock(_compound);
+
+         _overwriteParameterSetInSimulation = new OverwriteParameterSet { Name = _overwriteParameterSet.Name };
+         var compoundInSimulation = new Compound { Name = _compound.Name };
+         compoundInSimulation.AddOverwriteParameterSet(_overwriteParameterSetInSimulation);
+         var simulation = new IndividualSimulation();
+         simulation.AddUsedBuildingBlock(new UsedBuildingBlock(_compound.Id, PKSimBuildingBlockType.Compound) { BuildingBlock = compoundInSimulation, Name = compoundInSimulation.Name });
+
+         _snapshotContext = new SnapshotContextWithSimulation(simulation, new SnapshotContext(_project, SnapshotVersions.Current));
 
          return _completed;
       }
@@ -57,7 +68,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
+         _result = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -67,9 +78,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_resolve_the_overwrite_parameter_set_from_the_compound()
+      public void should_resolve_the_overwrite_parameter_set_from_the_compound_used_in_the_simulation()
       {
-         _result.OverwriteParameterSet.ShouldBeEqualTo(_overwriteParameterSet);
+         _result.OverwriteParameterSet.ShouldBeEqualTo(_overwriteParameterSetInSimulation);
       }
    }
 
@@ -106,19 +117,28 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_snapshot_with_a_missing_compound_to_model : concern_for_OverwriteParameterSetSelectionMapper
+   public class When_mapping_a_snapshot_for_a_compound_not_used_in_the_simulation_to_model : concern_for_OverwriteParameterSetSelectionMapper
    {
       private ModelOverwriteParameterSetSelection _result;
+      private Compound _compoundNotUsedInSimulation;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compoundNotUsedInSimulation = new Compound { Name = "Ibuprofen" };
+         _compoundNotUsedInSimulation.AddOverwriteParameterSet(new OverwriteParameterSet { Name = _overwriteParameterSet.Name });
+         _project.AddBuildingBlock(_compoundNotUsedInSimulation);
+      }
 
       protected override async Task Because()
       {
          var snapshot = new SnapshotOverwriteParameterSetSelection
          {
-            CompoundName = "DoesNotExist",
+            CompoundName = _compoundNotUsedInSimulation.Name,
             OverwriteParameterSetName = _overwriteParameterSet.Name
          };
 
-         _result = await sut.MapToModel(snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
+         _result = await sut.MapToModel(snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -128,9 +148,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_log_an_error()
+      public void should_not_log_an_error()
       {
-         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustNotHaveHappened();
       }
    }
 
@@ -148,7 +168,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
+         _result = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -177,7 +197,7 @@ namespace PKSim.Core
             OverwriteParameterSetName = "DoesNotExist"
          };
 
-         _result = await sut.MapToModel(snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
+         _result = await sut.MapToModel(snapshot, _snapshotContext);
       }
 
       [Observation]
