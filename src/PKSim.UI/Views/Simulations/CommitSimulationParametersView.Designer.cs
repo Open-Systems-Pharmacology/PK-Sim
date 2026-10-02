@@ -80,11 +80,8 @@ namespace PKSim.UI.Views.Simulations
          //
          // gridViewParameters
          //
-         this.gridViewParameters.AllowsFiltering = false;
-         this.gridViewParameters.EnableColumnContextMenu = false;
          this.gridViewParameters.GridControl = this.gridParameters;
          this.gridViewParameters.Name = "gridViewParameters";
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = true;
          //
          // radioGroupCommitMode
          //

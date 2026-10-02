@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
@@ -38,6 +39,11 @@ namespace PKSim.UI.Views.Simulations
          gridViewParameters.ShowRowIndicator = false;
          gridViewParameters.OptionsDetail.EnableMasterViewMode = false;
          gridViewParameters.OptionsView.ShowGroupPanel = false;
+         gridViewParameters.AllowsFiltering = false;
+         gridViewParameters.EnableColumnContextMenu = false;
+         gridViewParameters.MultiSelect = false;
+         gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = true;
+         gridViewParameters.EditorShowMode = EditorShowMode.MouseDown;
       }
 
       public void AttachPresenter(ICommitSimulationParametersPresenter presenter)
