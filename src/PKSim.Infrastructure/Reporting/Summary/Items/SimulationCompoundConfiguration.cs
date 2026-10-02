@@ -6,20 +6,17 @@ namespace PKSim.Infrastructure.Reporting.Summary.Items
    {
       public string CompoundName { get; }
       public CompoundProperties CompoundProperties { get; }
-      public OverwriteParameterSet OverwriteParameterSet { get; }
 
-      public SimulationCompoundConfiguration(string compoundName, CompoundProperties compoundProperties, OverwriteParameterSet overwriteParameterSet)
+      public SimulationCompoundConfiguration(string compoundName, CompoundProperties compoundProperties)
       {
          CompoundName = compoundName;
          CompoundProperties = compoundProperties;
-         OverwriteParameterSet = overwriteParameterSet;
       }
 
-      public void Deconstruct(out string compoundName, out CompoundProperties compoundProperties, out OverwriteParameterSet overwriteParameterSet)
+      public void Deconstruct(out string compoundName, out CompoundProperties compoundProperties)
       {
          compoundName = CompoundName;
          compoundProperties = CompoundProperties;
-         overwriteParameterSet = OverwriteParameterSet;
       }
    }
 }
