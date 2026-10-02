@@ -34,8 +34,9 @@ namespace PKSim.Core.Model
       private string _overwriteParameterSetName;
 
       /// <summary>
-      ///    Name of the <see cref="OverwriteParameterSet" /> selected for the compound in the simulation. It is saved with the
-      ///    simulation properties so that it is known before the simulation is loaded.
+      ///    Name of the <see cref="OverwriteParameterSet" /> selected for the compound in the simulation. While the simulation
+      ///    is loaded it is taken from the selection; it is saved with the simulation properties and used until the simulation
+      ///    is loaded.
       /// </summary>
       public virtual string OverwriteParameterSetName
       {
