@@ -767,6 +767,7 @@ namespace PKSim.Core
       private OverwriteParameterSet _overwriteParameterSet;
       private OverwriteParameterSetSelection _snapshotOverwriteParameterSetSelection;
       private OverwriteParameterSet _selectedSetWhenModelWasCreated;
+      private IndividualSimulation _simulationCreatedFromSnapshot;
 
       protected override async Task Context()
       {
@@ -785,7 +786,7 @@ namespace PKSim.Core
                A<Model.OverwriteParameterSetSelection>.That.Matches(x => x.CompoundName == _compound.Name), _project))
             .Returns(_snapshotOverwriteParameterSetSelection);
 
-         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToModel(_snapshotOverwriteParameterSetSelection, A<SnapshotContext>._))
+         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToModel(_snapshotOverwriteParameterSetSelection, A<SnapshotContextWithSimulation>._))
             .Returns(new Model.OverwriteParameterSetSelection
             {
                CompoundName = _compound.Name,
@@ -794,26 +795,26 @@ namespace PKSim.Core
 
          _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
 
-         var individualSimulation = new IndividualSimulation
+         _simulationCreatedFromSnapshot = new IndividualSimulation
          {
             Properties = _simulationProperties,
             Settings = _settings,
             Model = _model
          };
 
-         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
+         _simulationCreatedFromSnapshot.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
             Name = _individual.Name,
             BuildingBlock = _individual
          });
 
-         individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
+         _simulationCreatedFromSnapshot.AddUsedBuildingBlock(new UsedBuildingBlock("CompTemplateId", PKSimBuildingBlockType.Compound)
          {
             Name = _compound.Name,
             BuildingBlock = _compound
          });
 
-         A.CallTo(() => _simulationFactory.CreateFrom(_individual, A<IReadOnlyList<Compound>>._, A<ModelProperties>._, null)).Returns(individualSimulation);
+         A.CallTo(() => _simulationFactory.CreateFrom(_individual, A<IReadOnlyList<Compound>>._, A<ModelProperties>._, null)).Returns(_simulationCreatedFromSnapshot);
 
          //the values of the selected set are applied to the simulation parameters while the model is created,
          //so the selection has to be known by then
@@ -830,6 +831,13 @@ namespace PKSim.Core
       public void should_have_selected_the_overwrite_parameter_set_before_creating_the_model()
       {
          _selectedSetWhenModelWasCreated.ShouldBeEqualTo(_overwriteParameterSet);
+      }
+
+      [Observation]
+      public void should_resolve_the_overwrite_parameter_set_selections_in_the_simulation_created_from_the_snapshot()
+      {
+         A.CallTo(() => _overwriteParameterSetSelectionMapper.MapToModel(_snapshotOverwriteParameterSetSelection,
+            A<SnapshotContextWithSimulation>.That.Matches(x => x.Simulation == _simulationCreatedFromSnapshot))).MustHaveHappened();
       }
    }
 }
