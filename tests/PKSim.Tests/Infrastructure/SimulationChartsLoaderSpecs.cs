@@ -7,7 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
-using PKSim.Presentation.Infrastructure.Services;
+using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
