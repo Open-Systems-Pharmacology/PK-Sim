@@ -41,7 +41,6 @@ namespace PKSim.CLI
             container.AddRegister(x => x.FromType<CLIRegister>());
 
             InfrastructureRegister.RegisterSerializationDependencies(container);
-            PKSim.Presentation.Infrastructure.PresentationSerializerInitializer.AddPresentationSerializers(container);
             InfrastructureRegister.LoadDefaultEntities(container);
          }
       }
