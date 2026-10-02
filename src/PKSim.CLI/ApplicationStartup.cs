@@ -56,7 +56,6 @@ namespace PKSim.CLI
          container.Register<IPKSimXmlSerializerRepository, CorePKSimXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
          container.Register<IObservedDataTask, CoreObservedDataTask>();
-         container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
       }
    }
 }

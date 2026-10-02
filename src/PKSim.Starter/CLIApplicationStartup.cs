@@ -83,6 +83,5 @@ public class CLIApplicationStartup : ApplicationStartup
       container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
       container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
       container.Register<IObservedDataTask, CoreObservedDataTask>();
-      container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
    }
 }

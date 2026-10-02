@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.Services;
@@ -217,6 +218,43 @@ namespace PKSim.R
       {
          base.Cleanup();
          DirectoryHelper.DeleteDirectory(_outputFolder, true);
+         DirectoryHelper.DeleteDirectory(_inputFolder, true);
+      }
+   }
+
+   public class When_exporting_a_project_with_simulation_charts_to_a_snapshot : concern_for_SnapshotTask
+   {
+      private readonly string _inputFolder = Path.Combine(Path.GetTempPath(), $"PKSim_SnapshotTask_Input_{Guid.NewGuid():N}");
+      private readonly string _projectFolder = Path.Combine(Path.GetTempPath(), $"PKSim_SnapshotTask_Project_{Guid.NewGuid():N}");
+      private readonly string _outputFolder = Path.Combine(Path.GetTempPath(), $"PKSim_SnapshotTask_Output_{Guid.NewGuid():N}");
+
+      protected override void Context()
+      {
+         base.Context();
+         DirectoryHelper.CreateDirectory(_inputFolder);
+         FileHelper.Copy(DomainHelperForSpecs.DataFilePathFor("Atazanavir-Model_1Sim_WithChart.json"), Path.Join(_inputFolder, "Atazanavir-Model_1Sim_WithChart.json"));
+         sut.RunSnapshot(_inputFolder, _projectFolder, exportMode: SnapshotExportMode.Project);
+      }
+
+      protected override void Because()
+      {
+         sut.RunSnapshot(_projectFolder, _outputFolder, exportMode: SnapshotExportMode.Snapshot);
+      }
+
+      [Observation]
+      public void should_export_the_charts_of_the_simulation()
+      {
+         using var snapshot = JsonDocument.Parse(File.ReadAllText(Path.Join(_outputFolder, "Atazanavir-Model_1Sim_WithChart.json")));
+         var simulation = snapshot.RootElement.GetProperty("Simulations")[0];
+         simulation.TryGetProperty("IndividualAnalyses", out var analyses).ShouldBeTrue();
+         analyses.EnumerateArray().Select(x => x.GetProperty("Name").GetString()).ShouldOnlyContain("Time Profile Analysis");
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         DirectoryHelper.DeleteDirectory(_outputFolder, true);
+         DirectoryHelper.DeleteDirectory(_projectFolder, true);
          DirectoryHelper.DeleteDirectory(_inputFolder, true);
       }
    }
