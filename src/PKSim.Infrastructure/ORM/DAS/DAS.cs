@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using Microsoft.Data.Sqlite;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Infrastructure.ORM.DAS
 {
@@ -508,9 +511,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          dataTable.Rows.Clear();
          try
          {
-            using var adapter = new DASSQLAdapter();
-            adapter.SelectCommand = cmd;
-            adapter.Fill(dataTable);
+            fillDataTable(dataTable, cmd);
          }
          catch (Exception ex)
          {
@@ -518,7 +519,42 @@ namespace PKSim.Infrastructure.ORM.DAS
          }
       }
 
-      private class DASSQLAdapter : DbDataAdapter;
+      /// <summary>
+      ///    Fills the table without a <see cref="DbDataAdapter" />. Microsoft.Data.Sqlite infers the type of a column
+      ///    without declared type (expressions, aggregates, sub-selects) from the first row only and reports byte[] when
+      ///    that value is NULL, so the adapter would create a byte[] column and fail on the first row holding a value.
+      ///    Columns are typed from their first non-null value instead.
+      /// </summary>
+      private static void fillDataTable(DASDataTable dataTable, DbCommand cmd)
+      {
+         using var reader = cmd.ExecuteReader();
+         var columnNames = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+         var rows = new List<object[]>();
+         while (reader.Read())
+         {
+            var values = new object[reader.FieldCount];
+            reader.GetValues(values);
+            rows.Add(values);
+         }
+
+         columnNames.Each((columnName, i) =>
+         {
+            if (dataTable.Columns.ContainsName(columnName))
+               return;
+
+            var firstValue = rows.Select(values => values[i]).FirstOrDefault(value => value != DBNull.Value);
+            dataTable.Columns.Add(new DASDataColumn { ColumnName = columnName, DataType = firstValue?.GetType() ?? typeof(object) });
+         });
+
+         rows.Each(values =>
+         {
+            var row = dataTable.NewRow();
+            columnNames.Each((columnName, i) => row[columnName] = values[i]);
+            dataTable.Rows.Add(row.DowncastTo<DASDataRow>());
+         });
+
+         dataTable.AcceptChanges();
+      }
 
       /// <summary>
       ///    This function queries the next value of the given AutoValueCreator object.
