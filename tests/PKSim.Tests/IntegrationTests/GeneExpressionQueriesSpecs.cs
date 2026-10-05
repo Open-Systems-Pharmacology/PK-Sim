@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Services;
@@ -15,13 +16,15 @@ namespace PKSim.IntegrationTests
    {
       private IApplicationSettings _applicationSettings;
       private IDisposable _databaseConnection;
+      private string _databasePath;
       protected IGeneExpressionsDatabasePathManager _databasePathManager;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _applicationSettings = IoC.Resolve<IApplicationSettings>();
-         _applicationSettings.AddSpeciesDatabaseMap(new SpeciesDatabaseMap { Species = CoreConstants.Species.CAT, DatabaseFullPath = GeneExpressionDatabaseForSpecs.CatDatabasePath });
+         _databasePath = GeneExpressionDatabaseForSpecs.ExtractCatDatabase();
+         _applicationSettings.AddSpeciesDatabaseMap(new SpeciesDatabaseMap { Species = CoreConstants.Species.CAT, DatabaseFullPath = _databasePath });
          _databasePathManager = IoC.Resolve<IGeneExpressionsDatabasePathManager>();
          _databaseConnection = _databasePathManager.ConnectToDatabaseFor(CoreConstants.Species.CAT);
       }
@@ -30,6 +33,7 @@ namespace PKSim.IntegrationTests
       {
          _applicationSettings.RemoveSpeciesDatabaseMap(CoreConstants.Species.CAT);
          _databaseConnection?.Dispose();
+         FileHelper.DeleteFile(_databasePath);
          base.GlobalCleanup();
       }
 
@@ -67,18 +71,19 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_searching_for_a_protein_whose_first_match_has_no_symbol : concern_for_GeneExpressionQueries
+   public class When_searching_for_a_protein_matching_genes_without_symbol : concern_for_GeneExpressionQueries
    {
       private DataTable _proteins;
 
       protected override void Because() => _proteins = sut.GetProteinsByName("%C1R%");
 
       [Observation]
-      public void should_start_with_a_gene_without_symbol_gene_id_or_full_name()
+      public void should_return_the_gene_without_symbol_gene_id_or_full_name()
       {
-         _proteins.Rows[0][ProteinColumns.COL_SYMBOL].ShouldBeEqualTo(DBNull.Value);
-         _proteins.Rows[0][ProteinColumns.COL_GENE_ID].ShouldBeEqualTo(DBNull.Value);
-         _proteins.Rows[0][ProteinColumns.COL_OFFICIAL_FULL_NAME].ShouldBeEqualTo(DBNull.Value);
+         var gene = _proteins.Rows.Cast<DataRow>().Single(row => Equals(row[ProteinColumns.COL_ID], 70L));
+         gene[ProteinColumns.COL_SYMBOL].ShouldBeEqualTo(DBNull.Value);
+         gene[ProteinColumns.COL_GENE_ID].ShouldBeEqualTo(DBNull.Value);
+         gene[ProteinColumns.COL_OFFICIAL_FULL_NAME].ShouldBeEqualTo(DBNull.Value);
       }
 
       [Observation]
@@ -146,6 +151,25 @@ namespace PKSim.IntegrationTests
          _expressionData.Columns[ExpressionDataColumns.COL_TISSUE].DataType.ShouldBeEqualTo(_containerTissueMapping.Columns[MappingColumns.COL_TISSUE].DataType);
    }
 
+   public class When_retrieving_the_expression_data_of_a_gene_that_is_not_in_the_database : concern_for_GeneExpressionQueries
+   {
+      private DataTable _expressionData;
+      private DataTable _containerTissueMapping;
+
+      protected override void Because()
+      {
+         _expressionData = sut.GetExpressionDataByGeneId(-1);
+         _containerTissueMapping = sut.GetContainerTissueMapping();
+      }
+
+      [Observation]
+      public void should_not_return_any_expression_data() => _expressionData.Rows.Count.ShouldBeEqualTo(0);
+
+      [Observation]
+      public void should_type_the_tissue_like_the_container_tissue_mapping() =>
+         _expressionData.Columns[ExpressionDataColumns.COL_TISSUE].DataType.ShouldBeEqualTo(_containerTissueMapping.Columns[MappingColumns.COL_TISSUE].DataType);
+   }
+
    public class When_retrieving_the_container_tissue_mapping_of_a_released_gene_expression_database : concern_for_GeneExpressionQueries
    {
       private DataTable _containerTissueMapping;
@@ -196,6 +220,6 @@ namespace PKSim.IntegrationTests
 
       [Observation]
       public void should_test_against_the_latest_release() =>
-         _latestRelease.ShouldBeEqualTo(GeneExpressionDatabaseForSpecs.RELEASE, $"Gene expression databases {_latestRelease} have been released. Update {nameof(GeneExpressionDatabaseForSpecs)}.{nameof(GeneExpressionDatabaseForSpecs.RELEASE)} and the expectations of the gene expression database specs.");
+         _latestRelease.ShouldBeEqualTo(GeneExpressionDatabaseForSpecs.RELEASE, $"Gene expression databases {_latestRelease} have been released. Replace the cat database in the test data with the new one, then update {nameof(GeneExpressionDatabaseForSpecs)} and the expectations of the gene expression database specs.");
    }
 }
