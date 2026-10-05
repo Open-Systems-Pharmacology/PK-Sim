@@ -523,12 +523,14 @@ namespace PKSim.Infrastructure.ORM.DAS
       ///    Fills the table without a <see cref="DbDataAdapter" />. Microsoft.Data.Sqlite infers the type of a column
       ///    without declared type (expressions, aggregates, sub-selects) from the first row only and reports byte[] when
       ///    that value is NULL, so the adapter would create a byte[] column and fail on the first row holding a value.
-      ///    Columns are typed from their first non-null value instead.
+      ///    Columns are typed from their first non-null value instead. A column without any value keeps the type the reader
+      ///    reports for its declaration, so that an empty result can still be related to tables of the same columns.
       /// </summary>
       private static void fillDataTable(DASDataTable dataTable, DbCommand cmd)
       {
          using var reader = cmd.ExecuteReader();
          var columnNames = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+         var declaredTypes = Enumerable.Range(0, reader.FieldCount).Select(reader.GetFieldType).ToList();
          var rows = new List<object[]>();
          while (reader.Read())
          {
@@ -543,7 +545,7 @@ namespace PKSim.Infrastructure.ORM.DAS
                return;
 
             var firstValue = rows.Select(values => values[i]).FirstOrDefault(value => value != DBNull.Value);
-            dataTable.Columns.Add(new DASDataColumn { ColumnName = columnName, DataType = firstValue?.GetType() ?? typeof(object) });
+            dataTable.Columns.Add(new DASDataColumn { ColumnName = columnName, DataType = firstValue?.GetType() ?? typeWithoutValue(declaredTypes[i]) });
          });
 
          rows.Each(values =>
@@ -555,6 +557,8 @@ namespace PKSim.Infrastructure.ORM.DAS
 
          dataTable.AcceptChanges();
       }
+
+      private static Type typeWithoutValue(Type declaredType) => declaredType == typeof(byte[]) ? typeof(object) : declaredType;
 
       /// <summary>
       ///    This function queries the next value of the given AutoValueCreator object.
