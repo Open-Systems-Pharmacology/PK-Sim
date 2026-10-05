@@ -37,8 +37,8 @@ namespace PKSim.Infrastructure
    {
       protected override void Because()
       {
-         var overwriteParameterSet = new OverwriteParameterSet {Name = "Renal impairment"};
-         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties, overwriteParameterSet)).DowncastTo<TablePart>();
+         _compoundProperties.OverwriteParameterSetName = "Renal impairment";
+         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties)).DowncastTo<TablePart>();
       }
 
       [Observation]
@@ -59,7 +59,7 @@ namespace PKSim.Infrastructure
    {
       protected override void Because()
       {
-         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties, null)).DowncastTo<TablePart>();
+         _result = sut.Report(new SimulationCompoundConfiguration("Midazolam", _compoundProperties)).DowncastTo<TablePart>();
       }
 
       [Observation]
