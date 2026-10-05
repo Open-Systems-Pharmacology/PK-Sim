@@ -1,6 +1,7 @@
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.Journal;
@@ -17,6 +18,7 @@ using PKSim.Presentation.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Infrastructure;
 using PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Presenters.Individuals;
@@ -108,6 +110,7 @@ namespace PKSim.Presentation
          container.Register<ISimulationOutputSelectionPresenter<PopulationSimulation>, PopulationSimulationSettingsPresenter>();
 
          container.Register<IFormatterFactory, FormatterFactory>();
+         container.Register<IDiffItemToDiffItemDTOMapper, PKSimDiffItemToDiffItemDTOMapper>();
 
          //Activates the journal page editor on first use
          container.Register<IJournalPageEditorActivator, JournalPageEditorActivator>(LifeStyle.Singleton);
