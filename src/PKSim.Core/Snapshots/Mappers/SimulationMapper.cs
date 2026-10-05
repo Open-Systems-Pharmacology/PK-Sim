@@ -124,7 +124,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task updateOverwriteParameterSetSelections(ModelSimulation simulation, OverwriteParameterSetSelection[] snapshotSelections, SnapshotContext snapshotContext)
       {
-         var selections = await _overwriteParameterSetSelectionMapper.MapToModels(snapshotSelections, snapshotContext);
+         var selections = await _overwriteParameterSetSelectionMapper.MapToModels(snapshotSelections, new SnapshotContextWithSimulation(simulation, snapshotContext));
          selections?.Each(selection => simulation.AddOverwriteParameterSetSelection(selection.CompoundName, selection.OverwriteParameterSet));
       }
 

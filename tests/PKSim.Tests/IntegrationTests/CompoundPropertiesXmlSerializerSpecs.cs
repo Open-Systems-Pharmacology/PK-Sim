@@ -19,6 +19,7 @@ namespace PKSim.IntegrationTests
          _compoundProperties.Processes.SpecificBindingSelection.AddPartialProcessSelection(new ProcessSelection { MoleculeName = "M3", ProcessName = "Proc3" });
 
          _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = "Alt", GroupName = "Group"});
+         _compoundProperties.OverwriteParameterSetName = "Renal impairment";
       }
 
       protected override void Because()
@@ -43,6 +44,12 @@ namespace PKSim.IntegrationTests
 
          _deserializedProperties.CompoundGroupSelections.ElementAt(0).AlternativeName.ShouldBeEqualTo("Alt");
          _deserializedProperties.CompoundGroupSelections.ElementAt(0).GroupName.ShouldBeEqualTo("Group");
+      }
+
+      [Observation]
+      public void should_restore_the_name_of_the_selected_overwrite_parameter_set()
+      {
+         _deserializedProperties.OverwriteParameterSetName.ShouldBeEqualTo("Renal impairment");
       }
 
       private ProcessSelection getFirstPartialProcessFor(ProcessSelectionGroup processSelectionGroup)

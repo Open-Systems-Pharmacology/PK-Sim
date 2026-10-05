@@ -3,15 +3,16 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using ModelCompound = PKSim.Core.Model.Compound;
+using ModelSimulation = PKSim.Core.Model.Simulation;
 using ModelOverwriteParameterSetSelection = PKSim.Core.Model.OverwriteParameterSetSelection;
 using SnapshotOverwriteParameterSetSelection = PKSim.Core.Snapshots.OverwriteParameterSetSelection;
 
 namespace PKSim.Core.Snapshots.Mappers;
 
-public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOverwriteParameterSetSelection, SnapshotOverwriteParameterSetSelection, SnapshotContext, PKSimProject>
+public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOverwriteParameterSetSelection, SnapshotOverwriteParameterSetSelection, SnapshotContextWithSimulation, PKSimProject>
 {
    private readonly IOSPSuiteLogger _logger;
 
@@ -29,15 +30,12 @@ public class OverwriteParameterSetSelectionMapper : SnapshotMapperBase<ModelOver
       });
    }
 
-   public override Task<ModelOverwriteParameterSetSelection> MapToModel(SnapshotOverwriteParameterSetSelection snapshot, SnapshotContext snapshotContext)
+   public override Task<ModelOverwriteParameterSetSelection> MapToModel(SnapshotOverwriteParameterSetSelection snapshot, SnapshotContextWithSimulation snapshotContext)
    {
-      var project = snapshotContext.PKSimProject();
-      var compound = project.BuildingBlockByName<ModelCompound>(snapshot.CompoundName);
+      var simulation = snapshotContext.Simulation.DowncastTo<ModelSimulation>();
+      var compound = simulation.Compounds.FindByName(snapshot.CompoundName);
       if (compound == null)
-      {
-         _logger.AddError(PKSimConstants.Error.SimulationTemplateBuildingBlockNotFoundInProject(snapshot.CompoundName, nameof(ModelCompound)));
          return Task.FromResult<ModelOverwriteParameterSetSelection>(null);
-      }
 
       if (string.IsNullOrEmpty(snapshot.OverwriteParameterSetName))
          return Task.FromResult(new ModelOverwriteParameterSetSelection { CompoundName = snapshot.CompoundName });
