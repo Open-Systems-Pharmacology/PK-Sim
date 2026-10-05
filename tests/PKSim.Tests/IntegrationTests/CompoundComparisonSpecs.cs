@@ -71,6 +71,28 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_comparing_two_compounds_defining_the_same_overwrite_parameter_set_with_different_extended_properties : concern_for_CompoundComparison
+   {
+      private OverwriteParameterSet _templateSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _templateSet = OverwriteParameterSetFor("OPS xyz", 2);
+         _templateSet.SetExtendedProperty("Author", "A");
+         var simulationSet = OverwriteParameterSetFor("OPS xyz", 2);
+         simulationSet.SetExtendedProperty("Author", "B");
+         _templateCompound.AddOverwriteParameterSet(_templateSet);
+         _simulationCompound.AddOverwriteParameterSet(simulationSet);
+      }
+
+      [Observation]
+      public void should_report_the_extended_property_difference_as_part_of_the_set()
+      {
+         _report.OfType<PropertyValueDiffItem>().Single(x => x.Object1.IsAnImplementationOf<IExtendedProperty>()).CommonAncestor.ShouldBeEqualTo(_templateSet);
+      }
+   }
+
    public class When_comparing_two_compounds_defining_the_same_overwrite_parameter_set : concern_for_CompoundComparison
    {
       protected override void Context()
