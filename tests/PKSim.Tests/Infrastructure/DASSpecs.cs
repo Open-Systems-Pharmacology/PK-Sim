@@ -71,6 +71,55 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_filling_a_data_table_from_a_query_that_returns_no_rows : concern_for_DAS
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ExecuteSQL("CREATE TABLE GENES (ID bigint, NAME text, VALUE double)");
+      }
+
+      protected override void Because()
+      {
+         _dataTable = sut.ExecuteQueryForDataTable("SELECT ID, NAME, VALUE, NAME || 'x' AS LABEL FROM GENES");
+      }
+
+      [Observation]
+      public void should_type_the_declared_columns_from_their_declaration()
+      {
+         _dataTable.Columns.ItemByName("ID").DataType.ShouldBeEqualTo(typeof(long));
+         _dataTable.Columns.ItemByName("NAME").DataType.ShouldBeEqualTo(typeof(string));
+         _dataTable.Columns.ItemByName("VALUE").DataType.ShouldBeEqualTo(typeof(double));
+      }
+
+      [Observation]
+      public void should_create_an_untyped_column_for_an_undeclared_column()
+      {
+         _dataTable.Columns.ItemByName("LABEL").DataType.ShouldBeEqualTo(typeof(object));
+      }
+   }
+
+   public class When_filling_a_data_table_from_a_query_whose_declared_column_is_null_in_every_row : concern_for_DAS
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ExecuteSQL("CREATE TABLE GENES (ID bigint, NAME text)");
+         sut.ExecuteSQL("INSERT INTO GENES VALUES (1, NULL)");
+      }
+
+      protected override void Because()
+      {
+         _dataTable = sut.ExecuteQueryForDataTable("SELECT ID, NAME FROM GENES");
+      }
+
+      [Observation]
+      public void should_type_the_column_from_its_declaration()
+      {
+         _dataTable.Columns.ItemByName("NAME").DataType.ShouldBeEqualTo(typeof(string));
+      }
+   }
+
    public class When_filling_a_data_table_whose_columns_are_already_defined : concern_for_DAS
    {
       protected override void Context()

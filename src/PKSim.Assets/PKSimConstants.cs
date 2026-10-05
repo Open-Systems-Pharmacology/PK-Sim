@@ -1519,6 +1519,7 @@ namespace PKSim.Assets
          public static readonly string ParameterAlternatives = "Parameter Alternatives";
          public static readonly string OverwriteParameterSetInCompound = "Overwrite parameter set in compound";
          public static readonly string OverwriteParameterSetSelection = "Overwrite Parameter Set";
+         public static string ObjectInOverwriteParameterSet(string overwriteParameterSetName, string objectName) => $"{overwriteParameterSetName}: {objectName}";
          public static readonly string PlasmaClearanceInCompound = "Plasma clearance process in compound";
          public static readonly string CreatingSimulation = "Creating...";
          public static readonly string Molecule = "Molecule";

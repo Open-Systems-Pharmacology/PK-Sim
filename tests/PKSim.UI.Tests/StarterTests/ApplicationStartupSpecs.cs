@@ -3,12 +3,14 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Journal;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
+using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
@@ -65,6 +67,22 @@ namespace PKSim.StarterTests
       public void the_presenter_should_be_resolved()
       {
          _presenter.ShouldBeAnInstanceOf<CreateExpressionProfilePresenter>();
+      }
+   }
+
+   public class When_resolving_the_diff_item_mapper : concern_for_ApplicationStartup
+   {
+      private IDiffItemToDiffItemDTOMapper _mapper;
+
+      protected override void Because()
+      {
+         _mapper = _container.Resolve<IDiffItemToDiffItemDTOMapper>();
+      }
+
+      [Observation]
+      public void the_pksim_mapper_should_be_resolved()
+      {
+         _mapper.ShouldBeAnInstanceOf<PKSimDiffItemToDiffItemDTOMapper>();
       }
    }
 
