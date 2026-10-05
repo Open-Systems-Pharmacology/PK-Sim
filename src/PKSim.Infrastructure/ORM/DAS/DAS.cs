@@ -519,6 +519,12 @@ namespace PKSim.Infrastructure.ORM.DAS
          }
       }
 
+      /// <summary>
+      ///    Fills the table without a <see cref="DbDataAdapter" />. Microsoft.Data.Sqlite infers the type of a column
+      ///    without declared type (expressions, aggregates, sub-selects) from the first row only and reports byte[] when
+      ///    that value is NULL, so the adapter would create a byte[] column and fail on the first row holding a value.
+      ///    Columns are typed from their first non-null value instead.
+      /// </summary>
       private static void fillDataTable(DASDataTable dataTable, DbCommand cmd)
       {
          using var reader = cmd.ExecuteReader();
