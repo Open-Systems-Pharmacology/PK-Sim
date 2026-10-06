@@ -17,7 +17,7 @@ namespace PKSim.Presentation.DTO.Mappers
    public interface IParameterToParameterDTOMapper : OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
    {
       IParameterDTO MapAsReadWriteFrom(IParameter parameter);
-      EffectiveMolWeightParameterDTO MapEffectiveMolWeightDTOFrom(IParameter effectiveMolWeight);
+      EffectiveMolWeightParameterDTO MapEffectiveMolWeightDTOFrom(IParameter effectiveMolWeight, IParameter molWeight);
    }
 
    public class ParameterToParameterDTOMapper : IParameterToParameterDTOMapper
@@ -66,9 +66,9 @@ namespace PKSim.Presentation.DTO.Mappers
          return parameterDTO;
       }
 
-      public EffectiveMolWeightParameterDTO MapEffectiveMolWeightDTOFrom(IParameter effectiveMolWeight)
+      public EffectiveMolWeightParameterDTO MapEffectiveMolWeightDTOFrom(IParameter effectiveMolWeight, IParameter molWeight)
       {
-         var molWeightParameterDTO = new EffectiveMolWeightParameterDTO(effectiveMolWeight);
+         var molWeightParameterDTO = new EffectiveMolWeightParameterDTO(effectiveMolWeight, molWeight);
          updateParameterDTOFromParameter(molWeightParameterDTO, effectiveMolWeight);
          return molWeightParameterDTO;
       }
