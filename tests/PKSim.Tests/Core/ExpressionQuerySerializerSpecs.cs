@@ -92,7 +92,7 @@ namespace PKSim.Core
       {
          _result.ProteinName.ShouldBeEqualTo(_query.ProteinName);
          _result.SelectedUnit.ShouldBeEqualTo(EST);
-         _result.LayoutSettings.ShouldBeEqualTo(_query.LayoutSettings);
+         XElement.Parse(_result.LayoutSettings).ToString().ShouldBeEqualTo(XElement.Parse(_query.LayoutSettings).ToString());
       }
 
       [Observation]
