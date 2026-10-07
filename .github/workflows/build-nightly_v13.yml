@@ -3,13 +3,43 @@ run-name: Nightly build ${{ github.run_number }}
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
 
 permissions:
   contents: read
   packages: write
 
 jobs:
+  get-latest-commit-timespan:
+    runs-on: ubuntu-latest
+    outputs:
+      LATEST_COMMIT_TIMESPAN: ${{ steps.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Get the previous commit timespan
+        id: get-latest-commit-timespan
+        shell: bash
+        run: |
+          commit=$(git log origin/develop -1 --format="%at")
+          echo $commit
+          now=$(date +%s)
+          echo $now
+          timespan=$[now - commit]
+          echo "Timespan: ${timespan}"
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_ENV
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_OUTPUT
+
   build-nightly:
+    needs: get-latest-commit-timespan
+    # the build-nightly job should be run in 2 cases:
+    # - either the workflow was triggered manually (on 'workflow_dispatch')
+    # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
     runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
     steps:
       - name: Checkout code
@@ -106,3 +136,20 @@ jobs:
 
       - name: Publish to GitHub registry
         run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup-job:
+    needs: build-nightly
+    # run only if the build-nightly job was skipped
+    if: always() && needs.build-nightly.result == 'skipped'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel workflow run
+        run: |
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel"
