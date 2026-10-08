@@ -7,7 +7,7 @@ using OSPSuite.UI.Views.Diagram;
 
 namespace PKSim.UI.Views.Simulations
 {
-   public partial class ReactionDiagramView : DevExpressDiagramView, IReactionDiagramView
+   public partial class ReactionDiagramView : DiagramView, IReactionDiagramView
    {
       public ReactionDiagramView(IImageListRetriever imageListRetriever)
          : base(imageListRetriever)
