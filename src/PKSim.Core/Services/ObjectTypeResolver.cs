@@ -108,6 +108,8 @@ namespace PKSim.Core.Services
          addToCache<ObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<ExpressionProfile>(PKSimConstants.ObjectTypes.ExpressionProfile);
          addToCache<DiseaseState>(PKSimConstants.ObjectTypes.DiseaseState);
+         addToCache<ParameterValue>(ObjectTypes.ParameterValue);
+         addToCache<IExtendedProperty>(PKSimConstants.UI.Metadata);
       }
 
       private void addToCache<T>(string display) => addToCache(typeof(T), display);

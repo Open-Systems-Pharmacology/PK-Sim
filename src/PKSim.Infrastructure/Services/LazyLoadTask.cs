@@ -55,7 +55,7 @@ namespace PKSim.Infrastructure.Services
       private static object gateFor(object objectToLoad) => _loadGates.GetValue(objectToLoad, x => new object());
 
       //the gate is held for the whole load, so nothing reached from here may wait on the UI thread
-      //(the closest edge is loadSimulations -> SimulationChartsLoader/ChartTask in PKSim.Presentation, clean today)
+      //(the closest edge is loadSimulations -> SimulationChartsLoader -> ChartTask, clean today)
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
       {
          //an object that is already loaded is the common case and must not pay for the gate

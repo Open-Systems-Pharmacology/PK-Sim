@@ -620,4 +620,50 @@ namespace PKSim.Core
          _simulation.ParameterChangeTracker.HasUncommittedChanges.ShouldBeTrue();
       }
    }
+
+   public class When_setting_the_value_of_a_parameter_applied_from_an_overwrite_parameter_set_that_is_no_longer_selected : concern_for_SetParameterValueCommand
+   {
+      private IndividualSimulation _simulation;
+      private IEntityPathResolver _entityPathResolver;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         var container = new Container();
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(_oldValue)
+            .WithId("Id")
+            .WithDimension(_dimension)
+            .WithName("Intestinal permeability (transcellular)");
+
+         //the overwrite parameter set application flagged the parameter as a compound parameter without linking it to the compound building block
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         _parameter.Origin.SimulationId = "SimId";
+         container.Add(_parameter);
+         _parameter.DisplayUnit = _unit;
+
+         var compound = new Compound { Name = "Aspirin", Id = "CompId" };
+         _simulation = new IndividualSimulation { Id = "SimId" };
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("TemplateCompId", PKSimBuildingBlockType.Compound) { BuildingBlock = compound });
+         _simulation.AddOverwriteParameterSetSelection("Aspirin", null);
+
+         A.CallTo(() => _executionContext.Get<Simulation>("SimId")).Returns(_simulation);
+         A.CallTo(() => _executionContext.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Aspirin|Intestinal permeability (transcellular)");
+
+         sut = new SetParameterValueCommand(_parameter, _valueToSet);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_executionContext);
+      }
+
+      [Observation]
+      public void should_track_the_parameter_path_in_the_simulation_change_tracker()
+      {
+         _simulation.ParameterChangeTracker.ChangedPaths.Select(x => x.PathAsString)
+            .ShouldOnlyContain("Aspirin|Intestinal permeability (transcellular)");
+      }
+   }
 }

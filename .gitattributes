@@ -18,6 +18,7 @@
 *.sqlite binary
 *.template binary
 *.templateDbSystem binary
+*.zip binary
 
 *.ascx text
 *.cd text

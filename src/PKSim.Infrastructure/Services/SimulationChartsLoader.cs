@@ -5,7 +5,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
 using PKSim.Infrastructure.Serialization.ORM.Queries;
 
-namespace PKSim.Presentation.Infrastructure.Services
+namespace PKSim.Infrastructure.Services
 {
    public class SimulationChartsLoader : ISimulationChartsLoader
    {

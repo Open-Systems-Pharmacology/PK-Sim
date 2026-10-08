@@ -31,6 +31,19 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual ProtocolProperties ProtocolProperties { get; set; }
 
+      private string _overwriteParameterSetName;
+
+      /// <summary>
+      ///    Name of the <see cref="OverwriteParameterSet" /> selected for the compound in the simulation. While the simulation
+      ///    is loaded it is taken from the selection; it is saved with the simulation properties and used until the simulation
+      ///    is loaded.
+      /// </summary>
+      public virtual string OverwriteParameterSetName
+      {
+         get => Simulation?.IsLoaded == true ? Simulation.OverwriteParameterSetSelections.SelectedSetFor(Compound.Name)?.Name : _overwriteParameterSetName;
+         set => _overwriteParameterSetName = value;
+      }
+
       public CompoundProperties()
       {
          _compoundGroupSelections = new List<CompoundGroupSelection>();
@@ -46,6 +59,7 @@ namespace PKSim.Core.Model
             CalculationMethodCache = CalculationMethodCache.Clone(),
             Processes = Processes.Clone(cloneManager),
             ProtocolProperties = ProtocolProperties.Clone(),
+            OverwriteParameterSetName = OverwriteParameterSetName,
 
             //do not clone: simply update reference that should be changed if required
             Compound = Compound

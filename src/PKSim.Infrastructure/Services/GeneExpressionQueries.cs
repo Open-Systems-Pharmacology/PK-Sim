@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Core;
@@ -19,15 +20,10 @@ namespace PKSim.Infrastructure.Services
       private const string QRY_SAMPLE_SOURCE_HINT = "QRY_SAMPLE_SOURCE_HINT";
       private const string QRY_UNIT_HINT = "QRY_UNIT_HINT";
       private const string QRY_NAME_TYPE_HINT = "QRY_NAME_TYPE_HINT";
-      private const string QRY_DATABASE_REC_PROPERTIES_BY_ID = "QRY_DATABASE_REC_PROPERTIES_BY_ID";
-      private const string QRY_DATABASE_REC_INFO_BY_ID = "QRY_DATABASE_REC_INFO_BY_ID";
 
       //Columns
 
       private const string QRY_CONTAINER_TISSUE_COLUMNS = "CONTAINER, TISSUE";
-      private const string QRY_DATABASE_REC_PROPERTIES_COLUMNS = "DATA_BASE, DATA_BASE_REC_ID, PROPERTY, PROPERTY_VALUE";
-
-      private const string QRY_DATABASE_REC_INFO_COLUMNS = "DATA_BASE, DATA_BASE_REC_ID, LAST_REFRESH_DATE, DB_URL";
       private const string QRY_GENDER_HINT_COLUMNS = "GENDER, INFORMATION";
       private const string QRY_TISSUE_HINT_COLUMNS = "TISSUE, INFORMATION";
       private const string QRY_HEALTH_STATE_HINT_COLUMNS = "HEALTH_STATE, INFORMATION";
@@ -230,8 +226,6 @@ namespace PKSim.Infrastructure.Services
       /// </summary>
       public string[] GetDataBaseRecProperties(string database, string rec_id)
       {
-         DASDataTable dt = null;
-         string[] ret;
          try
          {
             _databaseObject.AddParameter(P_DATABASE, database, DAS.ParameterModes.PARM_IN,
@@ -239,24 +233,17 @@ namespace PKSim.Infrastructure.Services
             _databaseObject.AddParameter(P_REC_ID, rec_id, DAS.ParameterModes.PARM_IN,
                DAS.ServerTypes.STRING);
 
-            dt = _databaseObject.CreateAndFillDataTable(
-               $"SELECT {QRY_DATABASE_REC_PROPERTIES_COLUMNS} FROM {QRY_DATABASE_REC_PROPERTIES_BY_ID} WHERE {P_DATABASE} = @{P_DATABASE} AND {P_REC_ID} = @{P_REC_ID}");
-            ret = new string[dt.Rows.Count()];
-            int i = 0;
-            foreach (DASDataRow dr in dt.Rows)
-            {
-               DASColumnValue property = new DASColumnValue(dr, dr.Table.Columns.ItemByName("PROPERTY"));
-               DASColumnValue propertyValue = new DASColumnValue(dr, dr.Table.Columns.ItemByName("PROPERTY_VALUE"));
-               ret[i++] += $"{property.GetValueAsString()}: {propertyValue.GetValueAsString()}";
-            }
+            var properties = executeStatementForDataTable($@"SELECT p.PROPERTY, p.PROPERTY_VALUE
+                  FROM TAB_EXPRESSION_DATA_RECORDS r INNER JOIN TAB_EXPRESSION_DATA_PROPERTIES p ON p.DATA_SOURCE_ID = r.DATA_SOURCE_ID
+                  WHERE r.DATA_BASE = @{P_DATABASE} AND r.DATA_BASE_REC_ID = @{P_REC_ID}");
+
+            return properties.Rows.Cast<DataRow>().Select(row => $"{row["PROPERTY"]}: {row["PROPERTY_VALUE"]}").ToArray();
          }
          finally
          {
             _databaseObject.RemoveParameter(P_DATABASE);
             _databaseObject.RemoveParameter(P_REC_ID);
          }
-
-         return (ret);
       }
 
       /// <summary>
@@ -264,8 +251,6 @@ namespace PKSim.Infrastructure.Services
       /// </summary>
       public string[] GetDataBaseRecInfos(string database, string rec_id)
       {
-         DASDataTable dt = null;
-         string[] ret;
          try
          {
             _databaseObject.AddParameter(P_DATABASE, database, DAS.ParameterModes.PARM_IN,
@@ -273,30 +258,20 @@ namespace PKSim.Infrastructure.Services
             _databaseObject.AddParameter(P_REC_ID, rec_id, DAS.ParameterModes.PARM_IN,
                DAS.ServerTypes.STRING);
 
-            dt = _databaseObject.CreateAndFillDataTable(
-               $"SELECT {QRY_DATABASE_REC_INFO_COLUMNS} FROM {QRY_DATABASE_REC_INFO_BY_ID} WHERE {P_DATABASE} = @{P_DATABASE} AND {P_REC_ID} = @{P_REC_ID}");
-            ret = new string[dt.Columns.Count() - 2];
+            var infos = executeStatementForDataTable($@"SELECT r.LAST_REFRESH_DATE AS LAST_REFRESH_DATE, b.URL AS DB_URL
+                  FROM TAB_EXPRESSION_DATA_RECORDS r LEFT JOIN TAB_EXPRESSION_DATA_BASES b ON b.DATA_BASE = r.DATA_BASE
+                     OR b.DATA_BASE IN (SELECT p.PROPERTY_VALUE FROM TAB_EXPRESSION_DATA_PROPERTIES p WHERE p.DATA_SOURCE_ID = r.DATA_SOURCE_ID AND p.PROPERTY = 'DATA_BASE')
+                  WHERE r.DATA_BASE = @{P_DATABASE} AND r.DATA_BASE_REC_ID = @{P_REC_ID}");
 
-            foreach (DASDataRow dr in dt.Rows)
-            {
-               for (int i = 2; i < dt.Columns.Count(); i++)
-               {
-                  var colval = new DASColumnValue(dr, dt.Columns.ItemByIndex(i));
-                  if (colval.DBNullValue) continue;
-                  if (colval.Value is DateTime)
-                     ret[i - 2] += $"{dt.Columns.ItemByIndex(i).ColumnName}: {colval.GetValueAsString("yyyy-MM-dd")}";
-                  else
-                     ret[i - 2] += $"{dt.Columns.ItemByIndex(i).ColumnName}: {colval.GetValueAsString()}";
-               }
-            }
+            return infos.Rows.Cast<DataRow>()
+               .SelectMany(row => infos.Columns.Cast<DataColumn>().Where(column => row[column] != DBNull.Value).Select(column => $"{column.ColumnName}: {row[column]}"))
+               .ToArray();
          }
          finally
          {
             _databaseObject.RemoveParameter(P_DATABASE);
             _databaseObject.RemoveParameter(P_REC_ID);
          }
-
-         return (ret);
       }
 
       /// <summary>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -55,11 +56,14 @@ namespace PKSim.Presentation.Presenters.Simulations
       private OverwriteParameterSet currentSelectionFor(Simulation simulation, Compound compound)
       {
          if (simulation.OverwriteParameterSetSelections.HasSelectionFor(compound.Name))
-            return simulation.OverwriteParameterSetSelections.SelectedSetFor(compound.Name) ?? _noOverwriteParameterSet;
+            return setOfCompoundNamedAs(compound, simulation.OverwriteParameterSetSelections.SelectedSetFor(compound.Name)) ?? _noOverwriteParameterSet;
 
          var defaultSet = compound.OverwriteParameterSets.FirstOrDefault(x => x.IsDefault);
          return defaultSet ?? _noOverwriteParameterSet;
       }
+
+      private static OverwriteParameterSet setOfCompoundNamedAs(Compound compound, OverwriteParameterSet selectedSet) =>
+         selectedSet == null ? null : compound.OverwriteParameterSets.FindByName(selectedSet.Name);
 
       private bool isNoSelection(OverwriteParameterSet overwriteParameterSet) =>
          overwriteParameterSet == null || ReferenceEquals(overwriteParameterSet, _noOverwriteParameterSet);

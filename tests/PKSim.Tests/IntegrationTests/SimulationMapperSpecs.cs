@@ -11,6 +11,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Infrastructure;
 using SnapshotSimulation = PKSim.Core.Snapshots.Simulation;
@@ -196,6 +197,21 @@ namespace PKSim.IntegrationTests
       {
          var allParameters = IoC.Resolve<IContainerTask>().CacheAllChildren<IParameter>(_mappedSimulation.Model.Root);
          allParameters[_overwrittenParameterPath].Value.ShouldBeEqualTo(_overwriteValue);
+      }
+
+      [Observation]
+      public void should_select_the_overwrite_parameter_set_of_the_compound_used_in_the_simulation()
+      {
+         var selectedSet = _mappedSimulation.OverwriteParameterSetSelections.SelectedSetFor(_compound.Name);
+         _mappedSimulation.Compounds.FindByName(_compound.Name).OverwriteParameterSets.ShouldContain(selectedSet);
+      }
+
+      [Observation]
+      public void should_keep_the_selected_overwrite_parameter_set_when_the_simulation_is_serialized()
+      {
+         var serializationManager = IoC.Resolve<ISerializationManager>();
+         var deserializedSimulation = serializationManager.Deserialize<IndividualSimulation>(serializationManager.Serialize(_mappedSimulation));
+         deserializedSimulation.OverwriteParameterSetSelections.SelectedSetFor(_compound.Name).Name.ShouldBeEqualTo("MySet");
       }
    }
 }
