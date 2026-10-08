@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFrameworks>net10.0-windows;net10.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <UseWindowsForms>True</UseWindowsForms>
+    <UseWindowsForms Condition="'$(TargetFramework)' == 'net10.0-windows'">True</UseWindowsForms>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -64,7 +64,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
-    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
