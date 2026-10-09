@@ -53,7 +53,6 @@ namespace PKSim.UI.BootStrapping
       {
          ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
-         updateGoDiagramKey();
          initializeSynchronizationContext();
 
          var container = InfrastructureRegister.Initialize();
@@ -96,12 +95,6 @@ namespace PKSim.UI.BootStrapping
                   .AddDebug()
                   .AddPresenter()
             );
-      }
-
-      private static void updateGoDiagramKey()
-      {
-         // This line is patched during creation of setup. Do not modify.
-         UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
       }
 
       private void initializeSynchronizationContext()

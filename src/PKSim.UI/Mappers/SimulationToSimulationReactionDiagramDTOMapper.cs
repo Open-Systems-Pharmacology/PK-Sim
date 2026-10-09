@@ -2,7 +2,7 @@
 using System.Linq;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.UI.Diagram.Managers;
+using OSPSuite.Presentation.Diagram;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

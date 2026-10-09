@@ -115,10 +115,6 @@ task :create_local_nuget_r do
 	build_dependency_manager
 end
 
-task :update_go_license, [:file_path, :license] do |t, args|
-	Utils.update_go_diagram_license args.file_path, args.license
-end
-
 task :postclean do |t, args| 
 	packages_dir =  src_dir_for("Debug")
 
