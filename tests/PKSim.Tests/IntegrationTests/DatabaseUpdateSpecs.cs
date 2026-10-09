@@ -166,6 +166,59 @@ namespace PKSim.IntegrationTests
          valueOriginRepository.All().Any(vo => string.Equals(vo.Description, "Literature study to be published")).ShouldBeFalse();
       }
 
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+      [Observation]
+      public void should_add_the_ces1_ontogeny()
+      {
+         var ces1Ontogenies = ontogenyValuesFor(CoreConstantsForSpecs.Molecule.CES1);
+
+         ces1Ontogenies.Length.ShouldBeEqualTo(174);
+         ces1Ontogenies.Each(x => x.GroupName.ShouldBeEqualTo(CoreConstantsForSpecs.Groups.ONTOGENY_LIVER_ALL));
+
+         //first and last supporting point as described in the ontogeny documentation
+         verifyOntogenyPoint(ces1Ontogenies[0], postmenstrualAge: 0.766598220396988, ontogenyFactor: 0.2, deviation: 2.09462914836927);
+         verifyOntogenyPoint(ces1Ontogenies[^1], postmenstrualAge: 98.6806430281202, ontogenyFactor: 1, deviation: 1.59788274750961);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+      [Observation]
+      public void should_add_the_p_gp_ontogeny()
+      {
+         var pgpOntogenies = ontogenyValuesFor(CoreConstantsForSpecs.Molecule.P_GP);
+
+         pgpOntogenies.Length.ShouldBeEqualTo(40);
+         pgpOntogenies.Each(x => x.GroupName.ShouldBeEqualTo(CoreConstantsForSpecs.Groups.ONTOGENY_LIVER_ALL));
+
+         //first and last supporting point as described in the ontogeny documentation
+         verifyOntogenyPoint(pgpOntogenies[0], postmenstrualAge: 0.1, ontogenyFactor: 0, deviation: 2.903);
+         verifyOntogenyPoint(pgpOntogenies[^1], postmenstrualAge: 100, ontogenyFactor: 1, deviation: 1.48);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+      [Observation]
+      public void should_make_the_new_ontogenies_selectable_for_human()
+      {
+         var ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
+         var allOntogenyNames = ontogenyRepository.AllFor(CoreConstants.Species.HUMAN).AllNames();
+
+         allOntogenyNames.ShouldContain(CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP);
+      }
+
+      private static void verifyOntogenyPoint(OntogenyMetaData ontogeny, double postmenstrualAge, double ontogenyFactor, double deviation)
+      {
+         ontogeny.PostmenstrualAge.ShouldBeEqualTo(postmenstrualAge, 1e-10);
+         ontogeny.OntogenyFactor.ShouldBeEqualTo(ontogenyFactor, 1e-10);
+         ontogeny.Deviation.ShouldBeEqualTo(deviation, 1e-10);
+      }
+
+      private static OntogenyMetaData[] ontogenyValuesFor(string moleculeName)
+      {
+         var ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
+         var ontogeny = new DatabaseOntogeny {Name = moleculeName, SpeciesName = CoreConstants.Species.HUMAN};
+
+         return ontogenyRepository.AllValuesFor(ontogeny).OrderBy(x => x.PostmenstrualAge).ToArray();
+      }
+
       //exemplary checks for some new parameters
       private static readonly string[] _newPBBMParameterNames =
       [

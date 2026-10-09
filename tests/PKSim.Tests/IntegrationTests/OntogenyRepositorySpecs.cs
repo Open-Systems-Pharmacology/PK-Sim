@@ -180,6 +180,68 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+   public class When_retrieving_the_ontogeny_factor_for_the_newly_added_ontogenies : concern_for_OntogenyRepository
+   {
+      private static OriginData originDataFor(double ageInYears) => new OriginData
+      {
+         Species = new Species {Name = CoreConstants.Species.HUMAN},
+         Age = new OriginDataParameter(ageInYears)
+      };
+
+      private Ontogeny ontogenyFor(string ontogenyName)
+      {
+         var ontogeny = sut.AllFor(CoreConstants.Species.HUMAN).FindByName(ontogenyName);
+         (ontogeny != null).ShouldBeTrue($"Ontogeny '{ontogenyName}' is not defined in the database");
+         return ontogeny;
+      }
+
+      [Observation]
+      public void should_use_the_same_ontogeny_in_the_liver_and_in_the_intestine()
+      {
+         //both ontogenies are defined for all tissues, so the GI value must not differ from the liver value
+         foreach (var ontogenyName in new[] {CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP})
+         {
+            var ontogeny = ontogenyFor(ontogenyName);
+            var originData = originDataFor(1);
+
+            var liverFactor = sut.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, originData);
+            var duodenumFactor = sut.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, originData);
+
+            //a pre-school child is not fully matured yet, so the factor must be below the adult value of 1
+            liverFactor.ShouldBeSmallerThan(1);
+            duodenumFactor.ShouldBeEqualTo(liverFactor, 1e-10, ontogenyName);
+         }
+      }
+
+      [Observation]
+      public void should_increase_monotonously_with_age()
+      {
+         foreach (var ontogenyName in new[] {CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP})
+         {
+            var allValues = sut.AllValuesFor(ontogenyFor(ontogenyName)).OrderBy(x => x.PostmenstrualAge).ToList();
+            allValues.Count.ShouldBeGreaterThan(0);
+
+            for (var i = 1; i < allValues.Count; i++)
+            {
+               allValues[i].OntogenyFactor.ShouldBeGreaterThanOrEqualTo(allValues[i - 1].OntogenyFactor);
+            }
+         }
+      }
+
+      [Observation]
+      public void should_return_a_defined_value_for_a_newborn_even_though_the_p_gp_ontogeny_starts_at_zero()
+      {
+         var pgp = ontogenyFor(CoreConstantsForSpecs.Molecule.P_GP);
+
+         //the first supporting point of the P-gp ontogeny has an ontogeny factor of 0, which has no defined percentile
+         var ontogenyFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataFor(0), new RandomGenerator());
+
+         double.IsNaN(ontogenyFactor).ShouldBeFalse();
+         ontogenyFactor.ShouldBeGreaterThanOrEqualTo(0);
+      }
+   }
+
    public class When_retrieving_all_ontogeny_factors_for_a_protein_strict_bigger_than_a_given_PMA_using_a_random_factor : concern_for_OntogenyRepository
    {
       private readonly RandomGenerator _randomGenerator = new RandomGenerator();

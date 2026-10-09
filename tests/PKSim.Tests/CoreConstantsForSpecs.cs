@@ -39,6 +39,17 @@ namespace PKSim
          public static readonly string LIVERMICROSOMERES = "LiverMicrosomeRes";
       }
 
+      public static class Molecule
+      {
+         public const string CES1 = "CES1";
+         public const string P_GP = "P-gp";
+      }
+
+      public static class Groups
+      {
+         public const string ONTOGENY_LIVER_ALL = "ONTOGENY_LIVER_ALL";
+      }
+
       public static class Events
       {
          public const string URINARY_BLADDER_EMPTYING = "Urinary bladder emptying";
