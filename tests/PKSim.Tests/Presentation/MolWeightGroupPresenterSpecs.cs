@@ -7,6 +7,8 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -151,6 +153,76 @@ namespace PKSim.Presentation
       public void should_update_the_halogens_to_be_displayed_according_to_the_value_defined_in_the_alternative()
       {
          A.CallTo(() => _molWeightsHalogenPresenters.EditHalogens(A<IReadOnlyList<IParameter>>.Ignored)).MustHaveHappened();
+      }
+   }
+
+   public class When_a_halogen_value_is_changed_outside_of_the_mol_weight_group_presenter : concern_for_MolWeightGroupPresenter
+   {
+      private IParameter _halogenParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _halogenParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.F).WithGroup(CoreConstants.Groups.COMPOUND_MW);
+         sut.EditCompoundParameters(new[] { _halogenParameter });
+      }
+
+      protected override void Because()
+      {
+         _halogenParameter.Value = 2;
+      }
+
+      [Observation]
+      public void should_refresh_the_view_so_that_the_parameters_calculated_from_the_halogens_are_updated()
+      {
+         A.CallTo(() => _view.RefreshData()).MustHaveHappened();
+      }
+   }
+
+   public class When_the_mol_weight_display_unit_is_changed_outside_of_the_mol_weight_group_presenter : concern_for_MolWeightGroupPresenter
+   {
+      private IParameter _compoundMolWeightParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compoundMolWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.MOL_WEIGHT).WithGroup(CoreConstants.Groups.COMPOUND_MW);
+         sut.EditCompoundParameters(new[] { _compoundMolWeightParameter });
+      }
+
+      protected override void Because()
+      {
+         _compoundMolWeightParameter.DisplayUnit = _compoundMolWeightParameter.Dimension.Unit("cm");
+      }
+
+      [Observation]
+      public void should_refresh_the_view_so_that_the_effective_mol_weight_is_displayed_in_the_new_unit()
+      {
+         A.CallTo(() => _view.RefreshData()).MustHaveHappened();
+      }
+   }
+
+   public class When_a_halogen_value_is_changed_after_the_mol_weight_group_presenter_was_released : concern_for_MolWeightGroupPresenter
+   {
+      private IParameter _halogenParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _halogenParameter = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(Constants.Parameters.F).WithGroup(CoreConstants.Groups.COMPOUND_MW);
+         sut.EditCompoundParameters(new[] { _halogenParameter });
+         sut.ReleaseFrom(A.Fake<IEventPublisher>());
+      }
+
+      protected override void Because()
+      {
+         _halogenParameter.Value = 2;
+      }
+
+      [Observation]
+      public void should_not_refresh_the_view()
+      {
+         A.CallTo(() => _view.RefreshData()).MustNotHaveHappened();
       }
    }
 

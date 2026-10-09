@@ -136,6 +136,50 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_showing_commit_dialog_creating_a_new_set_from_a_simulation_using_a_set : concern_for_CommitSimulationParametersPresenter
+   {
+      private CompoundCommitInfo _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var dto = new CompoundCommitDTO
+         {
+            CompoundName = "Aspirin",
+            Compound = _simulationCompound,
+            CreateNew = true,
+            NewSetName = "Set",
+            SetSelectedInSimulation = new OverwriteParameterSet { Name = "Existing" },
+            Parameters = new List<ParameterCommitDTO>
+            {
+               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 },
+               new() { Path = "Organism|Aspirin|Permeability", Value = 7.0, IsRemoval = true },
+               new() { Path = "Organism|Aspirin|Solubility", Value = 1.0, IsUnchanged = true }
+            }
+         };
+
+         A.CallTo(() => _mapper.MapFrom(_simulation, _compound)).Returns(dto);
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ShowCommitDialog(_simulation, _compound);
+      }
+
+      [Observation]
+      public void should_commit_the_changed_parameter_and_the_untouched_entry_of_the_selected_set()
+      {
+         _result.ParameterPaths.ShouldOnlyContain("Organism|Aspirin|Lipophilicity", "Organism|Aspirin|Solubility");
+      }
+
+      [Observation]
+      public void should_leave_the_reset_parameter_out_of_the_new_set()
+      {
+         _result.ParameterPathsToRemove.ShouldOnlyContain("Organism|Aspirin|Permeability");
+      }
+   }
+
    public class When_showing_commit_dialog_with_deselected_parameter : concern_for_CommitSimulationParametersPresenter
    {
       private CompoundCommitInfo _result;
@@ -188,7 +232,7 @@ namespace PKSim.Presentation
             CompoundName = "Aspirin",
             Compound = _simulationCompound,
             CreateNew = false,
-            SelectedExistingSet = _existingSet,
+            SetSelectedInSimulation = _existingSet,
             Parameters = new List<ParameterCommitDTO>
             {
                new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true }
@@ -225,7 +269,6 @@ namespace PKSim.Presentation
             CompoundName = "Aspirin",
             Compound = _simulationCompound,
             CreateNew = false,
-            SelectedExistingSet = existingSet,
             SetSelectedInSimulation = existingSet,
             Parameters = new List<ParameterCommitDTO>
             {

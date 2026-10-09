@@ -36,6 +36,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _screenBinder = new ScreenBinder<IPopulationAnalysisObservedDataSettingsPresenter>();
          _gridViewBinder = new GridViewBinder<ObservedDataCurveOptionsDTO>(gridView);
          gridView.AllowsFiltering = false;
+         gridView.MultiSelect = false;
+         gridView.EditorShowMode = EditorShowMode.MouseDown;
          _lineStyleRepository = new UxRepositoryItemLineStyles(gridView);
          _symbolsRepository = new UxRepositoryItemSymbols(gridView);
          _colorRepository = new UxRepositoryItemColorPickEditWithHistory(gridView);

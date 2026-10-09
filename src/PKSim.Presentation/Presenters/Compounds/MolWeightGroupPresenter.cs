@@ -1,10 +1,12 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -51,7 +53,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       private readonly IParameterTask _parameterTask;
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       private MolWeightDTO _molWeightDTO;
-      private List<IParameter> _molWeightParameters;
+      private List<IParameter> _molWeightParameters = new List<IParameter>();
       private IReadOnlyList<IParameter> _halogenParameters;
       private IReadOnlyList<IParameter> _editableParameters;
 
@@ -94,7 +96,9 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void EditCompoundParameters(IEnumerable<IParameter> compoundParameters)
       {
+         unsubscribeFromMolWeightParameters();
          _molWeightParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_MW)).ToList();
+         _molWeightParameters.Each(x => x.PropertyChanged += molWeightParameterChanged);
          _halogenParameters = _molWeightParameters.Where(x => x.NameIsOneOf(CoreConstants.Parameters.Halogens)).ToList();
          _molWeightDTO = _molWeightDTOMapper.MapFrom(_molWeightParameters);
 
@@ -109,10 +113,14 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public bool IsMolWeightEff(IParameterDTO parameter) => Equals(parameter, _molWeightDTO.MolWeightEffParameter);
 
-      protected override void OnStatusChanged(object sender, EventArgs e)
+      private void molWeightParameterChanged(object sender, PropertyChangedEventArgs e) => _view.RefreshData();
+
+      private void unsubscribeFromMolWeightParameters() => _molWeightParameters.Each(x => x.PropertyChanged -= molWeightParameterChanged);
+
+      public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
-         base.OnStatusChanged(sender, e);
-         _view.RefreshData();
+         base.ReleaseFrom(eventPublisher);
+         unsubscribeFromMolWeightParameters();
       }
 
       public void SetParameterValue(IParameterDTO parameterDTO, double valueInGuiUnit)

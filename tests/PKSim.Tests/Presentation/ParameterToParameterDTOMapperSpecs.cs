@@ -51,6 +51,7 @@ namespace PKSim.Presentation
    {
       private IParameterDTO _result;
       private IParameter _effectiveMolWeightParameter;
+      private IParameter _molWeightParameter;
       private RepresentationInfo _repInfoParameter;
       private FormulaType _formulaType;
       private RepresentationInfo _path0;
@@ -61,6 +62,8 @@ namespace PKSim.Presentation
          base.Context();
 
          _effectiveMolWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(100);
+         _molWeightParameter = DomainHelperForSpecs.ConstantParameterWithValue(110);
+         _molWeightParameter.DisplayUnit = _molWeightParameter.Dimension.Unit("cm");
 
          _formulaType = FormulaType.Rate;
          A.CallTo(() => _formulaTypeMapper.MapFrom(_effectiveMolWeightParameter.Formula)).Returns(_formulaType);
@@ -83,7 +86,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _result = sut.MapEffectiveMolWeightDTOFrom(_effectiveMolWeightParameter);
+         _result = sut.MapEffectiveMolWeightDTOFrom(_effectiveMolWeightParameter, _molWeightParameter);
       }
 
       [Observation]
@@ -124,15 +127,15 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_set_the_display_unit_to_the_display_unit_of_the_parameter()
+      public void should_set_the_display_unit_to_the_display_unit_of_the_molecular_weight_parameter()
       {
-         _result.DisplayUnit.ShouldBeEqualTo(_effectiveMolWeightParameter.DisplayUnit);
+         _result.DisplayUnit.ShouldBeEqualTo(_molWeightParameter.DisplayUnit);
       }
 
       [Observation]
-      public void the_value_returned_by_the_dto_should_be_the_value_in_the_display_unit()
+      public void the_value_returned_by_the_dto_should_be_the_value_in_the_display_unit_of_the_molecular_weight_parameter()
       {
-         _result.Value.ShouldBeEqualTo(_effectiveMolWeightParameter.ValueInDisplayUnit);
+         _result.Value.ShouldBeEqualTo(_effectiveMolWeightParameter.ConvertToUnit(_molWeightParameter.DisplayUnit));
       }
 
       [Observation]

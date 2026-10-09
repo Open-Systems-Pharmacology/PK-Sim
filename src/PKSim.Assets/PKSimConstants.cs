@@ -102,6 +102,10 @@ namespace PKSim.Assets
          public static readonly string UpdateBuildingBlockInfoCommandDescription = "Building block info updated in simulation.";
          public static readonly string SetUsedBuildingBlockAlteredFlagCommandDescription = "Set altered flag for {0} '{1}' to {2} in simulation '{3}'";
          public static readonly string SetUsedBuildingBlockVersionCommandDescription = "Set version for {0} '{1}' to {2} in simulation '{3}'";
+
+         public static string SynchronizeUsedBuildingBlockVersionCommandDescription(string buildingBlockType, string buildingBlockName, string simulationName) =>
+            $"Synchronize version of {buildingBlockType} '{buildingBlockName}' in simulation '{simulationName}' with its template";
+
          public static readonly string PerformScalingDescription = "Scaling individual parameters";
          public static readonly string CreateIndividualDescripton = "Create and add individual to project";
          public static readonly string CreateBuildingBlockDescripton = "Create and add {0} to project";
@@ -312,6 +316,9 @@ namespace PKSim.Assets
          public static string SetSimulationParameterTracking(int parameterCount, bool tracked, string simulationName) =>
             $"Mark {parameterCount} parameter(s) as {(tracked ? "uncommitted" : "committed")} in {ObjectTypes.Simulation.ToLower()} '{simulationName}'";
 
+         public static string SelectOverwriteParameterSetForCompoundInSimulation(string overwriteParameterSetName, string compoundName, string simulationName) =>
+            $"Select {ObjectTypes.OverwriteParameterSet.ToLower()} '{overwriteParameterSetName}' for {ObjectTypes.Compound.ToLower()} '{compoundName}' in {ObjectTypes.Simulation.ToLower()} '{simulationName}'";
+
          public static string AddEntityToContainer(string entityType, string entityName, string containerType, string containerName)
          {
             var lowerEntityType = string.IsNullOrEmpty(entityType) ? entityType : entityType.ToLower();
@@ -322,9 +329,9 @@ namespace PKSim.Assets
 
          public static readonly string CommitSimulationParametersDescription = "Commit simulation parameters to compound";
          public static readonly string CreateNewParameterSet = "Create New Parameter Set";
-         public static readonly string UpdateExistingParameterSet = "Update Existing Parameter Set";
+         public static readonly string UpdateParameterSet = "Update Parameter Set";
+         public static string UpdateParameterSetNamed(string overwriteParameterSetName) => $"Update Parameter Set '{overwriteParameterSetName}'";
          public static readonly string CommitOptions = "Commit Options";
-         public static readonly string ParameterSet = "Parameter Set";
 
          public static string RemoveEntityFromContainer(string entityType, string entityName, string containerType, string containerName)
          {
@@ -458,7 +465,8 @@ namespace PKSim.Assets
          public static string DistributionNotFound(string entityName, string data) => $"Cannot create distribution for '{entityName}' with the following data:\n{data}";
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
-         public static readonly string ResetParametersCanOnlyBeRemovedFromSelectedParameterSet = $"Reset parameters can only be removed from the {ObjectTypes.OverwriteParameterSet.ToLower()} selected for the {ObjectTypes.Simulation.ToLower()}.";
+         public static string NoOverwriteParameterSetSelectedForCompoundInSimulation(string compoundName) =>
+            $"No {ObjectTypes.OverwriteParameterSet.ToLower()} is selected for {ObjectTypes.Compound.ToLower()} '{compoundName}' in the {ObjectTypes.Simulation.ToLower()}. Only a new {ObjectTypes.OverwriteParameterSet.ToLower()} can be created.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
          public const string SpeciesIsRequired = "Species is required.";
@@ -1511,6 +1519,7 @@ namespace PKSim.Assets
          public static readonly string ParameterAlternatives = "Parameter Alternatives";
          public static readonly string OverwriteParameterSetInCompound = "Overwrite parameter set in compound";
          public static readonly string OverwriteParameterSetSelection = "Overwrite Parameter Set";
+         public static string ObjectInOverwriteParameterSet(string overwriteParameterSetName, string objectName) => $"{overwriteParameterSetName}: {objectName}";
          public static readonly string PlasmaClearanceInCompound = "Plasma clearance process in compound";
          public static readonly string CreatingSimulation = "Creating...";
          public static readonly string Molecule = "Molecule";
@@ -1753,7 +1762,6 @@ namespace PKSim.Assets
          public static readonly string DissociationConstants = "Dissociation Constants";
          public static readonly string AdvancedParameterTabCaption = "Advanced Parameters";
          public static readonly string OverwriteParameterSetsTabCaption = "Overwrite Parameter Sets";
-         public static string NoOverwriteParameterSetToUpdateIn(string compoundName) => $"{ObjectTypes.Compound} '{compoundName}' does not define any {ObjectTypes.OverwriteParameterSet.ToLower()} that could be updated.";
          public static readonly string Change = "Change";
          public static readonly string UpdateValueInParameterSet = "Update value";
          public static readonly string RemoveFromParameterSet = "Remove from set";

@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using PKSim.Presentation.DTO;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -34,9 +35,6 @@ namespace PKSim.Presentation.Presenters
          _view.ApplicationIcon = ApplicationIcons.Description;
       }
 
-      protected override ObjectBaseDTO CreateDTOFor(IObjectBase entity)
-      {
-         return new ObjectBaseDTO {DescriptionRequired = true, Name = entity.Name, Description = entity.Description};
-      }
+      protected override ObjectBaseDTO CreateDTOFor(IObjectBase entity) => new EditDescriptionDTO {Name = entity.Name, Description = entity.Description};
    }
 }

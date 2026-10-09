@@ -11,6 +11,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.CalculationMethodCache);
          MapReference(x => x.Compound);
          MapEnumerable(x => x.CompoundGroupSelections, x => x.AddCompoundGroupSelection);
+         Map(x => x.OverwriteParameterSetName);
       }
    }
 }

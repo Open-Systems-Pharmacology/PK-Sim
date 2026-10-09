@@ -48,7 +48,6 @@ namespace PKSim.Presentation.DTO.Mappers
             Compound = templateCompound,
             AvailableExistingSets = templateCompound.OverwriteParameterSets,
             CreateNew = selectedSetInTemplate == null,
-            SelectedExistingSet = selectedSetInTemplate,
             SetSelectedInSimulation = selectedSetInTemplate,
             NewSetName = templateCompound.Name,
             Parameters = parameters
@@ -57,7 +56,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       private ParameterCommitDTO mapParameter(Simulation simulation, string compoundName, string path, IParameter parameter)
       {
-         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter is { IsDefault: true };
+         var isRemoval = simulation.IsOverwrittenParameterPath(compoundName, path) && parameter != null && !parameter.ValueDiffersFromDefault();
          return _parameterCommitDTOMapper.MapFrom(path, parameter, isRemoval, isUnchanged: false);
       }
 
@@ -82,9 +81,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       /// <summary>
       ///    Returns the set of <paramref name="templateCompound" /> selected for the compound in the simulation, matched by
-      ///    name. The selection holds the set of the compound in the simulation when it was made in the simulation
-      ///    configuration, and the set of the template compound when it was restored from a snapshot, so the two cannot be
-      ///    compared by reference.
+      ///    name. The selection holds the set of the compound in the simulation, so the two cannot be compared by reference.
       /// </summary>
       private OverwriteParameterSet selectedSetInTemplateFor(Simulation simulation, Compound templateCompound)
       {

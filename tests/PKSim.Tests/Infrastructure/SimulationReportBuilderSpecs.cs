@@ -29,6 +29,7 @@ namespace PKSim.Infrastructure
          _simulation.Properties.AddCompoundProperties(new CompoundProperties {Compound = _midazolam});
          _simulation.Properties.AddCompoundProperties(new CompoundProperties {Compound = _aspirin});
          _simulation.AddOverwriteParameterSetSelection(_midazolam.Name, _overwriteParameterSet);
+         _simulation.IsLoaded = true;
          sut = new SimulationReportBuilder(_reportGenerator);
       }
    }
@@ -44,14 +45,14 @@ namespace PKSim.Infrastructure
       public void should_report_the_selected_overwrite_parameter_set_for_that_compound()
       {
          A.CallTo(() => _reportGenerator.ReportFor(A<SimulationCompoundConfiguration>.That.Matches(x =>
-            x.CompoundName == _midazolam.Name && x.OverwriteParameterSet == _overwriteParameterSet))).MustHaveHappened();
+            x.CompoundName == _midazolam.Name && x.CompoundProperties.OverwriteParameterSetName == _overwriteParameterSet.Name))).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_report_an_overwrite_parameter_set_for_the_other_compound()
       {
          A.CallTo(() => _reportGenerator.ReportFor(A<SimulationCompoundConfiguration>.That.Matches(x =>
-            x.CompoundName == _aspirin.Name && x.OverwriteParameterSet == null))).MustHaveHappened();
+            x.CompoundName == _aspirin.Name && x.CompoundProperties.OverwriteParameterSetName == null))).MustHaveHappened();
       }
    }
 }

@@ -1,7 +1,6 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Core;
-using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization;
@@ -39,7 +38,6 @@ namespace PKSim.R
          container.Register<IPKSimXmlSerializerRepository, CorePKSimXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IWorkspacePersistor, CoreWorkspacePersistor>(LifeStyle.Singleton);
          container.Register<IObservedDataTask, CoreObservedDataTask>();
-         container.Register<ISimulationChartsLoader, CLISimulationChartsLoader>();
       }
    }
 }

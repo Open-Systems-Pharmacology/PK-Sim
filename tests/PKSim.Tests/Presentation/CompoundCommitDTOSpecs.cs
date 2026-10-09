@@ -88,31 +88,71 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_validating_a_compound_commit_dto_in_update_existing_mode : concern_for_CompoundCommitDTO
+   public class When_validating_a_compound_commit_dto_updating_while_no_set_is_selected_in_the_simulation : concern_for_CompoundCommitDTO
    {
       protected override void Context()
       {
          base.Context();
          sut.CreateNew = false;
-         sut.SelectedExistingSet = sut.AvailableExistingSets[0];
-         sut.NewSetName = "";
       }
 
+      [Observation]
+      public void should_not_be_valid()
+      {
+         sut.IsValid().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_offer_to_update_a_set()
+      {
+         sut.CanUpdateSetSelectedInSimulation.ShouldBeFalse();
+      }
+   }
+
+   public abstract class concern_for_CompoundCommitDTO_updating_the_set_selected_in_the_simulation : ContextSpecification<CompoundCommitDTO>
+   {
+      protected OverwriteParameterSet _setSelectedInSimulation;
+
+      protected override void Context()
+      {
+         _setSelectedInSimulation = new OverwriteParameterSet { Name = "SelectedSet" };
+         sut = new CompoundCommitDTO
+         {
+            CompoundName = "Aspirin",
+            Compound = new Compound { Name = "Aspirin" },
+            AvailableExistingSets = new List<OverwriteParameterSet> { _setSelectedInSimulation },
+            SetSelectedInSimulation = _setSelectedInSimulation,
+            CreateNew = false,
+            NewSetName = "",
+            Parameters = new List<ParameterCommitDTO>
+            {
+               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5 }
+            }
+         };
+      }
+   }
+
+   public class When_validating_a_compound_commit_dto_updating_the_set_selected_in_the_simulation : concern_for_CompoundCommitDTO_updating_the_set_selected_in_the_simulation
+   {
       [Observation]
       public void should_be_valid_even_with_empty_name()
       {
          sut.IsValid().ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_offer_to_update_the_selected_set()
+      {
+         sut.CanUpdateSetSelectedInSimulation.ShouldBeTrue();
+      }
    }
 
-   public class When_validating_a_compound_commit_dto_in_update_mode_with_duplicate_name : concern_for_CompoundCommitDTO
+   public class When_validating_a_compound_commit_dto_updating_the_selected_set_with_a_name_used_by_another_set : concern_for_CompoundCommitDTO_updating_the_set_selected_in_the_simulation
    {
       protected override void Context()
       {
          base.Context();
-         sut.CreateNew = false;
-         sut.SelectedExistingSet = sut.AvailableExistingSets[0];
-         sut.NewSetName = "ExistingSet1";
+         sut.NewSetName = "SelectedSet";
       }
 
       [Observation]
@@ -149,112 +189,47 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_show_the_change_and_the_reset_when_updating_an_existing_set()
+      public void should_show_the_change_and_the_reset_when_updating_the_selected_set()
       {
          sut.CreateNew = false;
          sut.VisibleParameters.Select(x => x.Path).ShouldOnlyContain("Changed", "Reset");
       }
 
       [Observation]
-      public void should_not_report_a_selected_removal_when_creating_a_new_set()
+      public void should_offer_to_create_a_new_set()
       {
-         sut.CreateNew = true;
-         sut.HasSelectedRemovals.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_report_a_selected_removal_when_updating_an_existing_set()
-      {
-         sut.CreateNew = false;
-         sut.HasSelectedRemovals.ShouldBeTrue();
+         sut.CanCreateNewSet.ShouldBeTrue();
       }
    }
 
-   public abstract class concern_for_CompoundCommitDTO_with_a_selected_removal : ContextSpecification<CompoundCommitDTO>
+   public class When_listing_the_parameters_of_a_compound_commit_dto_holding_only_reset_parameters : ContextSpecification<CompoundCommitDTO>
    {
-      protected OverwriteParameterSet _setSelectedInSimulation;
-      protected OverwriteParameterSet _otherSet;
-
       protected override void Context()
       {
-         _setSelectedInSimulation = new OverwriteParameterSet { Name = "SelectedSet" };
-         _otherSet = new OverwriteParameterSet { Name = "OtherSet" };
          sut = new CompoundCommitDTO
          {
             CompoundName = "Aspirin",
             Compound = new Compound { Name = "Aspirin" },
-            AvailableExistingSets = new List<OverwriteParameterSet> { _setSelectedInSimulation, _otherSet },
-            SetSelectedInSimulation = _setSelectedInSimulation,
+            AvailableExistingSets = new List<OverwriteParameterSet>(),
             NewSetName = "NewSet",
             Parameters = new List<ParameterCommitDTO>
             {
-               new() { Path = "Organism|Aspirin|Lipophilicity", Value = 3.5, Selected = true, IsRemoval = true }
+               new() { Path = "Reset", IsRemoval = true }
             }
          };
       }
-   }
 
-   public class When_validating_a_compound_commit_dto_creating_a_new_set_from_a_selected_removal : concern_for_CompoundCommitDTO_with_a_selected_removal
-   {
-      protected override void Context()
+      [Observation]
+      public void should_not_offer_to_create_a_new_set()
       {
-         base.Context();
+         sut.CanCreateNewSet.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_list_nothing_when_creating_a_new_set()
+      {
          sut.CreateNew = true;
-      }
-
-      [Observation]
-      public void should_be_valid_because_the_removed_path_is_simply_left_out_of_the_new_set()
-      {
-         sut.IsValid().ShouldBeTrue();
-      }
-   }
-
-   public class When_validating_a_compound_commit_dto_removing_from_a_set_other_than_the_one_selected_in_the_simulation : concern_for_CompoundCommitDTO_with_a_selected_removal
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CreateNew = false;
-         sut.SelectedExistingSet = _otherSet;
-      }
-
-      [Observation]
-      public void should_not_be_valid()
-      {
-         sut.IsValid().ShouldBeFalse();
-      }
-   }
-
-   public class When_validating_a_compound_commit_dto_removing_from_the_set_selected_in_the_simulation : concern_for_CompoundCommitDTO_with_a_selected_removal
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CreateNew = false;
-         sut.SelectedExistingSet = _setSelectedInSimulation;
-      }
-
-      [Observation]
-      public void should_be_valid()
-      {
-         sut.IsValid().ShouldBeTrue();
-      }
-   }
-
-   public class When_validating_a_compound_commit_dto_creating_a_new_set_with_a_deselected_removal : concern_for_CompoundCommitDTO_with_a_selected_removal
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CreateNew = true;
-         sut.Parameters[0].Selected = false;
-         sut.Parameters.Add(new ParameterCommitDTO { Path = "Organism|Aspirin|Permeability", Value = 7.2, Selected = true });
-      }
-
-      [Observation]
-      public void should_be_valid()
-      {
-         sut.IsValid().ShouldBeTrue();
+         sut.VisibleParameters.ShouldBeEmpty();
       }
    }
 

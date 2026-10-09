@@ -5,6 +5,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using PKSim.Assets;
@@ -84,6 +85,10 @@ namespace PKSim.UI.Views.Parameters
       {
          _presenter.CreatePopupMenuFor(parameterDTO).At(location);
       }
+
+      protected override bool ColumnIsCheckBox(GridColumn column) => column == _columnFavorites.XtraColumn;
+
+      protected override bool ColumnIsAlwaysActive(GridColumn column) => column == _columnFavorites.XtraColumn;
 
       public int OptimalHeight => gridViewParameters.OptimalHeight;
 

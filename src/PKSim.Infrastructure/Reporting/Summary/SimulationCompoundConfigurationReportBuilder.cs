@@ -17,14 +17,14 @@ namespace PKSim.Infrastructure.Reporting.Summary
 
       protected override void FillUpReport(SimulationCompoundConfiguration simulationCompoundConfiguration, ReportPart reportPart)
       {
-         var (compoundName, compoundProperties, overwriteParameterSet) = simulationCompoundConfiguration;
+         var (compoundName, compoundProperties) = simulationCompoundConfiguration;
 
          //Because the compound might be lazy loaded, it is potentially not available in the compound properties
          var compoundNameToUse = compoundProperties.Compound?.Name ?? compoundName;
 
          var compoundPart = _reportGenerator.ReportFor(compoundProperties.AllCalculationMethods()).DowncastTo<TablePart>().WithTitle(compoundNameToUse);
-         if (overwriteParameterSet != null)
-            compoundPart.AddIs(PKSimConstants.ObjectTypes.OverwriteParameterSet, overwriteParameterSet.Name);
+         if (compoundProperties.OverwriteParameterSetName != null)
+            compoundPart.AddIs(PKSimConstants.ObjectTypes.OverwriteParameterSet, compoundProperties.OverwriteParameterSetName);
 
          reportPart.AddPart(compoundPart);
       }

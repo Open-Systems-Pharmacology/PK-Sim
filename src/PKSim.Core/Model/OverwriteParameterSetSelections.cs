@@ -39,6 +39,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public bool HasSelectionFor(string compoundName) => _selections.Contains(compoundName);
 
+      public void RemoveSelectionForCompound(string compoundName) => _selections.Remove(compoundName);
+
       public OverwriteParameterSetSelections Clone()
       {
          var clone = new OverwriteParameterSetSelections();

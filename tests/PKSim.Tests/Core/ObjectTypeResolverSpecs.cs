@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using PKSim.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -7,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core
@@ -38,6 +40,16 @@ namespace PKSim.Core
       public void should_return_the_type_of_the_object_if_the_entity_type_was_not_defined()
       {
          sut.TypeFor(new Container()).ShouldBeEqualTo("Container");
+      }
+   }
+
+   public class When_resolving_the_type_for_the_content_of_an_overwrite_parameter_set : concern_for_ObjectTypeResolver
+   {
+      [Observation]
+      public void should_return_the_predefined_type_constant_for_a_parameter_value_and_an_extended_property()
+      {
+         sut.TypeFor(new ParameterValue()).ShouldBeEqualTo(ObjectTypes.ParameterValue);
+         sut.TypeFor(new ExtendedProperty<string>()).ShouldBeEqualTo(PKSimConstants.UI.Metadata);
       }
    }
 
