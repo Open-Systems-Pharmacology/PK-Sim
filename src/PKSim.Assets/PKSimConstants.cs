@@ -941,6 +941,12 @@ namespace PKSim.Assets
          public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
             $"No protein expression database available for species '{speciesName}'";
 
+         public static string NoExpressionDataForUnit(string proteinName, string unit) =>
+            string.IsNullOrEmpty(unit) ? $"No expression data selected for protein '{proteinName}'" : $"No expression data selected for protein '{proteinName}' in unit '{unit}'";
+
+         public static string ExpressionQueryFilterOnlyInLayout(string proteinName) =>
+            $"The expression query of protein '{proteinName}' was saved by an older version of PK-Sim that kept its filter in the layout of the expression data view. Open and confirm the query in PK-Sim to convert the filter.";
+
          public static string MultipleOperatorFoundForContainer(int containerId, string parameterName) =>
             $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
 
@@ -962,6 +968,9 @@ namespace PKSim.Assets
 
       public static class Information
       {
+         public static string ExpressionQueryFilterDiscarded(string criteria) =>
+            $"The following part of the filter saved with this expression query could not be restored and was removed:\n\n{criteria}";
+
          public static readonly string Formula = "Formula";
          public static readonly string ParameterDescription = "Description";
          public static readonly string Description = "Description";

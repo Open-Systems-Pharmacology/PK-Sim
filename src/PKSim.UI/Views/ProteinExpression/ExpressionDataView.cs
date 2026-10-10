@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using DevExpress.Data;
-using DevExpress.Data.Filtering;
 using DevExpress.Data.PivotGrid;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
@@ -14,6 +14,7 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
 
@@ -42,10 +43,6 @@ namespace PKSim.UI.Views.ProteinExpression
       private PivotGridField _fieldContainer;
       private PivotGridField _fieldAge;
 
-      private string _selectedUnit;
-      private bool _isFieldFilterChanging;
-      private bool _isPrefilterCriteriaChanging;
-
       public ExpressionDataView(IImageListRetriever imageListRetriever, IProteinExpressionToolTipCreator toolTipCreator)
       {
          _toolTipCreator = toolTipCreator;
@@ -56,8 +53,6 @@ namespace PKSim.UI.Views.ProteinExpression
          pgrdExpressionData.ToolTipController = toolTipController;
 
          //assign event handlers
-         pgrdExpressionData.FieldFilterChanged += onFieldFilterChanged;
-         pgrdExpressionData.PrefilterCriteriaChanged += onPrefilterCriteriaChanged;
          pgrdExpressionData.CustomUnboundFieldData += onCustomUnboundFieldData;
          pgrdExpressionData.DoubleClick += onDoubleClick;
          pgrdExpressionData.ToolTipController.GetActiveObjectInfo += onGetActiveObjectInfo;
@@ -536,17 +531,7 @@ namespace PKSim.UI.Views.ProteinExpression
       private void onCustomUnboundFieldData(object sender, CustomFieldDataEventArgs e)
       {
          if (e.Field != _fieldAge) return;
-         object ageMin = e.GetListSourceColumnValue(_fieldAgeMin.FieldName);
-         object ageMax = e.GetListSourceColumnValue(_fieldAgeMax.FieldName);
-         string ageMinValue = string.Empty;
-         string ageMaxValue = string.Empty;
-
-         if (ageMin != null) ageMinValue = ageMin.ToString();
-         if (ageMax != null) ageMaxValue = ageMax.ToString();
-
-         e.Value = (ageMinValue == ageMaxValue) ? ageMinValue : string.Format("{0} - {1}", ageMinValue, ageMaxValue);
-
-         if (string.Empty.Equals(e.Value)) e.Value = "UNSPECIFIED";
+         e.Value = ExpressionDataRecord.AgeFrom(e.GetListSourceColumnValue(_fieldAgeMin.FieldName) as double?, e.GetListSourceColumnValue(_fieldAgeMax.FieldName) as double?);
       }
 
       public void AttachPresenter(IExpressionDataPresenter presenter)
@@ -559,10 +544,8 @@ namespace PKSim.UI.Views.ProteinExpression
          get { return PKSimConstants.ProteinExpressions.MainView.TabPageExpressionData; }
       }
 
-      public void SetData(string proteinName, DataTable expressionDataTable, string selectedUnit)
+      public void SetData(string proteinName, DataTable expressionDataTable)
       {
-         _selectedUnit = selectedUnit;
-
          // reset pivot grid to supress side effects
          pgrdExpressionData.ForceInitialize();
          pgrdExpressionData.Fields.Clear();
@@ -578,7 +561,7 @@ namespace PKSim.UI.Views.ProteinExpression
          configChart(proteinName);
       }
 
-      public void SetLayoutSettings(string layoutSettings)
+      public string SetLayoutSettings(string layoutSettings)
       {
          Stream ms = new MemoryStream();
          var sw = new StreamWriter(ms);
@@ -588,6 +571,7 @@ namespace PKSim.UI.Views.ProteinExpression
          pgrdExpressionData.RestoreLayoutFromStream(ms);
          sw.Close();
          pgrdExpressionData.RefreshData();
+         return removeLayoutFilterNotExpressedByFieldFilters();
       }
 
       public string GetLayoutSettings()
@@ -612,73 +596,55 @@ namespace PKSim.UI.Views.ProteinExpression
          pgrdExpressionData.RefreshData();
       }
 
-      public string GetFilterInformation()
+      public ExpressionDataFilter GetFilter() =>
+         new ExpressionDataFilter(pgrdExpressionData.Fields.Cast<PivotGridField>()
+            .Where(x => x.FilterValues.HasFilter)
+            .Select(x => new ExpressionDataFieldFilter(x.FieldName, filterTypeFrom(x.FilterValues.FilterType), x.FilterValues.Values, x.FilterValues.ShowBlanks)));
+
+      public void SetFilter(ExpressionDataFilter filter)
       {
-         if (pgrdExpressionData == null) return String.Empty;
-         if (pgrdExpressionData.Prefilter == null) return String.Empty;
-         return pgrdExpressionData.Prefilter.CriteriaString;
-      }
-
-      public void SetSelectedUnit(string unit)
-      {
-         _selectedUnit = unit;
-      }
-
-      public string GetSelectedUnit()
-      {
-         return _selectedUnit;
-      }
-
-      public DataTable GetSelectedData()
-      {
-         var ret = new DataTable("TransferData");
-         ret.Columns.Add(ColumnNamesOfTransferTable.Container.ToString(), _fieldContainer.DataType);
-         ret.Columns.Add(ColumnNamesOfTransferTable.ExpressionValue.ToString(), _fieldNormValue.DataType);
-         ret.Columns.Add(ColumnNamesOfTransferTable.RelativeExpressionNew.ToString(), _fieldNormValue.DataType);
-         ret.Columns.Add(ColumnNamesOfTransferTable.Unit.ToString(), _fieldUnit.DataType);
-
-         if (chrtExpressionData.Series.Count == 0) return ret;
-
-         string oldDataMember = chrtExpressionData.SeriesDataMember;
-         string oldArgument = chrtExpressionData.SeriesTemplate.ArgumentDataMember;
-         chrtExpressionData.SeriesDataMember = _fieldUnit.FieldName;
-         chrtExpressionData.SeriesTemplate.ArgumentDataMember = _fieldContainer.FieldName;
+         pgrdExpressionData.BeginUpdate();
          try
          {
-            //get the data from the chart control because here we already have the wanted aggregation
-            foreach (Series expSeries in chrtExpressionData.Series)
+            foreach (PivotGridField field in pgrdExpressionData.Fields)
             {
-               if (expSeries != null)
-               {
-                  double maximum = Double.NegativeInfinity;
-                  foreach (SeriesPoint point in expSeries.Points)
-                  {
-                     double value = point.Values[0];
-                     if (value <= maximum) continue;
-                     maximum = value;
-                  }
-
-                  foreach (SeriesPoint point in expSeries.Points)
-                  {
-                     double value = point.Values[0];
-                     var values = new ArrayList {point.Argument, value};
-                     if (maximum == 0)
-                        values.Add(0);
-                     else
-                        values.Add(value / maximum);
-                     values.Add(expSeries.Name);
-                     ret.Rows.Add(values.ToArray());
-                  }
-               }
+               var fieldFilter = filter.FieldFilters.FirstOrDefault(x => x.FieldName == field.FieldName);
+               if (fieldFilter == null)
+                  field.FilterValues.Clear();
+               else
+                  field.FilterValues.SetValues(fieldFilter.Values.ToArray(), pivotFilterTypeFrom(fieldFilter.FilterType), fieldFilter.ShowBlanks);
             }
          }
          finally
          {
-            chrtExpressionData.SeriesDataMember = oldDataMember;
-            chrtExpressionData.SeriesTemplate.ArgumentDataMember = oldArgument;
+            pgrdExpressionData.EndUpdate();
          }
+      }
 
-         return ret;
+      private static ExpressionDataFilterType filterTypeFrom(PivotFilterType filterType) =>
+         filterType == PivotFilterType.Included ? ExpressionDataFilterType.Included : ExpressionDataFilterType.Excluded;
+
+      private static PivotFilterType pivotFilterTypeFrom(ExpressionDataFilterType filterType) =>
+         filterType == ExpressionDataFilterType.Included ? PivotFilterType.Included : PivotFilterType.Excluded;
+
+      private string removeLayoutFilterNotExpressedByFieldFilters()
+      {
+         var layoutFilter = pgrdExpressionData.ActiveFilterCriteria;
+         if (ReferenceEquals(layoutFilter, null))
+            return string.Empty;
+
+         var recordsAcceptedByLayoutFilter = acceptedRecordIndexes();
+         var filter = GetFilter();
+         pgrdExpressionData.ActiveFilterCriteria = null;
+         SetFilter(filter);
+         return recordsAcceptedByLayoutFilter.SetEquals(acceptedRecordIndexes()) ? string.Empty : layoutFilter.ToString();
+      }
+
+      private HashSet<int> acceptedRecordIndexes()
+      {
+         pgrdExpressionData.RefreshData();
+         var drillDownDataSource = pgrdExpressionData.CreateDrillDownDataSource();
+         return Enumerable.Range(0, drillDownDataSource.RowCount).Select(x => drillDownDataSource[x].ListSourceRowIndex).ToHashSet();
       }
 
       private SeriesPoint[] customSummary(Series series, object argument, string[] functionArguments,
@@ -809,7 +775,7 @@ namespace PKSim.UI.Views.ProteinExpression
             {
                switch (col.ColumnName)
                {
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_VARIANT_NAME:
+                  case ExpressionDataFields.VARIANT_NAME:
                      _fieldVariantName = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -817,7 +783,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldVariantName);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_DATA_BASE:
+                  case ExpressionDataFields.DATA_BASE:
                      _fieldDataBase = new PivotGridField(col.ColumnName, PivotArea.ColumnArea)
                      {
                         Caption =
@@ -825,7 +791,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldDataBase);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_DATA_BASE_REC_ID:
+                  case ExpressionDataFields.DATA_BASE_REC_ID:
                      _fieldDataBaseRecId = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -833,7 +799,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldDataBaseRecId);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_GENDER:
+                  case ExpressionDataFields.GENDER:
                      _fieldGender = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -841,7 +807,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldGender);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE:
+                  case ExpressionDataFields.TISSUE:
                      _fieldTissue = new PivotGridField(col.ColumnName, PivotArea.RowArea)
                      {
                         Caption =
@@ -849,15 +815,15 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldTissue);
                      break;
-                  case DatabaseConfiguration.MappingColumns.COL_CONTAINER:
-                     _fieldContainer = new PivotGridField(ColumnNamesOfTransferTable.DisplayName.ToString(), PivotArea.RowArea)
+                  case ExpressionDataFields.CONTAINER:
+                     _fieldContainer = new PivotGridField(ExpressionDataFields.CONTAINER_DISPLAY_NAME, PivotArea.RowArea)
                      {
                         Caption =
                            PKSimConstants.ProteinExpressions.ColumnCaptions.ExpressionData.COL_CONTAINER
                      };
                      pgrdExpressionData.Fields.Add(_fieldContainer);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_HEALTH_STATE:
+                  case ExpressionDataFields.HEALTH_STATE:
                      _fieldHealthState = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -865,7 +831,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldHealthState);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_SAMPLE_SOURCE:
+                  case ExpressionDataFields.SAMPLE_SOURCE:
                      _fieldSampleSource = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -873,7 +839,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldSampleSource);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_AGE_MIN:
+                  case ExpressionDataFields.AGE_MIN:
                      _fieldAgeMin = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -881,7 +847,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldAgeMin);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_AGE_MAX:
+                  case ExpressionDataFields.AGE_MAX:
                      _fieldAgeMax = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -889,7 +855,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldAgeMax);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_SAMPLE_COUNT:
+                  case ExpressionDataFields.SAMPLE_COUNT:
                      _fieldSampleCount = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -897,7 +863,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldSampleCount);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_TOTAL_COUNT:
+                  case ExpressionDataFields.TOTAL_COUNT:
                      _fieldTotalCount = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -905,7 +871,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldTotalCount);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_RATIO:
+                  case ExpressionDataFields.RATIO:
                      _fieldRatio = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -913,7 +879,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldRatio);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_NORM_VALUE:
+                  case ExpressionDataFields.NORM_VALUE:
                      _fieldNormValue = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -927,7 +893,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      };
                      pgrdExpressionData.Fields.Add(_fieldNormValue2);
                      break;
-                  case DatabaseConfiguration.ExpressionDataColumns.COL_UNIT:
+                  case ExpressionDataFields.UNIT:
                      _fieldUnit = new PivotGridField(col.ColumnName, PivotArea.FilterArea)
                      {
                         Caption =
@@ -940,11 +906,10 @@ namespace PKSim.UI.Views.ProteinExpression
          }
 
          //create an unbound field for the age grouping
-         const string STR_AGE = "AGE";
-         _fieldAge = new PivotGridField(STR_AGE, PivotArea.FilterArea)
+         _fieldAge = new PivotGridField(ExpressionDataFields.AGE, PivotArea.FilterArea)
          {
             UnboundType = UnboundColumnType.String,
-            UnboundFieldName = STR_AGE,
+            UnboundFieldName = ExpressionDataFields.AGE,
             Caption = PKSimConstants.ProteinExpressions.ColumnCaptions.ExpressionData.COL_AGE
          };
          pgrdExpressionData.Fields.Add(_fieldAge);
@@ -968,6 +933,7 @@ namespace PKSim.UI.Views.ProteinExpression
          pgrdExpressionData.OptionsHint.ShowCellHints = true;
          pgrdExpressionData.OptionsHint.ShowHeaderHints = true;
          pgrdExpressionData.OptionsHint.ShowValueHints = true;
+         pgrdExpressionData.OptionsCustomization.AllowPrefilter = false;
 
          foreach (PivotGridField fld in pgrdExpressionData.Fields)
          {
@@ -1104,179 +1070,6 @@ namespace PKSim.UI.Views.ProteinExpression
          _fieldNormValue2.Area = PivotArea.DataArea;
          _fieldNormValue2.AreaIndex = 1;
          _fieldNormValue2.Visible = true;
-      }
-
-      /// <summary>
-      ///    In this event all data filters are displayed as prefilters.
-      /// </summary>
-      /// <remarks>
-      ///    Has been adopted from DevExpress help page.
-      ///    http://www.devexpress.com/Support/Center/e/E1678.aspx
-      /// </remarks>
-      private void onFieldFilterChanged(object sender, PivotFieldEventArgs e)
-      {
-         if (_isPrefilterCriteriaChanging) return;
-         _isFieldFilterChanging = true;
-
-         try
-         {
-            var pivot = sender as PivotGridControl;
-            if (pivot == null) return;
-
-            var oldFilter = pivot.Prefilter.Criteria as GroupOperator;
-            var field = e.Field;
-            var filterValues = field.FilterValues;
-            var rootGroup = new GroupOperator(GroupOperatorType.And);
-
-            if (filterValues.HasFilter)
-            {
-               CriteriaOperator newFilter;
-               if (filterValues.ValuesIncluded.Length > filterValues.ValuesExcluded.Length &&
-                   filterValues.ValuesExcluded.Length > 0)
-               {
-                  newFilter = new InOperator(field.FieldName, filterValues.ValuesExcluded);
-                  newFilter = new NotOperator(newFilter);
-               }
-               else
-               {
-                  newFilter = new InOperator(field.FieldName, filterValues.ValuesIncluded);
-               }
-
-               if (field.FilterValues.ShowBlanks)
-               {
-                  var newGroup = new GroupOperator(GroupOperatorType.Or);
-                  newGroup.Operands.Add(newFilter);
-                  newGroup.Operands.Add(new NullOperator(field.FieldName));
-                  rootGroup = newGroup;
-               }
-               else
-               {
-                  rootGroup.Operands.Add(newFilter);
-               }
-
-               pgrdExpressionData.Prefilter.Enabled = true;
-            }
-
-            //try to remove all filters on current field
-            if (!ReferenceEquals(oldFilter, null))
-               removeCriteria(oldFilter, field.DataControllerColumnName, oldFilter);
-
-            //add old filter
-            if (!ReferenceEquals(oldFilter, null))
-               if (oldFilter.Operands.Count > 0)
-               {
-                  rootGroup = new GroupOperator(GroupOperatorType.And, rootGroup);
-                  rootGroup.Operands.Add(oldFilter);
-               }
-
-            //purge empty groups
-            if (rootGroup.Operands.Count > 0)
-            {
-               var grop = rootGroup.Operands[0] as GroupOperator;
-               while (!ReferenceEquals(grop, null) && grop.Operands.Count == 0)
-               {
-                  rootGroup.Operands.Remove(grop);
-                  if (rootGroup.Operands.Count == 0) break;
-                  grop = rootGroup.Operands[0] as GroupOperator;
-               }
-            }
-
-            pivot.Prefilter.Criteria = rootGroup.Operands.Count > 0 ? rootGroup : null;
-            pivot.RefreshData();
-         }
-         finally
-         {
-            _isFieldFilterChanging = false;
-         }
-      }
-
-      /// <summary>
-      ///    Remove recursively all operands according to given fieldName.
-      /// </summary>
-      private static void removeCriteria(GroupOperator parent, String fieldName, CriteriaOperator criteria)
-      {
-         if (criteria is BinaryOperator)
-         {
-            var op = criteria as BinaryOperator;
-            if (op.LeftOperand is OperandProperty)
-            {
-               var prob = op.LeftOperand as OperandProperty;
-               if (prob.PropertyName == fieldName) parent.Operands.Remove(op);
-            }
-         }
-         else if (criteria is UnaryOperator)
-         {
-            var op = criteria as UnaryOperator;
-            if (op.Operand is OperandProperty)
-            {
-               var prob = op.Operand as OperandProperty;
-               if (prob.PropertyName == fieldName) parent.Operands.Remove(op);
-            }
-            else if (op.Operand is InOperator)
-            {
-               var inOp = op.Operand as InOperator;
-               if (inOp.LeftOperand is OperandProperty)
-               {
-                  var prob = inOp.LeftOperand as OperandProperty;
-                  if (prob.PropertyName == fieldName) parent.Operands.Remove(op);
-               }
-            }
-            else if (op.Operand is BinaryOperator)
-            {
-               var binOp = op.Operand as BinaryOperator;
-               if (binOp.LeftOperand is OperandProperty)
-               {
-                  var prob = binOp.LeftOperand as OperandProperty;
-                  if (prob.PropertyName == fieldName) parent.Operands.Remove(op);
-               }
-            }
-         }
-         else if (criteria is InOperator)
-         {
-            var op = criteria as InOperator;
-            if (op.LeftOperand is OperandProperty)
-            {
-               var prob = op.LeftOperand as OperandProperty;
-               if (prob.PropertyName == fieldName) parent.Operands.Remove(op);
-            }
-            else
-            {
-               removeCriteria(parent, fieldName, op.LeftOperand);
-            }
-         }
-         else if (criteria is GroupOperator)
-         {
-            var op = criteria as GroupOperator;
-            for (int i = op.Operands.Count - 1; i >= 0; i--) removeCriteria(op, fieldName, op.Operands[i]);
-
-            if (op.Operands.Count == 0)
-               if (!ReferenceEquals(parent, op))
-                  parent.Operands.Remove(op);
-         }
-      }
-
-      /// <summary>
-      ///    If the prefilter has been changed all field filters are resetted to no filter.
-      /// </summary>
-      private void onPrefilterCriteriaChanged(object sender, EventArgs e)
-      {
-         if (_isFieldFilterChanging) return;
-         _isPrefilterCriteriaChanging = true;
-
-         try
-         {
-            if (sender is PivotGridControl pivot)
-            {
-               foreach (PivotGridField fld in pivot.Fields)
-                  fld.FilterValues.Clear();
-
-               pivot.RefreshData();
-            }
-         }
-         finally
-         {
-            _isPrefilterCriteriaChanging = false;
-         }
       }
    }
 }
