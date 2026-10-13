@@ -45,6 +45,7 @@ namespace PKSim.UI.Views.Simulations
          _observerSetRepository = new UxRepositoryItemImageComboBox(gridView, imageListRetriever) {AllowHtmlDraw = DefaultBoolean.True};
          _gridViewBinder = new GridViewBinder<ObserverSetMappingDTO>(gridView);
          gridView.AllowsFiltering = false;
+         gridView.MultiSelect = false;
          InitializeWithGrid(gridView);
 
          var toolTipController = new ToolTipController();

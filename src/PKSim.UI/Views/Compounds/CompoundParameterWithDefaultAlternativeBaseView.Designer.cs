@@ -58,10 +58,8 @@ namespace PKSim.UI.Views.Compounds
          // 
          // _gridView
          // 
-         this._gridView.EnableColumnContextMenu = true;
          this._gridView.GridControl = this._gridControl;
          this._gridView.Name = "_gridView";
-         this._gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
          // 
          // layoutControl
          // 

@@ -77,12 +77,8 @@
          // 
          // gridView
          // 
-         this.gridView.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseUp;
          this.gridView.GridControl = this.gridControl;
          this.gridView.Name = "gridView";
-         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseUp;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
          // 
          // btnAddEvent
          // 

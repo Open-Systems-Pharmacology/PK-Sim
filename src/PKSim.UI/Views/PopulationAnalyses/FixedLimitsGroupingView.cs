@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
@@ -38,8 +39,10 @@ namespace PKSim.UI.Views.PopulationAnalyses
          gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
          gridView.ShowRowIndicator = false;
          gridView.AllowsFiltering = false;
+         gridView.MultiSelect = false;
+         gridView.EditorShowMode = EditorShowMode.MouseDown;
          _symbolsRepository = new UxRepositoryItemSymbols(gridView);
-         _colorRepository = new UxRepositoryItemColorPickEditWithHistory();
+         _colorRepository = new UxRepositoryItemColorPickEditWithHistory(gridView);
       }
 
       public void AttachPresenter(IFixedLimitsGroupingPresenter presenter)
