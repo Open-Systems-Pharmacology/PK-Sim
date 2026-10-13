@@ -182,9 +182,9 @@ namespace PKSim.IntegrationTests
 
       //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
       [Observation]
-      public void should_add_the_p_gp_ontogeny()
+      public void should_add_the_p_gp_ontogeny_under_the_canonical_gene_name()
       {
-         var pgpOntogenies = ontogenyValuesFor(CoreConstantsForSpecs.Molecule.P_GP);
+         var pgpOntogenies = ontogenyValuesFor(CoreConstantsForSpecs.Molecule.ABCB1);
 
          pgpOntogenies.Length.ShouldBeEqualTo(40);
          pgpOntogenies.Each(x => x.GroupName.ShouldBeEqualTo(CoreConstantsForSpecs.Groups.ONTOGENY_LIVER_ALL));
@@ -196,12 +196,32 @@ namespace PKSim.IntegrationTests
 
       //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
       [Observation]
+      public void should_not_define_p_gp_as_a_protein_of_its_own()
+      {
+         //P-gp is only a synonym of ABCB1 and must not become a second protein with its own ontogeny
+         var ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
+         ontogenyRepository.AllFor(CoreConstants.Species.HUMAN).AllNames()
+            .ShouldNotContain(CoreConstantsForSpecs.Molecule.P_GP);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+      [Observation]
+      public void should_register_p_gp_as_a_synonym_of_abcb1()
+      {
+         var proteinSynonymRepository = IoC.Resolve<IFlatProteinSynonymRepository>();
+         var allSynonyms = proteinSynonymRepository.AllSynonymsFor(CoreConstantsForSpecs.Molecule.ABCB1);
+
+         allSynonyms.ShouldContain(CoreConstantsForSpecs.Molecule.P_GP, CoreConstantsForSpecs.Molecule.MDR1);
+      }
+
+      //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+      [Observation]
       public void should_make_the_new_ontogenies_selectable_for_human()
       {
          var ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
          var allOntogenyNames = ontogenyRepository.AllFor(CoreConstants.Species.HUMAN).AllNames();
 
-         allOntogenyNames.ShouldContain(CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP);
+         allOntogenyNames.ShouldContain(CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.ABCB1);
       }
 
       private static void verifyOntogenyPoint(OntogenyMetaData ontogeny, double postmenstrualAge, double ontogenyFactor, double deviation)

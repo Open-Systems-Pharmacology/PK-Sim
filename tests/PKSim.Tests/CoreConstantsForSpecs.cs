@@ -42,7 +42,9 @@ namespace PKSim
       public static class Molecule
       {
          public const string CES1 = "CES1";
+         public const string ABCB1 = "ABCB1";
          public const string P_GP = "P-gp";
+         public const string MDR1 = "MDR1";
       }
 
       public static class Groups

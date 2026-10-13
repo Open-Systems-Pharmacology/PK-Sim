@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -8,8 +9,11 @@ using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.IntegrationTests
 {
@@ -183,10 +187,13 @@ namespace PKSim.IntegrationTests
    //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
    public class When_retrieving_the_ontogeny_factor_for_the_newly_added_ontogenies : concern_for_OntogenyRepository
    {
-      private static OriginData originDataFor(double ageInYears) => new OriginData
+      private static readonly string[] _newOntogenyNames = [CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.ABCB1];
+
+      private static OriginData originDataFor(double ageInYears, double? gestationalAgeInWeeks = null) => new OriginData
       {
          Species = new Species {Name = CoreConstants.Species.HUMAN},
-         Age = new OriginDataParameter(ageInYears)
+         Age = new OriginDataParameter(ageInYears),
+         GestationalAge = gestationalAgeInWeeks.HasValue ? new OriginDataParameter(gestationalAgeInWeeks.Value) : null
       };
 
       private Ontogeny ontogenyFor(string ontogenyName)
@@ -200,7 +207,7 @@ namespace PKSim.IntegrationTests
       public void should_use_the_same_ontogeny_in_the_liver_and_in_the_intestine()
       {
          //both ontogenies are defined for all tissues, so the GI value must not differ from the liver value
-         foreach (var ontogenyName in new[] {CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP})
+         foreach (var ontogenyName in _newOntogenyNames)
          {
             var ontogeny = ontogenyFor(ontogenyName);
             var originData = originDataFor(1);
@@ -217,7 +224,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_increase_monotonously_with_age()
       {
-         foreach (var ontogenyName in new[] {CoreConstantsForSpecs.Molecule.CES1, CoreConstantsForSpecs.Molecule.P_GP})
+         foreach (var ontogenyName in _newOntogenyNames)
          {
             var allValues = sut.AllValuesFor(ontogenyFor(ontogenyName)).OrderBy(x => x.PostmenstrualAge).ToList();
             allValues.Count.ShouldBeGreaterThan(0);
@@ -230,15 +237,77 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_return_a_defined_value_for_a_newborn_even_though_the_p_gp_ontogeny_starts_at_zero()
+      public void should_return_a_defined_value_at_the_zero_valued_supporting_point_of_the_p_gp_ontogeny()
       {
-         var pgp = ontogenyFor(CoreConstantsForSpecs.Molecule.P_GP);
+         var pgp = ontogenyFor(CoreConstantsForSpecs.Molecule.ABCB1);
 
-         //the first supporting point of the P-gp ontogeny has an ontogeny factor of 0, which has no defined percentile
-         var ontogenyFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataFor(0), new RandomGenerator());
+         //the first supporting point of the P-gp ontogeny is at PMA 0.1 year with an ontogeny factor of 0,
+         //which has no defined percentile. PMA = age + gestational age, so 5.2 weeks of GA at age 0 hit it exactly
+         var originDataAtFirstSupportingPoint = originDataFor(0, gestationalAgeInWeeks: 5.2);
 
-         double.IsNaN(ontogenyFactor).ShouldBeFalse();
-         ontogenyFactor.ShouldBeGreaterThanOrEqualTo(0);
+         var meanFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataAtFirstSupportingPoint);
+         meanFactor.ShouldBeEqualTo(0, 1e-10);
+
+         var randomizedFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataAtFirstSupportingPoint, new RandomGenerator());
+         double.IsNaN(randomizedFactor).ShouldBeFalse();
+         randomizedFactor.ShouldBeGreaterThanOrEqualTo(0);
+      }
+
+      [Observation]
+      public void should_return_a_defined_value_below_the_first_supporting_point_of_the_p_gp_ontogeny()
+      {
+         var pgp = ontogenyFor(CoreConstantsForSpecs.Molecule.ABCB1);
+
+         //below the smallest supporting point the factor of the minimum PMA is reused, i.e. 0 again
+         var originDataBelowFirstSupportingPoint = originDataFor(0, gestationalAgeInWeeks: 2);
+
+         var meanFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataBelowFirstSupportingPoint);
+         meanFactor.ShouldBeEqualTo(0, 1e-10);
+
+         var randomizedFactor = sut.OntogenyFactorFor(pgp, CoreConstants.Organ.LIVER, originDataBelowFirstSupportingPoint, new RandomGenerator());
+         double.IsNaN(randomizedFactor).ShouldBeFalse();
+      }
+   }
+
+   //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3392
+   public class When_creating_an_expression_profile_for_a_molecule_with_a_newly_added_ontogeny : concern_for_OntogenyRepository
+   {
+      private IMoleculeParameterTask _moleculeParameterTask;
+      private CultureInfo _originalCulture;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeParameterTask = IoC.Resolve<IMoleculeParameterTask>();
+
+         //the ontogeny table is built via float.ToDouble(), which only reads back the invariant representation
+         //correctly in a culture using a point as decimal separator. See https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/pull/3013
+         _originalCulture = CultureInfo.CurrentCulture;
+         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         CultureInfo.CurrentCulture = _originalCulture;
+      }
+
+      [Observation]
+      public void should_assign_the_ontogeny_by_default()
+      {
+         //the default ontogeny is resolved by an exact name lookup, so the ontogeny has to be stored under the gene name
+         verifyDefaultOntogenyIsSet<IndividualTransporter>(CoreConstantsForSpecs.Molecule.ABCB1);
+         verifyDefaultOntogenyIsSet<IndividualEnzyme>(CoreConstantsForSpecs.Molecule.CES1);
+      }
+
+      private void verifyDefaultOntogenyIsSet<TMolecule>(string moleculeName) where TMolecule : IndividualMolecule
+      {
+         var expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<TMolecule>(moleculeName);
+         _moleculeParameterTask.SetDefaultFor(expressionProfile);
+
+         var (molecule, _) = expressionProfile;
+         molecule.Ontogeny.IsDefined().ShouldBeTrue($"No default ontogeny was set for '{moleculeName}'");
+         molecule.Ontogeny.Name.ShouldBeEqualTo(moleculeName);
       }
    }
 
