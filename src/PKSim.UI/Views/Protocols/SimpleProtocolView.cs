@@ -1,3 +1,4 @@
+using DevExpress.Utils;
 using DevExpress.Utils.Layout;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
@@ -144,6 +145,9 @@ namespace PKSim.UI.Views.Protocols
          labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
          labelEvent.Text = "";
          cbEvent.Properties.Caption = PKSimConstants.UI.AddEventForEveryAdministration;
+         cbEvent.Properties.AllowHtmlDraw = DefaultBoolean.True;
+         cbEvent.Properties.AutoHeight = false;
+         cbEvent.Properties.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
          labelEventOffset.Text = PKSimConstants.UI.EventOffset.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);
