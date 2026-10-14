@@ -220,6 +220,7 @@ namespace PKSim.Infrastructure
          container.Register<IStartableWarmup, StartableWarmup>(LifeStyle.Singleton);
          container.Register<IProjectRetriever, PKSimProjectRetriever>();
          container.Register<IObservedDataConfiguration, ImportObservedDataTask>();
+         container.Register<IObservedDataImporter, ImportObservedDataTask>();
          container.Register<IFlatContainerIdToContainerMapperSpecification, FlatContainerIdToFormulationMapper>();
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
 

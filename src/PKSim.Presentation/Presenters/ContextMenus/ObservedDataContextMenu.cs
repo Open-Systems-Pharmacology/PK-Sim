@@ -42,7 +42,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .AsGroupStarter();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated.WithEllipsis())
-            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository, _container)
+            .WithCommandFor<ReloadAllObservedDataUICommand, DataRepository>(dataRepository, _container)
             .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.RefreshAll);
 

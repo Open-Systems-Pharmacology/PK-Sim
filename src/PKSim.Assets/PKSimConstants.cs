@@ -454,7 +454,6 @@ namespace PKSim.Assets
          public const string ValueIsRequired = "Value is required.";
          public const string DescriptionIsRequired = "Description is required.";
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
-         public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
          public const string SimulationCannotShareNamesWithCompounds = "Simulation cannot share names with compounds";
          public const string AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule = "A project snapshot should only contain one simulation when used to rebuild a module";
          public static string ProjectSnapshotCannotBeLoaded(string snapshotApplicationName) => $"This file contains a {snapshotApplicationName} project snapshot and cannot be loaded in {Origins.PKSim.DisplayName}. Please load it in {snapshotApplicationName}.";
