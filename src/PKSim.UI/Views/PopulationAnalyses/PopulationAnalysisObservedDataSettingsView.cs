@@ -6,7 +6,6 @@ using OSPSuite.UI.Services;
 using OSPSuite.UI.RepositoryItems;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Base;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
@@ -67,16 +66,13 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder.AutoBind(x => x.Caption);
 
          _gridViewBinder.AutoBind(x => x.LineStyle)
-            .WithRepository(x => _lineStyleRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+            .WithRepository(x => _lineStyleRepository);
 
          _gridViewBinder.AutoBind(x => x.Symbol)
-            .WithRepository(x => _symbolsRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+            .WithRepository(x => _symbolsRepository);
 
          _gridViewBinder.AutoBind(x => x.Color)
-            .WithRepository(x => _colorRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+            .WithRepository(x => _colorRepository);
 
          _gridViewBinder.AutoBind(x => x.Visible)
             .WithRepository(x => _visibleRepository);
