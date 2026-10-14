@@ -20,6 +20,7 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
@@ -27,6 +28,9 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
+using Keys = System.Windows.Forms.Keys;
+using MouseButtons = System.Windows.Forms.MouseButtons;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Point = System.Drawing.Point;
 
 namespace PKSim.UI.Views.Parameters
@@ -359,6 +363,28 @@ namespace PKSim.UI.Views.Parameters
       {
          if (column == null) return false;
          return column.IsOneOf(_columnFavorites.XtraColumn) || _valueOriginBinder.ColumnIsValueOrigin(column);
+      }
+
+      protected override void OnGridViewMouseDown(UxGridView gridView, MouseEventArgs e)
+      {
+         var rowHandle = gridView.RowHandleAt(e);
+         if (e.Button == MouseButtons.Left && ModifierKeys == Keys.None &&
+             rowHandle >= 0 && gridView.SelectedRowsCount > 1 &&
+             gridView.ColumnAt(e) == _columnFavorites.XtraColumn)
+         {
+            gridView.BeginSelection();
+            try
+            {
+               gridView.ClearSelection();
+               gridView.SelectRow(rowHandle);
+            }
+            finally
+            {
+               gridView.EndSelection();
+            }
+         }
+
+         base.OnGridViewMouseDown(gridView, e);
       }
    }
 }
