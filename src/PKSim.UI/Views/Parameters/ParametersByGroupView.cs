@@ -4,6 +4,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
+using DevExpress.Utils;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
@@ -31,6 +32,8 @@ namespace PKSim.UI.Views.Parameters
          InitializeComponent();
          Initialize(gridViewParameters);
          gridViewParameters.AllowsFiltering = false;
+         gridViewParameters.EditorShowMode = EditorShowMode.MouseUp;
+         gridViewParameters.MultiSelect = false;
          gridViewParameters.CustomColumnSort += customColumnSort;
       }
 

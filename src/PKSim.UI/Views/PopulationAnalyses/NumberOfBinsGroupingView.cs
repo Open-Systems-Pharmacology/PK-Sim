@@ -28,6 +28,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder = new GridViewBinder<GroupingItemDTO>(gridView);
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
+         gridView.MultiSelect = false;
+         gridView.EditorShowMode = EditorShowMode.MouseDown;
 
          var toolTipController = new ToolTipController();
          toolTipController.Initialize(imageListRetriever);

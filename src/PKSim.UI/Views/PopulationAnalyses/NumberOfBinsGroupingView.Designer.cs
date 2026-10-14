@@ -151,7 +151,6 @@ namespace PKSim.UI.Views.PopulationAnalyses
          // 
          // gridView
          // 
-         this.gridView.EnableColumnContextMenu = true;
          this.gridView.GridControl = this.gridControl;
          this.gridView.Name = "gridView";
          // 

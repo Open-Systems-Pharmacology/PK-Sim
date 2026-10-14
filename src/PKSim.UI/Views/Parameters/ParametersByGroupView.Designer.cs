@@ -50,9 +50,6 @@
          // 
          this.gridViewParameters.GridControl = this.gridParameters;
          this.gridViewParameters.Name = "gridViewParameters";
-         this.gridViewParameters.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseUp;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = false;
          // 
          // CompoundProcessParametersView
          // 
