@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Mappers
       {
          var listOfValues = _listOfValuesRetriever.ListOfValuesFor(parameter);
          if (!listOfValues.Any())
-            return $"{parameter.ValueInDisplayUnit} {parameter.DisplayUnit.Name}";
+            return $"{parameter.ValueInDisplayUnit:G15} {parameter.DisplayUnit.Name}";
 
          return listOfValues[parameter.Value];
       }
