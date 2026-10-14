@@ -116,7 +116,7 @@ namespace PKSim.UI.Views.Protocols
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 30F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 28F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 40F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
          this.tablePanel.Size = new System.Drawing.Size(470, 240);
          this.tablePanel.TabIndex = 17;
@@ -264,6 +264,7 @@ namespace PKSim.UI.Views.Protocols
          // cbEvent
          //
          this.tablePanel.SetColumn(this.cbEvent, 1);
+         this.cbEvent.Dock = System.Windows.Forms.DockStyle.Fill;
          this.cbEvent.Location = new System.Drawing.Point(128, 190);
          this.cbEvent.Name = "cbEvent";
          this.tablePanel.SetRow(this.cbEvent, 6);
