@@ -373,9 +373,15 @@ namespace PKSim.UI.Views.Parameters
              gridView.ColumnAt(e) == _columnFavorites.XtraColumn)
          {
             gridView.BeginSelection();
-            gridView.ClearSelection();
-            gridView.SelectRow(rowHandle);
-            gridView.EndSelection();
+            try
+            {
+               gridView.ClearSelection();
+               gridView.SelectRow(rowHandle);
+            }
+            finally
+            {
+               gridView.EndSelection();
+            }
          }
 
          base.OnGridViewMouseDown(gridView, e);
