@@ -114,6 +114,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _colColor = _gridViewBinder.Bind(x => x.Color)
             .WithCaption(PKSimConstants.UI.Color)
             .WithRepository(x => _colorRepository)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldColorChanged(o, e.OldValue, e.NewValue)));
 
          _colDelete = _gridViewBinder.AddUnboundColumn()

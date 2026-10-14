@@ -4,6 +4,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Extensions;
 using DevExpress.Utils;
+using DevExpress.XtraGrid.Views.Base;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
@@ -57,7 +58,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
          //use autobind to get automatic notification from errors
          _gridViewBinder.AutoBind(x => x.Label).AsReadOnly();
-         _gridViewBinder.AutoBind(x => x.Color);
+         _gridViewBinder.AutoBind(x => x.Color)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          _gridViewBinder.Changed += NotifyViewChanged;
       }

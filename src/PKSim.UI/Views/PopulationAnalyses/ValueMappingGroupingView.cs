@@ -30,7 +30,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder.AutoBind(x => x.Value).AsReadOnly();
          _gridViewBinder.AutoBind(x => x.Label);
          _gridViewBinder.AutoBind(x => x.Sequence);
-         _gridViewBinder.AutoBind(x => x.Color);
+         _gridViewBinder.AutoBind(x => x.Color)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways);
          _gridViewBinder.AutoBind(x => x.Symbol)
             .WithRepository(x => _symbolsRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
