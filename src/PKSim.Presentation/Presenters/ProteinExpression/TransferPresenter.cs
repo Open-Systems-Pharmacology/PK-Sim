@@ -1,15 +1,15 @@
-using System.Data;
+using System.Collections.Generic;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Model;
 using PKSim.Presentation.Views.ProteinExpression;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
    public interface ITransferPresenter : IExpressionItemPresenter
    {
-      DataTable GetData();
       bool HasData();
       string GetSelectedUnit();
-      void SetData(DataTable transferData, string selectedUnit);
+      void SetData(IReadOnlyList<UnitExpression> unitExpressions, string selectedUnit);
       bool ShowOldValues { get; set; }
    }
 
@@ -17,11 +17,6 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
    {
       public TransferPresenter(ITransferView view) : base(view)
       {
-      }
-
-      public DataTable GetData()
-      {
-         return View.GetData();
       }
 
       public bool HasData()
@@ -34,10 +29,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          return View.GetSelectedUnit();
       }
 
-      public void SetData(DataTable transferData, string selectedUnit)
-      {
-         View.SetData(transferData, selectedUnit);
-      }
+      public void SetData(IReadOnlyList<UnitExpression> unitExpressions, string selectedUnit) => View.SetData(unitExpressions, selectedUnit);
 
       public bool ShowOldValues { get; set; }
 

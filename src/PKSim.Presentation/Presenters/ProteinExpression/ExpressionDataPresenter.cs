@@ -1,5 +1,7 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
 using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation.Presenters;
 
@@ -10,23 +12,31 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       void EditMapping();
       event Action OnEditMapping;
 
-      void SetData(string symbol, DataTable expressionData, string selectedUnit);
-      void SetLayoutSetting(string layoutSettings);
-      string GetLayoutSetting();
+      void SetData(string proteinName, IReadOnlyList<ContainerExpressionDataRecord> containerRecords);
 
-      string GetFilterInformation();
-      DataTable GetSelectedData();
-      void SetSelectedUnit(string unit);
-      string GetSelectedUnit();
-      void ActualizeData(DataTable newData);
+      /// <summary>
+      ///    Restores the layout of the view. Returns the criteria of the layout filter that could not be restored, or an empty
+      ///    string
+      /// </summary>
+      string SetLayoutSetting(string layoutSettings);
+
+      string GetLayoutSetting();
+      void ActualizeData(IReadOnlyList<ContainerExpressionDataRecord> containerRecords);
+
+      /// <summary>
+      ///    Filter edited in the view
+      /// </summary>
+      ExpressionDataFilter Filter { get; set; }
    }
 
    public class ExpressionDataPresenter : AbstractSubPresenter<IExpressionDataView, IExpressionDataPresenter>, IExpressionDataPresenter
    {
+      private readonly IExpressionDataTableMapper _expressionDataTableMapper;
       public event Action OnEditMapping = delegate { };
 
-      public ExpressionDataPresenter(IExpressionDataView view) : base(view)
+      public ExpressionDataPresenter(IExpressionDataView view, IExpressionDataTableMapper expressionDataTableMapper) : base(view)
       {
+         _expressionDataTableMapper = expressionDataTableMapper;
       }
 
       public void EditMapping()
@@ -34,44 +44,20 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          OnEditMapping();
       }
 
-      public void SetData(string symbol, DataTable expressionData, string selectedUnit)
-      {
-         View.SetData(symbol, expressionData, selectedUnit);
-      }
+      public void SetData(string proteinName, IReadOnlyList<ContainerExpressionDataRecord> containerRecords) =>
+         View.SetData(proteinName, _expressionDataTableMapper.DataTableFrom(containerRecords));
 
-      public void SetLayoutSetting(string layoutSettings)
-      {
-         View.SetLayoutSettings(layoutSettings);
-      }
+      public string SetLayoutSetting(string layoutSettings) => View.SetLayoutSettings(layoutSettings);
 
-      public string GetLayoutSetting()
-      {
-         return View.GetLayoutSettings();
-      }
+      public string GetLayoutSetting() => View.GetLayoutSettings();
 
-      public string GetFilterInformation()
-      {
-         return View.GetFilterInformation();
-      }
+      public void ActualizeData(IReadOnlyList<ContainerExpressionDataRecord> containerRecords) =>
+         View.ActualizeData(_expressionDataTableMapper.DataTableFrom(containerRecords));
 
-      public DataTable GetSelectedData()
+      public ExpressionDataFilter Filter
       {
-         return View.GetSelectedData();
-      }
-
-      public void SetSelectedUnit(string unit)
-      {
-         View.SetSelectedUnit(unit);
-      }
-
-      public string GetSelectedUnit()
-      {
-         return View.GetSelectedUnit();
-      }
-
-      public void ActualizeData(DataTable newData)
-      {
-         View.ActualizeData(newData);
+         get => View.GetFilter();
+         set => View.SetFilter(value);
       }
    }
 }
