@@ -303,7 +303,8 @@ namespace PKSim.Core.Model
          if (parameterRange != null)
             return tryCreateRandomValueFor(parameterRange, parameter, randomGenerator);
 
-         return (parameter.Value, true);
+         //no range: keep the value defined in the base individual (e.g. Child-Pugh score) and not the disease state default
+         return (diseaseStateParameter.Value, true);
       }
 
       private (double value, bool success) createDiscreteRandomValueFor(RandomPopulationSettings populationSettings, string parameterName, RandomGenerator randomGenerator)
