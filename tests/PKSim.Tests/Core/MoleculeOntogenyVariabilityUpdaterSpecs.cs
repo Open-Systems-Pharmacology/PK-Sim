@@ -21,6 +21,7 @@ namespace PKSim.Core
       protected Ontogeny _ontogeny;
       protected IEntityPathResolver _entityPathResolver;
       protected IFormulaFactory _formulaFactory;
+      protected IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       protected override void Context()
       {
@@ -36,7 +37,9 @@ namespace PKSim.Core
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          _entityPathResolver = new EntityPathResolverForSpecs();
-         sut = new MoleculeOntogenyVariabilityUpdater(_ontogenyRepository, _entityPathResolver, _formulaFactory);
+         _diseaseStateImplementationRepository = A.Fake<IDiseaseStateImplementationRepository>();
+         A.CallTo(() => _diseaseStateImplementationRepository.FindFor(A<DiseaseState>._)).Returns(new HealthyDiseaseStateImplementation());
+         sut = new MoleculeOntogenyVariabilityUpdater(_ontogenyRepository, _entityPathResolver, _formulaFactory, _diseaseStateImplementationRepository);
       }
    }
 
@@ -136,6 +139,59 @@ namespace PKSim.Core
       public void should_not_try_to_update_the_ontogenies()
       {
          A.CallTo((Expression<Action>) (() => _mousePopulation.AllOrganismValuesFor(A<string>._, _entityPathResolver))).MustNotHaveHappened();
+      }
+   }
+
+   public class When_updating_the_plasma_protein_ontogeny_for_a_population_with_a_disease_state_scaling_the_plasma_proteins : concern_for_MoleculeOntogenyVariabilityUpdater
+   {
+      private Population _population;
+      private IParameter _ontogenyFactorAgp;
+
+      protected override void Context()
+      {
+         base.Context();
+         var individual = new Individual {Root = new RootContainer(), OriginData = new OriginData {Species = new Species().WithName("Human")}};
+         var organism = new Organism();
+         individual.Add(organism);
+         var ageParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.AGE);
+         var gaParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.GESTATIONAL_AGE);
+         _ontogenyFactorAgp = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP);
+         organism.Add(ageParameter);
+         organism.Add(gaParameter);
+         organism.Add(_ontogenyFactorAgp);
+
+         var ageValues = new ParameterValues(_entityPathResolver.PathFor(ageParameter));
+         ageValues.Add(30);
+         ageValues.Add(40);
+
+         var gaValues = new ParameterValues(_entityPathResolver.PathFor(gaParameter));
+         gaValues.Add(40);
+         gaValues.Add(40);
+
+         _population = new RandomPopulation {Settings = new RandomPopulationSettings {BaseIndividual = individual, NumberOfIndividuals = 2}};
+         _population.IndividualValuesCache.Add(ageValues);
+         _population.IndividualValuesCache.Add(gaValues);
+         _population.IndividualValuesCache.IndividualIds.AddRange(new[] {1, 2});
+
+         var agpProtein = new SupportedProtein(CoreConstants.Molecule.AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE);
+         A.CallTo(() => _ontogenyRepository.SupportedProteins).Returns(new[] {agpProtein});
+         A.CallTo(() => _ontogenyRepository.PlasmaProteinOntogenyValueFor(agpProtein.Name, 30, 40, A<string>._, _population.RandomGenerator)).Returns(2);
+         A.CallTo(() => _ontogenyRepository.PlasmaProteinOntogenyValueFor(agpProtein.Name, 40, 40, A<string>._, _population.RandomGenerator)).Returns(3);
+
+         var diseaseStateImplementation = A.Fake<IDiseaseStateImplementation>();
+         A.CallTo(() => diseaseStateImplementation.PlasmaProteinOntogenyFactorFor(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, _population.OriginData)).Returns(0.5);
+         A.CallTo(() => _diseaseStateImplementationRepository.FindFor(A<DiseaseState>._)).Returns(diseaseStateImplementation);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePlasmaProteinsOntogenyFor(_population);
+      }
+
+      [Observation]
+      public void should_scale_the_ontogeny_factor_sampled_for_each_individual_by_the_disease_state_factor()
+      {
+         _population.AllValuesFor(_entityPathResolver.PathFor(_ontogenyFactorAgp)).ShouldOnlyContain(1, 1.5);
       }
    }
 
