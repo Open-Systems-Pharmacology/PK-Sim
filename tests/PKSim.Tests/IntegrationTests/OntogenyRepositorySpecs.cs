@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -273,23 +272,11 @@ namespace PKSim.IntegrationTests
    public class When_creating_an_expression_profile_for_a_molecule_with_a_newly_added_ontogeny : concern_for_OntogenyRepository
    {
       private IMoleculeParameterTask _moleculeParameterTask;
-      private CultureInfo _originalCulture;
 
       protected override void Context()
       {
          base.Context();
          _moleculeParameterTask = IoC.Resolve<IMoleculeParameterTask>();
-
-         //the ontogeny table is built via float.ToDouble(), which only reads back the invariant representation
-         //correctly in a culture using a point as decimal separator. See https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/pull/3013
-         _originalCulture = CultureInfo.CurrentCulture;
-         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-      }
-
-      public override void Cleanup()
-      {
-         base.Cleanup();
-         CultureInfo.CurrentCulture = _originalCulture;
       }
 
       [Observation]
