@@ -50,6 +50,30 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_mapping_a_parameter_whose_display_value_has_floating_point_noise_from_the_unit_conversion : concern_for_ParameterToParameterElementMapper
+   {
+      private ParameterElement _parameterElement;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
+         _parameter.DisplayUnit = _parameter.Dimension.Unit("cm");
+         _parameter.ValueInDisplayUnit = 7;
+      }
+
+      protected override void Because()
+      {
+         _parameterElement = sut.MapFrom(_parameter);
+      }
+
+      [Observation]
+      public void should_return_the_value_without_the_floating_point_noise()
+      {
+         _parameterElement.Value.ShouldBeEqualTo("7 cm");
+      }
+   }
+
    public class When_mapping_a_categorial_parameter_to_a_parameter_element : concern_for_ParameterToParameterElementMapper
    {
       private ParameterElement _parameterElement;
