@@ -27,9 +27,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         var buildingBlockNode = treeNode as UsedBuildingBlockInSimulationNode;
-         if (buildingBlockNode == null) return false;
-         return buildingBlockNode.TemplateBuildingBlock.IsAnImplementationOf<TBuildingBlock>();
+         //the template building block is resolved on demand by the node since it may not have been available when the node was created
+         return treeNode is UsedBuildingBlockInSimulationNode buildingBlockNode && buildingBlockNode.TemplateBuildingBlock.IsAnImplementationOf<TBuildingBlock>();
       }
    }
 

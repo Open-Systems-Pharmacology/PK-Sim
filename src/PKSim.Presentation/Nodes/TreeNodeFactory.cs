@@ -60,8 +60,7 @@ namespace PKSim.Presentation.Nodes
 
       public ITreeNode CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock)
       {
-         var templateBuildingBlock = _buildingBlockRetriever.BuildingBlockWithId(usedBuildingBlock.TemplateId);
-         return new UsedBuildingBlockInSimulationNode(simulation, usedBuildingBlock, templateBuildingBlock) {ToolTip = _toolTipPartCreator.ToolTipFor(usedBuildingBlock)};
+         return new UsedBuildingBlockInSimulationNode(simulation, usedBuildingBlock, _buildingBlockRetriever) {ToolTip = _toolTipPartCreator.ToolTipFor(usedBuildingBlock)};
       }
 
       public ITreeNode CreateFor(PartialProcess partialProcess) => new CompoundProcessNode(partialProcess);
