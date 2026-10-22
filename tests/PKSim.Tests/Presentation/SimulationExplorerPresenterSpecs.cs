@@ -172,6 +172,40 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _contextMenuFactory.CreateFor(_treeNode, sut)).MustNotHaveHappened();
       }
+
+      [Observation]
+      public void should_edit_the_template_building_block_used_in_the_simulation()
+      {
+         A.CallTo(() => _buildingBlockTask.Edit(_templateCompoundBuildingBlock)).MustHaveHappened();
+      }
+   }
+
+   public class When_double_clicking_a_used_building_block_node_whose_template_does_not_exist_anymore : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode _treeNode;
+
+      protected override void Context()
+      {
+         base.Context();
+         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, templateBuildingBlock: null);
+      }
+
+      protected override void Because()
+      {
+         sut.NodeDoubleClicked(_treeNode);
+      }
+
+      [Observation]
+      public void should_not_edit_any_building_block()
+      {
+         A.CallTo(() => _buildingBlockTask.Edit(A<IPKSimBuildingBlock>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_result_in_activation_of_the_context_menu()
+      {
+         A.CallTo(() => _contextMenuFactory.CreateFor(_treeNode, sut)).MustNotHaveHappened();
+      }
    }
 
    public class When_the_simulation_explorer_has_a_simulation_added_which_is_already_located_in_the_project : concern_for_SimulationExplorerPresenter

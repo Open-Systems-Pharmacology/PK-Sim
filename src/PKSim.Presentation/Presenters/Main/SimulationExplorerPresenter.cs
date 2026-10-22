@@ -306,10 +306,15 @@ namespace PKSim.Presentation.Presenters.Main
       public override void NodeDoubleClicked(ITreeNode node)
       {
          var tag = node.TagAsObject;
-         var classifiable = tag as ClassifiableSimulation;
-         if (classifiable != null)
+         if (tag is ClassifiableSimulation classifiable)
          {
             EditBuildingBlock(classifiable.Simulation);
+            return;
+         }
+
+         if (node is UsedBuildingBlockInSimulationNode usedBuildingBlockNode)
+         {
+            editTemplateBuildingBlockFor(usedBuildingBlockNode);
             return;
          }
 
@@ -319,10 +324,17 @@ namespace PKSim.Presentation.Presenters.Main
          base.NodeDoubleClicked(node);
       }
 
-      private static bool shouldIgnoreDoubleClick(object tag)
+      private void editTemplateBuildingBlockFor(UsedBuildingBlockInSimulationNode usedBuildingBlockNode)
       {
-         return tag.IsAnImplementationOf<UsedBuildingBlock>() || tag.IsAnImplementationOf<UsedObservedData>();
+         //the template building block may not exist anymore in the project
+         var templateBuildingBlock = usedBuildingBlockNode.TemplateBuildingBlock;
+         if (templateBuildingBlock == null)
+            return;
+
+         EditBuildingBlock(templateBuildingBlock);
       }
+
+      private static bool shouldIgnoreDoubleClick(object tag) => tag.IsAnImplementationOf<UsedBuildingBlock>() || tag.IsAnImplementationOf<UsedObservedData>();
 
       public override IEnumerable<IMenuBarItem> AllCustomMenuItemsFor(ClassificationNode classificationNode)
       {
