@@ -40,6 +40,7 @@ namespace PKSim.UI.Views.ProteinExpression
          grdMappping.UseEmbeddedNavigator = true;
          view.OptionsBehavior.AllowAddRows = DefaultBoolean.True;
          view.OptionsBehavior.AllowDeleteRows = DefaultBoolean.True;
+         view.OptionsBehavior.EditorShowMode = EditorShowMode.MouseDown;
          view.OptionsCustomization.AllowColumnMoving = false;
          view.OptionsView.ShowGroupPanel = false;
          view.OptionsMenu.EnableGroupPanelMenu = false;

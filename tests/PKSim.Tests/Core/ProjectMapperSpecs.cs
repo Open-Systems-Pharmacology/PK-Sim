@@ -1032,6 +1032,103 @@ namespace PKSim.Core
       }
    }
 
+   public abstract class concern_for_ProjectMapper_mapping_simulation_snapshots : concern_for_ProjectMapper
+   {
+      protected PKSimProject _currentProject;
+      protected IndividualSimulation _loadedSimulation;
+      protected SimulationTimeProfileChart _chart;
+      protected OSPSuite.Core.Snapshots.CurveChart _chartSnapshot;
+      protected IReadOnlyList<ModelSimulation> _simulations;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _currentProject = new PKSimProject();
+         _currentProject.AddObservedData(_observedData);
+         _loadedSimulation = new IndividualSimulation().WithName("LOADED_SIM").WithId("LoadedSim");
+         _chart = new SimulationTimeProfileChart();
+         _chartSnapshot = new OSPSuite.Core.Snapshots.CurveChart();
+         _simulationSnapshot = new Simulation { Name = "LOADED_SIM", IndividualAnalyses = new[] { _chartSnapshot } };
+
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).ReturnsLazily(() =>
+         {
+            _loadedSimulation.AddUsedObservedData(_observedData);
+            return (ModelSimulation) _loadedSimulation;
+         });
+         A.CallTo(() => _simulationTimeProfileChartMapper.MapToModel(_chartSnapshot, A<SimulationAnalysisContext>._)).Returns(_chart);
+      }
+
+      protected Task<IReadOnlyList<ModelSimulation>> MapSimulationSnapshots(bool runSimulations)
+      {
+         return sut.MapSimulationsToModels(new[] { _simulationSnapshot }, runSimulations, new SnapshotContext(_currentProject, SnapshotVersions.Current));
+      }
+   }
+
+   public class When_mapping_simulation_snapshots_to_simulations_that_should_be_run : concern_for_ProjectMapper_mapping_simulation_snapshots
+   {
+      protected override async Task Because()
+      {
+         _simulations = await MapSimulationSnapshots(runSimulations: true);
+      }
+
+      [Observation]
+      public void should_return_the_mapped_simulations()
+      {
+         _simulations.ShouldOnlyContain(_loadedSimulation);
+      }
+
+      [Observation]
+      public void should_run_the_simulations()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(_loadedSimulation, null, A<CancellationToken>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_map_the_analyses_with_the_simulation_results()
+      {
+         A.CallTo(() => _simulationTimeProfileChartMapper.MapToModel(_chartSnapshot, A<SimulationAnalysisContext>.That.Matches(x => x.RunSimulation))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_the_analyses_defined_in_the_snapshots_to_the_simulations()
+      {
+         _loadedSimulation.Analyses.ShouldContain(_chart);
+      }
+
+      [Observation]
+      public void should_add_the_observed_data_used_by_the_simulations_to_their_charts()
+      {
+         _chart.AllObservedData().ShouldContain(_observedData);
+      }
+
+      [Observation]
+      public void should_not_add_the_simulations_to_the_project()
+      {
+         _currentProject.All<ModelSimulation>().ShouldBeEmpty();
+      }
+   }
+
+   public class When_mapping_simulation_snapshots_to_simulations_that_should_not_be_run : concern_for_ProjectMapper_mapping_simulation_snapshots
+   {
+      protected override async Task Because()
+      {
+         _simulations = await MapSimulationSnapshots(runSimulations: false);
+      }
+
+      [Observation]
+      public void should_not_run_the_simulations()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>._, A<PKSim.Core.Services.SimulationRunOptions>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_the_analyses_defined_in_the_snapshots_to_the_simulations()
+      {
+         _loadedSimulation.Analyses.ShouldContain(_chart);
+      }
+   }
+
    public class ExpressionProfileEqualityComparer : GenericEqualityComparer<ExpressionProfile>
    {
    }

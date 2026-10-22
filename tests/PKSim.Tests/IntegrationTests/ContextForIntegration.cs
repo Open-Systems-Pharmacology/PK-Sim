@@ -3,11 +3,15 @@ using System.Threading;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Presentation.Diagram.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -23,6 +27,11 @@ using PKSim.R.Services;
 
 namespace PKSim.IntegrationTests
 {
+   public class DiagramModelFactoryForSpecs : IDiagramModelFactory
+   {
+      public IDiagramModel Create() => new DiagramModel();
+   }
+
    [IntegrationTests]
    public abstract class ContextForIntegration<T> : ContextSpecification<T>
    {
@@ -50,6 +59,8 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IPresentationSettingsTask>());
             container.RegisterImplementationOf(A.Fake<IJournalDiagramManagerFactory>());
             container.RegisterImplementationOf(A.Fake<IDataImporter>());
+            container.RegisterImplementationOf<IDiagramModelFactory>(new DiagramModelFactoryForSpecs());
+            container.RegisterImplementationOf<IDiagramModelToXmlMapper>(new DiagramModelToXmlMapper());
 
 
             container.AddRegister(x =>

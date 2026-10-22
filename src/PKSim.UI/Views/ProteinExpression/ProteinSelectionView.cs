@@ -43,6 +43,7 @@ namespace PKSim.UI.Views.ProteinExpression
       {
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
+         gridView3.EditorShowMode = EditorShowMode.MouseDownFocused;
 
          btnSearch.Enabled = false;
 

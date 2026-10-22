@@ -59,6 +59,8 @@ namespace PKSim.UI.Views.Compounds
          _gridView.HiddenEditor += (o, e) => OnEvent(hideEditor);
          _gridView.AllowsFiltering = false;
          _gridView.ShowColumnChooser = false;
+         _gridView.EditorShowMode = EditorShowMode.MouseDown;
+         _gridView.MultiSelect = false;
          _comboBoxUnit = new ComboBoxUnitParameter(_gridControl);
          _isDefaultRepository = new UxRepositoryItemCheckEdit(_gridView);
          _gridControl.ToolTipController = new ToolTipController().Initialize(imageListRetriever);

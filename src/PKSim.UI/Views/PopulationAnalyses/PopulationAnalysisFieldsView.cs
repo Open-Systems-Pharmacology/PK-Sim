@@ -102,13 +102,11 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithCaption(PKSimConstants.UI.Unit)
             .WithRepository(repositoryItemForUnits)
             .WithEditorConfiguration(configureUnitsRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldUnitChanged(o, e.OldValue, e.NewValue)));
 
          _colScaling = _gridViewBinder.Bind(x => x.Scaling)
             .WithCaption(Captions.Scaling)
             .WithRepository(repositoryItemForScaling)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldScalingChanged(o, e.OldValue, e.NewValue)));
 
          _colColor = _gridViewBinder.Bind(x => x.Color)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DevExpress.Utils;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Assets;
@@ -42,6 +43,8 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder = new GridViewBinder<EventMappingDTO>(gridView);
          _comboBoxUnit = new ComboBoxUnitParameter(gridControl);
          gridView.AllowsFiltering = false;
+         gridView.EditorShowMode = EditorShowMode.MouseUp;
+         gridView.MultiSelect = false;
          InitializeWithGrid(gridView);
       }
 
