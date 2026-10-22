@@ -66,6 +66,7 @@ namespace PKSim.Presentation
       private IExecutionContext _executionContext;
       private IMenuBarItemRepository _menuBarItemRepository;
       protected ISingleStartPresenterTask _singleStartPresenterTask;
+      protected IBuildingBlockRetriever _buildingBlockRetriever;
 
       protected override void Context()
       {
@@ -84,6 +85,7 @@ namespace PKSim.Presentation
          _parameterAnalysablesInExplorerPresenter = A.Fake<IParameterAnalysablesInExplorerPresenter>();
          _simulationComparisonTask= A.Fake<ISimulationComparisonTask>();
          _singleStartPresenterTask = A.Fake<ISingleStartPresenterTask>();
+         _buildingBlockRetriever = A.Fake<IBuildingBlockRetriever>();
          _simulationFolderNode = new RootNode(RootNodeTypes.SimulationFolder);
          _comparisonFolderNode = new RootNode(RootNodeTypes.ComparisonFolder);
          _project = new PKSimProject();
@@ -148,7 +150,7 @@ namespace PKSim.Presentation
             _regionResolver, _buildingBlockTask, _buildingBlockInProjectManager, 
             _toolTipNodeCreator, _projectRetriever, _classificationPresenter, 
             _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, 
-            _simulationComparisonTask, _executionContext,_menuBarItemRepository, _singleStartPresenterTask);
+            _simulationComparisonTask, _executionContext,_menuBarItemRepository, _singleStartPresenterTask, _buildingBlockRetriever);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
       }
@@ -162,6 +164,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templateCompoundBuildingBlock);
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_usedCompoundBuildingBlock.TemplateId)).Returns(_templateCompoundBuildingBlock);
       }
 
       protected override void Because()
@@ -182,6 +185,30 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_double_clicking_a_used_building_block_node_whose_template_was_not_available_when_the_node_was_created : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode _treeNode;
+
+      protected override void Context()
+      {
+         base.Context();
+         //this happens when the project is opened while the individuals are being lazy loaded
+         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, templateBuildingBlock: null);
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_usedCompoundBuildingBlock.TemplateId)).Returns(_templateCompoundBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.NodeDoubleClicked(_treeNode);
+      }
+
+      [Observation]
+      public void should_edit_the_template_building_block_now_available_in_the_project()
+      {
+         A.CallTo(() => _buildingBlockTask.Edit(_templateCompoundBuildingBlock)).MustHaveHappened();
+      }
+   }
+
    public class When_double_clicking_a_used_building_block_node_whose_template_does_not_exist_anymore : concern_for_SimulationExplorerPresenter
    {
       private ITreeNode _treeNode;
@@ -190,6 +217,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, templateBuildingBlock: null);
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_usedCompoundBuildingBlock.TemplateId)).Returns(null);
       }
 
       protected override void Because()
