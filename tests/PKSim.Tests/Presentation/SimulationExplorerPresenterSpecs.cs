@@ -65,6 +65,7 @@ namespace PKSim.Presentation
       private ISimulationComparisonTask _simulationComparisonTask;
       private IExecutionContext _executionContext;
       private IMenuBarItemRepository _menuBarItemRepository;
+      protected ISingleStartPresenterTask _singleStartPresenterTask;
 
       protected override void Context()
       {
@@ -81,7 +82,8 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
          _parameterAnalysablesInExplorerPresenter = A.Fake<IParameterAnalysablesInExplorerPresenter>();
-         _simulationComparisonTask= A.Fake<ISimulationComparisonTask>();   
+         _simulationComparisonTask= A.Fake<ISimulationComparisonTask>();
+         _singleStartPresenterTask = A.Fake<ISingleStartPresenterTask>();
          _simulationFolderNode = new RootNode(RootNodeTypes.SimulationFolder);
          _comparisonFolderNode = new RootNode(RootNodeTypes.ComparisonFolder);
          _project = new PKSimProject();
@@ -146,7 +148,7 @@ namespace PKSim.Presentation
             _regionResolver, _buildingBlockTask, _buildingBlockInProjectManager, 
             _toolTipNodeCreator, _projectRetriever, _classificationPresenter, 
             _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, 
-            _simulationComparisonTask, _executionContext,_menuBarItemRepository);
+            _simulationComparisonTask, _executionContext,_menuBarItemRepository, _singleStartPresenterTask);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
       }
@@ -199,6 +201,65 @@ namespace PKSim.Presentation
       public void should_not_edit_any_building_block()
       {
          A.CallTo(() => _buildingBlockTask.Edit(A<IPKSimBuildingBlock>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_result_in_activation_of_the_context_menu()
+      {
+         A.CallTo(() => _contextMenuFactory.CreateFor(_treeNode, sut)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_double_clicking_an_observed_data_node_under_a_simulation : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode _treeNode;
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = new DataRepository(_usedObservedData.Id);
+         _project.AddObservedData(_observedData);
+         _treeNode = new UsedObservedDataNode(_usedObservedData, _observedData);
+      }
+
+      protected override void Because()
+      {
+         sut.NodeDoubleClicked(_treeNode);
+      }
+
+      [Observation]
+      public void should_open_the_observed_data_of_the_project()
+      {
+         A.CallTo(() => _singleStartPresenterTask.StartForSubject(_observedData)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_result_in_activation_of_the_context_menu()
+      {
+         A.CallTo(() => _contextMenuFactory.CreateFor(_treeNode, sut)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_double_clicking_an_observed_data_node_whose_observed_data_does_not_exist_in_the_project_anymore : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode _treeNode;
+
+      protected override void Context()
+      {
+         base.Context();
+         _treeNode = new UsedObservedDataNode(_usedObservedData, new DataRepository(_usedObservedData.Id));
+      }
+
+      protected override void Because()
+      {
+         sut.NodeDoubleClicked(_treeNode);
+      }
+
+      [Observation]
+      public void should_not_open_anything()
+      {
+         A.CallTo(() => _singleStartPresenterTask.StartForSubject(A<DataRepository>._)).MustNotHaveHappened();
       }
 
       [Observation]

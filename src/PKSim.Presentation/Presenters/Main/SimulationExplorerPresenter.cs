@@ -51,6 +51,7 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly ISimulationComparisonTask _simulationComparisonTask;
       private readonly IExecutionContext _executionContext;
       private readonly IMenuBarItemRepository _menuBarItemRepository;
+      private readonly ISingleStartPresenterTask _singleStartPresenterTask;
 
       public SimulationExplorerPresenter(
          ISimulationExplorerView view,
@@ -68,7 +69,8 @@ namespace PKSim.Presentation.Presenters.Main
          IObservedDataInSimulationManager observedDataInSimulationManager,
          ISimulationComparisonTask simulationComparisonTask,
          IExecutionContext executionContext,
-         IMenuBarItemRepository menuBarItemRepository
+         IMenuBarItemRepository menuBarItemRepository,
+         ISingleStartPresenterTask singleStartPresenterTask
          ) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
             buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
@@ -79,6 +81,7 @@ namespace PKSim.Presentation.Presenters.Main
          _simulationComparisonTask = simulationComparisonTask;
          _executionContext = executionContext;
          _menuBarItemRepository = menuBarItemRepository;
+         _singleStartPresenterTask = singleStartPresenterTask;
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
@@ -318,10 +321,23 @@ namespace PKSim.Presentation.Presenters.Main
             return;
          }
 
-         if (shouldIgnoreDoubleClick(tag))
+         if (tag is UsedObservedData usedObservedData)
+         {
+            editObservedDataFor(usedObservedData);
             return;
+         }
 
          base.NodeDoubleClicked(node);
+      }
+
+      private void editObservedDataFor(UsedObservedData usedObservedData)
+      {
+         //the observed data may not exist anymore in the project
+         var observedData = _projectRetriever.CurrentProject.ObservedDataBy(usedObservedData.Id);
+         if (observedData == null)
+            return;
+
+         _singleStartPresenterTask.StartForSubject(observedData);
       }
 
       private void editTemplateBuildingBlockFor(UsedBuildingBlockInSimulationNode usedBuildingBlockNode)
@@ -333,8 +349,6 @@ namespace PKSim.Presentation.Presenters.Main
 
          EditBuildingBlock(templateBuildingBlock);
       }
-
-      private static bool shouldIgnoreDoubleClick(object tag) => tag.IsAnImplementationOf<UsedBuildingBlock>() || tag.IsAnImplementationOf<UsedObservedData>();
 
       public override IEnumerable<IMenuBarItem> AllCustomMenuItemsFor(ClassificationNode classificationNode)
       {
