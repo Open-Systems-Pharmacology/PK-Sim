@@ -1,11 +1,14 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Comparison;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Comparison;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.Reporting.Summary;
+using PKSim.Infrastructure.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -25,6 +28,18 @@ namespace PKSim.IntegrationTests
          var reportBuilderRepository = IoC.Resolve<IReportBuilderRepository>();
          var reportBuilder = reportBuilderRepository.BuilderFor(new Individual());
          reportBuilder.ShouldBeAnInstanceOf<IndividualReportBuilder>();
+      }
+
+      [Observation]
+      public void should_be_able_to_resolve_the_command_reloading_all_observed_data()
+      {
+         IoC.Resolve<ReloadAllObservedDataUICommand>().ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_import_observed_data_with_the_pksim_import_task()
+      {
+         IoC.Resolve<IObservedDataImporter>().ShouldBeAnInstanceOf<ImportObservedDataTask>();
       }
    }
 }

@@ -7,13 +7,13 @@ using OSPSuite.UI.Views.Diagram;
 
 namespace PKSim.UI.Views.Simulations
 {
-   public partial class ReactionDiagramView : BaseDiagramView, IReactionDiagramView
+   public partial class ReactionDiagramView : DiagramView, IReactionDiagramView
    {
       public ReactionDiagramView(IImageListRetriever imageListRetriever)
          : base(imageListRetriever)
       {
          InitializeComponent();
-        _goView.AllowDelete = false;
+         SetReadOnly();
       }
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Reaction;

@@ -90,12 +90,8 @@
          // 
          // gridView3
          // 
-         this.gridView3.EnableColumnContextMenu = true;
          this.gridView3.GridControl = this.grdSelection;
          this.gridView3.Name = "gridView3";
-         this.gridView3.OptionsNavigation.AutoFocusNewRow = true;
-         this.gridView3.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridView3.OptionsSelection.EnableAppearanceFocusedRow = false;
          // 
          // btnSearch
          // 

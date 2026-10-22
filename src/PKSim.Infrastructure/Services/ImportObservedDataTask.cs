@@ -5,14 +5,11 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.Services.ParameterIdentifications;
-using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
@@ -25,7 +22,7 @@ using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
 {
-   public class ImportObservedDataTask : IImportObservedDataTask, IObservedDataConfiguration
+   public class ImportObservedDataTask : IImportObservedDataTask, IObservedDataConfiguration, IObservedDataImporter
    {
       private readonly IDataImporter _dataImporter;
       private readonly IExecutionContext _executionContext;
@@ -38,9 +35,6 @@ namespace PKSim.Infrastructure.Services
       private readonly IDialogCreator _dialogCreator;
       private readonly IContainer _container;
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
-      private readonly IEventPublisher _eventPublisher;
-      private readonly IParameterIdentificationTask _parameterIdentificationTask;
-      private readonly ICoreWorkspace _workspace;
 
       public ImportObservedDataTask(IDataImporter dataImporter,
          IExecutionContext executionContext,
@@ -52,10 +46,7 @@ namespace PKSim.Infrastructure.Services
          IParameterChangeUpdater parameterChangeUpdater,
          IDialogCreator dialogCreator,
          IContainer container,
-         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository,
-         IEventPublisher eventPublisher,
-         IParameterIdentificationTask parameterIdentificationTask,
-         ICoreWorkspace workspace
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository
       )
       {
          _dataImporter = dataImporter;
@@ -69,9 +60,6 @@ namespace PKSim.Infrastructure.Services
          _dialogCreator = dialogCreator;
          _container = container;
          _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
-         _eventPublisher = eventPublisher;
-         _parameterIdentificationTask = parameterIdentificationTask;
-         _workspace = workspace;
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
@@ -96,71 +84,13 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void AddAndReplaceObservedDataFromConfigurationToProject(string configurationId, IReadOnlyList<DataRepository> observedDataFromSameFile)
+      public IReadOnlyList<DataRepository> ImportFrom(ImporterConfiguration configuration) => getObservedDataFromImporter(configuration, null, false, false);
+
+      public void AddImportedObservedDataToProject(DataRepository observedData)
       {
-         var configuration = _executionContext.Project.ImporterConfigurationBy(configurationId);
-
-         if (configuration == null)
-         {
-            _dialogCreator.MessageBoxError(PKSimConstants.Error.ImporterConfigurationNotFoundInProject);
-            return;
-         }
-
-         var importedObservedData = getObservedDataFromImporter(configuration, null, false, false);
-         var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile);
-
-         if (reloadDataSets == null) return;
-
-         foreach (var dataSet in reloadDataSets.NewDataSets)
-         {
-            adjustMolWeight(dataSet);
-            _observedDataTask.AddObservedDataToProject(dataSet);
-            updateQuantityInfoInImportedColumns(dataSet);
-         }
-
-         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray()) //toDo it should be checked if to array solves the deleting problem
-         {
-            _observedDataTask.Delete(dataSet);
-         }
-
-
-         foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
-         {
-            //TODO this here should be tested
-            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
-
-            foreach (var column in dataSet.Columns)
-            {
-               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
-               {
-                  QuantityInfo = column.QuantityInfo,
-                  DataInfo = column.DataInfo,
-                  IsInternal = column.IsInternal,
-                  Values = column.Values
-               };
-
-               if (column.IsBaseGrid())
-               {
-                  existingDataSet.BaseGrid.Values = datacolumn.Values;
-               }
-               else
-               {
-                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
-                  if (existingColumn == null)
-                     existingDataSet.Add(column);
-                  else
-                     existingColumn.Values = column.Values;
-               }
-
-               _workspace.Project.HasChanged = true;
-            }
-
-            _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
-            foreach (var dataset in observedDataFromSameFile)
-            {
-               _eventPublisher.PublishEvent(new ObservedDataValueChangedEvent(dataset));
-            }
-         }
+         adjustMolWeight(observedData);
+         _observedDataTask.AddObservedDataToProject(observedData);
+         updateQuantityInfoInImportedColumns(observedData);
       }
 
       public void AddObservedDataToProjectForCompound(Compound compound)
@@ -187,16 +117,7 @@ namespace PKSim.Infrastructure.Services
          if (importedObservedData == null) return;
 
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
-         {
-            adjustMolWeight(observedData);
-            _observedDataTask.AddObservedDataToProject(observedData);
-            updateQuantityInfoInImportedColumns(observedData);
-         }
-      }
-
-      private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
-      {
-         return (from dataRepo in dataRepositoryList let result = _dataImporter.AreFromSameMetaDataCombination(dataRepo, targetDataRepository) where result select dataRepo).FirstOrDefault();
+            AddImportedObservedDataToProject(observedData);
       }
 
       private void addNamingPatterns(DataImporterSettings dataImporterSettings)
@@ -248,7 +169,7 @@ namespace PKSim.Infrastructure.Services
          return (metaDataCategories, dataImporterSettings);
       }
 
-      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Compound compound, bool promptUser,
+      private IReadOnlyList<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Compound compound, bool promptUser,
          bool allowCompoundNameEdit)
       {
          var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
@@ -279,11 +200,7 @@ namespace PKSim.Infrastructure.Services
 
          _observedDataTask.AddImporterConfigurationToProject(configuration);
          foreach (var observedData in dataRepositories)
-         {
-            adjustMolWeight(observedData);
-            _observedDataTask.AddObservedDataToProject(observedData);
-            updateQuantityInfoInImportedColumns(observedData);
-         }
+            AddImportedObservedDataToProject(observedData);
       }
 
       private void updateQuantityInfoInImportedColumns(DataRepository observedData)

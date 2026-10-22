@@ -131,7 +131,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
          observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-         var allSimulationsWithSnapshots = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
+         var allSimulationsWithSnapshots = await allSimulationsFrom(projectSnapshot.Simulations, projectContext.RunSimulations, snapshotContext);
          allSimulationsWithSnapshots?.Each(x => addSimulationToProject(project, x.simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(projectSnapshot.SimulationComparisons, snapshotContext);
@@ -143,16 +143,38 @@ namespace PKSim.Core.Snapshots.Mappers
          var allQualificationPlans = await allQualificationPlansFrom(projectSnapshot.QualificationPlans, snapshotContext);
          allQualificationPlans?.Each(qualificationPlan => addQualificationPlanToProject(project, qualificationPlan));
 
+         await runAndAddAnalysesToSimulations(allSimulationsWithSnapshots, projectContext.RunSimulations, snapshotContext);
+
+         //Map all classifications once project is loaded
+         await updateProjectClassifications(projectSnapshot, snapshotContext);
+
+         return project;
+      }
+
+      /// <summary>
+      ///    Maps the simulation <paramref name="snapshots" /> using the building blocks of the project defined in
+      ///    <paramref name="snapshotContext" />, runs them if <paramref name="runSimulations" /> is <c>true</c> and maps their
+      ///    analyses. The simulations are not added to the project.
+      /// </summary>
+      public virtual async Task<IReadOnlyList<ModelSimulation>> MapSimulationsToModels(Simulation[] snapshots, bool runSimulations, SnapshotContext snapshotContext)
+      {
+         var allSimulationsWithSnapshots = await allSimulationsFrom(snapshots, runSimulations, snapshotContext);
+         await runAndAddAnalysesToSimulations(allSimulationsWithSnapshots, runSimulations, snapshotContext);
+         return allSimulationsWithSnapshots.Select(x => x.simulation).ToList();
+      }
+
+      private async Task runAndAddAnalysesToSimulations(IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)> allSimulations, bool runSimulations, SnapshotContext snapshotContext)
+      {
          var runsAborted = false;
-         if (projectContext.RunSimulations)
+         if (runSimulations)
          {
             try
             {
-               await runParallelSimulations(allSimulationsWithSnapshots, snapshotContext);
+               await runParallelSimulations(allSimulations, snapshotContext);
             }
             catch (Exception e) when (e.IsOutOfMemory())
             {
-               //running the simulations is optional, reloading the project is not: keep the loaded project
+               //running the simulations is optional, loading them is not: keep the loaded simulations
                runsAborted = true;
                _logger.AddException(e, snapshotContext.Project.Name);
                _logger.AddError(PKSimConstants.Error.SimulationRunsAbortedAfterOutOfMemory, snapshotContext.Project.Name);
@@ -160,12 +182,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }
 
          //after an aborted run phase the analyses are mapped as in a no-run load: there are no results to read
-         await addAnalysesToSimulations(snapshotContext, allSimulationsWithSnapshots, projectContext.RunSimulations && !runsAborted);
-
-         //Map all classifications once project is loaded
-         await updateProjectClassifications(projectSnapshot, snapshotContext);
-
-         return project;
+         await addAnalysesToSimulations(snapshotContext, allSimulations, runSimulations && !runsAborted);
       }
 
       private async Task addAnalysesToSimulations(SnapshotContext snapshotContext, IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)> allSimulations, bool runSimulations)
@@ -370,14 +387,14 @@ namespace PKSim.Core.Snapshots.Mappers
          AddClassifiableToProject<ClassifiableQualificationPlan, OSPSuite.Core.Domain.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
       }
 
-      private async Task<IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)>> allSimulationsFrom(ProjectContext projectContext, Simulation[] snapshots, SnapshotContext snapshotContext)
+      private async Task<IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)>> allSimulationsFrom(Simulation[] snapshots, bool runSimulations, SnapshotContext snapshotContext)
       {
          var simulations = new List<(ModelSimulation, Simulation)>();
 
          if (snapshots == null || snapshots.Length == 0)
             return simulations;
 
-         var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext);
+         var simulationContext = new SimulationContext(runSimulations, snapshotContext);
 
          //the startable repositories must finish initializing before models are constructed in parallel
          var options = parallelOptionsFor(snapshots.Length, snapshotContext.Project.Name);

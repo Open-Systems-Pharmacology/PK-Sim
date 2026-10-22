@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -47,8 +46,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
          _gridViewBinder.Bind(x => x.LineStyle)
             .WithCaption(PKSimConstants.UI.LineStyle)
-            .WithRepository(x => _lineStyleRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+            .WithRepository(x => _lineStyleRepository);
 
          _gridViewBinder.Changed += NotifyViewChanged;
       }

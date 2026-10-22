@@ -38,7 +38,9 @@ namespace PKSim.UI.Views.Simulations
          InitializeComponent();
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
+         gridView.MultiSelect = false;
          gridView.OptionsSelection.EnableAppearanceFocusedRow = true;
+         gridView.EditorShowMode = EditorShowMode.MouseDown;
          _gridViewBinder = new GridViewBinder<SimulationResultsFileSelectionDTO>(gridView) { BindingMode = BindingMode.TwoWay };
          _filePathRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
          _screenBinder = new ScreenBinder<ImportSimulationResultsDTO>();

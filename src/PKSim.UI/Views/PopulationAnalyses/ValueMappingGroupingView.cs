@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DevExpress.Utils;
 using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -22,6 +23,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder = new GridViewBinder<GroupingLabelDTO>(gridView);
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
+         gridView.MultiSelect = false;
+         gridView.EditorShowMode = EditorShowMode.MouseDown;
          _symbolsRepository = new UxRepositoryItemSymbols(gridView);
       }
 

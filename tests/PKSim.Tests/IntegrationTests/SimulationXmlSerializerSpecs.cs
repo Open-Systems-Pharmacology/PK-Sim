@@ -1,9 +1,14 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
+using System.Xml.Linq;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Serializer.Xml;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
@@ -131,6 +136,115 @@ namespace PKSim.IntegrationTests
          _deserializedSimulation.ParameterChangeTracker.ChangedPaths.Count.ShouldBeEqualTo(2);
          _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Lipophilicity").ShouldBeTrue();
          _deserializedSimulation.ParameterChangeTracker.IsTracked("Organism|COMP1|Permeability").ShouldBeTrue();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         Unregister(_simulation);
+         Unregister(_deserializedSimulation);
+      }
+   }
+
+   public class When_serializing_an_individual_simulation_with_a_reaction_diagram_model : ContextForSerialization<IndividualSimulation>
+   {
+      private IndividualSimulation _simulation;
+      private IndividualSimulation _deserializedSimulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _simulation = DomainFactoryForSpecs.CreateDefaultSimulation();
+         var diagramModel = new DiagramModel {IsLayouted = true};
+         diagramModel.CreateNode<MoleculeNode>("mol-id", new PointF(20, 40), diagramModel).Name = "A";
+         var reactionNode = diagramModel.CreateNode<ReactionNode>("reaction-id", new PointF(100, 50), diagramModel);
+         reactionNode.Name = "R1";
+         reactionNode.DisplayEductsRight = true;
+         reactionNode.LocationFixed = true;
+         _simulation.ReactionDiagramModel = diagramModel;
+      }
+
+      protected override void Because()
+      {
+         _deserializedSimulation = SerializeAndDeserialize(_simulation);
+      }
+
+      [Observation]
+      public void should_have_deserialized_the_reaction_diagram_model_with_its_layout_state()
+      {
+         _deserializedSimulation.ReactionDiagramModel.ShouldBeAnInstanceOf<DiagramModel>();
+         _deserializedSimulation.ReactionDiagramModel.IsLayouted.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_deserialized_the_nodes_with_their_positions()
+      {
+         var moleculeNode = _deserializedSimulation.ReactionDiagramModel.GetNode<MoleculeNode>("mol-id");
+         moleculeNode.Name.ShouldBeEqualTo("A");
+         moleculeNode.Location.ShouldBeEqualTo(new PointF(20, 40));
+
+         var reactionNode = _deserializedSimulation.ReactionDiagramModel.GetNode<ReactionNode>("reaction-id");
+         reactionNode.Name.ShouldBeEqualTo("R1");
+         reactionNode.Location.ShouldBeEqualTo(new PointF(100, 50));
+         reactionNode.DisplayEductsRight.ShouldBeTrue();
+         reactionNode.LocationFixed.ShouldBeTrue();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         Unregister(_simulation);
+         Unregister(_deserializedSimulation);
+      }
+   }
+
+   public class When_deserializing_an_individual_simulation_with_a_legacy_reaction_diagram_model : ContextForSerialization<IndividualSimulation>
+   {
+      private IndividualSimulation _simulation;
+      private IndividualSimulation _deserializedSimulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _simulation = DomainFactoryForSpecs.CreateDefaultSimulation();
+         _simulation.ReactionDiagramModel = null;
+      }
+
+      protected override void Because()
+      {
+         var simulationElement = XmlHelper.ElementFromBytes(_serializationManager.Serialize(_simulation));
+         simulationElement.Add(XElement.Parse(
+            "<ReactionDiagramModel IsLayouted=\"True\">" +
+            "<ReactionNode Id=\"reaction-id-1\" Name=\"R1\" Location=\"100 50\" Size=\"38 36.072914\" Hidden=\"false\" IsVisible=\"true\" LocationFixed=\"true\" UserFlags=\"6\" Description=\"R1 description\" NodeSize=\"Middle\" DisplayEductsRight=\"true\" />" +
+            "<MoleculeNode Id=\"mol-guid-a\" Name=\"A\" Location=\"20 40\" Size=\"32.5 22.5\" Hidden=\"false\" IsVisible=\"true\" LocationFixed=\"false\" UserFlags=\"4\" Description=\"A\" NodeSize=\"Large\" />" +
+            "</ReactionDiagramModel>"));
+         _deserializedSimulation = _serializationManager.Deserialize<IndividualSimulation>(XmlHelper.XmlContentToByte(simulationElement));
+      }
+
+      [Observation]
+      public void should_create_a_reaction_diagram_model_from_the_legacy_element()
+      {
+         _deserializedSimulation.ReactionDiagramModel.ShouldBeAnInstanceOf<DiagramModel>();
+         _deserializedSimulation.ReactionDiagramModel.IsLayouted.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_restore_the_legacy_nodes()
+      {
+         var reactionNode = _deserializedSimulation.ReactionDiagramModel.GetNode<ReactionNode>("reaction-id-1");
+         reactionNode.Name.ShouldBeEqualTo("R1");
+         reactionNode.Location.ShouldBeEqualTo(new PointF(100, 50));
+         reactionNode.LocationFixed.ShouldBeTrue();
+         reactionNode.UserFlags.ShouldBeEqualTo(6);
+         reactionNode.Description.ShouldBeEqualTo("R1 description");
+         reactionNode.NodeSize.ShouldBeEqualTo(NodeSize.Middle);
+         reactionNode.DisplayEductsRight.ShouldBeTrue();
+
+         var moleculeNode = _deserializedSimulation.ReactionDiagramModel.GetNode<MoleculeNode>("mol-guid-a");
+         moleculeNode.Name.ShouldBeEqualTo("A");
+         moleculeNode.Location.ShouldBeEqualTo(new PointF(20, 40));
+         moleculeNode.LocationFixed.ShouldBeFalse();
+         moleculeNode.NodeSize.ShouldBeEqualTo(NodeSize.Large);
       }
 
       public override void GlobalCleanup()

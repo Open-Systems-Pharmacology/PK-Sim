@@ -1,9 +1,12 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Threading;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -316,6 +319,44 @@ namespace PKSim.IntegrationTests
       public void should_return_the_expected_values_for_reference_concentration()
       {
          _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.32, 1e-3);
+      }
+   }
+
+   public class When_creating_random_populations_with_the_same_seed_for_a_child_pugh_A_and_a_child_pugh_C_individual : concern_for_HIDiseaseStateImplementation
+   {
+      private const int NUMBER_OF_INDIVIDUALS = 10;
+      private Population _populationA;
+      private Population _populationC;
+      private readonly string _liverVolumePath = new[] {Constants.ORGANISM, LIVER, VOLUME}.ToPathString();
+
+      protected override void Because()
+      {
+         _populationA = createPopulationFor(HIDiseaseStateImplementation.ChildPughScore.A);
+         _populationC = createPopulationFor(HIDiseaseStateImplementation.ChildPughScore.C);
+      }
+
+      private Population createPopulationFor(double childPughScore)
+      {
+         var individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.ICRP);
+         individual.OriginData.DiseaseState = _diseaseStateHI;
+         individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter {Name = CHILD_PUGH_SCORE, Value = childPughScore});
+         var populationSettings = IoC.Resolve<IIndividualToPopulationSettingsMapper>().MapFrom(individual);
+         populationSettings.NumberOfIndividuals = NUMBER_OF_INDIVIDUALS;
+         return IoC.Resolve<IRandomPopulationFactory>().CreateFor(populationSettings, new CancellationToken(), seed: 1234).Result;
+      }
+
+      [Observation]
+      public void should_apply_the_child_pugh_score_of_the_base_individual_to_each_individual()
+      {
+         //same seed => same individuals before the HI algorithm is applied. Only the Child-Pugh liver volume factor differs (C: 0.28, A: 0.69)
+         var liverVolumesA = _populationA.AllValuesFor(_liverVolumePath);
+         var liverVolumesC = _populationC.AllValuesFor(_liverVolumePath);
+         liverVolumesA.Count.ShouldBeEqualTo(NUMBER_OF_INDIVIDUALS);
+         liverVolumesC.Count.ShouldBeEqualTo(NUMBER_OF_INDIVIDUALS);
+         for (int i = 0; i < NUMBER_OF_INDIVIDUALS; i++)
+         {
+            (liverVolumesC[i] / liverVolumesA[i]).ShouldBeEqualTo(0.28 / 0.69, 1e-3);
+         }
       }
    }
 
