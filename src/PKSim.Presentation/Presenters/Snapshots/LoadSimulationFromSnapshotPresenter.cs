@@ -27,7 +27,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
    public class LoadSimulationFromSnapshotPresenter : LoadFromSnapshotPresenter<Simulation>, ILoadSimulationFromSnapshotPresenter
    {
-      private readonly SimulationMapper _simulationMapper;
+      private readonly ProjectMapper _projectMapper;
       private readonly IPKSimProjectRetriever _projectRetriever;
 
       public LoadSimulationFromSnapshotPresenter(
@@ -38,11 +38,11 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IObjectTypeResolver objectTypeResolver,
          IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
-         SimulationMapper simulationMapper,
+         ProjectMapper projectMapper,
          IPKSimProjectRetriever projectRetriever
       ) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
       {
-         _simulationMapper = simulationMapper;
+         _projectMapper = projectMapper;
          _projectRetriever = projectRetriever;
       }
 
@@ -55,9 +55,11 @@ namespace PKSim.Presentation.Presenters.Snapshots
       protected override async Task<IEnumerable<Simulation>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
          var snapshots = await _snapshotTask.LoadSnapshotsAsync<PKSim.Core.Snapshots.Simulation>(loadFromSnapshotDTO.SnapshotFile);
-         var simulationContext = new SimulationContext(run: loadFromSnapshotDTO.RunSimulations, new SnapshotContext(project: _projectRetriever.Current, version: SnapshotVersions.Current));
-         var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, simulationContext));
-         return await Task.WhenAll(tasks);
+         var snapshotContext = new SnapshotContext(project: _projectRetriever.Current, version: SnapshotVersions.Current);
+         var simulations = await _projectMapper.MapSimulationsToModels(snapshots.ToArray(), loadFromSnapshotDTO.RunSimulations, snapshotContext);
+
+         //simulations that cannot be loaded are logged, not thrown: returning no model keeps OK disabled as a failed load would
+         return simulations.Any() ? simulations : null;
       }
    }
 }
