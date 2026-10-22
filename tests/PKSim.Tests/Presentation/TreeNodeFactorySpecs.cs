@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 using TreeNodeFactory = PKSim.Presentation.Nodes.TreeNodeFactory;
 
@@ -105,13 +106,16 @@ namespace PKSim.Presentation
       private ITreeNode _result;
       private Simulation _simulation;
       private UsedBuildingBlock _bb;
+      private IPKSimBuildingBlock _templateBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<Simulation>();
-         _bb = new UsedBuildingBlock("toto", PKSimBuildingBlockType.Compound);
-         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_bb.TemplateId)).Returns(A.Fake<IPKSimBuildingBlock>());
+         _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>();
+         _bb = new UsedBuildingBlock("toto", PKSimBuildingBlockType.Compound) {Id = "usedBB"};
+         A.CallTo(() => _simulation.UsedBuildingBlockById(_bb.Id)).Returns(_bb);
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_bb.TemplateId)).Returns(_templateBuildingBlock);
       }
 
       protected override void Because()
@@ -120,15 +124,21 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_retrieve_the_building_block_from_the_building_block_id()
+      public void should_not_retrieve_the_template_building_block_when_creating_the_node()
       {
-         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_bb.TemplateId)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(A<string>._)).MustNotHaveHappened();
       }
 
       [Observation]
       public void should_return_a_building_block_node()
       {
          _result.ShouldBeAnInstanceOf<UsedBuildingBlockInSimulationNode>();
+      }
+
+      [Observation]
+      public void should_return_a_node_resolving_the_template_building_block_from_the_template_id_of_the_used_building_block()
+      {
+         _result.DowncastTo<UsedBuildingBlockInSimulationNode>().TemplateBuildingBlock.ShouldBeEqualTo(_templateBuildingBlock);
       }
    }
 
