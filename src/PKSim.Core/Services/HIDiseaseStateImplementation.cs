@@ -186,7 +186,20 @@ namespace PKSim.Core.Services
          UpdateParameter(valueOriginId)(new(individualMolecule.ReferenceConcentration, factors[score]));
       }
 
-      private double childPughScoreFor(Individual individual) => individual.OriginData.DiseaseStateParameters.FindByName(CHILD_PUGH_SCORE).Value;
+      private double childPughScoreFor(Individual individual) => childPughScoreFor(individual.OriginData);
+
+      private double childPughScoreFor(OriginData originData) => originData.DiseaseStateParameters.FindByName(CHILD_PUGH_SCORE).Value;
+
+      public override double PlasmaProteinOntogenyFactorFor(string plasmaProteinOntogenyFactorName, OriginData originData)
+      {
+         if (string.Equals(plasmaProteinOntogenyFactorName, ONTOGENY_FACTOR_ALBUMIN))
+            return _albuminScalingFactor[childPughScoreFor(originData)];
+
+         if (string.Equals(plasmaProteinOntogenyFactorName, ONTOGENY_FACTOR_AGP))
+            return _agpScalingFactor[childPughScoreFor(originData)];
+
+         return 1;
+      }
 
       public override (bool isValid, string error) IsValid(OriginData originData)
       {

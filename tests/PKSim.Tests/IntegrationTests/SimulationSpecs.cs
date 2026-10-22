@@ -265,6 +265,35 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_creating_a_population_for_a_hepatic_impairment_individual : concern_for_PopulationSimulation
+   {
+      private Population _population;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
+         var diseaseState = diseaseStateRepository.FindByName(CoreConstants.DiseaseStates.HI);
+         _individual.OriginData.DiseaseState = diseaseState;
+         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter { Name = Constants.Parameters.CHILD_PUGH_SCORE, Value = HIDiseaseStateImplementation.ChildPughScore.A });
+         _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual, numberOfIndividuals: 50, seed: 1234);
+      }
+
+      [Observation]
+      public void should_scale_the_plasma_protein_ontogeny_factors_by_the_child_pugh_factors()
+      {
+         //the median ontogeny factor of albumin and AGP is 1 for adults. Child-Pugh A scales them by 0.81 and 0.6
+         medianOrganismValueFor(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN).ShouldBeEqualTo(0.81, 0.1);
+         medianOrganismValueFor(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP).ShouldBeEqualTo(0.6, 0.1);
+      }
+
+      private double medianOrganismValueFor(string parameterName)
+      {
+         var sortedValues = _population.AllOrganismValuesFor(parameterName, IoC.Resolve<IEntityPathResolver>()).OrderBy(x => x).ToList();
+         return sortedValues[sortedValues.Count / 2];
+      }
+   }
+
    public class When_setting_the_value_of_the_hematocrit_parameter_in_the_individual : concern_for_IndividualSimulation
    {
       public override void GlobalContext()
