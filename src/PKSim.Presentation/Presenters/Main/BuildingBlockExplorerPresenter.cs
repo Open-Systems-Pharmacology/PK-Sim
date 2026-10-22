@@ -172,12 +172,12 @@ namespace PKSim.Presentation.Presenters.Main
          return string.Empty;
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
+      public override bool RemoveDataUnderClassifications(IReadOnlyList<ITreeNode<IClassification>> classificationNodes)
       {
-         if (classificationNode.Tag.ClassificationType == ClassificationType.ObservedData)
-            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+         if (classificationNodes.First().Tag.ClassificationType == ClassificationType.ObservedData)
+            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNodes);
 
-         var buildingBlocks = classificationNode.AllLeafNodes
+         var buildingBlocks = classificationNodes.SelectMany(x => x.AllLeafNodes)
             .Select(x => x.TagAsObject)
             .OfType<IClassifiableWrapper>()
             .Select(x => x.WrappedObject)

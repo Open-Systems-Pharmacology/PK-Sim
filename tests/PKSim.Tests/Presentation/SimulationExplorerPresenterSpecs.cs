@@ -60,7 +60,7 @@ namespace PKSim.Presentation
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       protected IPKSimBuildingBlock _templateCompoundBuildingBlock;
       protected ITreeNode _usedObservedDataNode;
-      private IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
+      protected IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
       private ISimulationComparisonTask _simulationComparisonTask;
       private IExecutionContext _executionContext;
@@ -481,6 +481,71 @@ namespace PKSim.Presentation
       public void should_udpate_the_reference_to_the_old_building_block_with_the_new_building_block()
       {
          _usedBuildingBlockNode.TemplateBuildingBlock.ShouldBeEqualTo(_newBuildingBlock);
+      }
+   }
+
+   public class When_removing_the_simulations_defined_under_multiple_simulation_folders : concern_for_SimulationExplorerPresenter
+   {
+      private ClassificationNode _folder1;
+      private ClassificationNode _folder2;
+      private IReadOnlyList<Simulation> _deletedSimulations;
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _folder1 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Simulation});
+         _folder2 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Simulation});
+         _folder1.AddChild(_individualSimulationNode);
+         _folder2.AddChild(_populationSimulationNode);
+
+         A.CallTo(() => _buildingBlockTask.Delete(A<IReadOnlyList<Simulation>>._))
+            .Invokes(x => _deletedSimulations = x.GetArgument<IReadOnlyList<Simulation>>(0))
+            .Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.RemoveDataUnderClassifications(new[] {_folder1, _folder2});
+      }
+
+      [Observation]
+      public void should_delete_the_simulations_of_all_folders_at_once()
+      {
+         A.CallTo(() => _buildingBlockTask.Delete(A<IReadOnlyList<Simulation>>._)).MustHaveHappenedOnceExactly();
+         _deletedSimulations.ShouldOnlyContain(_simulation, _populationSimulation);
+      }
+
+      [Observation]
+      public void should_return_true_if_the_simulations_were_deleted()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_removing_the_parameter_identifications_defined_under_multiple_folders : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode<IClassification>[] _folders;
+
+      protected override void Context()
+      {
+         base.Context();
+         _folders = new ITreeNode<IClassification>[]
+         {
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ParameterIdentification}),
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ParameterIdentification})
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveDataUnderClassifications(_folders);
+      }
+
+      [Observation]
+      public void should_let_the_parameter_analysables_presenter_remove_the_data_of_all_folders_at_once()
+      {
+         A.CallTo(() => _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassifications(_folders)).MustHaveHappenedOnceExactly();
       }
    }
 }
