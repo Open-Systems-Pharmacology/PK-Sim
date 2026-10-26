@@ -1,12 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -26,12 +31,16 @@ namespace PKSim.UI.Views
       private readonly IToolTipCreator _toolTipCreator;
       private IUserSettingsPresenter _presenter;
       private ScreenBinder<UserSettingsDTO> _screenBinder;
+      private readonly GridViewBinder<TemplateSourceDTO> _templateSourceBinder;
 
       public UserSettingsView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
       {
          InitializeComponent();
          _imageListRetriever = imageListRetriever;
          _toolTipCreator = toolTipCreator;
+         gridViewTemplateSources.AllowsFiltering = false;
+         gridViewTemplateSources.EditorShowMode = EditorShowMode.Default;
+         _templateSourceBinder = new GridViewBinder<TemplateSourceDTO>(gridViewTemplateSources);
          cbDefaultSpecies.Properties.SmallImages = _imageListRetriever.AllImages16x16;
          cbDefaultSpecies.Properties.LargeImages = _imageListRetriever.AllImages32x32;
          cbDefaultPopulationAnalysis.Properties.SmallImages = _imageListRetriever.AllImages16x16;
@@ -142,6 +151,55 @@ namespace PKSim.UI.Views
          _screenBinder.Changed += NotifyViewChanged;
 
          tbTemplateDatabase.ButtonClick += (o, e) => OnEvent(() => templateDatabaseButtonClick(o, e));
+
+         initializeTemplateSourceBinding();
+      }
+
+      private void initializeTemplateSourceBinding()
+      {
+         var urlRepository = createTemplateSourceUrlRepository();
+
+         _templateSourceBinder.Bind(x => x.Name)
+            .WithCaption(PKSimConstants.UI.Name);
+
+         _templateSourceBinder.Bind(x => x.Url)
+            .WithCaption(PKSimConstants.UI.Url)
+            .WithRepository(dto => urlRepository)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+
+         _templateSourceBinder.Changed += NotifyViewChanged;
+
+         urlRepository.ButtonClick += (o, e) => OnEvent(() => templateSourceButtonClick(o, e));
+         btnAddTemplateSource.Click += (o, e) => OnEvent(_presenter.AddTemplateSource);
+      }
+
+      private RepositoryItemButtonEdit createTemplateSourceUrlRepository()
+      {
+         var buttonRepository = new RepositoryItemButtonEdit();
+         //First button selects a local summary file, second one removes the source
+         buttonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
+         buttonRepository.Buttons[0].ToolTip = PKSimConstants.UI.SelectTemplateSourceFile;
+         buttonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete) {ToolTip = PKSimConstants.UI.RemoveTemplateSource});
+         return buttonRepository;
+      }
+
+      private void templateSourceButtonClick(object sender, ButtonPressedEventArgs e)
+      {
+         var editor = (ButtonEdit) sender;
+         var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
+         var templateSource = _templateSourceBinder.FocusedElement;
+         if (templateSource == null)
+            return;
+
+         if (buttonIndex == 0)
+         {
+            _presenter.SelectTemplateSourceFile(templateSource);
+            return;
+         }
+
+         //the row is removed once the editor that raised the event is closed
+         gridViewTemplateSources.CloseEditor();
+         BeginInvoke(new Action(() => OnEvent(() => _presenter.RemoveTemplateSource(templateSource))));
       }
 
       private IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> allModesForPIAndSA()
@@ -167,6 +225,7 @@ namespace PKSim.UI.Views
       public void BindTo(UserSettingsDTO userSettingsDTO)
       {
          _screenBinder.BindToSource(userSettingsDTO);
+         _templateSourceBinder.BindToSource(userSettingsDTO.TemplateSources);
       }
 
       public void RefreshAllIndividualList()
@@ -174,7 +233,7 @@ namespace PKSim.UI.Views
          _screenBinder.RefreshListElements();
       }
 
-      public override bool HasError => _screenBinder.HasError;
+      public override bool HasError => _screenBinder.HasError || _templateSourceBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -212,6 +271,9 @@ namespace PKSim.UI.Views
          layoutItemDefaultPopulationAnalysis.Text = PKSimConstants.UI.DefaultPopulationAnalysisType.FormatForLabel();
          layoutItemPreferredViewLayout.Text = PKSimConstants.UI.PreferredViewLayout.FormatForLabel();
          layoutItemTemplateRefBehavior.Text = PKSimConstants.UI.TemplateReferenceBehavior.FormatForLabel();
+         layoutItemTemplateSources.Text = PKSimConstants.UI.TemplateSources.FormatForLabel();
+         layoutItemTemplateSources.OptionsToolTip.ToolTip = PKSimConstants.UI.TemplateSourcesDescription;
+         btnAddTemplateSource.InitWithImage(ApplicationIcons.Add, PKSimConstants.UI.AddTemplateSource);
          layoutGroupDefaults.Text = PKSimConstants.UI.Defaults;
          Caption = PKSimConstants.UI.UserGeneral;
          tbTemplateDatabase.Properties.Buttons[0].SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.SelectTemplateDatabasePath, PKSimConstants.UI.TemplateDatabasePath, ApplicationIcons.ProjectOpen);

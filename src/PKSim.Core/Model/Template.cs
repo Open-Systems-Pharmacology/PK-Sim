@@ -107,6 +107,16 @@ namespace PKSim.Core.Model
       /// </summary>
       public bool Qualified { get; set; }
 
+      /// <summary>
+      ///    Additional template source this template was loaded from or null if the template belongs to the OSP library
+      /// </summary>
+      public TemplateSource Source { get; set; }
+
+      /// <summary>
+      ///    Returns true if the template belongs to the OSP template library
+      /// </summary>
+      public bool IsFromOSPLibrary => Source == null;
+
       public override bool IsSupportedByCurrentVersion(string currentVersion)
       {
          var curVersion = new Version(currentVersion);
