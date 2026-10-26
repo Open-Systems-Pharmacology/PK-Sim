@@ -101,22 +101,24 @@ namespace PKSim.Presentation.Presenters.Main
                 _parameterAnalysablesInExplorerPresenter.CanDrag(node);
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
+      public override bool RemoveDataUnderClassifications(IReadOnlyList<ITreeNode<IClassification>> classificationNodes)
       {
-         if (classificationNode.Tag.ClassificationType == ClassificationType.Simulation)
+         var classificationType = classificationNodes.First().Tag.ClassificationType;
+
+         if (classificationType == ClassificationType.Simulation)
          {
-            var allSimulations = classificationNode.AllNodes<SimulationNode>().Select(x => x.Tag.Simulation).ToList();
+            var allSimulations = classificationNodes.SelectMany(x => x.AllNodes<SimulationNode>()).Select(x => x.Tag.Simulation).ToList();
             return _buildingBlockTask.Delete(allSimulations);
          }
 
-         if (classificationNode.Tag.ClassificationType == ClassificationType.Comparison)
+         if (classificationType == ClassificationType.Comparison)
          {
-            var allComparisons = classificationNode.AllNodes<ComparisonNode>().Select(x => x.Tag.Comparison).ToList();
+            var allComparisons = classificationNodes.SelectMany(x => x.AllNodes<ComparisonNode>()).Select(x => x.Tag.Comparison).ToList();
             return _simulationComparisonTask.Delete(allComparisons);
          }
 
 
-         return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassification(classificationNode);
+         return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassifications(classificationNodes);
       }
 
       protected override void AddProjectToTree(IProject project)

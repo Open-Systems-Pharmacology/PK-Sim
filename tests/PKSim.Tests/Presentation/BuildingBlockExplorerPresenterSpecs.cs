@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -49,13 +50,13 @@ namespace PKSim.Presentation
       private IRegionResolver _regionResolver;
       protected ITreeNode<RootNodeType> _populationFolderNode;
       protected RootNode _observationRootNode;
-      private IBuildingBlockTask _buildingBlockTask;
+      protected IBuildingBlockTask _buildingBlockTask;
       private ITreeNode<RootNodeType> _eventRootNode;
       private IToolTipPartCreator _toolTipCreator;
       private IProjectRetriever _projectRetriever;
       protected IClassificationPresenter _classificationPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
-      private IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
+      protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
 
       protected override void Context()
       {
@@ -324,6 +325,67 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _classificationPresenter.GroupClassificationsByCategory<ClassifiableIndividual>(_individualFolderNode, PKSimConstants.Classifications.Species, A<Func<ClassifiableIndividual, string>>._))
             .MustHaveHappened();
+      }
+   }
+
+   public class When_removing_the_building_blocks_defined_under_multiple_folders : concern_for_BuildingBlockExplorerPresenter
+   {
+      private ClassificationNode _folder1;
+      private ClassificationNode _folder2;
+      private Compound _compound1;
+      private Compound _compound2;
+      private IReadOnlyList<IPKSimBuildingBlock> _deletedBuildingBlocks;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound1 = new Compound().WithId("Compound1");
+         _compound2 = new Compound().WithId("Compound2");
+         _folder1 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Compound});
+         _folder2 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Compound});
+         _folder1.AddChild(new ObjectWithIdAndNameNode<ClassifiableCompound>(new ClassifiableCompound {Subject = _compound1}));
+         _folder2.AddChild(new ObjectWithIdAndNameNode<ClassifiableCompound>(new ClassifiableCompound {Subject = _compound2}));
+
+         A.CallTo(() => _buildingBlockTask.Delete(A<IReadOnlyList<IPKSimBuildingBlock>>._))
+            .Invokes(x => _deletedBuildingBlocks = x.GetArgument<IReadOnlyList<IPKSimBuildingBlock>>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveDataUnderClassifications(new[] {_folder1, _folder2});
+      }
+
+      [Observation]
+      public void should_delete_the_building_blocks_of_all_folders_at_once()
+      {
+         A.CallTo(() => _buildingBlockTask.Delete(A<IReadOnlyList<IPKSimBuildingBlock>>._)).MustHaveHappenedOnceExactly();
+         _deletedBuildingBlocks.ShouldOnlyContain(_compound1, _compound2);
+      }
+   }
+
+   public class When_removing_the_observed_data_defined_under_multiple_folders : concern_for_BuildingBlockExplorerPresenter
+   {
+      private ITreeNode<IClassification>[] _folders;
+
+      protected override void Context()
+      {
+         base.Context();
+         _folders = new ITreeNode<IClassification>[]
+         {
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ObservedData}),
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ObservedData})
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveDataUnderClassifications(_folders);
+      }
+
+      [Observation]
+      public void should_remove_the_observed_data_of_all_folders_at_once()
+      {
+         A.CallTo(() => _observedDataInExplorerPresenter.RemoveObservedDataUnder(_folders)).MustHaveHappenedOnceExactly();
       }
    }
 }
