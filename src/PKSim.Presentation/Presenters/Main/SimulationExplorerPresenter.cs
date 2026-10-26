@@ -51,6 +51,8 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly ISimulationComparisonTask _simulationComparisonTask;
       private readonly IExecutionContext _executionContext;
       private readonly IMenuBarItemRepository _menuBarItemRepository;
+      private readonly ISingleStartPresenterTask _singleStartPresenterTask;
+      private readonly IBuildingBlockRetriever _buildingBlockRetriever;
 
       public SimulationExplorerPresenter(
          ISimulationExplorerView view,
@@ -68,7 +70,9 @@ namespace PKSim.Presentation.Presenters.Main
          IObservedDataInSimulationManager observedDataInSimulationManager,
          ISimulationComparisonTask simulationComparisonTask,
          IExecutionContext executionContext,
-         IMenuBarItemRepository menuBarItemRepository
+         IMenuBarItemRepository menuBarItemRepository,
+         ISingleStartPresenterTask singleStartPresenterTask,
+         IBuildingBlockRetriever buildingBlockRetriever
          ) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
             buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
@@ -79,6 +83,8 @@ namespace PKSim.Presentation.Presenters.Main
          _simulationComparisonTask = simulationComparisonTask;
          _executionContext = executionContext;
          _menuBarItemRepository = menuBarItemRepository;
+         _singleStartPresenterTask = singleStartPresenterTask;
+         _buildingBlockRetriever = buildingBlockRetriever;
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
@@ -306,22 +312,47 @@ namespace PKSim.Presentation.Presenters.Main
       public override void NodeDoubleClicked(ITreeNode node)
       {
          var tag = node.TagAsObject;
-         var classifiable = tag as ClassifiableSimulation;
-         if (classifiable != null)
+         if (tag is ClassifiableSimulation classifiable)
          {
             EditBuildingBlock(classifiable.Simulation);
             return;
          }
 
-         if (shouldIgnoreDoubleClick(tag))
+         if (node is UsedBuildingBlockInSimulationNode usedBuildingBlockNode)
+         {
+            editTemplateBuildingBlockFor(usedBuildingBlockNode);
             return;
+         }
+
+         if (tag is UsedObservedData usedObservedData)
+         {
+            editObservedDataFor(usedObservedData);
+            return;
+         }
 
          base.NodeDoubleClicked(node);
       }
 
-      private static bool shouldIgnoreDoubleClick(object tag)
+      private void editObservedDataFor(UsedObservedData usedObservedData)
       {
-         return tag.IsAnImplementationOf<UsedBuildingBlock>() || tag.IsAnImplementationOf<UsedObservedData>();
+         //the observed data may not exist anymore in the project
+         var observedData = _projectRetriever.CurrentProject.ObservedDataBy(usedObservedData.Id);
+         if (observedData == null)
+            return;
+
+         _singleStartPresenterTask.StartForSubject(observedData);
+      }
+
+      private void editTemplateBuildingBlockFor(UsedBuildingBlockInSimulationNode usedBuildingBlockNode)
+      {
+         //The template is resolved here rather than taken from the node: the node is created while the project is being opened,
+         //at which point the individuals are being lazy loaded and are temporarily unregistered, so the template cached in the
+         //node can be null. The template may also have been deleted from the project in the meantime.
+         var templateBuildingBlock = _buildingBlockRetriever.BuildingBlockWithId(usedBuildingBlockNode.UsedBuildingBlock.TemplateId);
+         if (templateBuildingBlock == null)
+            return;
+
+         EditBuildingBlock(templateBuildingBlock);
       }
 
       public override IEnumerable<IMenuBarItem> AllCustomMenuItemsFor(ClassificationNode classificationNode)
