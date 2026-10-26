@@ -10,6 +10,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
@@ -29,6 +30,7 @@ namespace PKSim.Presentation
       protected IPKSimConfiguration _configuration;
       protected ISpeciesRepository _speciesRepository;
       protected IUserSettingsToUserSettingsDTOMapper _mapper;
+      protected IRemoteTemplateRepository _remoteTemplateRepository;
 
       protected override void Context()
       {
@@ -40,7 +42,8 @@ namespace PKSim.Presentation
          _userSettings = A.Fake<IUserSettings>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _mapper = new UserSettingsToUserSettingsDTOMapper();
-         sut = new UserSettingsPresenter(_view, _userSettings, _skinManager, _userSettingsPersistor, _dialogCreator, _configuration, _speciesRepository, _mapper);
+         _remoteTemplateRepository = A.Fake<IRemoteTemplateRepository>();
+         sut = new UserSettingsPresenter(_view, _userSettings, _skinManager, _userSettingsPersistor, _dialogCreator, _configuration, _speciesRepository, _mapper, _remoteTemplateRepository);
       }
    }
 
@@ -264,6 +267,139 @@ namespace PKSim.Presentation
       public void should_not_reset_the_settings()
       {
          A.CallTo(() => _userSettings.ResetLayout()).MustHaveHappened();
+      }
+   }
+
+   public abstract class concern_for_UserSettingsPresenter_editing_template_sources : concern_for_UserSettingsPresenter
+   {
+      protected UserSettingsDTO _userSettingsDTO;
+      protected TemplateSource _existingSource;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingSource = new TemplateSource("Company Library", "https://templates.company.com/lib/templates.json");
+         A.CallTo(() => _userSettings.TemplateSources).Returns(new[] {_existingSource});
+         A.CallTo(() => _view.BindTo(A<UserSettingsDTO>._)).Invokes(x => _userSettingsDTO = x.GetArgument<UserSettingsDTO>(0));
+         sut.EditSettings();
+      }
+   }
+
+   public class When_adding_a_template_source : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Because()
+      {
+         sut.AddTemplateSource();
+      }
+
+      [Observation]
+      public void should_add_an_empty_source_to_the_edited_settings()
+      {
+         _userSettingsDTO.TemplateSources.Count.ShouldBeEqualTo(2);
+         _userSettingsDTO.TemplateSources[1].Name.ShouldBeNull();
+         _userSettingsDTO.TemplateSources[1].Url.ShouldBeNull();
+      }
+   }
+
+   public class When_removing_a_template_source : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Because()
+      {
+         sut.RemoveTemplateSource(_userSettingsDTO.TemplateSources[0]);
+      }
+
+      [Observation]
+      public void should_remove_the_source_from_the_edited_settings()
+      {
+         _userSettingsDTO.TemplateSources.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_selecting_a_summary_file_for_a_template_source : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectTemplateSourceFile, CoreConstants.Filter.TEMPLATE_SUMMARY_FILE_FILTER, CoreConstants.DirectoryKey.DATABASE, null, null)).Returns(@"C:\Templates\templates.json");
+      }
+
+      protected override void Because()
+      {
+         sut.SelectTemplateSourceFile(_userSettingsDTO.TemplateSources[0]);
+      }
+
+      [Observation]
+      public void should_use_the_selected_file_as_url_of_the_source()
+      {
+         _userSettingsDTO.TemplateSources[0].Url.ShouldBeEqualTo(@"C:\Templates\templates.json");
+      }
+   }
+
+   public class When_selecting_a_summary_file_for_a_template_source_and_the_user_cancels : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectTemplateSourceFile(_userSettingsDTO.TemplateSources[0]);
+      }
+
+      [Observation]
+      public void should_not_change_the_url_of_the_source()
+      {
+         _userSettingsDTO.TemplateSources[0].Url.ShouldBeEqualTo(_existingSource.Url);
+      }
+   }
+
+   public class When_saving_the_settings_after_changing_the_template_sources : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AddTemplateSource();
+         _userSettingsDTO.TemplateSources[1].Name = "Other";
+         _userSettingsDTO.TemplateSources[1].Url = @"C:\Templates\templates.json";
+      }
+
+      protected override void Because()
+      {
+         sut.SaveSettings();
+      }
+
+      [Observation]
+      public void should_save_the_settings()
+      {
+         A.CallTo(() => _userSettingsPersistor.Save(_userSettings)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_template_sources_in_the_background()
+      {
+         A.CallTo(() => _remoteTemplateRepository.UpdateTemplateSourcesAsync()).MustHaveHappened();
+      }
+   }
+
+   public class When_saving_the_settings_without_changing_the_template_sources : concern_for_UserSettingsPresenter_editing_template_sources
+   {
+      protected override void Because()
+      {
+         sut.SaveSettings();
+      }
+
+      [Observation]
+      public void should_save_the_settings()
+      {
+         A.CallTo(() => _userSettingsPersistor.Save(_userSettings)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_update_the_template_sources()
+      {
+         A.CallTo(() => _remoteTemplateRepository.UpdateTemplateSourcesAsync()).MustNotHaveHappened();
       }
    }
 }

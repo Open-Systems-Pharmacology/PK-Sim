@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Linq.Expressions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -236,9 +238,19 @@ namespace PKSim.Presentation.DTO
          set => SetProperty(ref _preferredViewLayout, value);
       }
 
+      /// <summary>
+      ///    Additional template sources (OSP library excluded)
+      /// </summary>
+      public NotifyList<TemplateSourceDTO> TemplateSources { get; } = new NotifyList<TemplateSourceDTO>();
+
       private static class AllRules
       {
          private static IBusinessRule nonEmpty(Expression<Func<UserSettingsDTO, string>> expression) => GenericRules.NonEmptyRule(expression);
+
+         private static IBusinessRule allTemplateSourcesAreValid { get; } = CreateRule.For<UserSettingsDTO>()
+            .Property(x => x.TemplateSources)
+            .WithRule((x, templateSources) => templateSources.All(source => source.IsValid()))
+            .WithError(PKSimConstants.Rules.TemplateSourcesAreInvalid);
 
          private static IBusinessRule numberOfCoreSmallerThanNumberOfProcessor { get; } = CreateRule.For<UserSettingsDTO>()
             .Property(x => x.MaximumNumberOfCoresToUse)
@@ -258,7 +270,8 @@ namespace PKSim.Presentation.DTO
                nonEmpty(x => x.DefaultSolubilityName),
                nonEmpty(x => x.DefaultLipophilicityName),
                numberOfCoreSmallerThanNumberOfProcessor,
-               decimalPlaceInRange
+               decimalPlaceInRange,
+               allTemplateSourcesAreValid
             };
          }
       }

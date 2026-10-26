@@ -42,6 +42,8 @@ namespace PKSim.Presentation.Services
 
          await checkForNewTemplateVersionAsync();
 
+         await updateTemplateSourcesAsync();
+
          _watermarkStatusChecker.CheckWatermarkStatus();
 
          _templateDatabaseCreator.CreateDefaultTemplateDatabase();
@@ -67,6 +69,19 @@ namespace PKSim.Presentation.Services
 
 
       }
+      private async Task updateTemplateSourcesAsync()
+      {
+         try
+         {
+            //additional sources are refreshed silently at startup. Missing credentials are requested when the user loads a template
+            await _remoteTemplateRepository.UpdateTemplateSourcesAsync();
+         }
+         catch (Exception)
+         {
+            //a source that cannot be updated keeps its previously downloaded summary
+         }
+      }
+
       private async Task checkForNewSoftwareVersionAsync()
       {
          if (!_userSettings.ShowUpdateNotification)

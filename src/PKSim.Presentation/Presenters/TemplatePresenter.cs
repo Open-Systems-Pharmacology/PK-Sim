@@ -14,6 +14,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Views;
@@ -71,6 +72,7 @@ namespace PKSim.Presentation.Presenters
       private readonly IStartOptions _startOptions;
       private readonly IApplicationConfiguration _configuration;
       private readonly IUserSettings _userSettings;
+      private readonly IRemoteTemplateRepository _remoteTemplateRepository;
       private string _templateTypeDisplay = string.Empty;
       private readonly List<Template> _selectedTemplates = new List<Template>();
 
@@ -84,7 +86,8 @@ namespace PKSim.Presentation.Presenters
          IDialogCreator dialogCreator,
          IStartOptions startOptions,
          IApplicationConfiguration configuration,
-         IUserSettings userSettings)
+         IUserSettings userSettings,
+         IRemoteTemplateRepository remoteTemplateRepository)
          : base(view)
       {
          _templateTaskQuery = templateTaskQuery;
@@ -93,15 +96,19 @@ namespace PKSim.Presentation.Presenters
          _startOptions = startOptions;
          _configuration = configuration;
          _userSettings = userSettings;
+         _remoteTemplateRepository = remoteTemplateRepository;
       }
 
-      public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
+      public async Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
       {
          _templateTypeDisplay = templateType.ToString().SplitToUpperCase();
          _view.Caption = PKSimConstants.UI.LoadItemFromTemplate(_templateTypeDisplay);
          _shouldAddItemIcons = !_templateTaskQuery.IsPrimitiveType(templateType);
 
          updateIcon(templateType);
+
+         //additional sources that could not be loaded silently at startup (e.g. credentials required) are retried now, with user interaction
+         await _remoteTemplateRepository.LoadUnavailableTemplateSourcesAsync();
 
          _availableTemplates.AddRange(_templateTaskQuery.AllTemplatesFor(templateType)
             .Where(x => x.IsSupportedByCurrentVersion(_configuration.Version))
@@ -114,9 +121,9 @@ namespace PKSim.Presentation.Presenters
          _view.Display();
 
          if (_view.Canceled)
-            return Task.FromResult<IReadOnlyList<T>>(Array.Empty<T>());
+            return Array.Empty<T>();
 
-         return shouldLoadTemplateWithReferences(templateType) ? loadMultipleTemplate<T>() : loadSingleTemplate<T>();
+         return await (shouldLoadTemplateWithReferences(templateType) ? loadMultipleTemplate<T>() : loadSingleTemplate<T>());
       }
 
       private bool shouldLoadTemplateWithReferences(TemplateType templateType)

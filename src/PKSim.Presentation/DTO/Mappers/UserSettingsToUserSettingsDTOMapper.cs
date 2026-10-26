@@ -1,4 +1,5 @@
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -11,7 +12,7 @@ namespace PKSim.Presentation.DTO.Mappers
    {
       public UserSettingsDTO MapFrom(IUserSettings userSettings)
       {
-         return new UserSettingsDTO
+         var userSettingsDTO = new UserSettingsDTO
          {
             DecimalPlace = userSettings.DecimalPlace,
             AllowsScientificNotation = userSettings.AllowsScientificNotation,
@@ -45,6 +46,9 @@ namespace PKSim.Presentation.DTO.Mappers
             DefaultChartYScaling = userSettings.DefaultChartYScaling,
             PreferredViewLayout = userSettings.PreferredViewLayout,
          };
+
+         userSettings.TemplateSources?.Each(x => userSettingsDTO.TemplateSources.Add(new TemplateSourceDTO(x)));
+         return userSettingsDTO;
       }
 
       public void UpdateUserSettingsFrom(UserSettingsDTO userSettingsDTO, IUserSettings userSettings)
@@ -80,6 +84,9 @@ namespace PKSim.Presentation.DTO.Mappers
          userSettings.DefaultPopulationAnalysis = userSettingsDTO.DefaultPopulationAnalysis;
          userSettings.DefaultChartYScaling = userSettingsDTO.DefaultChartYScaling;
          userSettings.PreferredViewLayout = userSettingsDTO.PreferredViewLayout;
+
+         userSettings.ClearTemplateSources();
+         userSettingsDTO.TemplateSources.Each(x => userSettings.AddTemplateSource(x.ToTemplateSource()));
       }
    }
 }
