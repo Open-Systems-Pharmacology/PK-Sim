@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
@@ -57,5 +58,17 @@ namespace PKSim.Core
       ///    Path of the template database containing the template building block
       /// </summary>
       string TemplateDatabasePath { get; set; }
+
+      /// <summary>
+      ///    Additional building block template libraries queried besides the OSP library. Only names and urls are stored,
+      ///    credentials never are.
+      /// </summary>
+      IReadOnlyList<TemplateSource> TemplateSources { get; }
+
+      void AddTemplateSource(TemplateSource templateSource);
+
+      void RemoveTemplateSource(TemplateSource templateSource);
+
+      void ClearTemplateSources();
    }
 }

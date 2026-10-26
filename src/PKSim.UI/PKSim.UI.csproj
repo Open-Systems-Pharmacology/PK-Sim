@@ -44,6 +44,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="3.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
     <PackageReference Include="OSPSuite.Assets" Version="13.0.174" />

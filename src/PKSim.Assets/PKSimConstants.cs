@@ -19,6 +19,12 @@ namespace PKSim.Assets
          public const string FractionAbsorbedAndEHC = "Please note that, e.g. in the case of enterohepatic circulation, the calculated fraction of dose absorbed may exceed 1";
          public const string BioAvailabilityAndFractionAbsorbed = "For proper calculation of the AUCinf (PO) it is recommended to simulate as long as total gastrointestinal transit takes.";
          public const string PopulationFileFormatIsNotSupported = "Population file format is not supported.";
+
+         public static string CannotUpdateTemplateSummaryFrom(string url, string reason) =>
+            $"The template summary could not be updated from '{url}': {reason}";
+
+         public static string CannotLoadTemplateSource(string name, string url, string reason) =>
+            $"The templates of source '{name}' ({url}) could not be loaded: {reason}";
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
          public const string ExpressionParametersWillBeReset = "Some expression values will be reset. Do you want to continue?";
@@ -938,6 +944,14 @@ namespace PKSim.Assets
          public static string CannotDownloadTemplateLocatedAt(string url) =>
             $"Cannot download template located at '{url}'";
 
+         public static string CannotDownloadTemplateLocatedAt(string url, string reason) =>
+            $"{CannotDownloadTemplateLocatedAt(url)}: {reason}";
+
+         public static string TemplateRequiresAuthentication(string url, string reason) =>
+            $"Access to '{url}' was refused ({reason}) and no valid credential could be found.\n\n" +
+            "PK-Sim does not store credentials. Provide one through the Windows Credential Manager (generic credential named after the host), " +
+            "a git credential helper or the environment variable PKSIM_TEMPLATE_TOKEN_<HOST>.";
+
          public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
             $"No protein expression database available for species '{speciesName}'";
 
@@ -1430,6 +1444,9 @@ namespace PKSim.Assets
 
       public static class Rules
       {
+         public static readonly string TemplateSourceUrlIsInvalid = "The url of a template source must be an absolute http(s) url or the path to a 'templates.json' file.";
+         public static readonly string TemplateSourcesAreInvalid = "At least one additional template source has no name or an invalid url.";
+
          public static class Parameter
          {
             public static readonly string StartTimeLessThanOrEqualToEndTime = "Start time value should be less than end time value.";
@@ -1654,6 +1671,19 @@ namespace PKSim.Assets
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
          public static readonly string RemoteTemplates = "Open Systems Pharmacology - Cloud Templates (GitHub)";
+         public static readonly string TemplateSources = "Additional Template Sources";
+         public static readonly string AddTemplateSource = "Add Source";
+         public static readonly string SelectTemplateSourceFile = "Select Template Summary File...";
+         public static readonly string RemoveTemplateSource = "Remove Source";
+         public static readonly string TemplateSourceCredentialsCaption = "Template source credentials";
+
+         public static string TemplateSourceCredentialsMessage(string host) =>
+            $"The template source hosted at '{host}' requires authentication.\nEnter your user name and password (or personal access token).\n\nPK-Sim does not store credentials: tick 'Remember my credentials' to let Windows keep them in the Credential Manager.";
+
+         public static string TemplateSourcesDescription =>
+            "Additional libraries of building block templates. A source is the url of a 'templates.json' summary file (https or local/network path). " +
+            "Credentials for protected sources are never stored by PK-Sim: they are taken from the Windows Credential Manager, a git credential helper " +
+            "or the environment variable PKSIM_TEMPLATE_TOKEN_<HOST>, or requested when a template is loaded.";
          public static readonly string EditDescription = "Edit Description";
          public static readonly string EditValueDescription = "Edit Value Description";
          public static readonly string ShowPKAnalysis = "Show PK-Analysis";
