@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -38,14 +39,21 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       private readonly ISimulationMetaDataToSimulationMapper _simulationMapper;
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISerializationContextFactory _serializationContextFactory;
+      private readonly IMissingBuildingBlockContentRegistry _missingBuildingBlockContentRegistry;
+      private readonly List<(BuildingBlockMetaData metaData, PKSimBuildingBlockType buildingBlockType)> _buildingBlocksWithMissingContent = new List<(BuildingBlockMetaData, PKSimBuildingBlockType)>();
       private IPKSimBuildingBlock _buildingBlock;
       private PKSimProject _project;
 
-      public ProjectMetaDataToProjectMapper(ISimulationMetaDataToSimulationMapper simulationMapper, ICompressedSerializationManager serializationManager, ISerializationContextFactory serializationContextFactory)
+      public ProjectMetaDataToProjectMapper(
+         ISimulationMetaDataToSimulationMapper simulationMapper,
+         ICompressedSerializationManager serializationManager,
+         ISerializationContextFactory serializationContextFactory,
+         IMissingBuildingBlockContentRegistry missingBuildingBlockContentRegistry)
       {
          _simulationMapper = simulationMapper;
          _serializationManager = serializationManager;
          _serializationContextFactory = serializationContextFactory;
+         _missingBuildingBlockContentRegistry = missingBuildingBlockContentRegistry;
       }
 
       public PKSimProject MapFrom(ProjectMetaData projectMetaData)
@@ -61,7 +69,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
             //Observed data needs to be loaded first into project
             projectMetaData.AllObservedData.Each(x => _project.AddObservedData(mapFrom(x)));
 
-            projectMetaData.BuildingBlocks.OrderBy(x => x.LoadOrder).Each(x => _project.AddBuildingBlock(mapFrom(x)));
+            _missingBuildingBlockContentRegistry.Clear();
+            _buildingBlocksWithMissingContent.Clear();
+            projectMetaData.BuildingBlocks.OrderBy(x => x.LoadOrder).Each(addBuildingBlockToProject);
+            registerBuildingBlocksWithMissingContent(projectMetaData);
 
             //we need a shared context for all object referencing observed data and simulations
             using (var context = _serializationContextFactory.Create(_project.AllObservedData, _project.All<ISimulation>()))
@@ -85,6 +96,37 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          {
             _project = null;
             _buildingBlock = null;
+            _buildingBlocksWithMissingContent.Clear();
+         }
+      }
+
+      private void addBuildingBlockToProject(BuildingBlockMetaData buildingBlockMetaData)
+      {
+         var buildingBlock = mapFrom(buildingBlockMetaData);
+         if (buildingBlock != null)
+            _project.AddBuildingBlock(buildingBlock);
+      }
+
+      /// <summary>
+      ///    Building blocks skipped because their content is missing from the project file are recorded with the simulation
+      ///    subjects referencing them, so that they can be recovered once the project is loaded (see
+      ///    <see cref="IMissingBuildingBlockContentRecoveryTask" />)
+      /// </summary>
+      private void registerBuildingBlocksWithMissingContent(ProjectMetaData projectMetaData)
+      {
+         var allSimulationSubjects = projectMetaData.BuildingBlocks.OfType<SimulationSubjectMetaData>().ToList();
+         foreach (var (metaData, buildingBlockType) in _buildingBlocksWithMissingContent)
+         {
+            _missingBuildingBlockContentRegistry.Add(new BuildingBlockWithMissingContent
+            {
+               Id = metaData.Id,
+               Name = metaData.Name,
+               Description = metaData.Description,
+               Version = metaData.Version,
+               StructureVersion = metaData.StructureVersion,
+               BuildingBlockType = buildingBlockType,
+               SimulationSubjectIds = allSimulationSubjects.Where(x => expressionProfileIdsFor(x).Contains(metaData.Id)).Select(x => x.Id).ToList()
+            });
          }
       }
 
@@ -148,10 +190,19 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
             _buildingBlock.Icon = buildingBlockMetaData.Icon;
 
             if (!buildingBlockIsLazyLoaded(_buildingBlock))
-               deserialize(buildingBlockMetaData);
+            {
+               //A building block without content cannot be deserialized (see issue 3861). It is skipped here and recovered after the load
+               if (!hasContent(buildingBlockMetaData))
+               {
+                  _buildingBlocksWithMissingContent.Add((buildingBlockMetaData, _buildingBlock.BuildingBlockType));
+                  return null;
+               }
 
-            //This should be done after deserialization to ensure that all references are updated properly 
-            //as deserializing a complex object like population may reset the individual 
+               deserialize(buildingBlockMetaData);
+            }
+
+            //This should be done after deserialization to ensure that all references are updated properly
+            //as deserializing a complex object like population may reset the individual
             updateExpressionProfiles(_buildingBlock as ISimulationSubject, buildingBlockMetaData as SimulationSubjectMetaData);
             return _buildingBlock;
          }
@@ -163,7 +214,9 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       private void deserialize(BuildingBlockMetaData buildingBlockMetaData) => _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
 
-      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) => 
+      private static bool hasContent(BuildingBlockMetaData buildingBlockMetaData) => buildingBlockMetaData.Content?.Data != null;
+
+      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) =>
          buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population);
 
       private T deserializeProperty<T>(IMetaDataWithProperties metaData, SerializationContext serializationContext = null)
@@ -211,15 +264,16 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          if (simulationSubject == null || simulationSubjectMetaData == null)
             return;
 
-         var allExpressionProfileIds = simulationSubjectMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
-
-         allExpressionProfileIds.Each(id =>
+         expressionProfileIdsFor(simulationSubjectMetaData).Each(id =>
          {
             var expressionProfile = _project.BuildingBlockById<ExpressionProfile>(id);
             if (expressionProfile != null)
                simulationSubject.AddExpressionProfile(expressionProfile);
          });
       }
+
+      private static IReadOnlyList<string> expressionProfileIdsFor(SimulationSubjectMetaData simulationSubjectMetaData) =>
+         simulationSubjectMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
 
       public void Visit(SimulationMetaData simulationMetaData)
       {

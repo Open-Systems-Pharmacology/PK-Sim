@@ -47,6 +47,7 @@ namespace PKSim.Core
             scan.ExcludeType<ProjectChangedNotifier>();
             scan.ExcludeType<IndividualSimulationEngine>();
             scan.ExcludeType<DefaultIndividualRetriever>();
+            scan.ExcludeType<MissingBuildingBlockContentRegistry>();
             scan.ExcludeType<IPopulationSimulationEngine>();
 
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
@@ -66,6 +67,8 @@ namespace PKSim.Core
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
             scan.IncludeType<DefaultIndividualRetriever>();
+            //shared between the project loading (where building blocks without content are recorded) and the recovery after the load
+            scan.IncludeType<MissingBuildingBlockContentRegistry>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
