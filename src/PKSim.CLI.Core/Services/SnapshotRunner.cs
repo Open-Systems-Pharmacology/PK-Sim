@@ -24,6 +24,7 @@ namespace PKSim.CLI.Core.Services
       private readonly ISnapshotTask _snapshotTask;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IOSPSuiteLogger _logger;
+      private readonly IMissingBuildingBlockContentRecoveryTask _missingBuildingBlockContentRecoveryTask;
 
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
@@ -32,12 +33,14 @@ namespace PKSim.CLI.Core.Services
          ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
          IWorkspacePersistor workspacePersistor,
-         IOSPSuiteLogger logger)
+         IOSPSuiteLogger logger,
+         IMissingBuildingBlockContentRecoveryTask missingBuildingBlockContentRecoveryTask)
       {
          _workspace = workspace;
          _snapshotTask = snapshotTask;
          _workspacePersistor = workspacePersistor;
          _logger = logger;
+         _missingBuildingBlockContentRecoveryTask = missingBuildingBlockContentRecoveryTask;
          AllFilesFrom = allFilesFrom;
       }
 
@@ -115,6 +118,7 @@ namespace PKSim.CLI.Core.Services
          {
             _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
             _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
+            recoverBuildingBlocksWithMissingContent();
 
             await _snapshotTask.ExportModelToSnapshotAsync(_workspace.Project, file.SnapshotFile);
             _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
@@ -123,6 +127,14 @@ namespace PKSim.CLI.Core.Services
          {
             _workspacePersistor.CloseSession();
          }
+      }
+
+      //Building blocks whose content is missing from the project file were skipped during the load (see issue 3861)
+      private void recoverBuildingBlocksWithMissingContent()
+      {
+         var recoveryResult = _missingBuildingBlockContentRecoveryTask.Recover(_workspace.Project);
+         if (recoveryResult.Any)
+            _logger.AddWarning(recoveryResult.Message);
       }
 
       private IEnumerable<FileMap> allFilesToExportFrom(SnapshotRunOptions runOptions)

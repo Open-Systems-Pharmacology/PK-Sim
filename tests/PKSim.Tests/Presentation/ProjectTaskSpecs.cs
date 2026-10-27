@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -45,6 +46,7 @@ namespace PKSim.Presentation
       protected Simulation _simulation;
       protected ILazyLoadTask _lazyLoadTask;
       protected IParameterIdentificationRunner _parameterIdentificationRunner;
+      protected IMissingBuildingBlockContentRecoveryTask _missingBuildingBlockContentRecoveryTask;
 
       public override Task GlobalContext()
       {
@@ -65,11 +67,13 @@ namespace PKSim.Presentation
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _simulation = new IndividualSimulation();
          _parameterIdentificationRunner = A.Fake<IParameterIdentificationRunner>();
+         _missingBuildingBlockContentRecoveryTask = A.Fake<IMissingBuildingBlockContentRecoveryTask>();
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(A<PKSimProject>._)).Returns(MissingBuildingBlockContentRecoveryResult.Empty);
          _project.AddBuildingBlock(_simulation);
 
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner, _missingBuildingBlockContentRecoveryTask);
 
          _oldFileExitst = FileHelper.FileExists;
 
@@ -275,7 +279,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner, _missingBuildingBlockContentRecoveryTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -629,7 +633,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner, _missingBuildingBlockContentRecoveryTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -786,6 +790,168 @@ namespace PKSim.Presentation
       public void should_not_flag_the_project_as_changed_so_that_the_user_is_not_prompted_to_save()
       {
          _project.HasChanged.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_notify_the_user_about_building_blocks_without_content()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_opening_a_project_in_which_an_expression_profile_without_content_was_rebuilt_from_the_individual : concern_for_ProjectTask
+   {
+      private string _fileToOpen;
+      private Individual _individual;
+      private ExpressionProfile _rebuiltExpressionProfile;
+      private MissingBuildingBlockContentRecoveryResult _recoveryResult;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _fileToOpen = "toto.pksim5";
+         FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
+         _project = new PKSimProject();
+         _workspace.Project = _project;
+         _individual = new Individual {Name = "Standard male", IsLoaded = true, HasChanged = false};
+         _rebuiltExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _rebuiltExpressionProfile.IsLoaded = true;
+         _recoveryResult = new MissingBuildingBlockContentRecoveryResult(new[] {_rebuiltExpressionProfile}, new List<BuildingBlockWithMissingContent>(), "recovery message");
+
+         A.CallTo(() => _workspace.OpenProject(_fileToOpen)).Invokes(x =>
+         {
+            _project.AddBuildingBlock(_individual);
+            _project.HasChanged = true;
+         });
+
+         //simulates the recovery adding the rebuilt expression profile to the project flagged as changed
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).Invokes(x =>
+         {
+            _project.AddBuildingBlock(_rebuiltExpressionProfile);
+            _rebuiltExpressionProfile.HasChanged = true;
+         }).Returns(_recoveryResult);
+      }
+
+      protected override Task Because()
+      {
+         sut.OpenProjectFrom(_fileToOpen);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_recover_the_building_blocks_without_content_once_the_individuals_are_loaded()
+      {
+         A.CallTo(() => _lazyLoadTask.Load(_individual)).MustHaveHappened()
+            .Then(A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).MustHaveHappened());
+      }
+
+      [Observation]
+      public void should_keep_the_rebuilt_expression_profile_flagged_as_changed_so_that_it_is_persisted_with_the_next_save()
+      {
+         _rebuiltExpressionProfile.HasChanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_flag_the_building_blocks_that_were_only_loaded_as_changed()
+      {
+         _individual.HasChanged.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_flag_the_project_as_changed()
+      {
+         _project.HasChanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_notify_the_user_about_the_recovery_once_the_project_is_loaded_and_the_ui_enabled_again()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<EnableUIEvent>._)).MustHaveHappened()
+            .Then(A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.SaveProjectToPersistRecoveredBuildingBlocks(_recoveryResult.Message))).MustHaveHappened());
+      }
+   }
+
+   public class When_opening_a_project_fails_after_building_blocks_without_content_were_recovered : concern_for_ProjectTask
+   {
+      private string _fileToOpen;
+      private MissingBuildingBlockContentRecoveryResult _recoveryResult;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner, _missingBuildingBlockContentRecoveryTask);
+
+         _fileToOpen = "toto.pksim5";
+         FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
+         _project = new PKSimProject();
+         _workspace.Project = _project;
+         var removedBuildingBlock = new BuildingBlockWithMissingContent {Id = "EP", Name = "CYP3A4|Human|Pop", BuildingBlockType = PKSimBuildingBlockType.ExpressionProfile};
+         _recoveryResult = new MissingBuildingBlockContentRecoveryResult(new List<IPKSimBuildingBlock>(), new[] {removedBuildingBlock}, "recovery message");
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).Returns(_recoveryResult);
+      }
+
+      protected override Task Because()
+      {
+         sut.OpenProjectFrom(_fileToOpen);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_not_notify_the_user_about_a_recovery_in_a_project_that_was_discarded()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_opening_a_project_in_which_building_blocks_without_content_were_removed : concern_for_ProjectTask
+   {
+      private string _fileToOpen;
+      private MissingBuildingBlockContentRecoveryResult _recoveryResult;
+      private Compound _compound;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _fileToOpen = "toto.pksim5";
+         FileHelper.FileExists = x => string.Equals(x, _fileToOpen);
+         _project = new PKSimProject();
+         _workspace.Project = _project;
+         _compound = new Compound {Name = "Compound", IsLoaded = true, HasChanged = false};
+         var removedBuildingBlock = new BuildingBlockWithMissingContent {Id = "EP", Name = "CYP3A4|Human|Pop", BuildingBlockType = PKSimBuildingBlockType.ExpressionProfile};
+         _recoveryResult = new MissingBuildingBlockContentRecoveryResult(new List<IPKSimBuildingBlock>(), new[] {removedBuildingBlock}, "recovery message");
+
+         A.CallTo(() => _workspace.OpenProject(_fileToOpen)).Invokes(x =>
+         {
+            _project.AddBuildingBlock(_compound);
+            _project.HasChanged = false;
+         });
+
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).Returns(_recoveryResult);
+      }
+
+      protected override Task Because()
+      {
+         sut.OpenProjectFrom(_fileToOpen);
+         return _completed;
+      }
+
+      [Observation]
+      public void should_flag_the_project_as_changed_so_that_the_removal_is_persisted_with_the_next_save()
+      {
+         _project.HasChanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_flag_the_loaded_building_blocks_as_changed()
+      {
+         _compound.HasChanged.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_notify_the_user_about_the_removed_building_blocks()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.SaveProjectToPersistRecoveredBuildingBlocks(_recoveryResult.Message))).MustHaveHappened();
       }
    }
 
