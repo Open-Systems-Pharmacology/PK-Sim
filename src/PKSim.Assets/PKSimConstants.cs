@@ -30,6 +30,30 @@ namespace PKSim.Assets
 
          public static string ProteinAvailableButProcessNotSelected(string name) => $"No compound process selected for protein '{name}'.";
 
+         public static string BuildingBlocksWithMissingContentRecovered(IReadOnlyList<string> rebuiltBuildingBlocks, IReadOnlyList<string> removedBuildingBlocks)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine("The content of some building blocks is missing from the project file. This is a known issue for projects created before version 11 that were opened and saved with PK-Sim 12.1 to 12.3 (see https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3861).");
+
+            if (rebuiltBuildingBlocks.Any())
+            {
+               sb.AppendLine();
+               sb.AppendLine("The following building blocks were rebuilt from the individual using them:");
+               rebuiltBuildingBlocks.Each(x => sb.AppendLine($"   - {x}"));
+            }
+
+            if (removedBuildingBlocks.Any())
+            {
+               sb.AppendLine();
+               sb.AppendLine("The following building blocks could not be rebuilt and were removed from the project:");
+               removedBuildingBlocks.Each(x => sb.AppendLine($"   - {x}"));
+            }
+
+            return sb.ToString().TrimEnd();
+         }
+
+         public static string SaveProjectToPersistRecoveredBuildingBlocks(string recoveryMessage) => $"{recoveryMessage}\n\nPlease save the project to persist these changes.";
+
          public static string NoTransporterTemplateFoundForTransporter(string transporterName, string transportType)
          {
             return $"The transporter '{transporterName}' was not found in the database. The transport direction is therefore set to the default setting '{transportType}'";
@@ -469,6 +493,12 @@ namespace PKSim.Assets
             $"No {ObjectTypes.OverwriteParameterSet.ToLower()} is selected for {ObjectTypes.Compound.ToLower()} '{compoundName}' in the {ObjectTypes.Simulation.ToLower()}. Only a new {ObjectTypes.OverwriteParameterSet.ToLower()} can be created.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
+
+         public static string BuildingBlockContentIsMissing(string buildingBlockName, string buildingBlockType) =>
+            $"The content of {buildingBlockType.ToLowerInvariant()} '{buildingBlockName}' is missing from the project file and cannot be loaded. The project file was probably saved with a version of PK-Sim affected by a known issue (see https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/3861).";
+
+         public static string CannotSaveBuildingBlockWithoutContent(string buildingBlockName, string buildingBlockType) =>
+            $"{buildingBlockType} '{buildingBlockName}' has no content and is not loaded. Saving the project would write a building block without content into the project file, which could not be opened anymore.";
          public const string SpeciesIsRequired = "Species is required.";
          public const string DataSourceIsRequired = "Data source is required.";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";

@@ -30,13 +30,15 @@ namespace PKSim.CLI.Core.Services
       private readonly ICoreWorkspace _workspace;
       private readonly ISimulationExporter _simulationExporter;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IMissingBuildingBlockContentRecoveryTask _missingBuildingBlockContentRecoveryTask;
 
       public ExportSimulationRunner(
          IOSPSuiteLogger logger,
          IWorkspacePersistor workspacePersistor,
          ICoreWorkspace workspace,
          ISimulationExporter simulationExporter,
-         ILazyLoadTask lazyLoadTask
+         ILazyLoadTask lazyLoadTask,
+         IMissingBuildingBlockContentRecoveryTask missingBuildingBlockContentRecoveryTask
       )
       {
          _logger = logger;
@@ -44,6 +46,7 @@ namespace PKSim.CLI.Core.Services
          _workspace = workspace;
          _simulationExporter = simulationExporter;
          _lazyLoadTask = lazyLoadTask;
+         _missingBuildingBlockContentRecoveryTask = missingBuildingBlockContentRecoveryTask;
       }
 
       public Task RunBatchAsync(ExportRunOptions runOptions)
@@ -63,6 +66,11 @@ namespace PKSim.CLI.Core.Services
 
          _workspacePersistor.LoadSession(_workspace, projectFile);
          _logger.AddDebug($"Project loaded successfully from '{projectFile}'");
+
+         //Building blocks whose content is missing from the project file were skipped during the load (see issue 3861)
+         var recoveryResult = _missingBuildingBlockContentRecoveryTask.Recover(_workspace.Project);
+         if (recoveryResult.Any)
+            _logger.AddWarning(recoveryResult.Message);
 
          await ExportSimulationsIn(_workspace.Project, runOptions);
 
