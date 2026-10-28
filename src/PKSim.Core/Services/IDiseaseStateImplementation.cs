@@ -64,6 +64,13 @@ namespace PKSim.Core.Services
       ///    Returns <c>true</c> if the implementation modifies the expression profile otherwise <c>false</c>
       /// </summary>
       bool CanBeAppliedToExpressionProfile(QuantityType moleculeType);
+
+      /// <summary>
+      ///    Returns the factor by which the disease state scales the plasma protein ontogeny factor named
+      ///    <paramref name="plasmaProteinOntogenyFactorName" /> (e.g. Ontogeny factor (albumin)), or 1 if it is not affected.
+      ///    Used for populations, where the plasma protein ontogeny factors are sampled after the disease state was applied
+      /// </summary>
+      double PlasmaProteinOntogenyFactorFor(string plasmaProteinOntogenyFactorName, OriginData originData);
    }
 
    public abstract class AbstractDiseaseStateImplementation : IDiseaseStateImplementation
@@ -182,6 +189,8 @@ namespace PKSim.Core.Services
 
       public virtual bool CanBeAppliedToExpressionProfile(QuantityType moleculeType) => false;
 
+      public virtual double PlasmaProteinOntogenyFactorFor(string plasmaProteinOntogenyFactorName, OriginData originData) => 1;
+
       protected abstract IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual);
 
       protected void UpdateParameterValue(ParameterUpdate parameterUpdate) => parameterUpdate.UpdateValue();
@@ -260,6 +269,8 @@ namespace PKSim.Core.Services
       {
          return false;
       }
+
+      public double PlasmaProteinOntogenyFactorFor(string plasmaProteinOntogenyFactorName, OriginData originData) => 1;
 
       public bool IsSatisfiedBy(DiseaseState item) => false;
    }

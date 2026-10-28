@@ -28,15 +28,18 @@ namespace PKSim.Core.Services
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       public MoleculeOntogenyVariabilityUpdater(
          IOntogenyRepository ontogenyRepository,
          IEntityPathResolver entityPathResolver,
-         IFormulaFactory formulaFactory)
+         IFormulaFactory formulaFactory,
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _ontogenyRepository = ontogenyRepository;
          _entityPathResolver = entityPathResolver;
          _formulaFactory = formulaFactory;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public void UpdatePlasmaProteinsOntogenyFor(ISimulationSubject simulationSubject)
@@ -183,14 +186,22 @@ namespace PKSim.Core.Services
             return;
 
          var ontogenyFactors = new ParameterValues(_entityPathResolver.PathFor(plasmaProteinOntogenyParameter));
+         //the disease state of the population (e.g. hepatic impairment) may scale the plasma protein ontogeny factors
+         var diseaseStateFactor = diseaseStateFactorFor(population, parameterName);
 
          for (int i = 0; i < population.NumberOfItems; i++)
          {
-            ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyValueFor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
+            ontogenyFactors.Add(diseaseStateFactor * _ontogenyRepository.PlasmaProteinOntogenyValueFor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
          population.IndividualValuesCache.Remove(ontogenyFactors.ParameterPath);
          population.IndividualValuesCache.Add(ontogenyFactors);
+      }
+
+      private double diseaseStateFactorFor(Population population, string plasmaProteinOntogenyFactorName)
+      {
+         var originData = population.OriginData;
+         return _diseaseStateImplementationRepository.FindFor(originData.DiseaseState).PlasmaProteinOntogenyFactorFor(plasmaProteinOntogenyFactorName, originData);
       }
 
       private IReadOnlyList<double> allGAsIn(Population population)

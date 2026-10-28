@@ -189,7 +189,7 @@ namespace PKSim.Infrastructure
          return simModelConstructor.CreateModelLessSimulationWith(simulationConstruction);
       }
 
-      public static Population CreateDefaultPopulation(Individual individual)
+      public static Population CreateDefaultPopulation(Individual individual, int numberOfIndividuals = 3, int? seed = null)
       {
          var populationFactory = IoC.Resolve<IRandomPopulationFactory>();
          var populationSettings = IoC.Resolve<IIndividualToPopulationSettingsMapper>().MapFrom(individual);
@@ -202,8 +202,8 @@ namespace PKSim.Infrastructure
             weightRange.MaxValue = weightValue * 10;
          }
 
-         populationSettings.NumberOfIndividuals = 3;
-         var population = populationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
+         populationSettings.NumberOfIndividuals = numberOfIndividuals;
+         var population = populationFactory.CreateFor(populationSettings, new CancellationToken(), seed).Result;
          return population.WithName("POP");
       }
    }
