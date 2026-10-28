@@ -1164,8 +1164,12 @@ namespace PKSim.Core
          public static readonly string ProjectFile = "ProjectFile";
          public static readonly string Parameter = "Para";
          public static readonly string DistributedParameter = "DistPara";
+         public static readonly string QueryConfiguration = "QueryConfiguration";
          public static readonly string ExpressionDataSet = "ExpressionDataSet";
          public static readonly string LayoutSettings = "LayoutSettings";
+         public static readonly string Filter = "Filter";
+         public static readonly string FieldFilter = "FieldFilter";
+         public static readonly string Value = "Value";
          public static readonly string Route = "Route";
          public static readonly string Origin = "Origin";
          public static readonly string OriginData = "OriginData";
@@ -1192,6 +1196,9 @@ namespace PKSim.Core
             public static readonly string RHSFormula = "rhs";
             public static readonly string ProteinName = "proteinName";
             public static readonly string SelectedUnit = "Unit";
+            public static readonly string FieldName = "fieldName";
+            public static readonly string FilterType = "filterType";
+            public static readonly string ShowBlanks = "showBlanks";
             public static readonly string XmlVersion = "xmlVersion";
             public static readonly string Sequence = "seq";
             public static readonly string Id = "id";

@@ -100,6 +100,15 @@ namespace PKSim.IntegrationTests
          if (type == typeof(ExpressionContainerInfo)) return true;
          if (type == typeof(QueryExpressionResults)) return true;
          if (type == typeof(QueryExpressionSettings)) return true;
+         if (type == typeof(ExpressionQuery)) return true;
+         if (type == typeof(ExpressionDataRecord)) return true;
+         if (type == typeof(TissueContainerMapping)) return true;
+         if (type == typeof(ContainerExpressionDataRecord)) return true;
+         if (type == typeof(ExpressionDataFilter)) return true;
+         if (type == typeof(ExpressionDataFieldFilter)) return true;
+         if (type == typeof(ExpressionDataFilterType)) return true;
+         if (type == typeof(UnitExpression)) return true;
+         if (type == typeof(ContainerExpression)) return true;
          if (type == typeof(OntogenyMetaData)) return true;
          if (type == typeof(DistributedParameterValue)) return true;
          if (type == typeof(QuantityValues)) return true;

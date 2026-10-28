@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using PKSim.Core;
-using PKSim.Core.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
@@ -47,8 +43,6 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
       void MappingChanged();
 
-      void SelectTransferData(string selectedUnit, string defaultUnit);
-
       string Title { set; }
 
       bool Start();
@@ -59,18 +53,25 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       private readonly IGeneExpressionQueries _geneExpressionQueries;
       private readonly IMappingPresenter _mappingPresenter;
       private readonly IProteinExpressionDataHelper _dataHelper;
-      private DataSet _expressionDataSet;
-      private string _proteinName;
+      private readonly IExpressionQueryTask _expressionQueryTask;
+      private readonly IExpressionQueryCalculator _expressionQueryCalculator;
+      private readonly IExpressionDataTableMapper _expressionDataTableMapper;
       private QueryExpressionSettings _querySettings;
-      private QueryExpressionResults _queryExpressionResults;
+      private IReadOnlyList<ExpressionContainerInfo> _containers;
+      private ExpressionQuery _query;
+      private DataTable _mappingTable;
 
       public ProteinExpressionsPresenter(IProteinExpressionsView view, ISubPresenterItemManager<IExpressionItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator,
-         IGeneExpressionQueries geneExpressionQueries, IMappingPresenter mappingPresenter, IProteinExpressionDataHelper dataHelper)
+         IGeneExpressionQueries geneExpressionQueries, IMappingPresenter mappingPresenter, IProteinExpressionDataHelper dataHelper,
+         IExpressionQueryTask expressionQueryTask, IExpressionQueryCalculator expressionQueryCalculator, IExpressionDataTableMapper expressionDataTableMapper)
          : base(view, subPresenterItemManager, ExpressionItems.All, dialogCreator)
       {
          _geneExpressionQueries = geneExpressionQueries;
          _mappingPresenter = mappingPresenter;
          _dataHelper = dataHelper;
+         _expressionQueryTask = expressionQueryTask;
+         _expressionQueryCalculator = expressionQueryCalculator;
+         _expressionDataTableMapper = expressionDataTableMapper;
          _mappingPresenter.MappingChanged += MappingChanged;
       }
 
@@ -92,9 +93,8 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
       public void MappingChanged()
       {
-         DataTable newData = _dataHelper.CreateDataJoin(_expressionDataSet.Relations[0], JoinType.Inner, "ExpressionData");
-         newData = joinExpressionDataWithContainers(newData);
-         PresenterAt(ExpressionItems.ExpressionData).ActualizeData(newData);
+         _query.Mapping = _expressionDataTableMapper.MappingFrom(_mappingTable);
+         PresenterAt(ExpressionItems.ExpressionData).ActualizeData(containerRecords());
       }
 
       /// <summary>
@@ -102,10 +102,9 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       /// </summary>
       public void EditMapping()
       {
-         DataTable mappingTable = _expressionDataSet.Tables[DatabaseConfiguration.TableNames.MAPPING_DATA];
-         DataTable containerTable = getContainerTableFromQuerySettings();
-         DataTable expressionDataTable = _expressionDataSet.Tables[DatabaseConfiguration.TableNames.EXPRESSION_DATA];
-         _mappingPresenter.EditMapping(mappingTable, containerTable, expressionDataTable);
+         _mappingTable = _expressionDataTableMapper.MappingTableFrom(_query.Mapping);
+         var tissues = _query.Records.Select(x => x.Tissue).Distinct().OrderBy(x => x, StringComparer.CurrentCultureIgnoreCase);
+         _mappingPresenter.EditMapping(_mappingTable, getContainerTableFromQuerySettings(), tissues);
       }
 
       public override void WizardCurrent(int previousIndex, int newIndex)
@@ -115,16 +114,13 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
             PresenterAt(ExpressionItems.ProteinSelection).SelectProtein();
 
          if (newIndex == ExpressionItems.ExpressionData.Index && previousIndex == ExpressionItems.Transfer.Index)
-         {
-            PresenterAt(ExpressionItems.ExpressionData).SetSelectedUnit(
-               PresenterAt(ExpressionItems.Transfer).GetSelectedUnit());
-         }
+            _query.SelectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
 
          if (newIndex == ExpressionItems.Transfer.Index)
          {
             if (PresenterAt(ExpressionItems.ProteinSelection).ProteinSelectionChanged)
                PresenterAt(ExpressionItems.ProteinSelection).SelectProtein();
-            SelectTransferData(String.Empty, PresenterAt(ExpressionItems.ExpressionData).GetSelectedUnit());
+            selectTransferData();
          }
 
          base.WizardCurrent(previousIndex, newIndex);
@@ -151,71 +147,26 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          if (selectedRow == null) return;
 
          var id = (long) selectedRow[DatabaseConfiguration.ProteinColumns.COL_ID];
-         var expressionDataTable = _geneExpressionQueries.GetExpressionDataByGeneId(id);
-         expressionDataTable.TableName = DatabaseConfiguration.TableNames.EXPRESSION_DATA;
+         _query = _expressionQueryTask.CreateQueryFor(id, proteinNameFrom(selectedRow));
 
-         var mappingContainerTissue = _geneExpressionQueries.GetContainerTissueMapping();
-         mappingContainerTissue.TableName = DatabaseConfiguration.TableNames.MAPPING_DATA;
-
-         //This is required because the code below sets null value in a table that does not allow null value in the database
-         mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER].AllowDBNull = true;
-
-
-         //add all tissues in expression data which are not mapped to containers
-         var mappedTissues = _dataHelper.GetDistinctLoV(mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_TISSUE]);
-         var tissueLov = _dataHelper.GetDistinctLoV(expressionDataTable.Columns[DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE]);
-
-         mappingContainerTissue.BeginLoadData();
-         foreach (string expressionTissue in tissueLov)
-         {
-            if (mappedTissues.Contains(expressionTissue)) continue;
-            var newRow = mappingContainerTissue.NewRow();
-            newRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = DBNull.Value;
-            newRow[DatabaseConfiguration.MappingColumns.COL_TISSUE] = expressionTissue;
-            mappingContainerTissue.Rows.Add(newRow);
-         }
-         mappingContainerTissue.EndLoadData();
-         mappingContainerTissue.AcceptChanges();
-
-         //build data set
-         _expressionDataSet = new DataSet("ExpressionData");
-         _expressionDataSet.Tables.Add(expressionDataTable);
-         _expressionDataSet.Tables.Add(mappingContainerTissue);
-         DataColumn parentColumn = expressionDataTable.Columns[DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE];
-         DataColumn childColumn = mappingContainerTissue.Columns[DatabaseConfiguration.MappingColumns.COL_TISSUE];
-         _expressionDataSet.Relations.Add("REL_TISSUE", parentColumn, childColumn, false);
-         DataTable expressionData = _dataHelper.CreateDataJoin(_expressionDataSet.Relations[0], JoinType.Inner,
-            "ExpressionData");
-
-         // join expression data with containers to have the display name information
-         expressionData = joinExpressionDataWithContainers(expressionData);
-
-         // determine the name used for identifying the protein.
-         if (selectedRow[DatabaseConfiguration.ProteinColumns.COL_SYMBOL] != DBNull.Value)
-            _proteinName = (string) selectedRow[DatabaseConfiguration.ProteinColumns.COL_SYMBOL];
-         else if (selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_NAME] != DBNull.Value)
-            _proteinName = (string) selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_NAME];
-         else if (selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_ID] != DBNull.Value)
-            _proteinName = (string) selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_ID];
-
-         PresenterAt(ExpressionItems.ExpressionData).SetData(_proteinName, expressionData, String.Empty);
+         PresenterAt(ExpressionItems.ExpressionData).SetData(_query.ProteinName, containerRecords());
          _view.ActivateControl(ExpressionItems.ExpressionData);
          _view.SetControlEnabled(ExpressionItems.Transfer, true);
          SetWizardButtonEnabled(ExpressionItems.ExpressionData);
       }
 
-      private DataTable joinExpressionDataWithContainers(DataTable expressionData)
+      private static string proteinNameFrom(DataRow selectedRow)
       {
-         var ds = new DataSet();
-         DataTable containers = getContainerTableFromQuerySettings();
-         ds.Tables.Add(containers);
-         ds.Tables.Add(expressionData);
-         ds.Relations.Add("REL_CONTAINER", expressionData.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER],
-            containers.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER], false);
+         if (selectedRow[DatabaseConfiguration.ProteinColumns.COL_SYMBOL] != DBNull.Value)
+            return (string) selectedRow[DatabaseConfiguration.ProteinColumns.COL_SYMBOL];
 
-         return _dataHelper.CreateDataJoin(ds.Relations[0], JoinType.Inner,
-            "ExpressionData");
+         if (selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_NAME] != DBNull.Value)
+            return (string) selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_NAME];
+
+         return selectedRow[DatabaseConfiguration.ProteinColumns.COL_GENE_ID] as string;
       }
+
+      private IReadOnlyList<ContainerExpressionDataRecord> containerRecords() => _expressionQueryCalculator.ContainerRecordsFor(_query, _containers);
 
       private bool isOldQuery
       {
@@ -225,11 +176,12 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       public void InitializeSettings(QueryExpressionSettings querySettings)
       {
          _querySettings = querySettings;
+         _containers = querySettings.ExpressionContainers.ToList();
          PresenterAt(ExpressionItems.Transfer).ShowOldValues = isOldQuery;
 
          if (isOldQuery)
          {
-            setQueryConfiguration(_querySettings.QueryConfiguration);
+            restoreQuery(_querySettings.QueryConfiguration);
             _view.ActivateControl(ExpressionItems.ExpressionData);
             _view.SetControlEnabled(ExpressionItems.Transfer, true);
             SetWizardButtonEnabled(ExpressionItems.ExpressionData);
@@ -246,107 +198,18 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
       public QueryExpressionResults GetQueryResults()
       {
-         var expResults = new List<ExpressionResult>();
-
-         string selectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
-         SelectTransferData(selectedUnit, selectedUnit);
-         DataTable transferData = PresenterAt(ExpressionItems.Transfer).GetData();
-
-         foreach (DataRow row in transferData.Rows)
-         {
-            string containerName = row[ColumnNamesOfTransferTable.Container.ToString()].ToString();
-
-            double expRelValue;
-            if (row[ColumnNamesOfTransferTable.RelativeExpressionNew.ToString()] == DBNull.Value)
-               expRelValue = 0;
-            else
-               expRelValue = (double) row[ColumnNamesOfTransferTable.RelativeExpressionNew.ToString()];
-
-            var expResult = new ExpressionResult {ContainerName = containerName, RelativeExpression = expRelValue};
-            expResults.Add(expResult);
-         }
-
-         _queryExpressionResults = new QueryExpressionResults(expResults)
-         {
-            ProteinName = _proteinName,
-            SelectedUnit = selectedUnit,
-            QueryConfiguration = getQueryConfiguration(),
-            Description = getQueryDescription()
-         };
-         return _queryExpressionResults;
+         _query.Filter = PresenterAt(ExpressionItems.ExpressionData).Filter;
+         _query.SelectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
+         _query.LayoutSettings = PresenterAt(ExpressionItems.ExpressionData).GetLayoutSetting();
+         return _expressionQueryTask.ResultsFor(_query, _containers);
       }
 
-      private string getQueryDescription()
+      private void selectTransferData()
       {
-         var description = new StringBuilder();
-         description.AppendLine($"Selected protein: {_proteinName}");
-         var selectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
-         description.AppendLine($"Selected unit: {selectedUnit}");
-         var filterInfo = PresenterAt(ExpressionItems.ExpressionData).GetFilterInformation();
-         if (!String.IsNullOrEmpty(filterInfo))
-         {
-            description.AppendLine("Filter used: ");
-            description.AppendLine(filterInfo);
-         }
-         var mappingTable = _expressionDataSet.Tables[DatabaseConfiguration.TableNames.MAPPING_DATA];
-         if (mappingTable != null)
-         {
-            description.AppendLine("Mapping used: ");
-            foreach (DataRow row in mappingTable.Rows)
-            {
-               var tissue = row[DatabaseConfiguration.MappingColumns.COL_TISSUE].ToString();
-               if (String.IsNullOrEmpty(tissue)) continue;
-               var container = row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString();
-               if (String.IsNullOrEmpty(container)) continue;
-               description.AppendLine($"Tissue [{tissue}] -> Container [{container}]");
-            }
-         }
-
-         return description.ToString();
-      }
-
-      public void SelectTransferData(string selectedUnit, string defaultUnit)
-      {
-         var selectedData = PresenterAt(ExpressionItems.ExpressionData).GetSelectedData();
-         var transferData = new DataTable();
-         foreach (DataRow unitRow in selectedData.DefaultView.ToTable(true, new[] {ColumnNamesOfTransferTable.Unit.ToString()}).Rows)
-         {
-            var unit = unitRow[ColumnNamesOfTransferTable.Unit.ToString()].ToString();
-            if (!String.IsNullOrEmpty(selectedUnit))
-               if (unit != selectedUnit) continue;
-
-            //filter on current unit and join with containers
-            var expDataView = selectedData.DefaultView;
-            expDataView.RowFilter = $"[{ColumnNamesOfTransferTable.Unit}] = '{unit}'";
-            var expData = joinTransferDataWithContainers(expDataView.ToTable());
-            //fill out unit for outer joined containers
-            foreach (DataRow row in expData.Rows)
-               row[ColumnNamesOfTransferTable.Unit.ToString()] = unit;
-            transferData.Merge(expData);
-         }
-         transferData.AcceptChanges();
-
-         PresenterAt(ExpressionItems.Transfer).SetData(transferData, defaultUnit);
+         _query.Filter = PresenterAt(ExpressionItems.ExpressionData).Filter;
+         PresenterAt(ExpressionItems.Transfer).SetData(_expressionQueryCalculator.UnitExpressionsFor(_query, _containers), _query.SelectedUnit);
          _view.ActivateControl(ExpressionItems.Transfer);
          SetWizardButtonEnabled(ExpressionItems.Transfer);
-      }
-
-      private DataTable joinTransferDataWithContainers(DataTable expData)
-      {
-         const string STR_TRANSFER_DATA = "TransferData";
-         var transferDataSet = new DataSet(STR_TRANSFER_DATA);
-         DataTable containers = getContainerTableFromQuerySettings();
-
-         transferDataSet.Tables.Add(containers);
-         transferDataSet.Tables.Add(expData);
-         var parentColumn = containers.Columns[ColumnNamesOfTransferTable.DisplayName.ToString()];
-         var childColumn = expData.Columns[ColumnNamesOfTransferTable.Container.ToString()];
-         const string STR_REL_CONTAINER = "REL_CONTAINER";
-         transferDataSet.Relations.Add(STR_REL_CONTAINER, parentColumn, childColumn, false);
-
-         return _dataHelper.CreateDataJoin(transferDataSet.Relations[STR_REL_CONTAINER],
-            JoinType.LeftOuter,
-            STR_TRANSFER_DATA);
       }
 
       public string Title
@@ -373,57 +236,21 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          return containers;
       }
 
-      private void setExpressionDataSet(string expressionDataSet)
+      private void restoreQuery(string queryConfiguration)
       {
-         _expressionDataSet = new DataSet();
-         _expressionDataSet.ReadFromXmlString(expressionDataSet);
-      }
+         _query = _expressionQueryTask.QueryFrom(queryConfiguration);
+         var expressionDataPresenter = PresenterAt(ExpressionItems.ExpressionData);
+         expressionDataPresenter.SetData(_query.ProteinName, containerRecords());
 
-      private string getExpressionDataSet()
-      {
-         return _expressionDataSet.SaveToXmlString();
-      }
+         if (_query.LayoutSettings.StringIsNotEmpty())
+         {
+            var discardedFilter = expressionDataPresenter.SetLayoutSetting(_query.LayoutSettings);
+            if (discardedFilter.StringIsNotEmpty())
+               _dialogCreator.MessageBoxInfo(PKSimConstants.Information.ExpressionQueryFilterDiscarded(discardedFilter));
+         }
 
-      private string getQueryConfiguration()
-      {
-         var element = new XElement("QueryConfiguration");
-         element.Add(new XAttribute(CoreConstants.Serialization.Attribute.ProteinName, _proteinName));
-         var selectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
-         element.Add(new XAttribute(CoreConstants.Serialization.Attribute.SelectedUnit, selectedUnit));
-         element.Add(new XElement(CoreConstants.Serialization.ExpressionDataSet, getExpressionDataSet()));
-         element.Add(new XElement(CoreConstants.Serialization.LayoutSettings, PresenterAt(ExpressionItems.ExpressionData).GetLayoutSetting()));
-         return element.ToString(SaveOptions.DisableFormatting);
-      }
-
-      private void setQueryConfiguration(string xml)
-      {
-         var rootElement = XElementSerializer.PermissiveLoad(new MemoryStream(Encoding.Default.GetBytes(xml)));
-
-         var expressionDataSetElement = rootElement.Element(CoreConstants.Serialization.ExpressionDataSet);
-         if (expressionDataSetElement == null)
-            throw new PKSimException("XML Element ExpressionDataSet missing!");
-         setExpressionDataSet(expressionDataSetElement.Value);
-
-         var layoutSettingsElement = rootElement.Element(CoreConstants.Serialization.LayoutSettings);
-         if (layoutSettingsElement == null)
-            throw new PKSimException("XML Element LayoutSettings missing!");
-         string layoutSettings = layoutSettingsElement.Value;
-
-         var selectedUnitElement = rootElement.Attribute(CoreConstants.Serialization.Attribute.SelectedUnit);
-         var selectedUnit = selectedUnitElement == null ? String.Empty : selectedUnitElement.Value;
-
-         var proteinNameElement = rootElement.Attribute(CoreConstants.Serialization.Attribute.ProteinName);
-         if (proteinNameElement == null)
-            throw new PKSimException("XML Element ProteinName missing!");
-         _proteinName = proteinNameElement.Value;
-
-         var expressionData = _dataHelper.CreateDataJoin(_expressionDataSet.Relations[0],
-            JoinType.Inner,
-            "ExpressionData");
-         expressionData = joinExpressionDataWithContainers(expressionData);
-
-         PresenterAt(ExpressionItems.ExpressionData).SetData(_proteinName, expressionData, selectedUnit);
-         PresenterAt(ExpressionItems.ExpressionData).SetLayoutSetting(layoutSettings);
+         if (_query.Filter != null)
+            expressionDataPresenter.Filter = _query.Filter;
       }
 
       protected override void Cleanup()

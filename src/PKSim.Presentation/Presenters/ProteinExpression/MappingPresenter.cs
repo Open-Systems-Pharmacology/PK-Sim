@@ -1,14 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using OSPSuite.Presentation.Presenters;
-using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
    public interface IMappingPresenter : IPresenter<IMappingView>, IDisposablePresenter
    {
-      void EditMapping(DataTable mappingTable, DataTable containerTable, DataTable expressionDataTable);
+      void EditMapping(DataTable mappingTable, DataTable containerTable, IEnumerable<string> tissues);
       void SaveMapping(DataTable dataTable);
       void CancelChanged(DataTable dataTable);
       event Action MappingChanged;
@@ -16,18 +17,15 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
    public class MappingPresenter : AbstractDisposablePresenter<IMappingView, IMappingPresenter>, IMappingPresenter
    {
-      private readonly IProteinExpressionDataHelper _dataHelper;
       public event Action MappingChanged = delegate { };
 
-      public MappingPresenter(IMappingView view, IProteinExpressionDataHelper dataHelper) : base(view)
+      public MappingPresenter(IMappingView view) : base(view)
       {
-         _dataHelper = dataHelper;
       }
 
-      public void EditMapping(DataTable mappingTable, DataTable containerTable, DataTable expressionDataTable)
+      public void EditMapping(DataTable mappingTable, DataTable containerTable, IEnumerable<string> tissues)
       {
-         var tissueLov = _dataHelper.GetDistinctLoV(expressionDataTable.Columns[DatabaseConfiguration.ExpressionDataColumns.COL_TISSUE]);
-         View.SetData(mappingTable, containerTable, tissueLov);
+         View.SetData(mappingTable, containerTable, tissues.ToList());
          View.Display();
       }
 

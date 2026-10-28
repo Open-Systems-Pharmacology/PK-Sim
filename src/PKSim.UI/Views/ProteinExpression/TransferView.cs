@@ -16,6 +16,7 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
 using static PKSim.Assets.PKSimConstants.ProteinExpressions.ColumnCaptions.Transfer;
@@ -104,10 +105,10 @@ namespace PKSim.UI.Views.ProteinExpression
          }
       }
 
-      public void SetData(DataTable transferTable, string selectedUnit)
+      public void SetData(IReadOnlyList<UnitExpression> unitExpressions, string selectedUnit)
       {
-         _transferData = transferTable;
-         if (transferTable.Columns.Count == 0)
+         _transferData = transferTableFrom(unitExpressions);
+         if (!unitExpressions.Any())
          {
             radioGroup.Properties.Items.Clear();
             grdTransfer.BeginUpdate();
@@ -144,6 +145,26 @@ namespace PKSim.UI.Views.ProteinExpression
          }
 
          bindDataToGrid();
+      }
+
+      private static DataTable transferTableFrom(IReadOnlyList<UnitExpression> unitExpressions)
+      {
+         var transferTable = new DataTable();
+         transferTable.Columns.Add(ColumnNamesOfTransferTable.Container, typeof(string));
+         transferTable.Columns.Add(DisplayName, typeof(string));
+         transferTable.Columns.Add(RelativeExpressionOld, typeof(double));
+         transferTable.Columns.Add(ExpressionValue, typeof(double));
+         transferTable.Columns.Add(RelativeExpressionNew, typeof(double));
+         transferTable.Columns.Add(Unit, typeof(string));
+         foreach (var unitExpression in unitExpressions)
+         foreach (var containerExpression in unitExpression.ContainerExpressions)
+         {
+            var container = containerExpression.Container;
+            transferTable.Rows.Add(container.ContainerName, container.ContainerDisplayName, container.RelativeExpression,
+               containerExpression.ExpressionValue ?? (object) DBNull.Value, containerExpression.RelativeExpression ?? (object) DBNull.Value, unitExpression.Unit);
+         }
+
+         return transferTable;
       }
 
       private void bindDataToGrid()
@@ -310,14 +331,6 @@ namespace PKSim.UI.Views.ProteinExpression
       public bool HasData()
       {
          return _transferData != null && _transferData.Columns.Count > 0 && _transferData.Rows.Count > 0;
-      }
-
-      public DataTable GetData()
-      {
-         var retData = _transferData.DefaultView;
-         retData.RowFilter = $"[{Unit}] = '{_selectedUnit}'";
-
-         return retData.ToTable();
       }
 
       public void AttachPresenter(ITransferPresenter presenter)

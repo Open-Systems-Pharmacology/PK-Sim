@@ -1,39 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Data;
 using System.Reflection;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.ORM.DAS;
 
 namespace PKSim.Infrastructure.Services
 {
    public class ProteinExpressionDataHelper : IProteinExpressionDataHelper
    {
-      public DataTable CreateDataJoin(DataRelation dr, JoinType jt, string tableName)
-      {
-         DASHelper.JoinType dasJt;
-         switch (jt)
-         {
-            case JoinType.Inner:
-               dasJt = DASHelper.JoinType.Inner;
-               break;
-            case JoinType.LeftOuter:
-               dasJt = DASHelper.JoinType.LeftOuter;
-               break;
-            case JoinType.RightOuter:
-               dasJt = DASHelper.JoinType.RightOuter;
-               break;
-            case JoinType.FullOuter:
-               dasJt = DASHelper.JoinType.FullOuter;
-               break;
-            default:
-               dasJt = DASHelper.JoinType.Inner;
-               break;
-         }
-
-         return DASHelper.CreateDataJoin(dr, dasJt, tableName);
-      }
-
       /// <summary>
       ///    Fills the given data table with given object data.
       /// </summary>
@@ -85,23 +58,6 @@ namespace PKSim.Infrastructure.Services
          foreach (object o in array)
             fillData(properties, dt, o);
          return dt;
-      }
-
-      /// <summary>
-      ///    This helping method retrieves a string collection with all distinct values of the given column.
-      /// </summary>
-      public IList GetDistinctLoV(DataColumn column)
-      {
-         IList ret = new StringCollection();
-         foreach (DataRow row in column.Table.Select(null, column.ColumnName))
-         {
-            if (!ret.Contains(row[column].ToString()))
-            {
-               ret.Add(row[column].ToString());
-            }
-         }
-
-         return ret;
       }
    }
 }
