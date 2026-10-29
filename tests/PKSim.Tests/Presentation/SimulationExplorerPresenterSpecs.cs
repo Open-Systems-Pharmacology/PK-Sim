@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using FakeItEasy;
 using OSPSuite.Assets;
@@ -18,6 +19,7 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Events;
@@ -59,6 +61,7 @@ namespace PKSim.Presentation
       protected RootNode _comparisonFolderNode;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       protected IPKSimBuildingBlock _templateCompoundBuildingBlock;
+      protected IBuildingBlockRetriever _buildingBlockRetriever;
       protected ITreeNode _usedObservedDataNode;
       private IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
@@ -127,8 +130,10 @@ namespace PKSim.Presentation
 
          _project.AddClassifiable(classifiableComparison);
 
-         _templateCompoundBuildingBlock = A.Fake<IPKSimBuildingBlock>();
-         _usedBuildingBlockNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templateCompoundBuildingBlock);
+         _templateCompoundBuildingBlock = A.Fake<IPKSimBuildingBlock>().WithId(_usedCompoundBuildingBlock.TemplateId);
+         _buildingBlockRetriever = A.Fake<IBuildingBlockRetriever>();
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_templateCompoundBuildingBlock.Id)).Returns(_templateCompoundBuildingBlock);
+         _usedBuildingBlockNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _buildingBlockRetriever);
          A.CallTo(() => _treeNodeFactory.CreateFor(_simulation, _usedCompoundBuildingBlock)).Returns(_usedBuildingBlockNode);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_simulation)).Returns(ApplicationIcons.SimulationGreen);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_populationSimulation)).Returns(ApplicationIcons.SimulationGreen);
@@ -159,7 +164,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templateCompoundBuildingBlock);
+         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _buildingBlockRetriever);
       }
 
       protected override void Because()
@@ -461,26 +466,49 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_simulation_explorer_presenter_is_notified_of_the_swap_building_block_event : concern_for_SimulationExplorerPresenter
+   public class When_the_simulation_explorer_presenter_is_showing_the_context_menu_of_a_used_building_block_node_created_while_the_template_building_block_was_being_loaded : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode _usedBuildingBlockNodeInTree;
+      private IContextMenu _contextMenu;
+
+      protected override void Context()
+      {
+         base.Context();
+         //the template is not registered while being lazy loaded (e.g. project opened from the file menu) when the tree is created
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_templateCompoundBuildingBlock.Id)).Returns(null);
+         sut.Handle(new ProjectCreatedEvent(_project));
+         _usedBuildingBlockNodeInTree = _individualSimulationNode.Children.Single(x => x.Id == _usedCompoundBuildingBlock.Id);
+
+         //loading finished, the template is registered again
+         A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_templateCompoundBuildingBlock.Id)).Returns(_templateCompoundBuildingBlock);
+         _contextMenu = A.Fake<IContextMenu>();
+         A.CallTo(() => _contextMenuFactory.CreateFor(_usedBuildingBlockNodeInTree, sut)).Returns(_contextMenu);
+      }
+
+      protected override void Because() => sut.ShowContextMenu(_usedBuildingBlockNodeInTree, new Point());
+
+      [Observation]
+      public void should_show_the_context_menu_created_for_the_node() => A.CallTo(() => _contextMenu.Show(_view, A<Point>._)).MustHaveHappened();
+
+      [Observation]
+      public void the_node_should_now_return_the_template_building_block() => _usedBuildingBlockNodeInTree.DowncastTo<UsedBuildingBlockInSimulationNode>().TemplateBuildingBlock.ShouldBeEqualTo(_templateCompoundBuildingBlock);
+   }
+
+   public class When_the_simulation_explorer_presenter_is_notified_that_a_used_building_block_template_was_swapped : concern_for_SimulationExplorerPresenter
    {
       private IPKSimBuildingBlock _newBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _newBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          sut.Handle(new ProjectCreatedEvent(_project));
+         //a swapped building block (e.g. protocol mode change) replaces the template under the same id
+         _newBuildingBlock = A.Fake<IPKSimBuildingBlock>().WithId(_templateCompoundBuildingBlock.Id);
       }
 
-      protected override void Because()
-      {
-         sut.Handle(new SwapBuildingBlockEvent(_templateCompoundBuildingBlock, _newBuildingBlock));
-      }
+      protected override void Because() => A.CallTo(() => _buildingBlockRetriever.BuildingBlockWithId(_templateCompoundBuildingBlock.Id)).Returns(_newBuildingBlock);
 
       [Observation]
-      public void should_udpate_the_reference_to_the_old_building_block_with_the_new_building_block()
-      {
-         _usedBuildingBlockNode.TemplateBuildingBlock.ShouldBeEqualTo(_newBuildingBlock);
-      }
+      public void the_used_building_block_node_should_return_the_new_building_block_as_template() => _usedBuildingBlockNode.TemplateBuildingBlock.ShouldBeEqualTo(_newBuildingBlock);
    }
 }
