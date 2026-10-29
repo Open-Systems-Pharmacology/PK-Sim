@@ -349,4 +349,86 @@ namespace PKSim.Core
          ((IParameter)null).AllowNegativeValues();
       }
    }
+
+   public abstract class concern_for_CanBeDefinedAsAdvanced : StaticContextSpecification
+   {
+      protected IParameter _variableInPopulation;
+      protected IParameter _variableOnly;
+      protected IParameter _notVariable;
+      protected IParameter _changedByCreateIndividual;
+
+      protected override void Context()
+      {
+         _variableInPopulation = new PKSimParameter {CanBeVaried = true, CanBeVariedInPopulation = true};
+         _variableOnly = new PKSimParameter {CanBeVaried = true, CanBeVariedInPopulation = false};
+         _notVariable = new PKSimParameter {CanBeVaried = false, CanBeVariedInPopulation = false};
+         _changedByCreateIndividual = new PKSimParameter {CanBeVaried = true, CanBeVariedInPopulation = true, IsChangedByCreateIndividual = true};
+      }
+   }
+
+   public class When_checking_if_a_parameter_can_be_defined_as_advanced_by_default : concern_for_CanBeDefinedAsAdvanced
+   {
+      [Observation]
+      public void should_return_true_for_a_parameter_that_can_be_varied_in_population()
+      {
+         _variableInPopulation.CanBeDefinedAsAdvanced().ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_parameter_that_can_only_be_varied()
+      {
+         _variableOnly.CanBeDefinedAsAdvanced().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_parameter_that_cannot_be_varied()
+      {
+         _notVariable.CanBeDefinedAsAdvanced().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_parameter_changed_by_create_individual()
+      {
+         _changedByCreateIndividual.CanBeDefinedAsAdvanced().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_for_an_undefined_parameter()
+      {
+         ((IParameter) null).CanBeDefinedAsAdvanced().ShouldBeFalse();
+      }
+   }
+
+   public class When_checking_if_a_parameter_can_be_defined_as_advanced_when_all_variable_parameters_are_allowed : concern_for_CanBeDefinedAsAdvanced
+   {
+      [Observation]
+      public void should_return_true_for_a_parameter_that_can_be_varied_in_population()
+      {
+         _variableInPopulation.CanBeDefinedAsAdvanced(showAllVariableParameters: true).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_true_for_a_parameter_that_can_only_be_varied()
+      {
+         _variableOnly.CanBeDefinedAsAdvanced(showAllVariableParameters: true).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_for_a_parameter_that_cannot_be_varied()
+      {
+         _notVariable.CanBeDefinedAsAdvanced(showAllVariableParameters: true).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_still_return_false_for_a_parameter_changed_by_create_individual()
+      {
+         _changedByCreateIndividual.CanBeDefinedAsAdvanced(showAllVariableParameters: true).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_return_false_for_an_undefined_parameter()
+      {
+         ((IParameter) null).CanBeDefinedAsAdvanced(showAllVariableParameters: true).ShouldBeFalse();
+      }
+   }
 }

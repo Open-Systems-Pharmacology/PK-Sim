@@ -63,6 +63,7 @@ namespace PKSim.UI
       public string LastIgnoredVersion { get; set; }
       public OutputSelections OutputSelections { get; set; }
       public bool ColorGroupObservedDataFromSameFolder { get; set; }
+      public bool ShowAllVariableParametersInUserDefinedVariability { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
@@ -111,6 +112,7 @@ namespace PKSim.UI
          DefaultFractionUnboundName = PKSimConstants.UI.DefaultAlternative;
          DefaultSolubilityName = PKSimConstants.UI.DefaultAlternative;
          ShowUpdateNotification = true;
+         ShowAllVariableParametersInUserDefinedVariability = false;
          MaximumNumberOfCoresToUse = Math.Max(Environment.ProcessorCount - 1, 1);
          DefaultPopulationAnalysis = PopulationAnalysisType.TimeProfile;
          PreferredViewLayout = ViewLayouts.AccordionView;

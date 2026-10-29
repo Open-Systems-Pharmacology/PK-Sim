@@ -27,10 +27,11 @@ namespace PKSim.Core.Services
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ISimulationUpdaterAfterDeserialization _simulationUpdaterAfterDeserialization;
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
+      private readonly ICoreUserSettings _userSettings;
 
       public ImportSimulationTask(ISimulationTransferLoader simulationTransferLoader, ISimulationFactory simulationFactory, IEntitiesInContainerRetriever parameterRetriever, ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
          IIndividualPropertiesCacheImporter individualPropertiesCacheImporter, IExecutionContext executionContext, IObjectBaseFactory objectBaseFactory,
-         ISimulationUpdaterAfterDeserialization simulationUpdaterAfterDeserialization, IAdvancedParameterFactory advancedParameterFactory)
+         ISimulationUpdaterAfterDeserialization simulationUpdaterAfterDeserialization, IAdvancedParameterFactory advancedParameterFactory, ICoreUserSettings userSettings)
       {
          _simulationTransferLoader = simulationTransferLoader;
          _simulationFactory = simulationFactory;
@@ -41,6 +42,7 @@ namespace PKSim.Core.Services
          _objectBaseFactory = objectBaseFactory;
          _simulationUpdaterAfterDeserialization = simulationUpdaterAfterDeserialization;
          _advancedParameterFactory = advancedParameterFactory;
+         _userSettings = userSettings;
       }
 
       public PopulationSimulationImport ImportFromBuildingBlock(string simulationFile, Population population)
@@ -80,7 +82,7 @@ namespace PKSim.Core.Services
 
       private void addAdvancedParameterIfRequired(IParameter parameter, PopulationSimulation populationSimulation)
       {
-         if (!parameter.CanBeDefinedAsAdvanced())
+         if (!parameter.CanBeDefinedAsAdvanced(_userSettings.ShowAllVariableParametersInUserDefinedVariability))
             return;
 
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionType.Unknown);

@@ -24,6 +24,7 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected ISimulationUpdaterAfterDeserialization _simulationUpdaterAfterDeserialization;
       protected IAdvancedParameterFactory _advancedParameterFactory;
+      protected ICoreUserSettings _userSettings;
 
       protected const string _pkmlFile = "File";
 
@@ -38,9 +39,11 @@ namespace PKSim.Core
          _objectBaseFactory= A.Fake<IObjectBaseFactory>();
          _simulationUpdaterAfterDeserialization= A.Fake<ISimulationUpdaterAfterDeserialization>();
          _advancedParameterFactory= A.Fake<IAdvancedParameterFactory>();
+         _userSettings = A.Fake<ICoreUserSettings>();
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability = false;
          sut = new ImportSimulationTask(_simulationTransferLoader, _simulationFactory, _parameterRetriever,
             _simulationBuildingBlockUpdater, _individualPropertiesCacheImporter,_executionContext, _objectBaseFactory,
-            _simulationUpdaterAfterDeserialization,_advancedParameterFactory);
+            _simulationUpdaterAfterDeserialization,_advancedParameterFactory, _userSettings);
       }
    }
 
@@ -233,6 +236,68 @@ namespace PKSim.Core
       public void should_have_set_the_population_in_the_simulation_from_the_given_template()
       {
          A.CallTo(() => _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(_populationSimulation, _mobiPopulation, PKSimBuildingBlockType.SimulationSubject)).MustHaveHappened();
+      }
+   }
+
+   public abstract class concern_for_importing_a_population_file_with_a_parameter_that_can_only_be_varied : concern_for_ImportSimulationTask
+   {
+      protected PopulationSimulation _populationSimulation;
+      protected AdvancedParameter _advancedParameter;
+      private const string _populationFile = "PopulationFile";
+      private const string _parameterPath = "PathVariableOnly";
+
+      protected override void Context()
+      {
+         base.Context();
+         var pathCache = new PathCacheForSpecs<IParameter>();
+         var variableOnlyParameter = A.Fake<IParameter>();
+         A.CallTo(() => variableOnlyParameter.IsChangedByCreateIndividual).Returns(false);
+         variableOnlyParameter.CanBeVaried = true;
+         variableOnlyParameter.CanBeVariedInPopulation = false;
+         pathCache.Add(_parameterPath, variableOnlyParameter);
+
+         var individualValuesCache = A.Fake<IndividualValuesCache>();
+         A.CallTo(() => individualValuesCache.AllParameterPaths()).Returns(new[] {_parameterPath});
+         A.CallTo(() => individualValuesCache.ParameterValuesFor(_parameterPath)).Returns(new ParameterValues(_parameterPath));
+
+         _populationSimulation = A.Fake<PopulationSimulation>();
+         A.CallTo(() => _populationSimulation.ParameterValuesCache).Returns(A.Fake<ParameterValuesCache>());
+         A.CallTo(_simulationFactory).WithReturnType<PopulationSimulation>().Returns(_populationSimulation);
+         A.CallTo(() => _objectBaseFactory.Create<MoBiPopulation>()).Returns(A.Fake<MoBiPopulation>());
+         A.CallTo(() => _parameterRetriever.ParametersFrom(_populationSimulation)).Returns(pathCache);
+         A.CallTo(() => _individualPropertiesCacheImporter.ImportFrom(_populationFile, pathCache, A<IImportLogger>._)).Returns(individualValuesCache);
+
+         _advancedParameter = new AdvancedParameter();
+         A.CallTo(() => _advancedParameterFactory.Create(variableOnlyParameter, DistributionType.Unknown)).Returns(_advancedParameter);
+      }
+
+      protected override void Because()
+      {
+         sut.ImportFromPopulationFile(_pkmlFile, _populationFile);
+      }
+   }
+
+   public class When_importing_a_population_file_with_a_parameter_that_can_only_be_varied_and_the_user_settings_do_not_show_all_variable_parameters : concern_for_importing_a_population_file_with_a_parameter_that_can_only_be_varied
+   {
+      [Observation]
+      public void should_not_add_the_parameter_as_advanced_parameter()
+      {
+         A.CallTo(() => _populationSimulation.AddAdvancedParameter(_advancedParameter, false)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_importing_a_population_file_with_a_parameter_that_can_only_be_varied_and_the_user_settings_show_all_variable_parameters : concern_for_importing_a_population_file_with_a_parameter_that_can_only_be_varied
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability = true;
+      }
+
+      [Observation]
+      public void should_add_the_parameter_as_advanced_parameter_without_generating_new_values()
+      {
+         A.CallTo(() => _populationSimulation.AddAdvancedParameter(_advancedParameter, false)).MustHaveHappened();
       }
    }
 

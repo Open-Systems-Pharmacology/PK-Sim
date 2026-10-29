@@ -63,6 +63,10 @@ namespace PKSim.UI.Views
             .To(chckColorGroupObservedData)
             .WithCaption(Captions.ShouldColorGroupObservedData);
 
+         _screenBinder.Bind(x => x.ShowAllVariableParametersInUserDefinedVariability)
+            .To(chkShowAllVariableParameters)
+            .WithCaption(PKSimConstants.UI.ShowAllVariableParametersInUserDefinedVariability);
+
          _screenBinder.Bind(x => x.ActiveSkin)
             .To(cbActiveSkin)
             .WithValues(x => _presenter.AvailableSkins);
