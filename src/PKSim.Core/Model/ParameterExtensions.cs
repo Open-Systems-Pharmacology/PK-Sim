@@ -175,12 +175,21 @@ namespace PKSim.Core.Model
          return parameter.Value / defaultValue;
       }
 
-      public static bool CanBeDefinedAsAdvanced(this IParameter parameter)
+      /// <summary>
+      ///    Returns <c>true</c> if the <paramref name="parameter" /> can be selected as an advanced parameter (user defined variability).
+      ///    By default, only parameters flagged as variable in a population are eligible. When
+      ///    <paramref name="showAllVariableParameters" /> is <c>true</c>, every parameter that can be varied is eligible instead.
+      ///    Parameters changed when creating an individual are never eligible since they are varied by the population itself.
+      /// </summary>
+      public static bool CanBeDefinedAsAdvanced(this IParameter parameter, bool showAllVariableParameters = false)
       {
          if (parameter == null)
             return false;
 
-         return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
+         if (parameter.IsChangedByCreateIndividual)
+            return false;
+
+         return showAllVariableParameters ? parameter.CanBeVaried : parameter.CanBeVariedInPopulation;
       }
 
       public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IReadOnlyList<IParameter> parameters)

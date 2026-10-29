@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -38,16 +39,18 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       private readonly IAdvancedParameterPresenter _advancedParameterPresenter;
       private readonly IAdvancedParametersTask _advancedParametersTask;
       private readonly IEventPublisher _eventPublisher;
+      private readonly ICoreUserSettings _userSettings;
       private IAdvancedParameterContainer _advancedParameterContainer;
       private PathCache<IParameter> _parameterCache;
 
       protected AdvancedParametersPresenter(IAdvancedParametersView view, IEntityPathResolver entityPathResolver,
          IPopulationParameterGroupsPresenter constantParameterGroupsPresenter, IPopulationParameterGroupsPresenter advancedParameterGroupsPresenter,
          IAdvancedParameterPresenter advancedParameterPresenter, IAdvancedParametersTask advancedParametersTask,
-         IEventPublisher eventPublisher)
+         IEventPublisher eventPublisher, ICoreUserSettings userSettings)
          : base(view)
       {
          _entityPathResolver = entityPathResolver;
+         _userSettings = userSettings;
          _constantParameterGroupsPresenter = constantParameterGroupsPresenter;
          _constantParameterGroupsPresenter.GroupNodeSelected += (o, e) => deactivateAdd();
          _constantParameterGroupsPresenter.ParameterNodeSelected += (o, e) => activateAdd();
@@ -70,16 +73,24 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       {
          _advancedParameterContainer = advancedParameterContainer;
          _advancedParameterPresenter.RemoveSelection();
-         //cache of all parameters that can be defined as advanced parameters
+         //cache of all parameters that are or could be defined as advanced parameters, regardless of the user settings
          _parameterCache = new PathCache<IParameter>(_entityPathResolver).For(advancedFilter(allParameters));
-         _constantParameterGroupsPresenter.AddParameters(advancedFilter(advancedParameterContainer.AllConstantParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
+         _constantParameterGroupsPresenter.AddParameters(availableFilter(advancedParameterContainer.AllConstantParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
          _advancedParameterGroupsPresenter.AddParameters(advancedFilter(advancedParameterContainer.AllAdvancedParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
       }
 
-      private IEnumerable<IParameter> advancedFilter(IEnumerable<IParameter> parameters)
-      {
-         return parameters.Where(p => p.CanBeDefinedAsAdvanced());
-      }
+      /// <summary>
+      ///    Parameters that the user is allowed to add as advanced parameters. This depends on the user settings
+      /// </summary>
+      private IEnumerable<IParameter> availableFilter(IEnumerable<IParameter> parameters) => parameters.Where(canBeAddedAsAdvanced);
+
+      private bool canBeAddedAsAdvanced(IParameter parameter) => parameter.CanBeDefinedAsAdvanced(_userSettings.ShowAllVariableParametersInUserDefinedVariability);
+
+      /// <summary>
+      ///    Parameters that are or could become advanced parameters. This does not depend on the user settings so that
+      ///    advanced parameters defined while all variable parameters were shown remain visible (and removable) once the setting is turned off
+      /// </summary>
+      private IEnumerable<IParameter> advancedFilter(IEnumerable<IParameter> parameters) => parameters.Where(p => p.CanBeDefinedAsAdvanced(showAllVariableParameters: true));
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
@@ -156,7 +167,8 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          var parameter = parameterFrom(eventToHandle);
          if (parameter == null) return;
          _advancedParameterGroupsPresenter.RemoveParameter(parameter);
-         _constantParameterGroupsPresenter.AddParameter(parameter);
+         if (canBeAddedAsAdvanced(parameter))
+            _constantParameterGroupsPresenter.AddParameter(parameter);
          _advancedParameterPresenter.RemoveSelectionFor(eventToHandle.AdvancedParameter);
       }
 

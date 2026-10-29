@@ -1,5 +1,6 @@
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.AdvancedParameters;
 using PKSim.Presentation.Views.AdvancedParameters;
@@ -19,8 +20,9 @@ namespace PKSim.Presentation.Presenters.Populations
    {
       public PopulationAdvancedParametersPresenter(IAdvancedParametersView view, IEntityPathResolver entityPathResolver,
                                                    IPopulationParameterGroupsPresenter constantParameterGroupsPresenter, IPopulationParameterGroupsPresenter advancedParameterGroupsPresenter,
-                                                   IAdvancedParameterPresenter advancedParameterPresenter, IAdvancedParametersTask advancedParametersTask, IEventPublisher eventPublisher)
-         : base(view, entityPathResolver, constantParameterGroupsPresenter, advancedParameterGroupsPresenter, advancedParameterPresenter, advancedParametersTask, eventPublisher)
+                                                   IAdvancedParameterPresenter advancedParameterPresenter, IAdvancedParametersTask advancedParametersTask, IEventPublisher eventPublisher,
+                                                   ICoreUserSettings userSettings)
+         : base(view, entityPathResolver, constantParameterGroupsPresenter, advancedParameterGroupsPresenter, advancedParameterPresenter, advancedParametersTask, eventPublisher, userSettings)
       {
       }
 

@@ -18,6 +18,7 @@ namespace PKSim.Presentation.DTO.Mappers
             ShouldRestoreWorkspaceLayout = userSettings.ShouldRestoreWorkspaceLayout,
             ShowUpdateNotification = userSettings.ShowUpdateNotification,
             ColorGroupObservedDataFromSameFolder = userSettings.ColorGroupObservedDataFromSameFolder,
+            ShowAllVariableParametersInUserDefinedVariability = userSettings.ShowAllVariableParametersInUserDefinedVariability,
             ActiveSkin = userSettings.ActiveSkin,
             IconSizeTreeView = userSettings.IconSizeTreeView,
             IconSizeTab = userSettings.IconSizeTab,
@@ -54,6 +55,7 @@ namespace PKSim.Presentation.DTO.Mappers
          userSettings.ShouldRestoreWorkspaceLayout = userSettingsDTO.ShouldRestoreWorkspaceLayout;
          userSettings.ShowUpdateNotification = userSettingsDTO.ShowUpdateNotification;
          userSettings.ColorGroupObservedDataFromSameFolder = userSettingsDTO.ColorGroupObservedDataFromSameFolder;
+         userSettings.ShowAllVariableParametersInUserDefinedVariability = userSettingsDTO.ShowAllVariableParametersInUserDefinedVariability;
          userSettings.ActiveSkin = userSettingsDTO.ActiveSkin;
          userSettings.IconSizeTreeView = userSettingsDTO.IconSizeTreeView;
          userSettings.IconSizeTab = userSettingsDTO.IconSizeTab;
