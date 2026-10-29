@@ -73,14 +73,24 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
       {
          _advancedParameterContainer = advancedParameterContainer;
          _advancedParameterPresenter.RemoveSelection();
-         //cache of all parameters that can be defined as advanced parameters
+         //cache of all parameters that are or could be defined as advanced parameters, regardless of the user settings
          _parameterCache = new PathCache<IParameter>(_entityPathResolver).For(advancedFilter(allParameters));
-         _constantParameterGroupsPresenter.AddParameters(advancedFilter(advancedParameterContainer.AllConstantParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
+         _constantParameterGroupsPresenter.AddParameters(availableFilter(advancedParameterContainer.AllConstantParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
          _advancedParameterGroupsPresenter.AddParameters(advancedFilter(advancedParameterContainer.AllAdvancedParameters(_entityPathResolver)), advancedParameterContainer.DisplayParameterUsingGroupStructure);
       }
 
-      private IEnumerable<IParameter> advancedFilter(IEnumerable<IParameter> parameters) =>
-         parameters.Where(p => p.CanBeDefinedAsAdvanced(_userSettings.ShowAllVariableParametersInUserDefinedVariability));
+      /// <summary>
+      ///    Parameters that the user is allowed to add as advanced parameters. This depends on the user settings
+      /// </summary>
+      private IEnumerable<IParameter> availableFilter(IEnumerable<IParameter> parameters) => parameters.Where(canBeAddedAsAdvanced);
+
+      private bool canBeAddedAsAdvanced(IParameter parameter) => parameter.CanBeDefinedAsAdvanced(_userSettings.ShowAllVariableParametersInUserDefinedVariability);
+
+      /// <summary>
+      ///    Parameters that are or could become advanced parameters. This does not depend on the user settings so that
+      ///    advanced parameters defined while all variable parameters were shown remain visible (and removable) once the setting is turned off
+      /// </summary>
+      private IEnumerable<IParameter> advancedFilter(IEnumerable<IParameter> parameters) => parameters.Where(p => p.CanBeDefinedAsAdvanced(showAllVariableParameters: true));
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
@@ -157,7 +167,8 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
          var parameter = parameterFrom(eventToHandle);
          if (parameter == null) return;
          _advancedParameterGroupsPresenter.RemoveParameter(parameter);
-         _constantParameterGroupsPresenter.AddParameter(parameter);
+         if (canBeAddedAsAdvanced(parameter))
+            _constantParameterGroupsPresenter.AddParameter(parameter);
          _advancedParameterPresenter.RemoveSelectionFor(eventToHandle.AdvancedParameter);
       }
 
