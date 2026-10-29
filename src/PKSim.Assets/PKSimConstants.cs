@@ -1565,6 +1565,7 @@ namespace PKSim.Assets
          public static readonly string AllowsScientificNotation = "Allows scientific notation";
          public static readonly string ShouldRestoreWorkspaceLayout = "Restore opened view when loading project";
          public static readonly string ShowUpdateNotification = "Show software update notification if available";
+         public static readonly string ShowAllVariableParametersInUserDefinedVariability = "Show all variable parameters in user defined variability (use with care)";
          public static readonly string ActiveSkin = "Active skin";
          public static readonly string DecimalPlace = "Decimal place";
          public static readonly string IconSizes = "Icon Sizes (Application Restart Required)";
