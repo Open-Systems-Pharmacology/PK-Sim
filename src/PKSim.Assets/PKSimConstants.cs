@@ -631,6 +631,8 @@ namespace PKSim.Assets
 
          public static string NameAlreadyExistsInContainerType(string name, string containerType) => $"'{name}' already exists in {containerType}.";
 
+         public static string CompoundNameIsReservedForModelElement(string name) => $"'{name}' cannot be used as compound name because it is the name of a model element (container, parameter, molecule, observer or process).";
+
          public static string CompoundProcessDeclaredAsNotTemplate(string processName) => $"Compound process '{processName}' is not declared as a template.";
 
          public static string ProjectFileDoesNotExist(string projectFile) => $"Project file '{projectFile}' has been deleted or is not accessible.";

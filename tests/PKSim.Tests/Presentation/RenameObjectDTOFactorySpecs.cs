@@ -8,6 +8,7 @@ using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
+using PKSim.Presentation.DTO.Compounds;
 using RenameObjectDTOFactory = PKSim.Presentation.DTO.Core.RenameObjectDTOFactory;
 
 namespace PKSim.Presentation
@@ -16,16 +17,61 @@ namespace PKSim.Presentation
    {
       private IPKSimProjectRetriever _projectRetriever;
       private IObjectTypeResolver _objectTypeResolver;
+      protected IForbiddenCompoundNamesRetriever _forbiddenCompoundNamesRetriever;
       protected PKSimProject _project;
 
       protected override void Context()
       {
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new RenameObjectDTOFactory(_projectRetriever, _objectTypeResolver);
+         _forbiddenCompoundNamesRetriever = A.Fake<IForbiddenCompoundNamesRetriever>();
+         sut = new RenameObjectDTOFactory(_projectRetriever, _objectTypeResolver, _forbiddenCompoundNamesRetriever);
 
          _project = new PKSimProject();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
+      }
+   }
+
+   public class When_creating_a_rename_DTO_for_a_compound : concern_for_RenameObjectDTOFactory
+   {
+      private RenameObjectDTO _dto;
+      private Compound _compound1;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compound1 = new Compound().WithName("Caffeine");
+         _project.AddBuildingBlock(_compound1);
+         _project.AddBuildingBlock(new Compound().WithName("Midazolam"));
+         _project.AddBuildingBlock(new Individual().WithName("Ind1"));
+         A.CallTo(() => _forbiddenCompoundNamesRetriever.All()).Returns(new[] {"Volume"});
+      }
+
+      protected override void Because()
+      {
+         _dto = sut.CreateFor(_compound1);
+      }
+
+      [Observation]
+      public void the_dto_should_be_created_for_compound()
+      {
+         _dto.ShouldBeAnInstanceOf<RenameCompoundDTO>();
+      }
+
+      [Observation]
+      public void should_return_the_names_of_all_compounds_as_used_names()
+      {
+         //names are added in lower case
+         _dto.UsedNames.ShouldOnlyContain("caffeine", "midazolam");
+      }
+
+      [Observation]
+      public void the_dto_should_be_invalid_when_the_compound_is_renamed_as_a_model_element()
+      {
+         _dto.Name = "Theophylline";
+         _dto.IsValid().ShouldBeTrue();
+         _dto.Name = "Volume";
+         _dto.IsValid().ShouldBeFalse();
       }
    }
 
