@@ -1,5 +1,4 @@
-﻿using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
+﻿using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Services;
 
@@ -39,8 +38,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          var statisticalAnalysis = new PopulationStatisticalAnalysis {TimeUnit =_displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Time)};
 
          //add predefined single curve selection
-         EnumHelper.AllValuesFor<StatisticalAggregationType>()
-            .Each(x => statisticalAnalysis.AddStatistic(new PredefinedStatisticalAggregation {Method = x}));
+         statisticalAnalysis.AddMissingPredefinedStatistics();
 
          CoreConstants.DEFAULT_STATISTIC_PERCENTILES.Each(p => statisticalAnalysis.AddStatistic(new PercentileStatisticalAggregation {Percentile = p}));
 
