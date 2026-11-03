@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PKSim.Assets;
 using OSPSuite.Utility.Validation;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -61,10 +62,16 @@ namespace PKSim.Presentation.DTO.Compounds
             }
          }
 
+         private static IBusinessRule moleculeNameDoesNotContainIllegalCharacters { get; } = CreateRule.For<PartialProcessDTO>()
+            .Property(item => item.MoleculeName)
+            .WithRule((dto, moleculeName) => !moleculeName.ContainsIllegalCharacters())
+            .WithError(PKSimConstants.Error.MoleculeNameCannotContainIllegalCharacters);
+
          internal static IEnumerable<IBusinessRule> All()
          {
             yield return moleculeNotEmpty;
             yield return moleculeNameValid;
+            yield return moleculeNameDoesNotContainIllegalCharacters;
             yield return dataSourceNotEmpty;
             yield return dataSourceValid;
          }

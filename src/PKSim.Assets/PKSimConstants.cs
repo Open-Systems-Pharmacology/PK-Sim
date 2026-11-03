@@ -470,6 +470,9 @@ namespace PKSim.Assets
          public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
          public const string SpeciesIsRequired = "Species is required.";
          public const string DataSourceIsRequired = "Data source is required.";
+         public static readonly string DataSourceCannotContainIllegalCharacters = cannotContainIllegalCharacters("Data source");
+         public static readonly string MoleculeNameCannotContainIllegalCharacters = cannotContainIllegalCharacters("Molecule name");
+         private static string cannotContainIllegalCharacters(string propertyName) => $"{propertyName} cannot contain any of the following characters:\n{Constants.ILLEGAL_CHARACTERS.ToString(", ", "'")}";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
          public const string RenameSameNameError = "The new name is the same as the original one.";
          public const string NoBuildingBlockTemplateSelected = "No template selected.";
