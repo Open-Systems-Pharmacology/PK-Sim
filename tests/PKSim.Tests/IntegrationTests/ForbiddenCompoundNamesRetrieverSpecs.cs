@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core;
 using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
@@ -47,6 +48,12 @@ namespace PKSim.IntegrationTests
       public void should_contain_the_names_of_the_model_processes()
       {
          _result.ShouldContain("ActiveEffluxSpecificBloodCellsToPlasma");
+      }
+
+      [Observation]
+      public void should_contain_the_names_of_the_undefined_liver_enzyme_and_transporter_created_at_runtime()
+      {
+         _result.ShouldContain(CoreConstants.Molecule.UndefinedLiver, CoreConstants.Molecule.UndefinedLiverTransporter);
       }
 
       [Observation]

@@ -2,6 +2,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Presentation.DTO.Compounds;
 
 namespace PKSim.Presentation
@@ -12,7 +13,7 @@ namespace PKSim.Presentation
       {
          sut = new CompoundDTO();
          sut.AddUsedNames(new[] {"Caffeine"});
-         sut.AddForbiddenNames(new[] {"Volume", "Liver"});
+         sut.AddForbiddenNames(new[] {"Volume", "Liver", CoreConstants.Molecule.UndefinedLiver});
       }
    }
 
@@ -43,6 +44,13 @@ namespace PKSim.Presentation
       public void should_be_invalid_for_the_name_of_a_model_element_regardless_of_case_and_whitespaces()
       {
          sut.Name = " liver ";
+         sut.IsValid().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_be_invalid_for_the_name_of_a_molecule_created_at_runtime()
+      {
+         sut.Name = CoreConstants.Molecule.UndefinedLiver;
          sut.IsValid().ShouldBeFalse();
       }
 

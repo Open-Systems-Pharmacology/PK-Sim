@@ -7,8 +7,9 @@ namespace PKSim.Core.Services
 {
    /// <summary>
    ///    Retrieves the names that cannot be used for a compound because they are the internal names of model elements
-   ///    (containers, parameters, molecules, observers or processes). A compound using one of these names would clash
-   ///    with the corresponding element during simulation construction.
+   ///    (containers, parameters, molecules, observers or processes) or the names of molecules created at runtime during
+   ///    simulation construction (e.g. the undefined liver enzyme and transporter). A compound using one of these names
+   ///    would clash with the corresponding element during simulation construction.
    /// </summary>
    public interface IForbiddenCompoundNamesRetriever
    {
@@ -26,6 +27,13 @@ namespace PKSim.Core.Services
          RepresentationObjectType.PROCESS,
       };
 
+      //Molecules created on the fly when the corresponding systemic process is used in a simulation. They are not part of the database
+      private static readonly string[] _runtimeMoleculeNames =
+      {
+         CoreConstants.Molecule.UndefinedLiver,
+         CoreConstants.Molecule.UndefinedLiverTransporter,
+      };
+
       private readonly IRepresentationInfoRepository _representationInfoRepository;
 
       public ForbiddenCompoundNamesRetriever(IRepresentationInfoRepository representationInfoRepository)
@@ -36,7 +44,7 @@ namespace PKSim.Core.Services
       public IReadOnlyList<string> All() => _forbiddenObjectTypes
          .SelectMany(_representationInfoRepository.AllOfType)
          .Select(x => x.Name)
-         .Distinct()
+         .Union(_runtimeMoleculeNames)
          .ToList();
    }
 }

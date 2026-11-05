@@ -50,7 +50,14 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_names_of_all_containers_parameters_molecules_observers_and_processes_without_duplicates()
       {
-         _result.ShouldOnlyContain("Liver", "Brain", "Volume", "CYP3A4", "Concentration", "Hepatic Clearance");
+         _result.ShouldContain("Liver", "Brain", "Volume", "CYP3A4", "Concentration", "Hepatic Clearance");
+         _result.Count(x => x == "Liver").ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_return_the_names_of_the_molecules_created_at_runtime_for_systemic_processes()
+      {
+         _result.ShouldContain(CoreConstants.Molecule.UndefinedLiver, CoreConstants.Molecule.UndefinedLiverTransporter);
       }
 
       [Observation]
