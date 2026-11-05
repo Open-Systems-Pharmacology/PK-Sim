@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -28,6 +29,7 @@ namespace PKSim.CLI
       protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
       protected ILazyLoadTask _lazyLoadTask;
+      protected IMissingBuildingBlockContentRecoveryTask _missingBuildingBlockContentRecoveryTask;
 
       protected ExportRunOptions _exportRunOptions = new ExportRunOptions { ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml };
 
@@ -79,7 +81,9 @@ namespace PKSim.CLI
          _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
-         sut = new ExportSimulationRunner(_logger, _workspacePersistor, _workspace, _simulationExporter, _lazyLoadTask);
+         _missingBuildingBlockContentRecoveryTask = A.Fake<IMissingBuildingBlockContentRecoveryTask>();
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(A<PKSimProject>._)).Returns(MissingBuildingBlockContentRecoveryResult.Empty);
+         sut = new ExportSimulationRunner(_logger, _workspacePersistor, _workspace, _simulationExporter, _lazyLoadTask, _missingBuildingBlockContentRecoveryTask);
 
          _project = new PKSimProject { Name = _projectName };
          _simulation1 = createSimulationWithResults(_simulation1Name);
@@ -125,6 +129,40 @@ namespace PKSim.CLI
       public void should_ensure_that_simulation_export_contains_the_name_of_the_simulation()
       {
          _export.Simulation.ShouldBeEqualTo(_simulation1Name);
+      }
+   }
+
+   public class When_running_the_export_simulation_runner_for_a_project_in_which_building_blocks_without_content_were_recovered : concern_for_ExportSimulationRunner
+   {
+      private MissingBuildingBlockContentRecoveryResult _recoveryResult;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _exportRunOptions.ProjectFile = _projectFileName;
+         _exportRunOptions.RunSimulation = false;
+         _project.AddBuildingBlock(_simulation1);
+         var removedBuildingBlock = new BuildingBlockWithMissingContent {Id = "EP", Name = "CYP3A4|Human|Pop", BuildingBlockType = PKSimBuildingBlockType.ExpressionProfile};
+         _recoveryResult = new MissingBuildingBlockContentRecoveryResult(new List<IPKSimBuildingBlock>(), new[] {removedBuildingBlock}, "recovery message");
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).Returns(_recoveryResult);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_exportRunOptions);
+      }
+
+      [Observation]
+      public void should_recover_the_building_blocks_without_content_before_exporting_the_simulations()
+      {
+         A.CallTo(() => _missingBuildingBlockContentRecoveryTask.Recover(_project)).MustHaveHappened()
+            .Then(A.CallTo(() => _simulationExporter.Export(_simulation1, A<SimulationExportOptions>._)).MustHaveHappened());
+      }
+
+      [Observation]
+      public void should_log_the_recovery_as_a_warning()
+      {
+         A.CallTo(() => _logger.AddToLog(_recoveryResult.Message, LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 
