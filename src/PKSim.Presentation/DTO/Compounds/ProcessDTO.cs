@@ -1,3 +1,5 @@
+using PKSim.Assets;
+using PKSim.Core.Extensions;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
@@ -16,6 +18,7 @@ namespace PKSim.Presentation.DTO.Compounds
       public ProcessDTO(TProcess underlyingObject) : base(underlyingObject)
       {
          Process = underlyingObject;
+         Rules.Add(ProcessRules.DataSourceDoesNotContainIllegalCharacters);
       }
 
       public override string ToString()
@@ -36,5 +39,13 @@ namespace PKSim.Presentation.DTO.Compounds
       }
 
       public string TemplateName => Process.InternalName;
+
+      private static class ProcessRules
+      {
+         public static IBusinessRule DataSourceDoesNotContainIllegalCharacters { get; } = CreateRule.For<ProcessDTO<TProcess>>()
+            .Property(item => item.DataSource)
+            .WithRule((dto, dataSource) => !dataSource.ContainsIllegalCharacters())
+            .WithError(PKSimConstants.Error.DataSourceCannotContainIllegalCharacters);
+      }
    }
 }
