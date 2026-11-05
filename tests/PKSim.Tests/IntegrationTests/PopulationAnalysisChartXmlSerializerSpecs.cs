@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
@@ -73,6 +74,8 @@ namespace PKSim.IntegrationTests
             Name = "Results",
             Description = "This is the description"
          };
+         //simulates an analysis saved with a version that only knew about some of the predefined statistics
+         _populationAnalysisChart.PopulationAnalysis.AddStatistic(new PredefinedStatisticalAggregation {Method = StatisticalAggregationType.ArithmeticMean, Selected = true});
          _populationAnalysisChart.AddObservedData(_dataRepository);
          _populationAnalysisChart.CurveOptionsFor(_dataColumn).Color = Color.Bisque;
       }
@@ -80,6 +83,19 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          _deserialized = SerializeAndDeserialize(_populationAnalysisChart);
+      }
+
+      [Observation]
+      public void should_add_the_predefined_statistics_missing_from_the_serialized_analysis()
+      {
+         _deserialized.PopulationAnalysis.Statistics.OfType<PredefinedStatisticalAggregation>().Select(x => x.Method)
+            .ShouldOnlyContainInOrder(EnumHelper.AllValuesFor<StatisticalAggregationType>().ToArray());
+      }
+
+      [Observation]
+      public void should_preserve_the_selection_of_the_serialized_statistics()
+      {
+         _deserialized.PopulationAnalysis.SelectedStatistics.Select(x => x.Id).ShouldOnlyContain(StatisticalAggregationType.ArithmeticMean.ToString());
       }
 
       [Observation]

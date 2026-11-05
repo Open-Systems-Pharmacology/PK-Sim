@@ -1680,6 +1680,8 @@ INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','Percentile_98','98
 INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','Percentile_99','99th Percentile','99th Percentile',NULL);
 INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','Range90','Range 5% to 95%','From 5th to 95th Percentile',NULL);
 INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','Range95','Range 2.5% to 97.5%','From 2.5th to 97.5th Percentile',NULL);
+INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','ArithmeticTwoStandardDeviations','Arithmetic Standard Deviation (2 SD)','Arithmetic Standard Deviation (2 SD)',NULL);
+INSERT INTO tab_representation_info VALUES('CURVE_SELECTION','GeometricTwoStandardDeviations','Geometric Standard Deviation (2 SD)','Geometric Standard Deviation (2 SD)',NULL);
 CREATE TABLE tab_criteria_conditions
 (
 	condition text not null
