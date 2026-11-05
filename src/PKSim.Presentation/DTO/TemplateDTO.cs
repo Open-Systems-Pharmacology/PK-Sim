@@ -30,7 +30,7 @@ namespace PKSim.Presentation.DTO
                case TemplateDatabaseType.System:
                   return PKSimConstants.UI.SystemTemplates;
                case TemplateDatabaseType.Remote:
-                  return PKSimConstants.UI.RemoteTemplates;
+                  return RemoteTemplate?.Source?.Name ?? PKSimConstants.UI.RemoteTemplates;
                default:
                   throw new ArgumentOutOfRangeException();
             }

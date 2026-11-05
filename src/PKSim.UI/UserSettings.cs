@@ -207,6 +207,16 @@ namespace PKSim.UI
          }
       }
 
+      private readonly List<TemplateSource> _templateSources = new List<TemplateSource>();
+
+      public IReadOnlyList<TemplateSource> TemplateSources => _templateSources;
+
+      public void AddTemplateSource(TemplateSource templateSource) => _templateSources.Add(templateSource);
+
+      public void RemoveTemplateSource(TemplateSource templateSource) => _templateSources.Remove(templateSource);
+
+      public void ClearTemplateSources() => _templateSources.Clear();
+
       public IconSize IconSizeTab
       {
          get => OSPSuite.UI.UIConstants.ICON_SIZE_TAB;

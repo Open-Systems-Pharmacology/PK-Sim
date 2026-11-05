@@ -128,4 +128,28 @@ namespace PKSim.Presentation
          sut.IsValid().ShouldBeTrue();
       }
    }
+
+   public class When_validating_the_additional_template_sources_of_the_user_settings : concern_for_UserSettingsDTO
+   {
+      [Observation]
+      public void should_be_valid_when_all_sources_are_valid()
+      {
+         sut.TemplateSources.Add(new TemplateSourceDTO {Name = "Company Library", Url = "https://templates.company.com/templates.json"});
+         sut.IsValid().ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_be_invalid_when_a_source_has_an_invalid_url()
+      {
+         sut.TemplateSources.Add(new TemplateSourceDTO {Name = "Company Library", Url = "not a url"});
+         sut.IsValid().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_be_invalid_when_a_source_has_no_name()
+      {
+         sut.TemplateSources.Add(new TemplateSourceDTO {Url = "https://templates.company.com/templates.json"});
+         sut.IsValid().ShouldBeFalse();
+      }
+   }
 }

@@ -9,6 +9,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
@@ -25,6 +26,7 @@ namespace PKSim.Presentation
       protected IStartOptions _startOptions;
       protected IApplicationConfiguration _configuration;
       protected IUserSettings _userSettings;
+      protected IRemoteTemplateRepository _remoteTemplateRepository;
 
       protected override Task Context()
       {
@@ -35,7 +37,8 @@ namespace PKSim.Presentation
          _startOptions = A.Fake<IStartOptions>();
          _configuration = A.Fake<IApplicationConfiguration>();
          _userSettings = A.Fake<IUserSettings>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery, _applicationController, _dialogCreator, _startOptions, _configuration, _userSettings);
+         _remoteTemplateRepository = A.Fake<IRemoteTemplateRepository>();
+         sut = new TemplatePresenter(_view, _templateTaskQuery, _applicationController, _dialogCreator, _startOptions, _configuration, _userSettings, _remoteTemplateRepository);
          return _completed;
       }
    }
@@ -615,6 +618,28 @@ namespace PKSim.Presentation
       public void should_rebind_to_the_view()
       {
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_loading_templates_and_some_additional_template_sources_may_not_be_available_yet : concern_for_TemplatePresenter
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(new List<Template> {new LocalTemplate {Name = "Template"}});
+         A.CallTo(() => _view.Canceled).Returns(true);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_try_to_load_the_unavailable_sources_before_listing_the_templates()
+      {
+         A.CallTo(() => _remoteTemplateRepository.LoadUnavailableTemplateSourcesAsync()).MustHaveHappened()
+            .Then(A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).MustHaveHappened());
       }
    }
 }

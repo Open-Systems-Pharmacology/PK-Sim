@@ -5,6 +5,7 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using System;
+using System.Collections.Generic;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
@@ -25,6 +26,11 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public int MaximumNumberOfCoresToUse { get; set; }
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public string TemplateDatabasePath { get; set; }
+      private readonly List<TemplateSource> _templateSources = new List<TemplateSource>();
+      public IReadOnlyList<TemplateSource> TemplateSources => _templateSources;
+      public void AddTemplateSource(TemplateSource templateSource) => _templateSources.Add(templateSource);
+      public void RemoveTemplateSource(TemplateSource templateSource) => _templateSources.Remove(templateSource);
+      public void ClearTemplateSources() => _templateSources.Clear();
 
       public void ResetToDefault()
       {

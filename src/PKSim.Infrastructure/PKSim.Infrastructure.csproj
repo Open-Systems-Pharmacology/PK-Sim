@@ -30,6 +30,7 @@
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
+    <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="3.0.7" />
     <PackageReference Include="MarkdownLog.NS20" Version="0.10.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />

@@ -62,6 +62,7 @@ namespace PKSim.Core
             Constants.Filter.FileFilter("User Template Database", USER_TEMPLATE_DB_EXTENSION);
 
          public static readonly string MOBI_FILE_FILTER = Constants.Filter.FileFilter("MoBi", ".exe");
+         public static readonly string TEMPLATE_SUMMARY_FILE_FILTER = Constants.Filter.FileFilter("Template Summary", ".json");
 
          public static readonly string POPULATION_FILE_FILTER = string.Format("Population File (*{0};*{1})|*{0};*{1}", Constants.Filter.CSV_EXTENSION,
             Constants.Filter.TEXT_EXTENSION);
