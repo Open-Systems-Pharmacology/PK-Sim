@@ -37,9 +37,7 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<SimulationStatusChangedEvent>,
       IListener<SimulationComparisonCreatedEvent>,
       IListener<SimulationComparisonDeletedEvent>,
-      IListener<RenamedEvent>,
-      IListener<SwapBuildingBlockEvent>
-
+      IListener<RenamedEvent>
    {
    }
 
@@ -398,17 +396,6 @@ namespace PKSim.Presentation.Presenters.Main
          return simulation.IsAnImplementationOf<IndividualSimulation>()
             ? UI.IndividualSimulation
             : UI.PopulationSimulation;
-      }
-
-      public void Handle(SwapBuildingBlockEvent eventToHandle)
-      {
-         //we need to swap all template building blocks stored in the used building block nodes
-         var simulationRootNode = _view.NodeByType(RootNodeTypes.SimulationFolder);
-         var allNodesToUpdate = simulationRootNode.AllLeafNodes.OfType<UsedBuildingBlockInSimulationNode>()
-            .Where(n => Equals(n.TemplateBuildingBlock, eventToHandle.OldBuildingBlock))
-            .ToList();
-
-         allNodesToUpdate.Each(x => x.TemplateBuildingBlock = eventToHandle.NewBuildingBlock);
       }
    }
 }
