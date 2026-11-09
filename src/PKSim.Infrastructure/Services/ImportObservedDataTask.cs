@@ -196,7 +196,8 @@ namespace PKSim.Infrastructure.Services
 
       private static void overwriteColumn(DataColumn existingColumn, DataColumn reloadedColumn)
       {
-         //the error type can change on reload. The existing column is kept because simulations, charts and parameter identifications refer to it
+         //the error type (AuxiliaryType) can change on reload, and the dimension and display unit change with it (a geometric SD is dimensionless).
+         //the existing column is updated rather than replaced because simulations, charts and parameter identifications refer to it
          existingColumn.Dimension = reloadedColumn.Dimension;
          existingColumn.DataInfo.AuxiliaryType = reloadedColumn.DataInfo.AuxiliaryType;
          existingColumn.DataInfo.DisplayUnitName = reloadedColumn.DataInfo.DisplayUnitName;
