@@ -165,6 +165,7 @@ namespace PKSim.Infrastructure
 
    public abstract class concern_for_reloading_data_whose_error_type_changed : concern_for_ImportObservedDataTask
    {
+      protected const string MEASUREMENT = "Measurement";
       protected const string ERROR = "Error";
       protected const string MASS_CONCENTRATION_UNIT = "g/l";
       protected const float RELOADED_ERROR_VALUE = 2.0f;
@@ -197,7 +198,7 @@ namespace PKSim.Infrastructure
       private static DataColumn addMeasurementWithError(DataRepository dataRepository, AuxiliaryType errorType, float errorValue)
       {
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs()) { Values = new[] { 0.0f } };
-         var measurement = new DataColumn("Measurement", DomainHelperForSpecs.MassConcentrationDimensionForSpecs(), baseGrid) { Values = new[] { 10.0f } };
+         var measurement = new DataColumn(MEASUREMENT, DomainHelperForSpecs.MassConcentrationDimensionForSpecs(), baseGrid) { Values = new[] { 10.0f } };
          measurement.DataInfo.DisplayUnitName = MASS_CONCENTRATION_UNIT;
 
          var isGeometric = errorType == AuxiliaryType.GeometricStdDev;
@@ -234,6 +235,14 @@ namespace PKSim.Infrastructure
       public void should_keep_the_molecular_weight_of_the_error_column()
       {
          _existingErrorColumn.DataInfo.MolWeight.ShouldBeEqualTo(MOL_WEIGHT);
+      }
+
+      [Observation]
+      public void the_measurement_should_find_the_error_column_by_its_new_error_type()
+      {
+         var measurement = _existingDataSet.AllButBaseGrid().Single(x => x.Name == MEASUREMENT);
+         measurement.GetRelatedColumn(reloadedErrorType).ShouldBeEqualTo(_existingErrorColumn);
+         measurement.ContainsRelatedColumn(existingErrorType).ShouldBeFalse();
       }
    }
 
