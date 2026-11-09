@@ -149,7 +149,7 @@ namespace PKSim.Infrastructure.Services
                   if (existingColumn == null)
                      existingDataSet.Add(column);
                   else
-                     existingColumn.Values = column.Values;
+                     overwriteColumn(existingDataSet, existingColumn, column);
                }
 
                _workspace.Project.HasChanged = true;
@@ -191,6 +191,28 @@ namespace PKSim.Infrastructure.Services
             adjustMolWeight(observedData);
             _observedDataTask.AddObservedDataToProject(observedData);
             updateQuantityInfoInImportedColumns(observedData);
+         }
+      }
+
+      private static void overwriteColumn(DataRepository existingDataSet, DataColumn existingColumn, DataColumn reloadedColumn)
+      {
+         //the related columns of a column are cached by error type, so the column is removed and added again under its new error type
+         var columnsRelatedTo = existingDataSet.Where(x => x.RelatedColumns.Contains(existingColumn)).ToList();
+         foreach (var column in columnsRelatedTo)
+         {
+            column.RemoveRelatedColumn(existingColumn.DataInfo.AuxiliaryType);
+         }
+
+         //the error type (AuxiliaryType) can change on reload, and the dimension and display unit change with it (a geometric SD is dimensionless).
+         //the existing column is updated rather than replaced because simulations, charts and parameter identifications refer to it
+         existingColumn.Dimension = reloadedColumn.Dimension;
+         existingColumn.DataInfo.AuxiliaryType = reloadedColumn.DataInfo.AuxiliaryType;
+         existingColumn.DataInfo.DisplayUnitName = reloadedColumn.DataInfo.DisplayUnitName;
+         existingColumn.Values = reloadedColumn.Values;
+
+         foreach (var column in columnsRelatedTo)
+         {
+            column.AddRelatedColumn(existingColumn);
          }
       }
 

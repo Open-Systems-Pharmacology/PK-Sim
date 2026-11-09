@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -159,6 +160,117 @@ namespace PKSim.Infrastructure
       public void should_set_has_changed_to_true()
       {
          _coreWorkspace.Project.HasChanged.ShouldBeEqualTo(true);
+      }
+   }
+
+   public abstract class concern_for_reloading_data_whose_error_type_changed : concern_for_ImportObservedDataTask
+   {
+      protected const string MEASUREMENT = "Measurement";
+      protected const string ERROR = "Error";
+      protected const string MASS_CONCENTRATION_UNIT = "g/l";
+      protected const float RELOADED_ERROR_VALUE = 2.0f;
+      protected const double MOL_WEIGHT = 300;
+      private const string CONFIGURATION_ID = "configurationId";
+      protected DataRepository _existingDataSet;
+      protected DataColumn _existingErrorColumn;
+      private IReadOnlyList<DataRepository> _observedDataFromSameFile;
+
+      protected abstract AuxiliaryType existingErrorType { get; }
+      protected abstract AuxiliaryType reloadedErrorType { get; }
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingDataSet = new DataRepository("existing");
+         _existingErrorColumn = addMeasurementWithError(_existingDataSet, existingErrorType, 1.0f);
+         _existingErrorColumn.DataInfo.MolWeight = MOL_WEIGHT;
+         _observedDataFromSameFile = new List<DataRepository> { _existingDataSet };
+
+         var reloadedDataSet = new DataRepository("reloaded");
+         addMeasurementWithError(reloadedDataSet, reloadedErrorType, RELOADED_ERROR_VALUE);
+
+         A.CallTo(() => _executionContext.Project.ImporterConfigurationBy(CONFIGURATION_ID)).Returns(A.Fake<ImporterConfiguration>());
+         A.CallTo(() => _dataImporter.AreFromSameMetaDataCombination(_existingDataSet, reloadedDataSet)).Returns(true);
+         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._))
+            .Returns(new ReloadDataSets(new List<DataRepository>(), new List<DataRepository> { reloadedDataSet }, new List<DataRepository>()));
+      }
+
+      private static DataColumn addMeasurementWithError(DataRepository dataRepository, AuxiliaryType errorType, float errorValue)
+      {
+         var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs()) { Values = new[] { 0.0f } };
+         var measurement = new DataColumn(MEASUREMENT, DomainHelperForSpecs.MassConcentrationDimensionForSpecs(), baseGrid) { Values = new[] { 10.0f } };
+         measurement.DataInfo.DisplayUnitName = MASS_CONCENTRATION_UNIT;
+
+         var isGeometric = errorType == AuxiliaryType.GeometricStdDev;
+         var errorDimension = isGeometric ? DomainHelperForSpecs.NoDimension() : DomainHelperForSpecs.MassConcentrationDimensionForSpecs();
+         var error = new DataColumn(ERROR, errorDimension, baseGrid) { Values = new[] { errorValue } };
+         error.DataInfo.AuxiliaryType = errorType;
+         error.DataInfo.DisplayUnitName = isGeometric ? errorDimension.DefaultUnitName : MASS_CONCENTRATION_UNIT;
+         measurement.AddRelatedColumn(error);
+
+         dataRepository.Add(baseGrid);
+         dataRepository.Add(measurement);
+         dataRepository.Add(error);
+         return error;
+      }
+
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(CONFIGURATION_ID, _observedDataFromSameFile);
+      }
+
+      [Observation]
+      public void should_keep_the_existing_error_column()
+      {
+         _existingDataSet.AllButBaseGrid().Single(x => x.Name == ERROR).ShouldBeEqualTo(_existingErrorColumn);
+      }
+
+      [Observation]
+      public void should_update_the_error_values()
+      {
+         _existingErrorColumn.Values.ShouldOnlyContain(RELOADED_ERROR_VALUE);
+      }
+
+      [Observation]
+      public void should_keep_the_molecular_weight_of_the_error_column()
+      {
+         _existingErrorColumn.DataInfo.MolWeight.ShouldBeEqualTo(MOL_WEIGHT);
+      }
+
+      [Observation]
+      public void the_measurement_should_find_the_error_column_by_its_new_error_type()
+      {
+         var measurement = _existingDataSet.AllButBaseGrid().Single(x => x.Name == MEASUREMENT);
+         measurement.GetRelatedColumn(reloadedErrorType).ShouldBeEqualTo(_existingErrorColumn);
+         measurement.ContainsRelatedColumn(existingErrorType).ShouldBeFalse();
+      }
+   }
+
+   public class When_reloading_data_whose_error_type_changed_from_arithmetic_to_geometric : concern_for_reloading_data_whose_error_type_changed
+   {
+      protected override AuxiliaryType existingErrorType => AuxiliaryType.ArithmeticStdDev;
+      protected override AuxiliaryType reloadedErrorType => AuxiliaryType.GeometricStdDev;
+
+      [Observation]
+      public void the_error_column_should_be_a_dimensionless_geometric_standard_deviation()
+      {
+         _existingErrorColumn.DataInfo.AuxiliaryType.ShouldBeEqualTo(AuxiliaryType.GeometricStdDev);
+         _existingErrorColumn.Dimension.ShouldBeEqualTo(DomainHelperForSpecs.NoDimension());
+         _existingErrorColumn.DataInfo.DisplayUnitName.ShouldBeEqualTo(DomainHelperForSpecs.NoDimension().DefaultUnitName);
+      }
+   }
+
+   public class When_reloading_data_whose_error_type_changed_from_geometric_to_arithmetic : concern_for_reloading_data_whose_error_type_changed
+   {
+      protected override AuxiliaryType existingErrorType => AuxiliaryType.GeometricStdDev;
+      protected override AuxiliaryType reloadedErrorType => AuxiliaryType.ArithmeticStdDev;
+
+      [Observation]
+      public void the_error_column_should_be_an_arithmetic_standard_deviation_in_the_dimension_of_the_measurement()
+      {
+         _existingErrorColumn.DataInfo.AuxiliaryType.ShouldBeEqualTo(AuxiliaryType.ArithmeticStdDev);
+         _existingErrorColumn.Dimension.ShouldBeEqualTo(DomainHelperForSpecs.MassConcentrationDimensionForSpecs());
+         _existingErrorColumn.DataInfo.DisplayUnitName.ShouldBeEqualTo(MASS_CONCENTRATION_UNIT);
       }
    }
 }
