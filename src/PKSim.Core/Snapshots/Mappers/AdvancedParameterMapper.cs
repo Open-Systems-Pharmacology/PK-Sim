@@ -7,6 +7,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 using ModelAdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using SnapshotAdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 
@@ -60,7 +61,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelAdvancedParameter> MapToModel(SnapshotAdvancedParameter snapshot, AdvancedParameterSnapshotContext snapshotContext)
       {
          var allParameters = snapshotContext.AllParameters;
-         var parameter = allParameters[snapshot.Name];
+         var parameter = allParameters[ParameterPathConverter.ConvertParameterPath(snapshot.Name, snapshotContext)];
          if (parameter == null)
          {
             _logger.AddWarning(PKSimConstants.Error.SnapshotParameterNotFound(snapshot.Name));

@@ -149,6 +149,37 @@ namespace PKSim.Core
       }
    }
 
+   public class When_mapping_a_V12_advanced_parameter_snapshot_referencing_the_renamed_gallbladder_refilling_parameter : concern_for_AdvancedParameterMapper
+   {
+      private Snapshots.AdvancedParameter _snapshot;
+      private AdvancedParameter _newAdvancedParameter;
+      private PathCache<IParameter> _pathCache;
+      private IParameter _parameter;
+      private AdvancedParameter _mappedAdvancedParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _advancedParameter.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _snapshot = await sut.MapToSnapshot(_advancedParameter);
+         _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
+         _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
+         _pathCache = new PathCacheForSpecs<IParameter> {{"Organism|Gallbladder|Time to complete gallbladder emptying", _parameter}};
+         A.CallTo(() => _advancedParameterFactory.Create(_parameter, _snapshot.DistributionType)).Returns(_mappedAdvancedParameter);
+      }
+
+      protected override async Task Because()
+      {
+         _newAdvancedParameter = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(_pathCache, new SnapshotContext(new PKSimProject(), SnapshotVersions.V12)));
+      }
+
+      [Observation]
+      public void should_resolve_the_advanced_parameter_using_the_renamed_parameter_path()
+      {
+         _newAdvancedParameter.ShouldBeEqualTo(_mappedAdvancedParameter);
+      }
+   }
+
    public class When_mapping_all_advanced_parameters_snapshot_into_an_advanced_parameter_container : concern_for_AdvancedParameterMapper
    {
       private Snapshots.AdvancedParameter _snapshot;

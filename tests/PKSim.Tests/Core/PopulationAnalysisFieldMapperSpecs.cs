@@ -260,6 +260,52 @@ namespace PKSim.Core
       }
    }
 
+   public class When_mapping_a_V12_parameter_field_snapshot_referencing_the_renamed_gallbladder_refilling_parameter : concern_for_PopulationAnalysisFieldMapper
+   {
+      private PopulationAnalysisParameterField _newParameterField;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _parameterField.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _snapshot = await sut.MapToSnapshot(_parameterField);
+      }
+
+      protected override async Task Because()
+      {
+         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.V12)) as PopulationAnalysisParameterField;
+      }
+
+      [Observation]
+      public void should_convert_the_parameter_path_to_the_renamed_parameter()
+      {
+         _newParameterField.ParameterPath.ShouldBeEqualTo("Organism|Gallbladder|Time to complete gallbladder emptying");
+      }
+   }
+
+   public class When_mapping_a_current_parameter_field_snapshot_referencing_a_parameter_named_like_the_old_gallbladder_parameter : concern_for_PopulationAnalysisFieldMapper
+   {
+      private PopulationAnalysisParameterField _newParameterField;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _parameterField.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _snapshot = await sut.MapToSnapshot(_parameterField);
+      }
+
+      protected override async Task Because()
+      {
+         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisParameterField;
+      }
+
+      [Observation]
+      public void should_not_convert_the_parameter_path()
+      {
+         _newParameterField.ParameterPath.ShouldBeEqualTo(_snapshot.ParameterPath);
+      }
+   }
+
    public class When_mapping_a_pk_parameter_field_snapshot_to_population_analysis_field : concern_for_PopulationAnalysisFieldMapper
    {
       private PopulationAnalysisPKParameterField _newPKParameterField;
