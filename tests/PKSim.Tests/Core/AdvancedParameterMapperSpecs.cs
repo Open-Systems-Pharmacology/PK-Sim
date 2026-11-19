@@ -160,11 +160,11 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _advancedParameter.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _advancedParameter.ParameterPath = $"Organism|Gallbladder|{ParameterMapper.TimeToCompleteGallbladderRefilling}";
          _snapshot = await sut.MapToSnapshot(_advancedParameter);
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
          _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
-         _pathCache = new PathCacheForSpecs<IParameter> {{"Organism|Gallbladder|Time to complete gallbladder emptying", _parameter}};
+         _pathCache = new PathCacheForSpecs<IParameter> {{$"Organism|Gallbladder|{ParameterMapper.TimeToCompleteGallbladderEmptying}", _parameter}};
          A.CallTo(() => _advancedParameterFactory.Create(_parameter, _snapshot.DistributionType)).Returns(_mappedAdvancedParameter);
       }
 

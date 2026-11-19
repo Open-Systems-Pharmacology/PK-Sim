@@ -267,7 +267,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _parameterField.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _parameterField.ParameterPath = $"Organism|Gallbladder|{ParameterMapper.TimeToCompleteGallbladderRefilling}";
          _snapshot = await sut.MapToSnapshot(_parameterField);
       }
 
@@ -279,7 +279,7 @@ namespace PKSim.Core
       [Observation]
       public void should_convert_the_parameter_path_to_the_renamed_parameter()
       {
-         _newParameterField.ParameterPath.ShouldBeEqualTo("Organism|Gallbladder|Time to complete gallbladder emptying");
+         _newParameterField.ParameterPath.ShouldBeEqualTo($"Organism|Gallbladder|{ParameterMapper.TimeToCompleteGallbladderEmptying}");
       }
    }
 
@@ -290,7 +290,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _parameterField.ParameterPath = "Organism|Gallbladder|Time to complete gallbladder refilling";
+         _parameterField.ParameterPath = $"Organism|Gallbladder|{ParameterMapper.TimeToCompleteGallbladderRefilling}";
          _snapshot = await sut.MapToSnapshot(_parameterField);
       }
 
