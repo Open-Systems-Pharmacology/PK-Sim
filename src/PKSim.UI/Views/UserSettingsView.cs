@@ -176,7 +176,6 @@ namespace PKSim.UI.Views
       private RepositoryItemButtonEdit createTemplateSourceUrlRepository()
       {
          var buttonRepository = new RepositoryItemButtonEdit();
-         //First button selects a local summary file, second one removes the source
          buttonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
          buttonRepository.Buttons[0].ToolTip = PKSimConstants.UI.SelectTemplateSourceFile;
          buttonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete) {ToolTip = PKSimConstants.UI.RemoveTemplateSource});

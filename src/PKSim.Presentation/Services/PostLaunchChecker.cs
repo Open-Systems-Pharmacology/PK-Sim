@@ -73,7 +73,6 @@ namespace PKSim.Presentation.Services
       {
          try
          {
-            //additional sources are refreshed silently at startup. Missing credentials are requested when the user loads a template
             await _remoteTemplateRepository.UpdateTemplateSourcesAsync();
          }
          catch (Exception)

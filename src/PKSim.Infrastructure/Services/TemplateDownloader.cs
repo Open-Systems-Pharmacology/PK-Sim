@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -17,11 +18,6 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
-   /// <summary>
-   ///    Downloads template files and template summaries. PK-Sim never stores credentials itself: when a resource is
-   ///    protected, the <see cref="ITemplateCredentialProvider" /> registered in the container are asked in turn and the
-   ///    credential accepted by the server is only remembered in memory for the current session.
-   /// </summary>
    public class TemplateDownloader : ITemplateDownloader, IDisposable
    {
       private const string USER_AGENT = "PK-Sim";
@@ -40,7 +36,8 @@ namespace PKSim.Infrastructure.Services
       {
          _container = container;
          _logger = logger;
-         _httpClient = new HttpClient(messageHandler, disposeHandler: true) {Timeout = _timeout};
+         //HttpClient.Timeout stops at the response headers. Each attempt uses its own cancellation token that also covers the body
+         _httpClient = new HttpClient(messageHandler, disposeHandler: true) {Timeout = Timeout.InfiniteTimeSpan};
          _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(USER_AGENT);
       }
 
@@ -53,28 +50,28 @@ namespace PKSim.Infrastructure.Services
             else
                await downloadHttpAsync(uri, destination, allowInteractive);
          }
-         catch (OSPSuiteException)
-         {
-            FileHelper.DeleteFile(destination);
-            throw;
-         }
          catch (Exception e)
          {
-            //It is required to delete the file that may have been created with a size of zero
+            //a failed download may leave an empty file behind
             FileHelper.DeleteFile(destination);
+
+            if (e is OSPSuiteException)
+               throw;
+
             throw new OSPSuiteException(PKSimConstants.Error.CannotDownloadTemplateLocatedAt(uri.ToString(), e.Message), e);
          }
       }
 
       private async Task downloadHttpAsync(Uri uri, string destination, bool allowInteractive)
       {
-         //A credential accepted earlier in the session for this host is tried first
-         if (_sessionCredentials.TryGetValue(uri.Host, out var sessionCredential))
+         //basic and bearer authentication are readable by anyone on the wire without https
+         var canSendCredentials = uri.Scheme == Uri.UriSchemeHttps;
+
+         if (canSendCredentials && _sessionCredentials.TryGetValue(uri.Host, out var sessionCredential))
          {
             if (await tryDownloadAsync(uri, destination, sessionCredential) == HttpStatusCode.OK)
                return;
 
-            //the credential is not valid anymore (e.g. revoked token). Forget it
             _sessionCredentials.TryRemove(uri.Host, out _);
          }
 
@@ -84,6 +81,9 @@ namespace PKSim.Infrastructure.Services
 
          if (!requiresAuthentication(uri, anonymousStatus))
             throw new OSPSuiteException(PKSimConstants.Error.CannotDownloadTemplateLocatedAt(uri.ToString(), statusDescription(anonymousStatus)));
+
+         if (!canSendCredentials)
+            throw new OSPSuiteException(PKSimConstants.Error.TemplateCredentialsRequireHttps(uri.ToString()));
 
          foreach (var provider in credentialProviders(allowInteractive))
          {
@@ -103,26 +103,23 @@ namespace PKSim.Infrastructure.Services
          throw new OSPSuiteException(PKSimConstants.Error.TemplateRequiresAuthentication(uri.ToString(), statusDescription(anonymousStatus)));
       }
 
-      /// <summary>
-      ///    Returns the status of the request. The response body is only written to <paramref name="destination" /> when the
-      ///    request succeeded
-      /// </summary>
       private async Task<HttpStatusCode> tryDownloadAsync(Uri uri, string destination, TemplateCredential credential)
       {
+         using (var timeout = new CancellationTokenSource(_timeout))
          using (var request = new HttpRequestMessage(HttpMethod.Get, uri))
          {
             if (credential != null)
                request.Headers.Authorization = authorizationHeaderFor(credential);
 
-            using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
+            using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token))
             {
                if (!response.IsSuccessStatusCode)
                   return response.StatusCode;
 
-               using (var contentStream = await response.Content.ReadAsStreamAsync())
+               using (var contentStream = await response.Content.ReadAsStreamAsync(timeout.Token))
                using (var fileStream = File.Create(destination))
                {
-                  await contentStream.CopyToAsync(fileStream);
+                  await contentStream.CopyToAsync(fileStream, timeout.Token);
                }
 
                return HttpStatusCode.OK;
@@ -130,10 +127,6 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      /// <summary>
-      ///    GitHub answers 404 (and not 401) when private content is requested without credentials. For any other host, only
-      ///    an explicit authentication status triggers the credential lookup so that a wrong url never prompts the user.
-      /// </summary>
       private static bool requiresAuthentication(Uri uri, HttpStatusCode statusCode)
       {
          switch (statusCode)
@@ -142,6 +135,7 @@ namespace PKSim.Infrastructure.Services
             case HttpStatusCode.Forbidden:
                return true;
             case HttpStatusCode.NotFound:
+               //GitHub answers 404 instead of 401 for private content. Other hosts must not trigger a credential prompt for a wrong url
                return TemplateCredentialHost.IsGitHubHost(uri);
             default:
                return false;

@@ -107,7 +107,6 @@ namespace PKSim.Presentation.Presenters
 
          updateIcon(templateType);
 
-         //additional sources that could not be loaded silently at startup (e.g. credentials required) are retried now, with user interaction
          await _remoteTemplateRepository.LoadUnavailableTemplateSourcesAsync();
 
          _availableTemplates.AddRange(_templateTaskQuery.AllTemplatesFor(templateType)

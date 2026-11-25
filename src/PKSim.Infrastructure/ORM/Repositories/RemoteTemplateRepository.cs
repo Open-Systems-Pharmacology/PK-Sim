@@ -20,6 +20,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 {
    public class RemoteTemplateRepository : StartableRepository<RemoteTemplate>, IRemoteTemplateRepository
    {
+      private const string RAW_GITHUB_HOST = "raw.githubusercontent.com";
       private readonly IPKSimConfiguration _configuration;
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotTask _snapshotTask;
@@ -27,6 +28,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICoreUserSettings _userSettings;
       private readonly ITemplateDownloader _templateDownloader;
       private readonly List<RemoteTemplate> _allTemplates = new List<RemoteTemplate>();
+      private readonly HashSet<string> _loadedSourceKeys = new HashSet<string>();
       private readonly object _locker = new object();
       public string Version { get; private set; }
 
@@ -60,15 +62,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, remoteTemplate.Name);
       }
 
-      /// <summary>
-      ///    A template whose url carries a version is downloaded once. A template of an additional source without version
-      ///    information cannot be cached safely and is downloaded every time
-      /// </summary>
       private static bool shouldDownload(RemoteTemplate remoteTemplate, string localFile)
       {
          if (!FileHelper.FileExists(localFile))
             return true;
 
+         //without a version in its url, the content of a template of an additional source may change at any time: it cannot be cached
          return !remoteTemplate.IsFromOSPLibrary && string.Equals(remoteTemplate.Version, CoreConstants.DEFAULT_TEMPLATE_VERSION);
       }
 
@@ -104,7 +103,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public async Task LoadUnavailableTemplateSourcesAsync()
       {
-         var unavailableSources = validTemplateSources().Where(x => !FileHelper.FileExists(summaryPathFor(x))).ToList();
+         Start();
+
+         //a summary that was downloaded but could not be loaded (e.g. invalid content) is retried as well
+         var unavailableSources = validTemplateSources().Where(x => !isLoaded(x)).ToList();
          if (!unavailableSources.Any())
             return;
 
@@ -116,24 +118,27 @@ namespace PKSim.Infrastructure.ORM.Repositories
          reload();
       }
 
-      /// <summary>
-      ///    Downloads the summary file to a temporary location first so that a failed download never destroys the summary
-      ///    downloaded earlier. Returns true if the summary was updated.
-      /// </summary>
-      private async Task<bool> downloadSummaryAsync(Uri uri, string destination, bool allowInteractive)
+      private bool isLoaded(TemplateSource source)
       {
+         lock (_locker)
+         {
+            return _loadedSourceKeys.Contains(source.CacheKey);
+         }
+      }
+
+      private async Task downloadSummaryAsync(Uri uri, string destination, bool allowInteractive)
+      {
+         //downloaded to a temporary file first so that a failed download does not destroy the summary downloaded earlier
          var tempFile = FileHelper.GenerateTemporaryFileName();
          try
          {
             await _templateDownloader.DownloadAsync(uri, tempFile, allowInteractive);
             DirectoryHelper.CreateDirectory(FileHelper.FolderFromFileFullPath(destination));
             FileHelper.Copy(tempFile, destination);
-            return true;
          }
          catch (Exception e)
          {
             _logger.AddWarning(PKSimConstants.Warning.CannotUpdateTemplateSummaryFrom(uri.ToString(), e.Message));
-            return false;
          }
          finally
          {
@@ -147,7 +152,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return templateSources.Where(x => x.HasValidUrl).ToList();
       }
 
-      private string sourceFolderFor(TemplateSource source) => Path.Combine(_configuration.RemoteTemplateFolderPath, source.Key);
+      private string sourceFolderFor(TemplateSource source) => Path.Combine(_configuration.RemoteTemplateFolderPath, source.CacheKey);
 
       private string summaryPathFor(TemplateSource source) => Path.Combine(sourceFolderFor(source), CoreConstants.REMOTE_TEMPLATE_SUMMARY);
 
@@ -155,7 +160,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          var folder = template.IsFromOSPLibrary ? _configuration.RemoteTemplateFolderPath : sourceFolderFor(template.Source);
          DirectoryHelper.CreateDirectory(folder);
-         return Path.Combine(folder, fileNameWithVersionFor(template));
+         return Path.Combine(folder, localFileNameFor(template));
       }
 
       private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, ISimulationSubject simulationSubject)
@@ -196,6 +201,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             //a failed previous start may have partially filled the repository (lazy Start retries); begin clean
             _allTemplates.Clear();
+            _loadedSourceKeys.Clear();
             Version = null;
 
             loadOSPLibrary();
@@ -228,10 +234,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
          try
          {
             addTemplatesFrom(deserializeSummary(summaryPath), source, source.Uri);
+            _loadedSourceKeys.Add(source.CacheKey);
          }
          catch (Exception e)
          {
-            //an invalid summary should not prevent the other sources from being loaded
+            //an invalid summary must not prevent the other sources from being loaded
             _logger.AddWarning(PKSimConstants.Warning.CannotLoadTemplateSource(source.Name, source.Url, e.Message));
          }
       }
@@ -252,16 +259,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _allTemplates.AddRange(templates);
       }
 
-      /// <summary>
-      ///    A template url may be relative to the summary file. This allows a library to be hosted anywhere (web server,
-      ///    network share, local clone) without rewriting the summary
-      /// </summary>
-      private static string absoluteUrlFor(Uri baseUri, string url)
+      private static string absoluteUrlFor(Uri summaryUri, string url)
       {
          if (string.IsNullOrEmpty(url) || Uri.TryCreate(url, UriKind.Absolute, out _))
             return url;
 
-         return Uri.TryCreate(baseUri, url, out var absoluteUri) ? absoluteUri.AbsoluteUri : url;
+         return Uri.TryCreate(summaryUri, url, out var absoluteUri) ? absoluteUri.AbsoluteUri : url;
       }
 
       private (string version, string repositoryUrl) extractDataFromUrl(string url)
@@ -275,7 +278,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          //and we want to create something like this
          //https://github.com/Open-Systems-Pharmacology/Rifampicin-Model/tree/v1.1
 
-         var segments = new Uri(url).Segments;
+         var uri = new Uri(url);
+
+         //urls of additional sources may be hosted anywhere: a path segment starting with v is only a version on GitHub
+         if (!string.Equals(uri.Host, RAW_GITHUB_HOST, StringComparison.OrdinalIgnoreCase))
+            return invalidUrl;
+
+         var segments = uri.Segments;
          //The url does not respect the expected format. Returned the default raw url
          if (segments.Length != 5)
             return invalidUrl;
@@ -299,11 +308,17 @@ namespace PKSim.Infrastructure.ORM.Repositories
          }
       }
 
-      private string fileNameWithVersionFor(RemoteTemplate template)
+      private static string localFileNameFor(RemoteTemplate template)
       {
          var url = template.Url;
          var fileName = new Uri(url).Segments.Last();
-         return $"{template.Version}_{fileName}";
+
+         //file names of the OSP library are kept as they always were so that templates downloaded by previous versions are still found
+         if (template.IsFromOSPLibrary)
+            return $"{template.Version}_{fileName}";
+
+         //two templates of a source may share version and file name (/A/v1.2/model.json and /B/v1.2/model.json)
+         return $"{template.Version}_{TemplateSource.CacheKeyFor(url)}_{fileName}";
       }
    }
 }

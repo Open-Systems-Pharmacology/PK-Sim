@@ -7,11 +7,6 @@ using PKSim.Core.Services;
 
 namespace PKSim.UI.Services
 {
-   /// <summary>
-   ///    Last resort of the credential chain: asks the user with the native Windows credential dialog. When the user ticks
-   ///    "Remember my credentials", the credential is written by Windows into the Credential Manager under the host name,
-   ///    where <c>WindowsCredentialManagerTemplateCredentialProvider</c> finds it next time. PK-Sim itself never persists it.
-   /// </summary>
    public class WindowsCredentialPromptTemplateCredentialProvider : ITemplateCredentialProvider
    {
       private readonly IOSPSuiteLogger _logger;
@@ -48,7 +43,7 @@ namespace PKSim.UI.Services
                return null;
 
             if (result.CredentialSaved == CredentialSaveOption.Selected)
-               CredentialManager.WriteCredential(uri.Host, result.UserName, result.Password, PKSimConstants.UI.TemplateSourceCredentialsCaption, CredentialPersistence.LocalMachine);
+               saveToCredentialManager(uri, result);
 
             return new TemplateCredential(result.UserName, result.Password);
          }
@@ -56,6 +51,21 @@ namespace PKSim.UI.Services
          {
             _logger.AddDebug($"The credential prompt for '{uri.Host}' failed: {e.Message}");
             return null;
+         }
+      }
+
+      [SupportedOSPlatform("windows")]
+      private void saveToCredentialManager(Uri uri, CredentialResult result)
+      {
+         try
+         {
+            //stored under the host name, where WindowsCredentialManagerTemplateCredentialProvider looks it up next time
+            CredentialManager.WriteCredential(uri.Host, result.UserName, result.Password, PKSimConstants.UI.TemplateSourceCredentialsCaption, CredentialPersistence.LocalMachine);
+         }
+         catch (Exception e)
+         {
+            //remembering is optional: the entered credential is still valid for this session
+            _logger.AddWarning($"The credential for '{uri.Host}' could not be saved to the Windows Credential Manager: {e.Message}");
          }
       }
    }

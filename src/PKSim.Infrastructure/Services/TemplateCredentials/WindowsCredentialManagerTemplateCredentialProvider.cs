@@ -8,13 +8,6 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services.TemplateCredentials
 {
-   /// <summary>
-   ///    Reads a generic credential from the Windows Credential Manager. The credential is looked up under the host of the
-   ///    uri (e.g. <c>raw.githubusercontent.com</c>), the credential host (e.g. <c>github.com</c>) and the targets used by
-   ///    Git Credential Manager (e.g. <c>git:https://github.com</c>). Users or IT create the entry once
-   ///    (<c>cmdkey /generic:raw.githubusercontent.com /user:name /pass:token</c> or the Credential Manager control panel).
-   ///    PK-Sim only reads it.
-   /// </summary>
    public class WindowsCredentialManagerTemplateCredentialProvider : ITemplateCredentialProvider
    {
       private readonly IOSPSuiteLogger _logger;
@@ -35,9 +28,7 @@ namespace PKSim.Infrastructure.Services.TemplateCredentials
          return readCredential(uri);
       }
 
-      /// <summary>
-      ///    Targets under which the credential for the uri may be stored, by decreasing specificity
-      /// </summary>
+      //git:https://<host> is the target under which Git Credential Manager stores its credentials
       public static IReadOnlyList<string> TargetsFor(Uri uri)
       {
          var host = uri.Host.ToLowerInvariant();

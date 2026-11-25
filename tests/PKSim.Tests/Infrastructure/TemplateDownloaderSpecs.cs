@@ -382,4 +382,64 @@ namespace PKSim.Infrastructure
          _handler.AuthorizationHeaders.ShouldOnlyContainInOrder(null, "Bearer invalid", "Bearer valid");
       }
    }
+
+   public class When_a_resource_served_over_http_requires_authentication : concern_for_TemplateDownloader
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _uri = new Uri("http://templates.company.com/lib/templates.json");
+         respondOnlyWhenAuthenticated(HttpStatusCode.Unauthorized);
+         A.CallTo(() => _provider.CredentialFor(A<Uri>._)).Returns(new TemplateCredential("user", "token"));
+      }
+
+      protected override Task Because() => downloadAsync(allowInteractive: true);
+
+      [Observation]
+      public void should_fail_without_sending_any_credential_over_the_unencrypted_connection()
+      {
+         _exception.ShouldBeAnInstanceOf<OSPSuiteException>();
+         _handler.AuthorizationHeaders.ShouldOnlyContain((string) null);
+      }
+
+      [Observation]
+      public void should_not_query_the_credential_providers()
+      {
+         A.CallTo(() => _provider.CredentialFor(A<Uri>._)).MustNotHaveHappened();
+         A.CallTo(() => _interactiveProvider.CredentialFor(A<Uri>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_downloading_over_http_from_a_host_that_accepted_a_credential_over_https_earlier_in_the_session : concern_for_TemplateDownloader
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         respondOnlyWhenAuthenticated(HttpStatusCode.Unauthorized);
+         A.CallTo(() => _provider.CredentialFor(A<Uri>._)).Returns(new TemplateCredential("user", "token"));
+         await sut.DownloadAsync(_uri, _destination);
+         _handler.AuthorizationHeaders.Clear();
+      }
+
+      protected override Task Because() => downloadAsync(new Uri("http://templates.company.com/lib/templates.json"));
+
+      [Observation]
+      public void should_not_reuse_the_credential()
+      {
+         _exception.ShouldBeAnInstanceOf<OSPSuiteException>();
+         _handler.AuthorizationHeaders.ShouldOnlyContain((string) null);
+      }
+   }
+
+   public class When_a_public_resource_is_served_over_http : concern_for_TemplateDownloader
+   {
+      protected override Task Because() => downloadAsync(new Uri("http://templates.company.com/lib/templates.json"));
+
+      [Observation]
+      public void should_download_the_resource()
+      {
+         _exception.ShouldBeNull();
+         File.ReadAllText(_destination).ShouldBeEqualTo("content");
+      }
+   }
 }

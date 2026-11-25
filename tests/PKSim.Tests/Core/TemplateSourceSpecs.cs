@@ -70,6 +70,8 @@ namespace PKSim.Core
       [TestCase("ftp://templates.company.com/templates.json")]
       [TestCase("templates.json")]
       [TestCase("not a url")]
+      [TestCase("https://user:secret@templates.company.com/templates.json")]
+      [TestCase("https://user@templates.company.com/templates.json")]
       [TestCase("")]
       [TestCase(null)]
       public void should_reject_anything_else(string url)
@@ -108,26 +110,32 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_key_of_a_template_source : concern_for_TemplateSource
+   public class When_retrieving_the_cache_key_of_a_template_source : concern_for_TemplateSource
    {
       [Observation]
-      public void should_return_the_same_key_for_the_same_url_independently_of_case_and_surrounding_spaces()
+      public void should_return_the_same_key_for_the_same_url_independently_of_host_case_and_surrounding_spaces()
       {
-         var sameSource = new TemplateSource("Other name", $"  {sut.Url.ToUpperInvariant()} ");
-         sameSource.Key.ShouldBeEqualTo(sut.Key);
+         var sameSource = new TemplateSource("Other name", "  HTTPS://Templates.Company.COM/lib/templates.json ");
+         sameSource.CacheKey.ShouldBeEqualTo(sut.CacheKey);
+      }
+
+      [Observation]
+      public void should_return_a_different_key_when_the_path_only_differs_by_case()
+      {
+         new TemplateSource(sut.Name, "https://templates.company.com/Lib/templates.json").CacheKey.ShouldNotBeEqualTo(sut.CacheKey);
       }
 
       [Observation]
       public void should_return_a_different_key_for_another_url()
       {
-         new TemplateSource(sut.Name, "https://other.com/templates.json").Key.ShouldNotBeEqualTo(sut.Key);
+         new TemplateSource(sut.Name, "https://other.com/templates.json").CacheKey.ShouldNotBeEqualTo(sut.CacheKey);
       }
 
       [Observation]
       public void should_return_a_short_key_usable_as_folder_name()
       {
-         sut.Key.Length.ShouldBeEqualTo(16);
-         sut.Key.ShouldBeEqualTo(sut.Key.ToLowerInvariant());
+         sut.CacheKey.Length.ShouldBeEqualTo(16);
+         sut.CacheKey.ShouldBeEqualTo(sut.CacheKey.ToLowerInvariant());
       }
    }
 }

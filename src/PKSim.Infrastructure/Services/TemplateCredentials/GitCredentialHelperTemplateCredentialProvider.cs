@@ -6,11 +6,6 @@ using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services.TemplateCredentials
 {
-   /// <summary>
-   ///    Asks the git credential helpers configured on the machine (Git Credential Manager, osxkeychain, store, ...) for the
-   ///    credential they hold for the host. Anyone who already pushes to the host from this machine has nothing to configure.
-   ///    The helpers are queried in non interactive mode so that git never prompts on its own.
-   /// </summary>
    public class GitCredentialHelperTemplateCredentialProvider : ITemplateCredentialProvider
    {
       private const string USER_NAME_KEY = "username";
@@ -35,15 +30,12 @@ namespace PKSim.Infrastructure.Services.TemplateCredentials
          }
          catch (Exception e)
          {
-            //git is not installed or cannot be started. Nothing to do, another provider may be able to help
+            //git may not be installed: another provider may still have a credential
             _logger.AddDebug($"git credential helper could not be queried for '{host}': {e.Message}");
             return null;
          }
       }
 
-      /// <summary>
-      ///    Parses the key=value output of <c>git credential fill</c>
-      /// </summary>
       public static TemplateCredential ParseCredentialOutput(string output)
       {
          if (string.IsNullOrWhiteSpace(output))
@@ -68,7 +60,10 @@ namespace PKSim.Infrastructure.Services.TemplateCredentials
 
       private static string runGitCredentialFill(string host)
       {
-         var startInfo = new ProcessStartInfo("git", "credential fill")
+         //Only stored credentials are of interest. Without a helper answer, git falls back to an askpass program (GIT_ASKPASS,
+         //core.askPass, SSH_ASKPASS) before honoring GIT_TERMINAL_PROMPT: it would prompt, or return the program output as credential.
+         //An empty core.askPass disables that fallback once GIT_ASKPASS is out of the way
+         var startInfo = new ProcessStartInfo("git", "-c core.askPass= credential fill")
          {
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
@@ -77,7 +72,8 @@ namespace PKSim.Infrastructure.Services.TemplateCredentials
             CreateNoWindow = true,
          };
 
-         //never let git or the credential manager prompt the user
+         startInfo.Environment.Remove("GIT_ASKPASS");
+         startInfo.Environment.Remove("SSH_ASKPASS");
          startInfo.Environment["GIT_TERMINAL_PROMPT"] = "0";
          startInfo.Environment["GCM_INTERACTIVE"] = "never";
 
@@ -97,7 +93,7 @@ namespace PKSim.Infrastructure.Services.TemplateCredentials
             return null;
          }
 
-         //error output is read to avoid dead locks, its content is of no interest
+         //both streams have to be drained to avoid a dead lock, even if the error output is not used
          error.GetAwaiter().GetResult();
          return process.ExitCode == 0 ? output.GetAwaiter().GetResult() : null;
       }

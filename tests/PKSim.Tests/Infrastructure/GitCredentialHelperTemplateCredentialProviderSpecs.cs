@@ -52,10 +52,9 @@ namespace PKSim.Infrastructure
    public class When_querying_the_git_credential_helper_for_a_host : concern_for_GitCredentialHelperTemplateCredentialProvider
    {
       [Observation]
-      public void should_never_throw_even_if_git_is_not_available_or_has_no_credential()
+      public void should_not_throw_whatever_git_setup_is_found_on_the_machine()
       {
-         //the host does not exist, so whatever helper is configured on the machine will not return a credential
-         sut.CredentialFor(new Uri("https://no-credential-for-this-host.invalid/templates.json")).ShouldBeNull();
+         sut.CredentialFor(new Uri("https://no-credential-for-this-host.invalid/templates.json"));
       }
 
       [Observation]

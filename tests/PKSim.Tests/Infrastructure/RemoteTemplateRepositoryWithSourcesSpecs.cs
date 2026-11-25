@@ -56,7 +56,7 @@ namespace PKSim.Infrastructure
          _source = new TemplateSource("Company Library", "https://templates.company.com/lib/templates.json");
          _templateSources = new List<TemplateSource> {_source};
          A.CallTo(() => _userSettings.TemplateSources).Returns(_templateSources);
-         _sourceSummaryPath = Path.Combine(_templateFolder, _source.Key, CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+         _sourceSummaryPath = Path.Combine(_templateFolder, _source.CacheKey, CoreConstants.REMOTE_TEMPLATE_SUMMARY);
 
          _ospSummary = new RemoteTemplates
          {
@@ -80,7 +80,6 @@ namespace PKSim.Infrastructure
          writeSummary(_ospSummaryPath, _ospSummary);
          A.CallTo(() => _jsonSerializer.Deserialize<RemoteTemplates>(_sourceSummaryPath)).Returns(_sourceSummary);
 
-         //the fake downloader creates the destination file to simulate a successful download
          A.CallTo(() => _templateDownloader.DownloadAsync(A<Uri>._, A<string>._, A<bool>._))
             .Invokes(x => File.WriteAllText(x.GetArgument<string>(1), "{}"));
 
@@ -95,7 +94,14 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _jsonSerializer.Deserialize<RemoteTemplates>(summaryPath)).Returns(summary);
       }
 
-      protected string sourceFileFor(string fileName) => Path.Combine(_templateFolder, _source.Key, fileName);
+      protected string cachedFileFor(string version, string url) =>
+         Path.Combine(_templateFolder, _source.CacheKey, $"{version}_{TemplateSource.CacheKeyFor(url)}_{Path.GetFileName(new Uri(url).LocalPath)}");
+
+      protected void createCachedFile(string cachedFile)
+      {
+         DirectoryHelper.CreateDirectory(Path.GetDirectoryName(cachedFile));
+         File.WriteAllText(cachedFile, "{}");
+      }
 
       public override Task Cleanup()
       {
@@ -308,7 +314,7 @@ namespace PKSim.Infrastructure
          await base.Context();
          writeSummary(_sourceSummaryPath, _sourceSummary);
          _template = sut.TemplateBy(TemplateType.Compound, "InHouse");
-         _expectedFile = sourceFileFor($"{CoreConstants.DEFAULT_TEMPLATE_VERSION}_InHouse.json");
+         _expectedFile = cachedFileFor(CoreConstants.DEFAULT_TEMPLATE_VERSION, _template.Url);
       }
 
       protected override Task Because() => sut.LoadTemplateAsync<Compound>(_template);
@@ -335,8 +341,7 @@ namespace PKSim.Infrastructure
          await base.Context();
          writeSummary(_sourceSummaryPath, _sourceSummary);
          _template = sut.TemplateBy(TemplateType.Compound, "InHouse");
-         DirectoryHelper.CreateDirectory(Path.GetDirectoryName(sourceFileFor("x")));
-         File.WriteAllText(sourceFileFor($"{CoreConstants.DEFAULT_TEMPLATE_VERSION}_InHouse.json"), "{}");
+         createCachedFile(cachedFileFor(CoreConstants.DEFAULT_TEMPLATE_VERSION, _template.Url));
       }
 
       protected override Task Because() => sut.LoadTemplateAsync<Compound>(_template);
@@ -357,7 +362,7 @@ namespace PKSim.Infrastructure
          await base.Context();
          writeSummary(_sourceSummaryPath, _sourceSummary);
          _template = sut.TemplateBy(TemplateType.Compound, "Versioned");
-         File.WriteAllText(sourceFileFor("1.2_Versioned-Model.json"), "{}");
+         createCachedFile(cachedFileFor("1.2", _template.Url));
       }
 
       protected override Task Because() => sut.LoadTemplateAsync<Compound>(_template);
@@ -419,6 +424,78 @@ namespace PKSim.Infrastructure
          _references[0].Name.ShouldBeEqualTo("Meta");
          _references[0].Url.ShouldBeEqualTo(_template.Url);
          _references[0].Source.ShouldBeEqualTo(_source);
+      }
+   }
+
+   public class When_two_templates_of_an_additional_source_share_version_and_file_name : concern_for_RemoteTemplateRepository_with_template_sources
+   {
+      private const string URL_A = "https://raw.githubusercontent.com/Company/A/v1.2/model.json";
+      private const string URL_B = "https://raw.githubusercontent.com/Company/B/v1.2/model.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _sourceSummary.Templates = new[]
+         {
+            new RemoteTemplate {Name = "A", Type = TemplateType.Compound, Url = URL_A},
+            new RemoteTemplate {Name = "B", Type = TemplateType.Compound, Url = URL_B}
+         };
+         writeSummary(_sourceSummaryPath, _sourceSummary);
+         await sut.LoadTemplateAsync<Compound>(sut.TemplateBy(TemplateType.Compound, "A"));
+      }
+
+      protected override Task Because() => sut.LoadTemplateAsync<Compound>(sut.TemplateBy(TemplateType.Compound, "B"));
+
+      [Observation]
+      public void should_download_each_template_to_its_own_file()
+      {
+         cachedFileFor("1.2", URL_A).ShouldNotBeEqualTo(cachedFileFor("1.2", URL_B));
+         A.CallTo(() => _templateDownloader.DownloadAsync(new Uri(URL_B), cachedFileFor("1.2", URL_B), true)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadModelFromProjectFileAsync<Compound>(cachedFileFor("1.2", URL_B), PKSimBuildingBlockType.Compound, "B")).MustHaveHappened();
+      }
+   }
+
+   public class When_a_template_of_an_additional_source_is_not_hosted_on_github : concern_for_RemoteTemplateRepository_with_template_sources
+   {
+      private const string URL = "https://templates.company.com/team/models/variants/model.json";
+      private RemoteTemplate _template;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _sourceSummary.Templates = new[] {new RemoteTemplate {Name = "Variant", Type = TemplateType.Compound, Url = URL}};
+         writeSummary(_sourceSummaryPath, _sourceSummary);
+      }
+
+      protected override Task Because()
+      {
+         _template = sut.TemplateBy(TemplateType.Compound, "Variant");
+         return _completed;
+      }
+
+      [Observation]
+      public void should_not_interpret_a_path_segment_starting_with_v_as_version()
+      {
+         _template.Version.ShouldBeEqualTo(CoreConstants.DEFAULT_TEMPLATE_VERSION);
+         _template.RepositoryUrl.ShouldBeEqualTo(URL);
+      }
+   }
+
+   public class When_loading_the_unavailable_template_sources_and_the_downloaded_summary_of_a_source_could_not_be_loaded : concern_for_RemoteTemplateRepository_with_template_sources
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         writeSummary(_sourceSummaryPath, _sourceSummary);
+         A.CallTo(() => _jsonSerializer.Deserialize<RemoteTemplates>(_sourceSummaryPath)).Throws(new OSPSuiteException("invalid json"));
+      }
+
+      protected override Task Because() => sut.LoadUnavailableTemplateSourcesAsync();
+
+      [Observation]
+      public void should_download_the_summary_again()
+      {
+         A.CallTo(() => _templateDownloader.DownloadAsync(_source.Uri, A<string>._, true)).MustHaveHappened();
       }
    }
 }

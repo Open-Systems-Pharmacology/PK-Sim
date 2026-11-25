@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Services;
@@ -9,27 +10,40 @@ namespace PKSim.Infrastructure
    public abstract class concern_for_EnvironmentVariableTemplateCredentialProvider : ContextSpecification<EnvironmentVariableTemplateCredentialProvider>
    {
       protected Uri _uri;
+      protected Uri _gitHubUri;
       protected string _hostVariable;
-      private string _originalHostValue;
-      private string _originalGitHubToken;
+      private readonly Dictionary<string, string> _originalValues = new Dictionary<string, string>();
       protected TemplateCredential _result;
 
       protected override void Context()
       {
          _uri = new Uri("https://templates.company.com/lib/templates.json");
+         _gitHubUri = new Uri("https://raw.githubusercontent.com/Company/Library/main/templates.json");
          _hostVariable = TemplateCredentialHost.EnvironmentVariableNameFor(_uri);
-         _originalHostValue = Environment.GetEnvironmentVariable(_hostVariable);
-         _originalGitHubToken = Environment.GetEnvironmentVariable(TemplateCredentialHost.GITHUB_TOKEN_ENVIRONMENT_VARIABLE);
-         Environment.SetEnvironmentVariable(_hostVariable, null);
-         Environment.SetEnvironmentVariable(TemplateCredentialHost.GITHUB_TOKEN_ENVIRONMENT_VARIABLE, null);
+
+         var variablesReadByTheProvider = new[]
+         {
+            _hostVariable,
+            TemplateCredentialHost.EnvironmentVariableNameFor(_gitHubUri),
+            TemplateCredentialHost.GITHUB_TOKEN_ENVIRONMENT_VARIABLE
+         };
+
+         foreach (var variable in variablesReadByTheProvider)
+         {
+            _originalValues[variable] = Environment.GetEnvironmentVariable(variable);
+            Environment.SetEnvironmentVariable(variable, null);
+         }
+
          sut = new EnvironmentVariableTemplateCredentialProvider();
       }
 
       public override void Cleanup()
       {
          base.Cleanup();
-         Environment.SetEnvironmentVariable(_hostVariable, _originalHostValue);
-         Environment.SetEnvironmentVariable(TemplateCredentialHost.GITHUB_TOKEN_ENVIRONMENT_VARIABLE, _originalGitHubToken);
+         foreach (var (variable, value) in _originalValues)
+         {
+            Environment.SetEnvironmentVariable(variable, value);
+         }
       }
    }
 
@@ -85,7 +99,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_use_it_for_github_content_hosts()
       {
-         sut.CredentialFor(new Uri("https://raw.githubusercontent.com/Company/Library/main/templates.json")).Secret.ShouldBeEqualTo("github-token");
+         sut.CredentialFor(_gitHubUri).Secret.ShouldBeEqualTo("github-token");
       }
 
       [Observation]

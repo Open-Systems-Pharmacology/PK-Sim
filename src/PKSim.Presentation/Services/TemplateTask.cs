@@ -56,7 +56,6 @@ namespace PKSim.Presentation.Services
       {
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            //the presenter may need to download template summaries before displaying the view: it must stay alive until the load completes
             return await presenter.LoadFromTemplateAsync<T>(templateType);
          }
       }

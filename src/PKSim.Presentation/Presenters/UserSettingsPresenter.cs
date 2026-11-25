@@ -69,19 +69,8 @@ namespace PKSim.Presentation.Presenters
       IReadOnlyList<ViewLayout> AllViewLayouts();
       IReadOnlyList<Scalings> AllScalings();
 
-      /// <summary>
-      ///    Adds an empty additional template source to the settings being edited
-      /// </summary>
       void AddTemplateSource();
-
-      /// <summary>
-      ///    Removes the additional template source from the settings being edited
-      /// </summary>
       void RemoveTemplateSource(TemplateSourceDTO templateSourceDTO);
-
-      /// <summary>
-      ///    Lets the user select a local summary file (templates.json) as location of the template source
-      /// </summary>
       void SelectTemplateSourceFile(TemplateSourceDTO templateSourceDTO);
    }
 
@@ -253,12 +242,9 @@ namespace PKSim.Presentation.Presenters
 
       private IEnumerable<TemplateSource> editedTemplateSources() => _userSettingsDTO.TemplateSources.Select(x => x.ToTemplateSource());
 
-      /// <summary>
-      ///    The summaries of the new sources are downloaded while the user keeps working. Sources that cannot be reached are
-      ///    logged by the repository and retried (with a credential prompt if required) when the user loads a template
-      /// </summary>
       private void updateTemplateSourcesInBackground()
       {
+         //not awaited so that the settings dialog closes right away: the exception of a faulted task still has to be observed
          _remoteTemplateRepository.UpdateTemplateSourcesAsync()
             .ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
       }

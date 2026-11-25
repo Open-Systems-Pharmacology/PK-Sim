@@ -238,9 +238,6 @@ namespace PKSim.Presentation.DTO
          set => SetProperty(ref _preferredViewLayout, value);
       }
 
-      /// <summary>
-      ///    Additional template sources (OSP library excluded)
-      /// </summary>
       public NotifyList<TemplateSourceDTO> TemplateSources { get; } = new NotifyList<TemplateSourceDTO>();
 
       private static class AllRules

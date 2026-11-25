@@ -946,6 +946,9 @@ namespace PKSim.Assets
          public static string CannotDownloadTemplateLocatedAt(string url, string reason) =>
             $"{CannotDownloadTemplateLocatedAt(url)}: {reason}";
 
+         public static string TemplateCredentialsRequireHttps(string url) =>
+            $"'{url}' requires authentication but credentials are only sent over https. Use an https url for this template source.";
+
          public static string TemplateRequiresAuthentication(string url, string reason) =>
             $"Access to '{url}' was refused ({reason}) and no valid credential could be found.\n\n" +
             "PK-Sim does not store credentials. Provide one through the Windows Credential Manager (generic credential named after the host), " +
@@ -1443,7 +1446,7 @@ namespace PKSim.Assets
 
       public static class Rules
       {
-         public static readonly string TemplateSourceUrlIsInvalid = "The url of a template source must be an absolute http(s) url or the path to a 'templates.json' file.";
+         public static readonly string TemplateSourceUrlIsInvalid = "The url of a template source must be an absolute http(s) url without user name and password, or the path to a 'templates.json' file.";
          public static readonly string TemplateSourcesAreInvalid = "At least one additional template source has no name or an invalid url.";
 
          public static class Parameter

@@ -4,18 +4,10 @@ using System.Text;
 
 namespace PKSim.Core.Model
 {
-   /// <summary>
-   ///    An additional building block template library configured by the user (see <see cref="ICoreUserSettings.TemplateSources" />).
-   ///    A source only carries a display name and the location of its summary file (templates.json).
-   ///    Credentials are never part of a source: they are resolved at download time (see <c>ITemplateCredentialProvider</c>).
-   /// </summary>
+   //Deliberately holds no credential: PK-Sim must never store secrets. They are resolved at download time (see ITemplateCredentialProvider)
    public class TemplateSource
    {
       public string Name { get; set; }
-
-      /// <summary>
-      ///    Location of the summary file. Either an absolute http(s) url or a local/UNC path
-      /// </summary>
       public string Url { get; set; }
 
       public TemplateSource()
@@ -28,28 +20,18 @@ namespace PKSim.Core.Model
          Url = url;
       }
 
-      /// <summary>
-      ///    Absolute uri of the summary file. Local and UNC paths are returned as file uris. Null if <see cref="Url" /> is not a
-      ///    valid absolute uri
-      /// </summary>
       public Uri Uri => UriFor(Url);
 
-      /// <summary>
-      ///    Returns true if <see cref="Url" /> is an absolute http(s) url or a file path
-      /// </summary>
       public bool HasValidUrl => IsValidUrl(Url);
 
-      /// <summary>
-      ///    Stable identifier derived from the url and used to isolate downloaded files of this source on disk
-      /// </summary>
-      public string Key
+      public string CacheKey => CacheKeyFor(Url);
+
+      public static string CacheKeyFor(string url)
       {
-         get
-         {
-            var normalizedUrl = (Url ?? string.Empty).Trim().ToLowerInvariant();
-            var hash = SHA256.HashData(Encoding.UTF8.GetBytes(normalizedUrl));
-            return Convert.ToHexString(hash, 0, 8).ToLowerInvariant();
-         }
+         //AbsoluteUri lower cases scheme and host only: the case of path and query is significant
+         var identity = UriFor(url)?.AbsoluteUri ?? (url ?? string.Empty).Trim();
+         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(identity));
+         return Convert.ToHexString(hash, 0, 8).ToLowerInvariant();
       }
 
       public static Uri UriFor(string url)
@@ -66,7 +48,14 @@ namespace PKSim.Core.Model
          if (uri == null)
             return false;
 
-         return uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.IsFile;
+         if (uri.IsFile)
+            return true;
+
+         //user information in the url (https://user:password@host) would end up in the user settings file
+         if (!string.IsNullOrEmpty(uri.UserInfo))
+            return false;
+
+         return uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps;
       }
 
       public TemplateSource Clone() => new TemplateSource().WithUpdatedPropertiesFrom(this);

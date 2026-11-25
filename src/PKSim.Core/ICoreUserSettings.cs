@@ -59,10 +59,6 @@ namespace PKSim.Core
       /// </summary>
       string TemplateDatabasePath { get; set; }
 
-      /// <summary>
-      ///    Additional building block template libraries queried besides the OSP library. Only names and urls are stored,
-      ///    credentials never are.
-      /// </summary>
       IReadOnlyList<TemplateSource> TemplateSources { get; }
 
       void AddTemplateSource(TemplateSource templateSource);
