@@ -13,5 +13,11 @@ namespace PKSim.Core.Repositories
       Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate);
       IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor<T>(RemoteTemplate remoteTemplate, T loadedTemplate);
       Task UpdateLocalTemplateSummaryFile();
+
+      //Never prompts the user: sources whose credentials are missing are left to LoadUnavailableTemplateSourcesAsync
+      Task UpdateTemplateSourcesAsync();
+
+      //May prompt the user for credentials
+      Task LoadUnavailableTemplateSourcesAsync();
    }
 }

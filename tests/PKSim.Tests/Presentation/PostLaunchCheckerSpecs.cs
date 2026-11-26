@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -184,6 +185,41 @@ namespace PKSim.Presentation
       public void should_update_the_summary_file()
       {
          A.CallTo(() => _remoteTemplateRepository.UpdateLocalTemplateSummaryFile()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_starting_the_post_launch_check_with_additional_template_sources : concern_for_PostLaunchChecker
+   {
+      protected override async Task Because()
+      {
+         await sut.PerformPostLaunchCheckAsync();
+      }
+
+      [Observation]
+      public void should_update_the_additional_template_sources_silently()
+      {
+         A.CallTo(() => _remoteTemplateRepository.UpdateTemplateSourcesAsync()).MustHaveHappened();
+      }
+   }
+
+   public class When_starting_the_post_launch_check_and_the_additional_template_sources_cannot_be_updated : concern_for_PostLaunchChecker
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _remoteTemplateRepository.UpdateTemplateSourcesAsync()).Throws(new Exception("offline"));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.PerformPostLaunchCheckAsync();
+      }
+
+      [Observation]
+      public void should_continue_with_the_other_checks()
+      {
+         A.CallTo(() => _watermarkStatusChecker.CheckWatermarkStatus()).MustHaveHappened();
+         A.CallTo(() => TemplateDatabaseCreator.CreateDefaultTemplateDatabase()).MustHaveHappened();
       }
    }
 }

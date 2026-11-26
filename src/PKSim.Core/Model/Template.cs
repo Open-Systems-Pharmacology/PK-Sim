@@ -107,6 +107,10 @@ namespace PKSim.Core.Model
       /// </summary>
       public bool Qualified { get; set; }
 
+      public TemplateSource Source { get; set; }
+
+      public bool IsFromOSPLibrary => Source == null;
+
       public override bool IsSupportedByCurrentVersion(string currentVersion)
       {
          var curVersion = new Version(currentVersion);

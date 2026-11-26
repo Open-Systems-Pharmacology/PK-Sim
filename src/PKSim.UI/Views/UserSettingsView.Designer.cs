@@ -83,6 +83,11 @@ namespace PKSim.UI.Views
          this.layoutGroupTemplateDatabase = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemTemplateDatabase = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemTemplateRefBehavior = new DevExpress.XtraLayout.LayoutControlItem();
+         this.gridTemplateSources = new OSPSuite.UI.Controls.UxGridControl();
+         this.gridViewTemplateSources = new PKSim.UI.Views.Core.UxGridView();
+         this.btnAddTemplateSource = new DevExpress.XtraEditors.SimpleButton();
+         this.layoutItemTemplateSources = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemAddTemplateSource = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupColors = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemChangedColor = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemChartBackColor = new DevExpress.XtraLayout.LayoutControlItem();
@@ -126,6 +131,10 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.colorChartDiagramBack.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.colorChartBack.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbTemplateDatabase.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridTemplateSources)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridViewTemplateSources)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemTemplateSources)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddTemplateSource)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbIconSizeTab.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbIconSizeTreeView.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbMRUListItemCount.Properties)).BeginInit();
@@ -183,6 +192,8 @@ namespace PKSim.UI.Views
          // 
          this.layoutControlUserConfig.AllowCustomization = false;
          this.layoutControlUserConfig.Controls.Add(this.cbTemplateReferenceBehavior);
+         this.layoutControlUserConfig.Controls.Add(this.gridTemplateSources);
+         this.layoutControlUserConfig.Controls.Add(this.btnAddTemplateSource);
          this.layoutControlUserConfig.Controls.Add(this.tbNumberOfIndividualsPerBin);
          this.layoutControlUserConfig.Controls.Add(this.tbNumberOfBins);
          this.layoutControlUserConfig.Controls.Add(this.cbPreferredChartYScaling);
@@ -710,11 +721,13 @@ namespace PKSim.UI.Views
          this.layoutGroupTemplateDatabase.CustomizationFormText = "layoutGroupTemplateDatabase";
          this.layoutGroupTemplateDatabase.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemTemplateDatabase,
-            this.layoutItemTemplateRefBehavior});
+            this.layoutItemTemplateRefBehavior,
+            this.layoutItemTemplateSources,
+            this.layoutItemAddTemplateSource});
          this.layoutGroupTemplateDatabase.Location = new System.Drawing.Point(0, 855);
          this.layoutGroupTemplateDatabase.Name = "layoutGroupTemplateDatabase";
          this.layoutGroupTemplateDatabase.OptionsItemText.TextToControlDistance = 5;
-         this.layoutGroupTemplateDatabase.Size = new System.Drawing.Size(601, 87);
+         this.layoutGroupTemplateDatabase.Size = new System.Drawing.Size(601, 287);
          // 
          // layoutItemTemplateDatabase
          // 
@@ -732,6 +745,54 @@ namespace PKSim.UI.Views
          this.layoutItemTemplateRefBehavior.Name = "layoutItemTemplateRefBehavior";
          this.layoutItemTemplateRefBehavior.Size = new System.Drawing.Size(595, 30);
          this.layoutItemTemplateRefBehavior.TextSize = new System.Drawing.Size(194, 13);
+         //
+         // gridTemplateSources
+         //
+         this.gridTemplateSources.Location = new System.Drawing.Point(24, 730);
+         this.gridTemplateSources.MainView = this.gridViewTemplateSources;
+         this.gridTemplateSources.Name = "gridTemplateSources";
+         this.gridTemplateSources.Size = new System.Drawing.Size(571, 150);
+         this.gridTemplateSources.TabIndex = 40;
+         this.gridTemplateSources.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewTemplateSources});
+         //
+         // gridViewTemplateSources
+         //
+         this.gridViewTemplateSources.AllowsFiltering = false;
+         this.gridViewTemplateSources.EnableColumnContextMenu = false;
+         this.gridViewTemplateSources.GridControl = this.gridTemplateSources;
+         this.gridViewTemplateSources.MultiSelect = false;
+         this.gridViewTemplateSources.Name = "gridViewTemplateSources";
+         this.gridViewTemplateSources.OptionsNavigation.AutoFocusNewRow = true;
+         this.gridViewTemplateSources.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.gridViewTemplateSources.OptionsSelection.EnableAppearanceFocusedRow = false;
+         //
+         // btnAddTemplateSource
+         //
+         this.btnAddTemplateSource.Location = new System.Drawing.Point(24, 884);
+         this.btnAddTemplateSource.Name = "btnAddTemplateSource";
+         this.btnAddTemplateSource.Size = new System.Drawing.Size(571, 22);
+         this.btnAddTemplateSource.StyleController = this.layoutControlUserConfig;
+         this.btnAddTemplateSource.TabIndex = 41;
+         this.btnAddTemplateSource.Text = "btnAddTemplateSource";
+         //
+         // layoutItemTemplateSources
+         //
+         this.layoutItemTemplateSources.Control = this.gridTemplateSources;
+         this.layoutItemTemplateSources.Location = new System.Drawing.Point(0, 60);
+         this.layoutItemTemplateSources.Name = "layoutItemTemplateSources";
+         this.layoutItemTemplateSources.Size = new System.Drawing.Size(595, 174);
+         this.layoutItemTemplateSources.TextLocation = DevExpress.Utils.Locations.Top;
+         this.layoutItemTemplateSources.TextSize = new System.Drawing.Size(194, 13);
+         //
+         // layoutItemAddTemplateSource
+         //
+         this.layoutItemAddTemplateSource.Control = this.btnAddTemplateSource;
+         this.layoutItemAddTemplateSource.Location = new System.Drawing.Point(0, 234);
+         this.layoutItemAddTemplateSource.Name = "layoutItemAddTemplateSource";
+         this.layoutItemAddTemplateSource.Size = new System.Drawing.Size(595, 26);
+         this.layoutItemAddTemplateSource.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemAddTemplateSource.TextVisible = false;
          // 
          // layoutGroupColors
          // 
@@ -962,6 +1023,10 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.colorChartDiagramBack.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.colorChartBack.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbTemplateDatabase.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridTemplateSources)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridViewTemplateSources)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemTemplateSources)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddTemplateSource)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbIconSizeTab.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbIconSizeTreeView.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbMRUListItemCount.Properties)).EndInit();
@@ -1040,6 +1105,11 @@ namespace PKSim.UI.Views
         private DevExpress.XtraEditors.ButtonEdit tbTemplateDatabase;
         private DevExpress.XtraLayout.LayoutControlGroup layoutGroupTemplateDatabase;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemTemplateDatabase;
+        private OSPSuite.UI.Controls.UxGridControl gridTemplateSources;
+        private PKSim.UI.Views.Core.UxGridView gridViewTemplateSources;
+        private DevExpress.XtraEditors.SimpleButton btnAddTemplateSource;
+        private DevExpress.XtraLayout.LayoutControlItem layoutItemTemplateSources;
+        private DevExpress.XtraLayout.LayoutControlItem layoutItemAddTemplateSource;
         private UxColorPickEditWithHistory colorChartDiagramBack;
         private UxColorPickEditWithHistory colorChartBack;
         private UxColorPickEditWithHistory colorChanged;

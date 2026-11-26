@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
@@ -67,6 +68,10 @@ namespace PKSim.Presentation.Presenters
 
       IReadOnlyList<ViewLayout> AllViewLayouts();
       IReadOnlyList<Scalings> AllScalings();
+
+      void AddTemplateSource();
+      void RemoveTemplateSource(TemplateSourceDTO templateSourceDTO);
+      void SelectTemplateSourceFile(TemplateSourceDTO templateSourceDTO);
    }
 
    public class UserSettingsPresenter : AbstractSubPresenter<IUserSettingsView, IUserSettingsPresenter>, IUserSettingsPresenter
@@ -78,12 +83,13 @@ namespace PKSim.Presentation.Presenters
       private readonly IPKSimConfiguration _configuration;
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IUserSettingsToUserSettingsDTOMapper _mapper;
+      private readonly IRemoteTemplateRepository _remoteTemplateRepository;
       private UserSettingsDTO _userSettingsDTO;
 
       public UserSettingsPresenter(IUserSettingsView view, IUserSettings userSettings,
          ISkinManager skinManager, IUserSettingsPersistor userSettingsPersistor,
          IDialogCreator dialogCreator, IPKSimConfiguration configuration, ISpeciesRepository speciesRepository,
-         IUserSettingsToUserSettingsDTOMapper mapper) : base(view)
+         IUserSettingsToUserSettingsDTOMapper mapper, IRemoteTemplateRepository remoteTemplateRepository) : base(view)
       {
          _userSettings = userSettings;
          _skinManager = skinManager;
@@ -92,6 +98,7 @@ namespace PKSim.Presentation.Presenters
          _configuration = configuration;
          _speciesRepository = speciesRepository;
          _mapper = mapper;
+         _remoteTemplateRepository = remoteTemplateRepository;
       }
 
       public void EditSettings()
@@ -210,10 +217,36 @@ namespace PKSim.Presentation.Presenters
          return EnumHelper.AllValuesFor<Scalings>().ToList();
       }
 
+      public void AddTemplateSource() => _userSettingsDTO.TemplateSources.Add(new TemplateSourceDTO());
+
+      public void RemoveTemplateSource(TemplateSourceDTO templateSourceDTO) => _userSettingsDTO.TemplateSources.Remove(templateSourceDTO);
+
+      public void SelectTemplateSourceFile(TemplateSourceDTO templateSourceDTO)
+      {
+         var summaryFile = _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectTemplateSourceFile, CoreConstants.Filter.TEMPLATE_SUMMARY_FILE_FILTER, CoreConstants.DirectoryKey.DATABASE);
+         if (string.IsNullOrEmpty(summaryFile))
+            return;
+
+         templateSourceDTO.Url = summaryFile;
+      }
+
       public void SaveSettings()
       {
+         var templateSourcesChanged = !editedTemplateSources().SequenceEqual(_userSettings.TemplateSources ?? Enumerable.Empty<TemplateSource>());
          _mapper.UpdateUserSettingsFrom(_userSettingsDTO, _userSettings);
          _userSettingsPersistor.Save(_userSettings);
+
+         if (templateSourcesChanged)
+            updateTemplateSourcesInBackground();
+      }
+
+      private IEnumerable<TemplateSource> editedTemplateSources() => _userSettingsDTO.TemplateSources.Select(x => x.ToTemplateSource());
+
+      private void updateTemplateSourcesInBackground()
+      {
+         //not awaited so that the settings dialog closes right away: the exception of a faulted task still has to be observed
+         _remoteTemplateRepository.UpdateTemplateSourcesAsync()
+            .ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
       }
    }
 }

@@ -3,11 +3,13 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.Presentation.Views.Main;
 using PKSim.Presentation.Views.Simulations;
+using PKSim.UI.Services;
 using PKSim.UI.Views;
 using PKSim.UI.Views.Individuals;
 using PKSim.UI.Views.Simulations;
@@ -44,8 +46,12 @@ namespace PKSim.UI
          {
             scan.AssemblyContainingType<UserInterfaceRegister>();
             scan.ExcludeType<UserSettings>();
+            scan.ExcludeType<WindowsCredentialPromptTemplateCredentialProvider>();
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
+
+         //last resort of the template credential chain: only the UI may prompt the user
+         container.Register<ITemplateCredentialProvider, WindowsCredentialPromptTemplateCredentialProvider>(LifeStyle.Singleton);
 
          //register open views
          container.Register(typeof(ISimulationCompoundProcessView<,>), typeof(SimulationCompoundProcessView<,>));

@@ -52,11 +52,11 @@ namespace PKSim.Presentation.Services
          SaveToTemplate(objectToSave, templateType, objectToSave.Name);
       }
 
-      public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType) where T : class
+      public async Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType) where T : class
       {
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            return presenter.LoadFromTemplateAsync<T>(templateType);
+            return await presenter.LoadFromTemplateAsync<T>(templateType);
          }
       }
 

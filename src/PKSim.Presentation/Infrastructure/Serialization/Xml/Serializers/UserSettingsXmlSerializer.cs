@@ -58,6 +58,7 @@ namespace PKSim.Presentation.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ParameterIdentificationFeedbackEditorSettings);
          Map(x => x.LoadTemplateWithReference);
          MapEnumerable(x => x.UsedDirectories, x => x.DirectoryMapSettings.AddUsedDirectory);
+         MapEnumerable(x => x.TemplateSources, x => x.AddTemplateSource);
          MapEnumerable(x => x.ProjectFiles, x => x.ProjectFiles.Add).WithChildMappingName(CoreConstants.Serialization.ProjectFile);
       }
 
