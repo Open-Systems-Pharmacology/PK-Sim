@@ -50,6 +50,7 @@ namespace PKSim.Presentation.Services
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IParameterIdentificationRunner _parameterIdentificationRunner;
+      private readonly IMissingBuildingBlockContentRecoveryTask _missingBuildingBlockContentRecoveryTask;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -63,7 +64,8 @@ namespace PKSim.Presentation.Services
          ISnapshotTask snapshotTask,
          IBuildingBlockInProjectManager buildingBlockInProjectManager,
          ILazyLoadTask lazyLoadTask,
-         IParameterIdentificationRunner parameterIdentificationRunner
+         IParameterIdentificationRunner parameterIdentificationRunner,
+         IMissingBuildingBlockContentRecoveryTask missingBuildingBlockContentRecoveryTask
       )
       {
          _workspace = workspace;
@@ -79,6 +81,7 @@ namespace PKSim.Presentation.Services
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _lazyLoadTask = lazyLoadTask;
          _parameterIdentificationRunner = parameterIdentificationRunner;
+         _missingBuildingBlockContentRecoveryTask = missingBuildingBlockContentRecoveryTask;
       }
 
       public void NewProject()
@@ -339,6 +342,9 @@ namespace PKSim.Presentation.Services
          if (projectNeedsToBeConvertedFromVersion4(projectFile))
             throw new PKSimException(PKSimConstants.Error.ProjectFileVersion4IsNotSupportedAnymore(projectFile));
 
+         var recoveryResult = MissingBuildingBlockContentRecoveryResult.Empty;
+         var projectLoaded = false;
+
          void openProject()
          {
             _workspace.OpenProject(projectFile);
@@ -346,7 +352,12 @@ namespace PKSim.Presentation.Services
             // which is not loaded but AFTER the deserialization.
             // Ideally this should go down in the callstack, but we are getting a circular dependency issue.
             _workspace.Project.All<Individual>().Each(_lazyLoadTask.Load);
+            //Building blocks whose content is missing from the project file were skipped during the load (see issue 3861)
+            recoveryResult = _missingBuildingBlockContentRecoveryTask.Recover(_workspace.Project);
             resetProjectChangedState();
+            //the recovery (rebuilt or removed building blocks) must be saved
+            if (recoveryResult.Any)
+               _workspace.Project.HasChanged = true;
          }
 
          try
@@ -357,12 +368,15 @@ namespace PKSim.Presentation.Services
             _executionContext.PublishEvent(new DisableUIEvent());
             if (shouldStartWorker)
             {
-               var success = _heavyWorkManager.Start(openProject, PKSimConstants.UI.LoadingProject);
-               if (!success)
+               projectLoaded = _heavyWorkManager.Start(openProject, PKSimConstants.UI.LoadingProject);
+               if (!projectLoaded)
                   createNewProject();
             }
             else
+            {
                openProject();
+               projectLoaded = true;
+            }
 
             if (_userSettings.ShouldRestoreWorkspaceLayout)
                _workspaceLayoutUpdater.RestoreLayout();
@@ -376,6 +390,10 @@ namespace PKSim.Presentation.Services
          {
             _executionContext.PublishEvent(new EnableUIEvent(_workspace.Project, _workspace.ProjectLoaded));
          }
+
+         //once the UI is enabled again, tell the user what was recovered in the loaded project
+         if (projectLoaded && recoveryResult.Any)
+            _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.SaveProjectToPersistRecoveredBuildingBlocks(recoveryResult.Message));
       }
 
       private void resetProjectChangedState()
