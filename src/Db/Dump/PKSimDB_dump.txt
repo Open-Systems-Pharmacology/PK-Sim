@@ -9935,7 +9935,7 @@ INSERT INTO tab_container_parameters VALUES(4493,'COMPARTMENT','Rectum','Thickne
 INSERT INTO tab_container_parameters VALUES(4493,'COMPARTMENT','Rectum','Volume',1,1,1,0,'LUMEN_VOLUMES',1,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(4493,'COMPARTMENT','Rectum','Volume (gut wall)',1,1,1,0,'GUT_WALL_VOLUME',1,'LOCAL','INDIVIDUAL',0,0);
 INSERT INTO tab_container_parameters VALUES(4494,'COMPARTMENT','Feces','Liquid',1,1,0,0,'GI_PHYSIOLOGY',1,'LOCAL','INDIVIDUAL',0,0);
-INSERT INTO tab_container_parameters VALUES(4494,'COMPARTMENT','Feces','Volume',1,1,0,0,'LUMEN_VOLUMES',1,'LOCAL','INDIVIDUAL',0,0);
+INSERT INTO tab_container_parameters VALUES(4494,'COMPARTMENT','Feces','Volume',1,1,0,0,'ORGAN_VOLUMES',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4581,'GENERAL','MoleculeProperties','Drug absorption rate (lumen to mucosa)',0,1,0,0,'GI_PHYSIOLOGY',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4581,'GENERAL','MoleculeProperties','Sum of active process rates mucosa to lumen',0,1,0,0,'UNDEFINED',1,'LOCAL','SIMULATION',0,0);
 INSERT INTO tab_container_parameters VALUES(4581,'GENERAL','MoleculeProperties','Sum of passive process rates',0,1,0,0,'UNDEFINED',1,'LOCAL','SIMULATION',0,0);

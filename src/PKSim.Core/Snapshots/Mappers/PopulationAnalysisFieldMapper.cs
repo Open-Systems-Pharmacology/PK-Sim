@@ -5,6 +5,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -34,7 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var populationAnalysisField = await createFieldFrom(snapshot, snapshotContext);
          MapSnapshotPropertiesToModel(snapshot, populationAnalysisField);
-         mapIf<PopulationAnalysisParameterField>(snapshot, populationAnalysisField, mapParameterFieldToModel);
+         mapIf<PopulationAnalysisParameterField>(snapshot, populationAnalysisField, (s, f) => mapParameterFieldToModel(s, f, snapshotContext));
          mapIf<PopulationAnalysisPKParameterField>(snapshot, populationAnalysisField, mapPKParameterFieldToModel);
          mapIf<PopulationAnalysisCovariateField>(snapshot, populationAnalysisField, mapCovariateFieldToModel);
          mapIf<PopulationAnalysisOutputField>(snapshot, populationAnalysisField, mapOutputFieldToModel);
@@ -79,10 +80,10 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ParameterPath = field.ParameterPath;
       }
 
-      private void mapParameterFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisParameterField field)
+      private void mapParameterFieldToModel(PopulationAnalysisField snapshot, PopulationAnalysisParameterField field, SnapshotContext snapshotContext)
       {
          mapNumericFieldToModel(snapshot, field);
-         field.ParameterPath = snapshot.ParameterPath;
+         field.ParameterPath = ParameterPathConverter.ConvertParameterPath(snapshot.ParameterPath, snapshotContext);
       }
 
       private void mapOutputFieldToSnapshot(PopulationAnalysisField snapshot, PopulationAnalysisOutputField field)
