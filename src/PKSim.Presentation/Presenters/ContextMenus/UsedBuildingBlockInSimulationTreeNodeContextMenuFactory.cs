@@ -25,12 +25,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return CreateFor(bbInSimulationNode.Simulation, bbInSimulationNode.UsedBuildingBlock, bbInSimulationNode.TemplateBuildingBlock.DowncastTo<TBuildingBlock>());
       }
 
-      public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
-      {
-         var buildingBlockNode = treeNode as UsedBuildingBlockInSimulationNode;
-         if (buildingBlockNode == null) return false;
-         return buildingBlockNode.TemplateBuildingBlock.IsAnImplementationOf<TBuildingBlock>();
-      }
+      //the template building block is resolved on demand by the node since it may not have been available when the node was created
+      public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter) =>
+         treeNode is UsedBuildingBlockInSimulationNode buildingBlockNode && buildingBlockNode.TemplateBuildingBlock.IsAnImplementationOf<TBuildingBlock>();
    }
 
    public class UsedIndividualInSimulationTreeNodeContextMenuFactory : UsedBuildingBlockInSimulationTreeNodeContextMenuFactory<Individual>
