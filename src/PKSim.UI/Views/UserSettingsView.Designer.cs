@@ -60,6 +60,7 @@ namespace PKSim.UI.Views
          this.cbActiveSkin = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.chkAllowsScientificNotation = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chckColorGroupObservedData = new DevExpress.XtraEditors.CheckEdit();
+         this.chkShowAllVariableParameters = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupNumericalProperties = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemAllowsScientificNotation = new DevExpress.XtraLayout.LayoutControlItem();
@@ -69,6 +70,7 @@ namespace PKSim.UI.Views
          this.layoutItemNumberOfProcessors = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemNumberOfBins = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemNumberOfIndividualsPerBin = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemShowAllVariableParameters = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupUIProperties = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemActiveSkin = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemMRUListItemCount = new DevExpress.XtraLayout.LayoutControlItem();
@@ -134,6 +136,7 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.cbActiveSkin.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkAllowsScientificNotation.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chckColorGroupObservedData.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkShowAllVariableParameters.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupNumericalProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemAllowsScientificNotation)).BeginInit();
@@ -143,6 +146,7 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfBins)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfIndividualsPerBin)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemShowAllVariableParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupUIProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemActiveSkin)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMRUListItemCount)).BeginInit();
@@ -189,6 +193,7 @@ namespace PKSim.UI.Views
          this.layoutControlUserConfig.Controls.Add(this.cbPreferredVewLayout);
          this.layoutControlUserConfig.Controls.Add(this.cbDefaultPopulationAnalysis);
          this.layoutControlUserConfig.Controls.Add(this.tbNumberOfProcessors);
+         this.layoutControlUserConfig.Controls.Add(this.chkShowAllVariableParameters);
          this.layoutControlUserConfig.Controls.Add(this.chkShowUpdateNotification);
          this.layoutControlUserConfig.Controls.Add(this.colorFormula);
          this.layoutControlUserConfig.Controls.Add(this.cbDefaultSolName);
@@ -499,7 +504,17 @@ namespace PKSim.UI.Views
          this.chckColorGroupObservedData.Size = new System.Drawing.Size(585, 20);
          this.chckColorGroupObservedData.StyleController = this.layoutControlUserConfig;
          this.chckColorGroupObservedData.TabIndex = 36;
-         // 
+         //
+         // chkShowAllVariableParameters
+         //
+         this.chkShowAllVariableParameters.AllowClicksOutsideControlArea = false;
+         this.chkShowAllVariableParameters.Location = new System.Drawing.Point(19, 245);
+         this.chkShowAllVariableParameters.Name = "chkShowAllVariableParameters";
+         this.chkShowAllVariableParameters.Properties.Caption = "chkShowAllVariableParameters";
+         this.chkShowAllVariableParameters.Size = new System.Drawing.Size(585, 20);
+         this.chkShowAllVariableParameters.StyleController = this.layoutControlUserConfig;
+         this.chkShowAllVariableParameters.TabIndex = 37;
+         //
          // layoutControlGroup
          // 
          this.layoutControlGroup.CustomizationFormText = "layoutControlGroup1";
@@ -515,7 +530,7 @@ namespace PKSim.UI.Views
          this.layoutControlGroup.Name = "Root";
          this.layoutControlGroup.OptionsItemText.TextToControlDistance = 5;
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-         this.layoutControlGroup.Size = new System.Drawing.Size(623, 1151);
+         this.layoutControlGroup.Size = new System.Drawing.Size(623, 1181);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutGroupNumericalProperties
@@ -528,11 +543,12 @@ namespace PKSim.UI.Views
             this.layoutItemRelTol,
             this.layoutItemNumberOfProcessors,
             this.layoutItemNumberOfBins,
-            this.layoutItemNumberOfIndividualsPerBin});
+            this.layoutItemNumberOfIndividualsPerBin,
+            this.layoutItemShowAllVariableParameters});
          this.layoutGroupNumericalProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupNumericalProperties.Name = "layoutGroupNumericalProperties";
          this.layoutGroupNumericalProperties.OptionsItemText.TextToControlDistance = 5;
-         this.layoutGroupNumericalProperties.Size = new System.Drawing.Size(601, 237);
+         this.layoutGroupNumericalProperties.Size = new System.Drawing.Size(601, 267);
          // 
          // layoutItemAllowsScientificNotation
          // 
@@ -595,9 +611,18 @@ namespace PKSim.UI.Views
          this.layoutItemNumberOfIndividualsPerBin.Name = "layoutItemNumberOfIndividualsPerBin";
          this.layoutItemNumberOfIndividualsPerBin.Size = new System.Drawing.Size(595, 30);
          this.layoutItemNumberOfIndividualsPerBin.TextSize = new System.Drawing.Size(194, 13);
-         // 
+         //
+         // layoutItemShowAllVariableParameters
+         //
+         this.layoutItemShowAllVariableParameters.Control = this.chkShowAllVariableParameters;
+         this.layoutItemShowAllVariableParameters.Location = new System.Drawing.Point(0, 210);
+         this.layoutItemShowAllVariableParameters.Name = "layoutItemShowAllVariableParameters";
+         this.layoutItemShowAllVariableParameters.Size = new System.Drawing.Size(595, 30);
+         this.layoutItemShowAllVariableParameters.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemShowAllVariableParameters.TextVisible = false;
+         //
          // layoutGroupUIProperties
-         // 
+         //
          this.layoutGroupUIProperties.CustomizationFormText = "layoutGroupUIProperties";
          this.layoutGroupUIProperties.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemActiveSkin,
@@ -605,7 +630,7 @@ namespace PKSim.UI.Views
             this.layoutControlItem1,
             this.layoutControlItem3,
             this.layoutItemPreferredViewLayout});
-         this.layoutGroupUIProperties.Location = new System.Drawing.Point(0, 237);
+         this.layoutGroupUIProperties.Location = new System.Drawing.Point(0, 267);
          this.layoutGroupUIProperties.Name = "layoutGroupUIProperties";
          this.layoutGroupUIProperties.OptionsItemText.TextToControlDistance = 5;
          this.layoutGroupUIProperties.Size = new System.Drawing.Size(601, 177);
@@ -673,7 +698,7 @@ namespace PKSim.UI.Views
             this.layoutItemIconSizeTreeView,
             this.layoutItemIconSizeTab,
             this.layoutItemIconSizeContextMenu});
-         this.layoutGroupIconSizes.Location = new System.Drawing.Point(0, 738);
+         this.layoutGroupIconSizes.Location = new System.Drawing.Point(0, 768);
          this.layoutGroupIconSizes.Name = "layoutGroupIconSizes";
          this.layoutGroupIconSizes.OptionsItemText.TextToControlDistance = 5;
          this.layoutGroupIconSizes.Size = new System.Drawing.Size(601, 117);
@@ -711,7 +736,7 @@ namespace PKSim.UI.Views
          this.layoutGroupTemplateDatabase.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemTemplateDatabase,
             this.layoutItemTemplateRefBehavior});
-         this.layoutGroupTemplateDatabase.Location = new System.Drawing.Point(0, 855);
+         this.layoutGroupTemplateDatabase.Location = new System.Drawing.Point(0, 885);
          this.layoutGroupTemplateDatabase.Name = "layoutGroupTemplateDatabase";
          this.layoutGroupTemplateDatabase.OptionsItemText.TextToControlDistance = 5;
          this.layoutGroupTemplateDatabase.Size = new System.Drawing.Size(601, 87);
@@ -742,7 +767,7 @@ namespace PKSim.UI.Views
             this.layoutItemChartDiagramBackColor,
             this.layoutItemFormulaColor,
             this.layoutItemColorGroupObservedData});
-         this.layoutGroupColors.Location = new System.Drawing.Point(0, 942);
+         this.layoutGroupColors.Location = new System.Drawing.Point(0, 972);
          this.layoutGroupColors.Name = "layoutGroupColor";
          this.layoutGroupColors.OptionsItemText.TextToControlDistance = 5;
          this.layoutGroupColors.Size = new System.Drawing.Size(601, 177);
@@ -806,7 +831,7 @@ namespace PKSim.UI.Views
             this.layoutItemDefaultSolName,
             this.layoutItemDefaultPopulationAnalysis,
             this.layoutItemDefaultChartYScale});
-         this.layoutGroupDefaults.Location = new System.Drawing.Point(0, 414);
+         this.layoutGroupDefaults.Location = new System.Drawing.Point(0, 444);
          this.layoutGroupDefaults.Name = "layoutGroupDefaults";
          this.layoutGroupDefaults.OptionsItemText.TextToControlDistance = 5;
          this.layoutGroupDefaults.Size = new System.Drawing.Size(601, 237);
@@ -927,7 +952,7 @@ namespace PKSim.UI.Views
          this.layoutGroupParameterLayout.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemParameterGroupingMode,
             this.layoutItemParameterGroupingModePISA});
-         this.layoutGroupParameterLayout.Location = new System.Drawing.Point(0, 651);
+         this.layoutGroupParameterLayout.Location = new System.Drawing.Point(0, 681);
          this.layoutGroupParameterLayout.Name = "layoutGroupParameterLayout";
          this.layoutGroupParameterLayout.Size = new System.Drawing.Size(601, 87);
          // 
@@ -970,6 +995,7 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.cbActiveSkin.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkAllowsScientificNotation.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chckColorGroupObservedData.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkShowAllVariableParameters.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupNumericalProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemAllowsScientificNotation)).EndInit();
@@ -979,6 +1005,7 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfBins)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfIndividualsPerBin)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemShowAllVariableParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupUIProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemActiveSkin)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMRUListItemCount)).EndInit();
@@ -1085,6 +1112,8 @@ namespace PKSim.UI.Views
         private UxColorPickEditWithHistory colorFormula;
       private DevExpress.XtraEditors.CheckEdit chckColorGroupObservedData;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemColorGroupObservedData;
+      private OSPSuite.UI.Controls.UxCheckEdit chkShowAllVariableParameters;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemShowAllVariableParameters;
       private UxComboBoxEdit cbTemplateReferenceBehavior;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTemplateRefBehavior;
       private DevExpress.XtraEditors.ComboBoxEdit cbDefaultParameterGroupingModePISA;

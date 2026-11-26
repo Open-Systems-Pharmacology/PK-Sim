@@ -25,6 +25,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public int MaximumNumberOfCoresToUse { get; set; }
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public string TemplateDatabasePath { get; set; }
+      public bool ShowAllVariableParametersInUserDefinedVariability { get; set; }
 
       public void ResetToDefault()
       {

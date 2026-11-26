@@ -99,6 +99,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _userSettings.DecimalPlace).Returns((uint)3);
          A.CallTo(() => _userSettings.ActiveSkin).Returns("TestSkin");
          A.CallTo(() => _userSettings.DefaultSpecies).Returns("Human");
+         A.CallTo(() => _userSettings.ShowAllVariableParametersInUserDefinedVariability).Returns(true);
          A.CallTo(() => _view.BindTo(A<UserSettingsDTO>.Ignored))
             .Invokes(call => _capturedDTO = call.GetArgument<UserSettingsDTO>(0));
       }
@@ -115,6 +116,7 @@ namespace PKSim.Presentation
          _capturedDTO.DecimalPlace.ShouldBeEqualTo((uint)3);
          _capturedDTO.ActiveSkin.ShouldBeEqualTo("TestSkin");
          _capturedDTO.DefaultSpecies.ShouldBeEqualTo("Human");
+         _capturedDTO.ShowAllVariableParametersInUserDefinedVariability.ShouldBeTrue();
       }
    }
 
@@ -133,6 +135,7 @@ namespace PKSim.Presentation
          _capturedDTO.DecimalPlace = 7;
          _capturedDTO.ActiveSkin = "NewSkin";
          _capturedDTO.AbsTol = 1e-10;
+         _capturedDTO.ShowAllVariableParametersInUserDefinedVariability = true;
       }
 
       protected override void Because()
@@ -146,6 +149,7 @@ namespace PKSim.Presentation
          _userSettings.DecimalPlace.ShouldBeEqualTo((uint)7);
          _userSettings.ActiveSkin.ShouldBeEqualTo("NewSkin");
          _userSettings.AbsTol.ShouldBeEqualTo(1e-10);
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability.ShouldBeTrue();
       }
 
       [Observation]

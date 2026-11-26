@@ -57,5 +57,11 @@ namespace PKSim.Core
       ///    Path of the template database containing the template building block
       /// </summary>
       string TemplateDatabasePath { get; set; }
+
+      /// <summary>
+      ///    If <c>true</c>, every parameter that can be varied (and not only the ones flagged as variable in a population)
+      ///    is available for selection as user defined variability. Default is <c>false</c>
+      /// </summary>
+      bool ShowAllVariableParametersInUserDefinedVariability { get; set; }
    }
 }

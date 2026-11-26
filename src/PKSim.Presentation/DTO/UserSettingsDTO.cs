@@ -18,6 +18,7 @@ namespace PKSim.Presentation.DTO
       private bool _shouldRestoreWorkspaceLayout;
       private bool _showUpdateNotification;
       private bool _colorGroupObservedDataFromSameFolder;
+      private bool _showAllVariableParametersInUserDefinedVariability;
       private string _activeSkin;
       private IconSize _iconSizeTreeView;
       private IconSize _iconSizeTab;
@@ -78,6 +79,12 @@ namespace PKSim.Presentation.DTO
       {
          get => _colorGroupObservedDataFromSameFolder;
          set => SetProperty(ref _colorGroupObservedDataFromSameFolder, value);
+      }
+
+      public virtual bool ShowAllVariableParametersInUserDefinedVariability
+      {
+         get => _showAllVariableParametersInUserDefinedVariability;
+         set => SetProperty(ref _showAllVariableParametersInUserDefinedVariability, value);
       }
 
       public virtual string ActiveSkin

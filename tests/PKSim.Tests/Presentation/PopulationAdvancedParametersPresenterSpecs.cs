@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -9,6 +10,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -41,11 +43,14 @@ namespace PKSim.Presentation
       protected string _pathPara2;
       protected string _pathAdvancedPara1;
       protected IRepresentationInfoRepository _representationInfoRepository;
+      protected ICoreUserSettings _userSettings;
       private IEventPublisher _eventPublisher;
 
       protected override void Context()
       {
          _view = A.Fake<IAdvancedParametersView>();
+         _userSettings = A.Fake<ICoreUserSettings>();
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability = false;
          _allConstantParameterGroupsPresenter = A.Fake<IPopulationParameterGroupsPresenter>();
          _advancedParameterGroupsPresenter = A.Fake<IPopulationParameterGroupsPresenter>();
          _advancedParameterPresenter = A.Fake<IAdvancedParameterPresenter>();
@@ -89,8 +94,142 @@ namespace PKSim.Presentation
          A.CallTo(() => _entityPathResolver.PathFor(_advancedPara1)).Returns(_pathAdvancedPara1);
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new PopulationAdvancedParametersPresenter(_view, _entityPathResolver, _allConstantParameterGroupsPresenter, _advancedParameterGroupsPresenter, _advancedParameterPresenter,
-                                                         _advancedParametersTask, _eventPublisher);
+                                                         _advancedParametersTask, _eventPublisher, _userSettings);
          sut.InitializeWith(_commandRegister);
+      }
+   }
+
+   public abstract class concern_for_PopulationAdvancedParametersPresenter_with_a_parameter_that_can_only_be_varied : concern_for_PopulationAdvancedParametersPresenter
+   {
+      protected IParameter _variableOnlyParameter;
+      protected List<IParameter> _availableParameters;
+
+      protected override void Context()
+      {
+         base.Context();
+         _variableOnlyParameter = A.Fake<IParameter>().WithName("_variableOnly");
+         _variableOnlyParameter.Visible = true;
+         _variableOnlyParameter.Editable = true;
+         _variableOnlyParameter.CanBeVaried = true;
+         _variableOnlyParameter.CanBeVariedInPopulation = false;
+         A.CallTo(() => _entityPathResolver.PathFor(_variableOnlyParameter)).Returns("_pathVariableOnly");
+         _allParameters.Add(_variableOnlyParameter);
+         _allConstantParameters.Add(_variableOnlyParameter);
+
+         A.CallTo(() => _allConstantParameterGroupsPresenter.AddParameters(A<IEnumerable<IParameter>>._, A<bool>._))
+            .Invokes(x => _availableParameters = x.GetArgument<IEnumerable<IParameter>>(0).ToList());
+      }
+
+      protected override void Because()
+      {
+         sut.EditPopulation(_population);
+      }
+   }
+
+   public class When_editing_a_population_and_the_user_settings_do_not_show_all_variable_parameters : concern_for_PopulationAdvancedParametersPresenter_with_a_parameter_that_can_only_be_varied
+   {
+      [Observation]
+      public void should_only_display_the_parameters_that_can_be_varied_in_population_as_available_parameters()
+      {
+         _availableParameters.ShouldOnlyContain(_para1, _para2);
+      }
+   }
+
+   public class When_editing_a_population_and_the_user_settings_show_all_variable_parameters : concern_for_PopulationAdvancedParametersPresenter_with_a_parameter_that_can_only_be_varied
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability = true;
+      }
+
+      [Observation]
+      public void should_also_display_the_parameters_that_can_only_be_varied_as_available_parameters()
+      {
+         _availableParameters.ShouldOnlyContain(_para1, _para2, _variableOnlyParameter);
+      }
+   }
+
+   public abstract class concern_for_PopulationAdvancedParametersPresenter_with_an_advanced_parameter_that_can_only_be_varied : concern_for_PopulationAdvancedParametersPresenter
+   {
+      protected IParameter _variableOnlyAdvancedParameter;
+      protected string _pathVariableOnlyAdvancedParameter = "_pathVariableOnlyAdvanced";
+      protected List<IParameter> _availableParameters;
+      protected List<IParameter> _advancedParameters;
+
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ShowAllVariableParametersInUserDefinedVariability = false;
+         _variableOnlyAdvancedParameter = A.Fake<IParameter>().WithName("_variableOnlyAdvanced");
+         _variableOnlyAdvancedParameter.Visible = true;
+         _variableOnlyAdvancedParameter.Editable = true;
+         _variableOnlyAdvancedParameter.CanBeVaried = true;
+         _variableOnlyAdvancedParameter.CanBeVariedInPopulation = false;
+         A.CallTo(() => _entityPathResolver.PathFor(_variableOnlyAdvancedParameter)).Returns(_pathVariableOnlyAdvancedParameter);
+         _allParameters.Add(_variableOnlyAdvancedParameter);
+         _allAdvancedParameters.Add(_variableOnlyAdvancedParameter);
+
+         A.CallTo(() => _allConstantParameterGroupsPresenter.AddParameters(A<IEnumerable<IParameter>>._, A<bool>._))
+            .Invokes(x => _availableParameters = x.GetArgument<IEnumerable<IParameter>>(0).ToList());
+
+         A.CallTo(() => _advancedParameterGroupsPresenter.AddParameters(A<IEnumerable<IParameter>>._, A<bool>._))
+            .Invokes(x => _advancedParameters = x.GetArgument<IEnumerable<IParameter>>(0).ToList());
+      }
+   }
+
+   public class When_editing_a_population_with_an_advanced_parameter_that_can_only_be_varied_and_the_user_settings_do_not_show_all_variable_parameters : concern_for_PopulationAdvancedParametersPresenter_with_an_advanced_parameter_that_can_only_be_varied
+   {
+      protected override void Because()
+      {
+         sut.EditPopulation(_population);
+      }
+
+      [Observation]
+      public void should_still_display_the_advanced_parameter_that_can_only_be_varied()
+      {
+         _advancedParameters.ShouldOnlyContain(_advancedPara1, _variableOnlyAdvancedParameter);
+      }
+
+      [Observation]
+      public void should_not_display_the_parameters_that_can_only_be_varied_as_available_parameters()
+      {
+         _availableParameters.ShouldOnlyContain(_para1, _para2);
+      }
+   }
+
+   public class When_the_presenter_is_being_notified_that_an_advanced_parameter_that_can_only_be_varied_was_removed_and_the_user_settings_do_not_show_all_variable_parameters : concern_for_PopulationAdvancedParametersPresenter_with_an_advanced_parameter_that_can_only_be_varied
+   {
+      private AdvancedParameter _advancedParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _advancedParameter = new AdvancedParameter {ParameterPath = _pathVariableOnlyAdvancedParameter};
+         sut.EditPopulation(_population);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new RemoveAdvancedParameterFromContainerEvent {Container = _population, Entity = _advancedParameter});
+      }
+
+      [Observation]
+      public void should_remove_the_parameter_from_the_advanced_parameters_presenter()
+      {
+         A.CallTo(() => _advancedParameterGroupsPresenter.RemoveParameter(_variableOnlyAdvancedParameter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_add_the_parameter_to_the_available_parameters_presenter()
+      {
+         A.CallTo(() => _allConstantParameterGroupsPresenter.AddParameter(_variableOnlyAdvancedParameter)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_the_advanced_parameter_selection_if_the_parameter_was_selected()
+      {
+         A.CallTo(() => _advancedParameterPresenter.RemoveSelectionFor(_advancedParameter)).MustHaveHappened();
       }
    }
 
