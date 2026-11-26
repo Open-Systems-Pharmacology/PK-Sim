@@ -67,6 +67,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          var dimensionRepository = serializationContext.Resolve<IDimensionRepository>();
          base.TypedDeserialize(populationStatisticalAnalysis, element, serializationContext);
          populationStatisticalAnalysis.TimeUnit = element.GetDisplayUnit(dimensionRepository.Time);
+
+         //statistics introduced after the analysis was saved are not part of the serialized list
+         populationStatisticalAnalysis.AddMissingPredefinedStatistics();
       }
 
       protected override XElement TypedSerialize(PopulationStatisticalAnalysis populationStatisticalAnalysis, SerializationContext serializationContext)

@@ -8,8 +8,10 @@ namespace PKSim.Core.Model.PopulationAnalyses
    {
       ArithmeticMean,
       ArithmeticStandardDeviation,
+      ArithmeticTwoStandardDeviations,
       GeometricMean,
       GeometricStandardDeviation,
+      GeometricTwoStandardDeviations,
       Min,
       Max,
       Median,

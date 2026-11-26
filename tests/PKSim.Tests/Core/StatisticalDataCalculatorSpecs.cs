@@ -93,6 +93,64 @@ namespace PKSim.Core
       }
    }
 
+   public class When_calculation_arithmetic_two_standard_deviations_for_as_value : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _selection = new PredefinedStatisticalAggregation { Method = StatisticalAggregationType.ArithmeticTwoStandardDeviations };
+      }
+
+      protected override void Because()
+      {
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Value).ToList();
+      }
+
+      [Observation]
+      public void the_results_should_be_twice_the_standard_deviation()
+      {
+         _results[0][0].ShouldBeEqualTo(2 * _values1.ArithmeticStandardDeviation());
+         _results[0][1].ShouldBeEqualTo(2 * _values2.ArithmeticStandardDeviation());
+         _results[0][2].ShouldBeEqualTo(2 * _values3.ArithmeticStandardDeviation());
+      }
+
+      [Observation]
+      public void the_results_should_contain_the_standard_deviation_only()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
+      }
+   }
+
+   public class When_calculation_geometric_two_standard_deviations_for_as_value : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _selection = new PredefinedStatisticalAggregation { Method = StatisticalAggregationType.GeometricTwoStandardDeviations };
+      }
+
+      protected override void Because()
+      {
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Value).ToList();
+      }
+
+      [Observation]
+      public void the_results_should_be_the_squared_standard_deviation()
+      {
+         _results[0][0].ShouldBeEqualTo((float) Math.Pow(_values1.GeometricStandardDeviation(), 2));
+         _results[0][1].ShouldBeEqualTo((float) Math.Pow(_values2.GeometricStandardDeviation(), 2));
+         _results[0][2].ShouldBeEqualTo((float) Math.Pow(_values3.GeometricStandardDeviation(), 2));
+      }
+
+      [Observation]
+      public void the_results_should_contain_the_standard_deviation_only()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
+      }
+   }
+
    public class When_calculating_the_statistics_for_a_given_percentile : concern_for_StatisticalDataCalculator
    {
       protected override void Context()
@@ -246,6 +304,44 @@ namespace PKSim.Core
                var mean = x.GeometricMean();
                var std = x.GeometricStandardDeviation();
                return mean * std;
+            })
+      {
+      }
+   }
+
+   public class When_calculating_the_statistics_using_two_arithmetical_standard_deviations : When_calculating_the_statistics_using_a_predefined_range_method
+   {
+      public When_calculating_the_statistics_using_two_arithmetical_standard_deviations()
+         : base(StatisticalAggregationType.ArithmeticTwoStandardDeviations, x =>
+         {
+            var mean = x.ArithmeticMean();
+            var std = x.ArithmeticStandardDeviation();
+            return mean - 2 * std;
+         },
+            x =>
+            {
+               var mean = x.ArithmeticMean();
+               var std = x.ArithmeticStandardDeviation();
+               return mean + 2 * std;
+            })
+      {
+      }
+   }
+
+   public class When_calculating_the_statistics_using_two_geometrical_standard_deviations : When_calculating_the_statistics_using_a_predefined_range_method
+   {
+      public When_calculating_the_statistics_using_two_geometrical_standard_deviations()
+         : base(StatisticalAggregationType.GeometricTwoStandardDeviations, x =>
+         {
+            var mean = x.GeometricMean();
+            var std = x.GeometricStandardDeviation();
+            return mean / (std * std);
+         },
+            x =>
+            {
+               var mean = x.GeometricMean();
+               var std = x.GeometricStandardDeviation();
+               return mean * (std * std);
             })
       {
       }

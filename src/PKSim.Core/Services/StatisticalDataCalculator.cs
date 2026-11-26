@@ -31,66 +31,74 @@ namespace PKSim.Core.Services
 
       public IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode)
       {
-         var percentileSelection = statisticalAggregation as PercentileStatisticalAggregation;
-         if (percentileSelection != null)
-         {
-            yield return calculatePercentileFor(percentileSelection.Percentile, sortedResults);
-            yield break;
-         }
+         if (statisticalAggregation is PercentileStatisticalAggregation percentileSelection)
+            return new[] {calculatePercentileFor(percentileSelection.Percentile, sortedResults)};
+
          var methodSelection = statisticalAggregation.DowncastTo<PredefinedStatisticalAggregation>();
 
          switch (methodSelection.Method)
          {
             case StatisticalAggregationType.ArithmeticMean:
-               yield return calculateArithmeticMeanFor(sortedResults);
-               break;
+               return new[] {calculateArithmeticMeanFor(sortedResults)};
             case StatisticalAggregationType.ArithmeticStandardDeviation:
-               var arithmeticStd = calculateArithmeticStandardDeviationFor(sortedResults);
-
-               if (deviationMode == DeviationModes.Value)
-                  yield return arithmeticStd;
-               else
-               {
-                  var aritMean = calculateArithmeticMeanFor(sortedResults);
-                  yield return calculateLowerArithmeticStandardDeviationFor(aritMean, arithmeticStd);
-                  yield return calculateUpperArithmeticStandardDeviationFor(aritMean, arithmeticStd);
-               }
-               break;
+               return arithmeticStandardDeviationsFor(sortedResults, deviationMode, numberOfStandardDeviations: 1);
+            case StatisticalAggregationType.ArithmeticTwoStandardDeviations:
+               return arithmeticStandardDeviationsFor(sortedResults, deviationMode, numberOfStandardDeviations: 2);
             case StatisticalAggregationType.GeometricMean:
-               yield return calculateGeometricMeanFor(sortedResults);
-               break;
-            case StatisticalAggregationType.Range90:
-               yield return calculatePercentileFor(5f, sortedResults);
-               yield return calculatePercentileFor(95f, sortedResults);
-               break;
-            case StatisticalAggregationType.Range95:
-               yield return calculatePercentileFor(2.5f, sortedResults);
-               yield return calculatePercentileFor(97.5f, sortedResults);
-               break;
+               return new[] {calculateGeometricMeanFor(sortedResults)};
             case StatisticalAggregationType.GeometricStandardDeviation:
-               
-               var geoStd = calculateGeometricStandardDeviationFor(sortedResults);
-               if (deviationMode == DeviationModes.Value)
-                  yield return geoStd;
-               else
-               {
-                  var geoMean = calculateGeometricMeanFor(sortedResults);
-                  yield return calculateLowerGeometricStandardDeviationFor(geoMean, geoStd);
-                  yield return calculateUpperGeometricStandardDeviationFor(geoMean, geoStd);
-               }
-               break;
+               return geometricStandardDeviationsFor(sortedResults, deviationMode, numberOfStandardDeviations: 1);
+            case StatisticalAggregationType.GeometricTwoStandardDeviations:
+               return geometricStandardDeviationsFor(sortedResults, deviationMode, numberOfStandardDeviations: 2);
+            case StatisticalAggregationType.Range90:
+               return new[] {calculatePercentileFor(5f, sortedResults), calculatePercentileFor(95f, sortedResults)};
+            case StatisticalAggregationType.Range95:
+               return new[] {calculatePercentileFor(2.5f, sortedResults), calculatePercentileFor(97.5f, sortedResults)};
             case StatisticalAggregationType.Min:
-               yield return calculateMinFor(sortedResults);
-               break;
+               return new[] {calculateMinFor(sortedResults)};
             case StatisticalAggregationType.Max:
-               yield return calculateMaxFor(sortedResults);
-               break;
+               return new[] {calculateMaxFor(sortedResults)};
             case StatisticalAggregationType.Median:
-               yield return calculateMedianFor(sortedResults);
-               break;
+               return new[] {calculateMedianFor(sortedResults)};
             default:
-               break;
+               return Enumerable.Empty<float[]>();
          }
+      }
+
+      /// <summary>
+      ///    Returns the arithmetic deviation scaled by <paramref name="numberOfStandardDeviations" /> (SD * n). In range mode, the
+      ///    lower and upper bounds (mean - n * SD, mean + n * SD) are returned instead
+      /// </summary>
+      private IEnumerable<float[]> arithmeticStandardDeviationsFor(FloatMatrix sortedResults, DeviationModes deviationMode, int numberOfStandardDeviations)
+      {
+         var arithmeticStd = calculateArithmeticStandardDeviationFor(sortedResults).Select(std => std * numberOfStandardDeviations).ToArray();
+         if (deviationMode == DeviationModes.Value)
+            return new[] {arithmeticStd};
+
+         var aritMean = calculateArithmeticMeanFor(sortedResults);
+         return new[]
+         {
+            calculateLowerArithmeticStandardDeviationFor(aritMean, arithmeticStd),
+            calculateUpperArithmeticStandardDeviationFor(aritMean, arithmeticStd)
+         };
+      }
+
+      /// <summary>
+      ///    Returns the geometric deviation raised to the power of <paramref name="numberOfStandardDeviations" /> (GSD^n). In range mode, the
+      ///    lower and upper bounds (mean / GSD^n, mean * GSD^n) are returned instead
+      /// </summary>
+      private IEnumerable<float[]> geometricStandardDeviationsFor(FloatMatrix sortedResults, DeviationModes deviationMode, int numberOfStandardDeviations)
+      {
+         var geoStd = calculateGeometricStandardDeviationFor(sortedResults).Select(std => (float) Math.Pow(std, numberOfStandardDeviations)).ToArray();
+         if (deviationMode == DeviationModes.Value)
+            return new[] {geoStd};
+
+         var geoMean = calculateGeometricMeanFor(sortedResults);
+         return new[]
+         {
+            calculateLowerGeometricStandardDeviationFor(geoMean, geoStd),
+            calculateUpperGeometricStandardDeviationFor(geoMean, geoStd)
+         };
       }
 
       private float[] calculateUpperGeometricStandardDeviationFor(float[] geoMean, float[] geoStd)
